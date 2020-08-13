@@ -887,6 +887,14 @@ export const Formats: {[k: string]: FormatsData} = {
 					max = count;
 				}
 			}
+			for (const [i, set] of team.entries()) {
+				if(set.name === "Dracovish" && typeValue[typeKey.indexOf("Water")] < entryCount - 1 && typeValue[typeKey.indexOf("Dragon")] < entryCount - 1){
+					return [`Dracovish is not a valid wild card.`];
+				}
+				if(set.name === "Darmanitan-Galar" && typeValue[typeKey.indexOf("Ice")] < entryCount - 1){
+					return [`Darmanitan-Galar is not a valid wild card.`];
+				}
+ 			}
 			if (max < entryCount - 1){
 				return [`All but one of your Pokémon must share a type.`];
 			}
