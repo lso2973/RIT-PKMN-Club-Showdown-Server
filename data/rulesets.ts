@@ -857,6 +857,41 @@ export const Formats: {[k: string]: FormatsData} = {
 			}
 		},
 	},
+	gymleaderclause: {
+		effectType: 'ValidatorRule',
+		name: 'Gym Leader Clause',
+		desc: "All Pokemon except one must share a type.",
+		onBegin() {
+			this.add('rule', 'Gym Leader Clause: All Pokemon except one must share a type.');
+		},
+		onValidateTeam(team) {
+			let typeKey: string[] = [];
+			let typeValue: number[] = [];
+			let entryCount: number = 0;
+			for (const [i, set] of team.entries()) {
+				entryCount++;
+				let species = this.dex.getSpecies(set.species);
+				if (!species.types) return [`Invalid pokemon ${set.name || set.species}`];
+				for (const type of species.types){
+					if (typeKey.indexOf(type) != -1){
+						typeValue[typeKey.indexOf(type)] += 1;
+					} else {
+						typeKey.push(type);
+						typeValue.push(1);
+					}
+				}
+			}
+			let max: number = 0;
+			for (const count of typeValue){
+				if (count > max){
+					max = count;
+				}
+			}
+			if (max < entryCount - 1){
+				return [`All but one of your Pokémon must share a type.`];
+			}
+		},
+	},
 	megarayquazaclause: {
 		effectType: 'Rule',
 		name: 'Mega Rayquaza Clause',

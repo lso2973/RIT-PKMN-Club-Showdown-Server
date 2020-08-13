@@ -4,6 +4,28 @@ import {Utils} from './../lib/utils';
 
 export const Formats: (FormatsData | {section: string, column?: number})[] = [
 
+	{
+		section: "RIT-specific Formats",
+	},
+	{
+		name: "[Gen 8] Gym Leader Tournament",
+		desc: `RIT's official Gym Leader Tournament!`,
+		threads: [
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3656253/">Monotype Metagame Discussion</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3658745/">Monotype Sample Teams</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3660603">Monotype Viability Rankings</a>`,
+		],
+
+		mod: 'gen8',
+		forcedLevel: 50,
+		ruleset: ['Gym Leader Clause', 'Standard', 'Dynamax Clause'],
+		banlist: [
+			'Cinderace + Libero', 'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag', 'Corviknight', 'Eternatus',
+			'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings',
+			'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Urshifu-Rapid-Strike', 'Zacian', 'Zamazenta', 'Zekrom',
+			'Damp Rock', 'Moody', 'Baton Pass', 'Swagger'
+		],
+	},
 	// Sw/Sh Singles
 	///////////////////////////////////////////////////////////////////
 
