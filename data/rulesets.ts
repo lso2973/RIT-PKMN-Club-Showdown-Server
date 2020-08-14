@@ -888,10 +888,10 @@ export const Formats: {[k: string]: FormatsData} = {
 				}
 			}
 			for (const [i, set] of team.entries()) {
-				if(set.name === "Dracovish" && typeValue[typeKey.indexOf("Water")] < entryCount - 1 && typeValue[typeKey.indexOf("Dragon")] < entryCount - 1){
+				if(set.species === "Dracovish" && typeValue[typeKey.indexOf("Water")] < entryCount - 1 && typeValue[typeKey.indexOf("Dragon")] < entryCount - 1){
 					return [`Dracovish is not a valid wild card.`];
 				}
-				if(set.name === "Darmanitan-Galar" && typeValue[typeKey.indexOf("Ice")] < entryCount - 1){
+				if(set.species === "Darmanitan-Galar" && typeValue[typeKey.indexOf("Ice")] < entryCount - 1){
 					return [`Darmanitan-Galar is not a valid wild card.`];
 				}
  			}
