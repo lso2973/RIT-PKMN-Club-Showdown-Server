@@ -887,6 +887,9 @@ export const Formats: {[k: string]: FormatsData} = {
 					max = count;
 				}
 			}
+			if (max < entryCount - 1){
+				return [`All but one of your Pokémon must share a type.`];
+			}
 			for (const [i, set] of team.entries()) {
 				if(set.species === "Dracovish" && typeValue[typeKey.indexOf("Water")] < entryCount - 1 && typeValue[typeKey.indexOf("Dragon")] < entryCount - 1){
 					return [`Dracovish is not a valid wild card.`];
@@ -895,9 +898,6 @@ export const Formats: {[k: string]: FormatsData} = {
 					return [`Darmanitan-Galar is not a valid wild card.`];
 				}
  			}
-			if (max < entryCount - 1){
-				return [`All but one of your Pokémon must share a type.`];
-			}
 		},
 	},
 	megarayquazaclause: {
