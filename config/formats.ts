@@ -11,9 +11,7 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 		name: "[Gen 8] Gym Leader Tournament",
 		desc: `RIT's official Gym Leader Tournament!`,
 		threads: [
-			`&bullet; <a href="https://www.smogon.com/forums/threads/3656253/">Monotype Metagame Discussion</a>`,
-			`&bullet; <a href="https://www.smogon.com/forums/threads/3658745/">Monotype Sample Teams</a>`,
-			`&bullet; <a href="https://www.smogon.com/forums/threads/3660603">Monotype Viability Rankings</a>`,
+			`&bullet; <a href="https://docs.google.com/document/d/1r3SW874AdfP00_-lRAysTRa_4SQZJhn1Ejwc4cA_zsw/edit?usp=sharing">Gym Leader Tournament Rules</a>`,
 		],
 
 		mod: 'gen8',
