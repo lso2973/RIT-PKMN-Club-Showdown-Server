@@ -41,7 +41,7 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 		],
 	},
 	{
-		name: "[Gen 8] eSports Draft",
+		name: "[Gen 8] eSports Draft (National Dex)",
 		desc: `RIT's eSports Draft - A collaboration between eSports and Pokémon Club.`,
 		threads: [
 			`&bullet; <a href="https://docs.google.com/spreadsheets/d/1rNo1vn0BogbPExlZ5LElBVz7cGBs6cGEHYI6CCq_EEQ/edit?pli=1#gid=233644122">Draft Document</a>`,
@@ -53,7 +53,7 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 			'Arceus', 'Darkrai', 'Dialga', 'Giratina', 'Groudon', 'Ho-Oh', 'Kyogre', 'Lugia', 'Mewtwo', 'Necrozma-Dawn-Wings',
 			'Necrozma-Dusk-Mane', 'Necrozma-Ultra', 'Palkia', 'Rayquaza', 'Reshiram', 'Shaymin-Sky', 'Xerneas', 'Yveltal', 'Zekrom',
 			'Battle Bond', 'Moody', 'Power Construct', 'Blaziken + Speed Boost', 'Darmanitan-Galar + Gorilla Tactics', 
-			'Landorus + Sheer Force', 'Cinderace + Libero', 'Swagger', 
+			'Landorus + Sheer Force', 'Cinderace + Libero', 'Baton Pass', 'Swagger', 
 			
 		],
 		onValidateSet(set){
