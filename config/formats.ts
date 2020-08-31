@@ -41,7 +41,7 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 		],
 	},
 	{
-		name: "[Gen 8] eSports Draft (National Dex)",
+		name: "[Gen 8] National Dex eSports Draft",
 		desc: `RIT's eSports Draft - A collaboration between eSports and Pokémon Club.`,
 		threads: [
 			`&bullet; <a href="https://docs.google.com/spreadsheets/d/1rNo1vn0BogbPExlZ5LElBVz7cGBs6cGEHYI6CCq_EEQ/edit?pli=1#gid=233644122">Draft Document</a>`,
