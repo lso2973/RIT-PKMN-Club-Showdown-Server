@@ -24,6 +24,47 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 			'Damp Rock', 'Moody', 'Baton Pass', 'Swagger'
 		],
 	},
+	{
+		name: "[Gen 8] RRC Draft S13",
+		desc: `RIT Pokémon Club's 13th draft season!`,
+		threads: [
+			`&bullet; <a href="https://docs.google.com/spreadsheets/d/121272v4B8F6APVwI4rtS280VD5xOiXTz_nR0OzI58AU/edit?usp=sharing">Draft Document</a>`,
+		],
+
+		mod: 'gen8',
+		forcedLevel: 50,
+		gameType: 'doubles',
+		ruleset: ['Obtainable', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod',],
+		banlist: [
+			'Eternatus', 'Jirachi', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings',
+			'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Zacian', 'Zamazenta', 'Zekrom', 'Moody', 'Double Team', 'Minimize'
+		],
+	},
+	{
+		name: "[Gen 8] eSports Draft",
+		desc: `RIT's eSports Draft - A collaboration between eSports and Pokémon Club.`,
+		threads: [
+			`&bullet; <a href="https://docs.google.com/spreadsheets/d/1rNo1vn0BogbPExlZ5LElBVz7cGBs6cGEHYI6CCq_EEQ/edit?pli=1#gid=233644122">Draft Document</a>`,
+		],
+
+		mod: 'gen8',
+		ruleset: ['Standard NatDex', 'OHKO Clause', 'Evasion Moves Clause', 'Species Clause', 'Dynamax Clause', 'Sleep Clause Mod'],
+		banlist: [
+			'Arceus', 'Darkrai', 'Dialga', 'Giratina', 'Groudon', 'Ho-Oh', 'Kyogre', 'Lugia', 'Mewtwo', 'Necrozma-Dawn-Wings',
+			'Necrozma-Dusk-Mane', 'Necrozma-Ultra', 'Palkia', 'Rayquaza', 'Reshiram', 'Shaymin-Sky', 'Xerneas', 'Yveltal', 'Zekrom',
+			'Battle Bond', 'Moody', 'Power Construct', 'Blaziken + Speed Boost', 'Darmanitan-Galar + Gorilla Tactics', 
+			'Landorus + Sheer Force', 'Cinderace + Libero', 'Swagger', 
+			
+		],
+		onValidateSet(set){
+			const item = this.dex.getItem(set.item);
+			if(item && item.megaStone){
+				return [`Mega evolution is not allowed.`];
+			} else if(item && item.zMove){
+				return [`Z-moves are not allowed.`];
+			}
+		}
+	},
 	// Sw/Sh Singles
 	///////////////////////////////////////////////////////////////////
 
