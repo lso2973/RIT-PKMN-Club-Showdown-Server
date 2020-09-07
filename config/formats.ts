@@ -25,6 +25,23 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 		],
 	},
 	{
+		name: "[Gen 8] Gym Leader Challenge",
+		desc: `Use this format to challenge our 8 Gym Leaders!`,
+		threads: [
+			`&bullet; <a href="example.com">Rules Placeholder</a>`,
+		],
+
+		mod: 'gen8',
+		forcedLevel: 50,
+		ruleset: ['Standard', 'Dynamax Clause'],
+		banlist: [
+			'Cinderace + Libero', 'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag', 'Corviknight', 'Eternatus',
+			'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings',
+			'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Urshifu-Rapid-Strike', 'Zacian', 'Zamazenta', 'Zekrom',
+			'Damp Rock', 'Moody', 'Baton Pass', 'Swagger'
+		],
+	},
+	{
 		name: "[Gen 8] RRC Draft S13",
 		desc: `RIT Pokémon Club's 13th draft season!`,
 		threads: [
