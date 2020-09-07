@@ -28,17 +28,16 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 		name: "[Gen 8] Gym Leader Challenge",
 		desc: `Use this format to challenge our 8 Gym Leaders!`,
 		threads: [
-			`&bullet; <a href="example.com">Rules Placeholder</a>`,
+			`&bullet; <a href="https://docs.google.com/document/d/1YL3yVvcwKgasvqtC2nTAkPRqg1MmERuKfyw4Hx_abmk/edit">Gym Leader Challenge Rules</a>`,
 		],
 
 		mod: 'gen8',
 		forcedLevel: 50,
 		ruleset: ['Standard', 'Dynamax Clause'],
 		banlist: [
-			'Cinderace + Libero', 'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag', 'Corviknight', 'Eternatus',
-			'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings',
-			'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Urshifu-Rapid-Strike', 'Zacian', 'Zamazenta', 'Zekrom',
-			'Damp Rock', 'Moody', 'Baton Pass', 'Swagger'
+			'Eternatus', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 
+			'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Zacian', 'Zamazenta', 'Zekrom',
+			'Moody', 'Swagger'
 		],
 	},
 	{
