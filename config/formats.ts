@@ -8,27 +8,10 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 		section: "RIT-specific Formats",
 	},
 	{
-		name: "[Gen 8] Gym Leader Tournament",
-		desc: `RIT's official Gym Leader Tournament!`,
-		threads: [
-			`&bullet; <a href="https://docs.google.com/document/d/1r3SW874AdfP00_-lRAysTRa_4SQZJhn1Ejwc4cA_zsw/edit?usp=sharing">Gym Leader Tournament Rules</a>`,
-		],
-
-		mod: 'gen8',
-		forcedLevel: 50,
-		ruleset: ['Gym Leader Clause', 'Standard', 'Dynamax Clause'],
-		banlist: [
-			'Cinderace + Libero', 'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag', 'Corviknight', 'Eternatus',
-			'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings',
-			'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Urshifu-Rapid-Strike', 'Zacian', 'Zamazenta', 'Zekrom',
-			'Damp Rock', 'Moody', 'Baton Pass', 'Swagger'
-		],
-	},
-	{
-		name: "[Gen 8] Gym Leader Challenge",
+		name: "[Gen 8] Gym Challenge",
 		desc: `Use this format to challenge our 8 Gym Leaders!`,
 		threads: [
-			`&bullet; <a href="https://docs.google.com/document/d/1YL3yVvcwKgasvqtC2nTAkPRqg1MmERuKfyw4Hx_abmk/edit">Gym Leader Challenge Rules</a>`,
+			`&bullet; <a href="https://docs.google.com/document/d/1YL3yVvcwKgasvqtC2nTAkPRqg1MmERuKfyw4Hx_abmk/edit">Gym Challenge Rules</a>`,
 		],
 
 		mod: 'gen8',
@@ -80,6 +63,26 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 				return [`Z-moves are not allowed.`];
 			}
 		}
+	},
+	{
+		section: "RIT Archive",
+	},
+	{
+		name: "[Gen 8] Gym Leader Tournament 20-21",
+		desc: `RIT's official Gym Leader Tournament!`,
+		threads: [
+			`&bullet; <a href="https://docs.google.com/document/d/1r3SW874AdfP00_-lRAysTRa_4SQZJhn1Ejwc4cA_zsw/edit?usp=sharing">Gym Leader Tournament Rules</a>`,
+		],
+
+		mod: 'gen8',
+		forcedLevel: 50,
+		ruleset: ['Gym Leader Clause', 'Standard', 'Dynamax Clause'],
+		banlist: [
+			'Cinderace + Libero', 'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag', 'Corviknight', 'Eternatus',
+			'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings',
+			'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Urshifu-Rapid-Strike', 'Zacian', 'Zamazenta', 'Zekrom',
+			'Damp Rock', 'Moody', 'Baton Pass', 'Swagger'
+		],
 	},
 	// Sw/Sh Singles
 	///////////////////////////////////////////////////////////////////
@@ -467,6 +470,7 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 
 	{
 		section: "National Dex",
+		column: 2,
 	},
 	{
 		name: "[Gen 8] National Dex",
@@ -590,6 +594,7 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 
 	{
 		section: "Pet Mods",
+		column: 2,
 	},
 	{
 		name: "[Gen 8] Megamax",
