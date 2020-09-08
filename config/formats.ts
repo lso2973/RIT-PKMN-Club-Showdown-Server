@@ -470,7 +470,6 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 
 	{
 		section: "National Dex",
-		column: 2,
 	},
 	{
 		name: "[Gen 8] National Dex",
@@ -594,7 +593,6 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 
 	{
 		section: "Pet Mods",
-		column: 2,
 	},
 	{
 		name: "[Gen 8] Megamax",
@@ -679,12 +677,11 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 		ruleset: ['Obtainable', 'Standard NEXT', 'Team Preview'],
 		banlist: ['Uber'],
 	},
-
-	// OM of the Month
+	// OMs of the Months
 	///////////////////////////////////////////////////////////////////
-
+	
 	{
-		section: "OM of the Month",
+		section: "OMs of the Months",
 		column: 2,
 	},
 	{
@@ -738,6 +735,18 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 			'Arena Trap', 'Moody', 'Shadow Tag', 'Baton Pass',
 		],
 	},
+	{
+		name: "[Gen 8] 350 Cup",
+		desc: `Pok&eacute;mon with a BST of 350 or less get all their stats doubled.`,
+		threads: [
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3656554/">350 Cup</a>`,
+		],
+
+		mod: 'gen8',
+		ruleset: ['350 Cup Mod', 'Standard', 'Dynamax Clause'],
+		banlist: ['Abra', 'Gastly', 'Pawniard', 'Rufflet', 'Woobat', 'Eviolite', 'Light Ball', 'Arena Trap', 'Shadow Tag', 'Baton Pass'],
+	},
+
 
 	// Other Metagames
 	///////////////////////////////////////////////////////////////////
@@ -2175,7 +2184,6 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 		// no restrictions, for serious (other than team preview)
 		ruleset: ['Team Preview', 'Cancel Mod'],
 	},
-
 	// OR/AS Singles
 	///////////////////////////////////////////////////////////////////
 
