@@ -24,6 +24,34 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 		],
 	},
 	{
+		name: "[Gen 8] National Dex To Rain, or Terrain?",
+		desc: `To Rain, or Terrain? Tournament! Hosted Friday, September 25th, 2019 at 6pm.`,
+		threads: [
+			`&bullet; <a href="https://docs.google.com/document/d/1XZ1Ffzs7mdqDPj4MizvWlUYK8J3aTQDQAKP5duQz91I/edit?usp=sharing">Tournament Rules</a>`,,
+		],
+
+		mod: 'gen8',
+		forcedLevel: 50,
+		gameType: 'doubles',
+		ruleset: [
+			'Terrain Weather Clause', 'Obtainable', '+Unobtainable', '+Past', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause',
+			'Evasion Moves Clause', 'Endless Battle Clause',
+		],
+		banlist: [
+			'Arceus', 'Dialga', 'Eternatus', 'Giratina', 'Groudon', 'Ho-Oh', 'Jirachi', 'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Lugia', 'Lunala',
+			'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Necrozma-Ultra', 'Palkia', 'Rayquaza',
+			'Reshiram', 'Solgaleo', 'Urshifu', 'Volcarona', 'Xerneas', 'Yveltal', 'Zacian', 'Zamazenta', 'Zekrom', 'Power Construct',
+		],
+		onValidateSet(set){
+			const item = this.dex.getItem(set.item);
+			if(item && item.megaStone){
+				return [`Mega evolution is not allowed.`];
+			} else if(item && item.zMove){
+				return [`Z-moves are not allowed.`];
+			}
+		},
+	},
+	{
 		name: "[Gen 8] RRC Draft S13",
 		desc: `RIT Pokémon Club's 13th draft season!`,
 		threads: [
@@ -62,7 +90,7 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 			} else if(item && item.zMove){
 				return [`Z-moves are not allowed.`];
 			}
-		}
+		},
 	},
 	{
 		section: "RIT Archive",

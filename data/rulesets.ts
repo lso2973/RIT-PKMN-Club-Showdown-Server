@@ -900,6 +900,71 @@ export const Formats: {[k: string]: FormatsData} = {
  			}
 		},
 	},
+	terrainweatherclause: {
+		effectType: 'ValidatorRule',
+		name: 'Terrain Weather Clause',
+		desc: "Each team must have at least 1 Terrain/Weather setter and at least 3 abusers.",
+		onBegin() {
+			this.add('rule', 'Terrain Weather Clause: Each team must be centered around a Terrain or Weather');
+		},
+		onValidateTeam(team) {
+			let sun: boolean = false;
+			let rain: boolean = false;
+			let sand: boolean = false;
+			let hail: boolean = false;
+			let electric: boolean = false;
+			let grassy: boolean = false;
+			let misty: boolean = false;
+			let psychic: boolean = false;
+			
+			for (const [i, set] of team.entries()) {
+				const ability: string = this.toID(set.ability);
+				if (ability === "Drought") {
+					sun = true;
+				} else if (ability === "Drizzle") {
+					rain = true;
+				} else if (ability === "Sand Stream" || ability === "Sand Spit") {
+					sand = true;
+				} else if (ability === "Snow Warning") {
+					hail = true;
+				} else if (ability === "Electric Surge") {
+					electric = true;
+				} else if (ability === "Grassy Surge") {
+					grassy = true;
+				} else if (ability === "Misty Surge") {
+					misty = true;
+				} else if (ability === "Psychic Surge") {
+					psychic = true;
+				}
+				
+				if (set.moves) {
+					for (const moveId of set.moves) {
+						if (moveId === "Sunny Day") {
+							sun = true;
+						} else if (moveId === "Rain Dance") {
+							rain = true;
+						} else if (moveId === "Sandstorm") {
+							sand = true;
+						} else if (moveId === "Hail") {
+							hail = true;
+						} else if (moveId === "Electric Terrain") {
+							electric = true;
+						} else if (moveId === "Grassy Terrain") {
+							grassy = true;
+						} else if (moveId === "Misty Terrain") {
+							misty = true;
+						} else if (moveId === "Psychic Terrain") {
+							psychic = true;
+						}
+					}
+				}
+				
+				if (sun || rain || sand || hail || electric || grassy || misty || psychic) {
+					return [`Your team must be capable of setting Terrain or Weather.`];
+				}
+			}
+		},
+	},
 	megarayquazaclause: {
 		effectType: 'Rule',
 		name: 'Mega Rayquaza Clause',
