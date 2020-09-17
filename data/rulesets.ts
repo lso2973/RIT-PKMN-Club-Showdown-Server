@@ -919,50 +919,52 @@ export const Formats: {[k: string]: FormatsData} = {
 			
 			for (const [i, set] of team.entries()) {
 				const ability: string = this.toID(set.ability);
-				if (ability === "Drought") {
+				if (ability === "drought") {
 					sun = true;
-				} else if (ability === "Drizzle") {
+				} else if (ability === "drizzle") {
 					rain = true;
-				} else if (ability === "Sand Stream" || ability === "Sand Spit") {
+				} else if (ability === "sandstream" || ability === "sandspit") {
 					sand = true;
-				} else if (ability === "Snow Warning") {
+				} else if (ability === "snowwarning") {
 					hail = true;
-				} else if (ability === "Electric Surge") {
+				} else if (ability === "electricsurge") {
 					electric = true;
-				} else if (ability === "Grassy Surge") {
+				} else if (ability === "grassysurge") {
 					grassy = true;
-				} else if (ability === "Misty Surge") {
+				} else if (ability === "mistysurge") {
 					misty = true;
-				} else if (ability === "Psychic Surge") {
+				} else if (ability === "psychicsurge") {
 					psychic = true;
 				}
 				
 				if (set.moves) {
 					for (const moveId of set.moves) {
-						if (moveId === "Sunny Day") {
+						if (moveId === "sunnyday") {
 							sun = true;
-						} else if (moveId === "Rain Dance") {
+						} else if (moveId === "raindance") {
 							rain = true;
-						} else if (moveId === "Sandstorm") {
+						} else if (moveId === "sandstorm") {
 							sand = true;
-						} else if (moveId === "Hail") {
+						} else if (moveId === "hail") {
 							hail = true;
-						} else if (moveId === "Electric Terrain") {
+						} else if (moveId === "electricterrain") {
 							electric = true;
-						} else if (moveId === "Grassy Terrain") {
+						} else if (moveId === "grassyterrain") {
 							grassy = true;
-						} else if (moveId === "Misty Terrain") {
+						} else if (moveId === "mistyterrain") {
 							misty = true;
-						} else if (moveId === "Psychic Terrain") {
+						} else if (moveId === "psychicterrain") {
 							psychic = true;
 						}
 					}
 				}
-				
-				if (sun || rain || sand || hail || electric || grassy || misty || psychic) {
-					return [`Your team must be capable of setting Terrain or Weather.`];
-				}
 			}
+			
+			if (!(sun || rain || sand || hail || electric || grassy || misty || psychic)) {
+				return [`Your team must be capable of setting Terrain or Weather.`];
+			}
+			
+			
 		},
 	},
 	megarayquazaclause: {
