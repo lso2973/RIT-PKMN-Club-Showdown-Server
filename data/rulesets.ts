@@ -967,6 +967,40 @@ export const Formats: {[k: string]: FormatsData} = {
 			
 		},
 	},
+		camomonsmonotypeclause: {
+		effectType: 'ValidatorRule',
+		name: 'Camomons Monotype Clause',
+		desc: "All pokemon must share a type.",
+		onBegin() {
+			this.add('rule', 'Camo Mono Clause All pokemon must share a type.');
+		},
+		onValidateTeam(team) {
+			let typeKey: string[] = [];
+			let typeValue: number[] = [];
+			let entryCount: number = 0;
+			for (const [i, set] of team.entries()) {
+				entryCount++;
+				for (let move of set.moves.slice(0, 2)){
+					let type = this.dex.getMove(move).type;
+					if (typeKey.indexOf(type) != -1){
+						typeValue[typeKey.indexOf(type)] += 1;
+					} else {
+						typeKey.push(type);
+						typeValue.push(1);
+					}
+				}
+			}
+			let max: number = 0;
+			for (const count of typeValue){
+				if (count > max){
+					max = count;
+				}
+			}
+			if (max < entryCount){
+				return [`All  of your Pokémon must share a type.`];
+			}
+		},
+	},
 	megarayquazaclause: {
 		effectType: 'Rule',
 		name: 'Mega Rayquaza Clause',

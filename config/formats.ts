@@ -24,34 +24,6 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 		],
 	},
 	{
-		name: "[Gen 8] National Dex To Rain, or Terrain?",
-		desc: `To Rain, or Terrain? Tournament! Hosted Friday, September 25th, 2020 at 6pm.`,
-		threads: [
-			`&bullet; <a href="https://docs.google.com/document/d/1XZ1Ffzs7mdqDPj4MizvWlUYK8J3aTQDQAKP5duQz91I/edit?usp=sharing">Tournament Rules</a>`,,
-		],
-
-		mod: 'gen8',
-		forcedLevel: 50,
-		gameType: 'doubles',
-		ruleset: [
-			'Terrain Weather Clause', 'Obtainable', '+Unobtainable', '+Past', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause',
-			'Evasion Moves Clause', 'Cancel Mod', 'HP Percentage Mod', 'Endless Battle Clause',
-		],
-		banlist: [
-			'Arceus', 'Dialga', 'Eternatus', 'Giratina', 'Groudon', 'Ho-Oh', 'Jirachi', 'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Lugia', 'Lunala',
-			'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Necrozma-Ultra', 'Palkia', 'Rayquaza',
-			'Reshiram', 'Solgaleo', 'Urshifu', 'Volcarona', 'Xerneas', 'Yveltal', 'Zacian', 'Zamazenta', 'Zekrom', 'Power Construct',
-		],
-		onValidateSet(set){
-			const item = this.dex.getItem(set.item);
-			if(item && item.megaStone){
-				return [`Mega evolution is not allowed.`];
-			} else if(item && item.zMove){
-				return [`Z-moves are not allowed.`];
-			}
-		},
-	},
-	{
 		name: "[Gen 8] RRC Draft S13",
 		desc: `RIT Pokémon Club's 13th draft season!`,
 		threads: [
@@ -93,6 +65,34 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 		},
 	},
 	{
+		name: "[Gen 8] Camomons Monotype",
+		desc: `Pok&eacute;mon change type to match their first two moves.`,
+		threads: [
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3656413/">Camomons</a>`,
+		],
+
+		mod: 'gen8',
+		forcedLevel: 50,
+		ruleset: ['Camomons Monotype Clause','Obtainable', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Dynamax Clause', 'Sleep Clause Mod', 'Endless Battle Clause'],
+		banlist: [
+			'Darmanitan-Galar', 'Dracovish', 'Eternatus', 'Hydreigon', 'Kyurem', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Marshadow', 'Melmetal',
+			'Mewtwo', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Reshiram', 'Shedinja', 'Solgaleo', 'Zacian', 'Zamazenta', 'Zekrom', 'Zeraora',
+			'Arena Trap', 'Moody', 'Shadow Tag', 'Baton Pass',
+		],
+		onModifySpecies(species, target, source, effect) {
+			if (!target) return; // Chat command
+			if (effect && ['imposter', 'transform'].includes(effect.id)) return;
+			const types = [...new Set(target.baseMoveSlots.slice(0, 2).map(move => this.dex.getMove(move.id).type))];
+			return Object.assign({}, species, {types: types});
+		},
+		onSwitchIn(pokemon) {
+			this.add('-start', pokemon, 'typechange', pokemon.getTypes(true).join('/'), '[silent]');
+		},
+		onAfterMega(pokemon) {
+			this.add('-start', pokemon, 'typechange', pokemon.getTypes(true).join('/'), '[silent]');
+		},
+	},
+	{
 		section: "RIT Archive",
 	},
 	{
@@ -111,6 +111,34 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 			'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Urshifu-Rapid-Strike', 'Zacian', 'Zamazenta', 'Zekrom',
 			'Damp Rock', 'Moody', 'Baton Pass', 'Swagger'
 		],
+	},
+	{
+		name: "[Gen 8] National Dex To Rain, or Terrain?",
+		desc: `To Rain, or Terrain? Tournament! Hosted Friday, September 25th, 2020 at 6pm.`,
+		threads: [
+			`&bullet; <a href="https://docs.google.com/document/d/1XZ1Ffzs7mdqDPj4MizvWlUYK8J3aTQDQAKP5duQz91I/edit?usp=sharing">Tournament Rules</a>`,,
+		],
+
+		mod: 'gen8',
+		forcedLevel: 50,
+		gameType: 'doubles',
+		ruleset: [
+			'Terrain Weather Clause', 'Obtainable', '+Unobtainable', '+Past', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause',
+			'Evasion Moves Clause', 'Cancel Mod', 'HP Percentage Mod', 'Endless Battle Clause',
+		],
+		banlist: [
+			'Arceus', 'Dialga', 'Eternatus', 'Giratina', 'Groudon', 'Ho-Oh', 'Jirachi', 'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Lugia', 'Lunala',
+			'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Necrozma-Ultra', 'Palkia', 'Rayquaza',
+			'Reshiram', 'Solgaleo', 'Urshifu', 'Volcarona', 'Xerneas', 'Yveltal', 'Zacian', 'Zamazenta', 'Zekrom', 'Power Construct',
+		],
+		onValidateSet(set){
+			const item = this.dex.getItem(set.item);
+			if(item && item.megaStone){
+				return [`Mega evolution is not allowed.`];
+			} else if(item && item.zMove){
+				return [`Z-moves are not allowed.`];
+			}
+		},
 	},
 	// Sw/Sh Singles
 	///////////////////////////////////////////////////////////////////
