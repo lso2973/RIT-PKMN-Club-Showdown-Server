@@ -18,9 +18,9 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 		forcedLevel: 50,
 		ruleset: ['Standard', 'Dynamax Clause'],
 		banlist: [
-			'Eternatus', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 
+			'Eternatus', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo',
 			'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Zacian', 'Zamazenta', 'Zekrom',
-			'Moody', 'Swagger'
+			'Moody', 'Swagger',
 		],
 	},
 	{
@@ -33,10 +33,10 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 		mod: 'gen8',
 		forcedLevel: 50,
 		gameType: 'doubles',
-		ruleset: ['Obtainable', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod',],
+		ruleset: ['Obtainable', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod'],
 		banlist: [
 			'Eternatus', 'Jirachi', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings',
-			'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Zacian', 'Zamazenta', 'Zekrom', 'Moody', 'Double Team', 'Minimize'
+			'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Zacian', 'Zamazenta', 'Zekrom', 'Moody', 'Double Team', 'Minimize',
 		],
 	},
 	{
@@ -51,15 +51,15 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 		banlist: [
 			'Arceus', 'Darkrai', 'Dialga', 'Giratina', 'Groudon', 'Ho-Oh', 'Kyogre', 'Lugia', 'Mewtwo', 'Necrozma-Dawn-Wings',
 			'Necrozma-Dusk-Mane', 'Necrozma-Ultra', 'Palkia', 'Rayquaza', 'Reshiram', 'Shaymin-Sky', 'Xerneas', 'Yveltal', 'Zekrom',
-			'Battle Bond', 'Moody', 'Power Construct', 'Blaziken + Speed Boost', 'Darmanitan-Galar + Gorilla Tactics', 
-			'Landorus + Sheer Force', 'Cinderace + Libero', 'Baton Pass', 'Swagger', 
-			
+			'Battle Bond', 'Moody', 'Power Construct', 'Blaziken + Speed Boost', 'Darmanitan-Galar + Gorilla Tactics',
+			'Landorus + Sheer Force', 'Cinderace + Libero', 'Baton Pass', 'Swagger',
+
 		],
-		onValidateSet(set){
+		onValidateSet(set) {
 			const item = this.dex.getItem(set.item);
-			if(item && item.megaStone){
+			if (item?.megaStone) {
 				return [`Mega evolution is not allowed.`];
-			} else if(item && item.zMove){
+			} else if (item?.zMove) {
 				return [`Z-moves are not allowed.`];
 			}
 		},
@@ -73,7 +73,7 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 
 		mod: 'gen8',
 		forcedLevel: 50,
-		ruleset: ['Camomons Monotype Clause','Obtainable', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Dynamax Clause', 'Sleep Clause Mod', 'Endless Battle Clause'],
+		ruleset: ['Camomons Monotype Clause', 'Obtainable', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Dynamax Clause', 'Sleep Clause Mod', 'Endless Battle Clause'],
 		banlist: [
 			'Darmanitan-Galar', 'Dracovish', 'Eternatus', 'Hydreigon', 'Kyurem', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Marshadow', 'Melmetal',
 			'Mewtwo', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Reshiram', 'Shedinja', 'Solgaleo', 'Zacian', 'Zamazenta', 'Zekrom', 'Zeraora',
@@ -109,7 +109,7 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 			'Cinderace + Libero', 'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag', 'Corviknight', 'Eternatus',
 			'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings',
 			'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Urshifu-Rapid-Strike', 'Zacian', 'Zamazenta', 'Zekrom',
-			'Damp Rock', 'Moody', 'Baton Pass', 'Swagger'
+			'Damp Rock', 'Moody', 'Baton Pass', 'Swagger',
 		],
 	},
 	{
@@ -131,11 +131,11 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 			'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Necrozma-Ultra', 'Palkia', 'Rayquaza',
 			'Reshiram', 'Solgaleo', 'Urshifu', 'Volcarona', 'Xerneas', 'Yveltal', 'Zacian', 'Zamazenta', 'Zekrom', 'Power Construct',
 		],
-		onValidateSet(set){
+		onValidateSet(set) {
 			const item = this.dex.getItem(set.item);
-			if(item && item.megaStone){
+			if (item?.megaStone) {
 				return [`Mega evolution is not allowed.`];
-			} else if(item && item.zMove){
+			} else if (item?.zMove) {
 				return [`Z-moves are not allowed.`];
 			}
 		},
@@ -735,7 +735,7 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 	},
 	// OMs of the Months
 	///////////////////////////////////////////////////////////////////
-	
+
 	{
 		section: "OMs of the Months",
 		column: 2,

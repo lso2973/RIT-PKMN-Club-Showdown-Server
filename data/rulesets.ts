@@ -865,15 +865,15 @@ export const Formats: {[k: string]: FormatsData} = {
 			this.add('rule', 'Gym Leader Clause: All Pokemon except one must share a type.');
 		},
 		onValidateTeam(team) {
-			let typeKey: string[] = [];
-			let typeValue: number[] = [];
-			let entryCount: number = 0;
+			const typeKey: string[] = [];
+			const typeValue: number[] = [];
+			let entryCount = 0;
 			for (const [i, set] of team.entries()) {
 				entryCount++;
-				let species = this.dex.getSpecies(set.species);
+				const species = this.dex.getSpecies(set.species);
 				if (!species.types) return [`Invalid pokemon ${set.name || set.species}`];
-				for (const type of species.types){
-					if (typeKey.indexOf(type) != -1){
+				for (const type of species.types) {
+					if (typeKey.includes(type)) {
 						typeValue[typeKey.indexOf(type)] += 1;
 					} else {
 						typeKey.push(type);
@@ -881,20 +881,20 @@ export const Formats: {[k: string]: FormatsData} = {
 					}
 				}
 			}
-			let max: number = 0;
-			for (const count of typeValue){
-				if (count > max){
+			let max = 0;
+			for (const count of typeValue) {
+				if (count > max) {
 					max = count;
 				}
 			}
-			if (max < entryCount - 1){
+			if (max < entryCount - 1) {
 				return [`All but one of your Pokémon must share a type.`];
 			}
 			for (const [i, set] of team.entries()) {
-				if(set.species === "Dracovish" && typeValue[typeKey.indexOf("Water")] < entryCount - 1 && typeValue[typeKey.indexOf("Dragon")] < entryCount - 1){
+				if (set.species === "Dracovish" && typeValue[typeKey.indexOf("Water")] < entryCount - 1 && typeValue[typeKey.indexOf("Dragon")] < entryCount - 1) {
 					return [`Dracovish is not a valid wild card.`];
 				}
-				if(set.species === "Darmanitan-Galar" && typeValue[typeKey.indexOf("Ice")] < entryCount - 1){
+				if (set.species === "Darmanitan-Galar" && typeValue[typeKey.indexOf("Ice")] < entryCount - 1) {
 					return [`Darmanitan-Galar is not a valid wild card.`];
 				}
  			}
@@ -908,15 +908,15 @@ export const Formats: {[k: string]: FormatsData} = {
 			this.add('rule', 'Terrain Weather Clause: Each team must be centered around a Terrain or Weather');
 		},
 		onValidateTeam(team) {
-			let sun: boolean = false;
-			let rain: boolean = false;
-			let sand: boolean = false;
-			let hail: boolean = false;
-			let electric: boolean = false;
-			let grassy: boolean = false;
-			let misty: boolean = false;
-			let psychic: boolean = false;
-			
+			let sun = false;
+			let rain = false;
+			let sand = false;
+			let hail = false;
+			let electric = false;
+			let grassy = false;
+			let misty = false;
+			let psychic = false;
+
 			for (const [i, set] of team.entries()) {
 				const ability: string = this.toID(set.ability);
 				if (ability === "drought") {
@@ -936,7 +936,7 @@ export const Formats: {[k: string]: FormatsData} = {
 				} else if (ability === "psychicsurge") {
 					psychic = true;
 				}
-				
+
 				if (set.moves) {
 					for (const moveId of set.moves) {
 						if (moveId === "sunnyday") {
@@ -959,15 +959,13 @@ export const Formats: {[k: string]: FormatsData} = {
 					}
 				}
 			}
-			
+
 			if (!(sun || rain || sand || hail || electric || grassy || misty || psychic)) {
 				return [`Your team must be capable of setting Terrain or Weather.`];
 			}
-			
-			
 		},
 	},
-		camomonsmonotypeclause: {
+	camomonsmonotypeclause: {
 		effectType: 'ValidatorRule',
 		name: 'Camomons Monotype Clause',
 		desc: "All pokemon must share a type.",
@@ -975,14 +973,14 @@ export const Formats: {[k: string]: FormatsData} = {
 			this.add('rule', 'Camo Mono Clause All pokemon must share a type.');
 		},
 		onValidateTeam(team) {
-			let typeKey: string[] = [];
-			let typeValue: number[] = [];
-			let entryCount: number = 0;
+			const typeKey: string[] = [];
+			const typeValue: number[] = [];
+			let entryCount = 0;
 			for (const [i, set] of team.entries()) {
 				entryCount++;
-				for (let move of set.moves.slice(0, 2)){
-					let type = this.dex.getMove(move).type;
-					if (typeKey.indexOf(type) != -1){
+				for (const move of set.moves.slice(0, 2)) {
+					const type = this.dex.getMove(move).type;
+					if (typeKey.includes(type)) {
 						typeValue[typeKey.indexOf(type)] += 1;
 					} else {
 						typeKey.push(type);
@@ -990,13 +988,13 @@ export const Formats: {[k: string]: FormatsData} = {
 					}
 				}
 			}
-			let max: number = 0;
-			for (const count of typeValue){
-				if (count > max){
+			let max = 0;
+			for (const count of typeValue) {
+				if (count > max) {
 					max = count;
 				}
 			}
-			if (max < entryCount){
+			if (max < entryCount) {
 				return [`All  of your Pokémon must share a type.`];
 			}
 		},
