@@ -116,7 +116,7 @@ export const Formats: (FormatsData | {section: string, column?: number})[] = [
 		name: "[Gen 8] National Dex To Rain, or Terrain?",
 		desc: `To Rain, or Terrain? Tournament! Hosted Friday, September 25th, 2020 at 6pm.`,
 		threads: [
-			`&bullet; <a href="https://docs.google.com/document/d/1XZ1Ffzs7mdqDPj4MizvWlUYK8J3aTQDQAKP5duQz91I/edit?usp=sharing">Tournament Rules</a>`,,
+			`&bullet; <a href="https://docs.google.com/document/d/1XZ1Ffzs7mdqDPj4MizvWlUYK8J3aTQDQAKP5duQz91I/edit?usp=sharing">Tournament Rules</a>`,
 		],
 
 		mod: 'gen8',

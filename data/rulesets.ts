@@ -897,7 +897,7 @@ export const Formats: {[k: string]: FormatsData} = {
 				if (set.species === "Darmanitan-Galar" && typeValue[typeKey.indexOf("Ice")] < entryCount - 1) {
 					return [`Darmanitan-Galar is not a valid wild card.`];
 				}
- 			}
+			}
 		},
 	},
 	terrainweatherclause: {
