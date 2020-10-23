@@ -33,9 +33,10 @@ export const Formats: FormatList = [
 		forcedLevel: 50,
 		ruleset: ['Standard', 'Dynamax Clause'],
 		banlist: [
-			'Eternatus', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo',
-			'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Zacian', 'Zamazenta', 'Zekrom',
-			'Moody', 'Swagger',
+			'Uber', 'Kyurem-Black', 'Melmetal', 'Moody', 'Swagger',
+		],
+		unbanlist: [
+			'Darmanitan-Galar',
 		],
 	},
 	{
