@@ -100,7 +100,6 @@ export const Formats: FormatList = [
 			const types = [...new Set(target.baseMoveSlots.slice(0, 2).map(move => this.dex.getMove(move.id).type))];
 			return {...species, types: types};
 		},
-		},
 		onSwitchIn(pokemon) {
 			this.add('-start', pokemon, 'typechange', pokemon.getTypes(true).join('/'), '[silent]');
 		},
