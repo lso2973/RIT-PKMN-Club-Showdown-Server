@@ -227,12 +227,18 @@ export class Pokemon {
 	canDynamax: boolean;
 	readonly canGigantamax: string | null;
 
+	/** A Pokemon's currently 'staleness' with respect to the Endless Battle Clause. */
 	staleness?: 'internal' | 'external';
+	/** Staleness that will be set once a future action occurs (eg. eating a berry). */
 	pendingStaleness?: 'internal' | 'external';
+	/** Temporary staleness that lasts only until the Pokemon switches. */
+	volatileStaleness?: 'external';
 
 	// Gen 1 only
 	modifiedStats?: StatsExceptHPTable;
 	modifyStat?: (this: Pokemon, statName: StatNameExceptHP, modifier: number) => void;
+	// Stadium only
+	recalculateStats?: (this: Pokemon) => void;
 
 	/**
 	 * An object for storing untyped data, for mods to use.
@@ -508,7 +514,7 @@ export class Pokemon {
 
 		// stat boosts
 		if (!unboosted) {
-			const boosts = this.battle.runEvent('ModifyBoost', this, null, null, Object.assign({}, this.boosts));
+			const boosts = this.battle.runEvent('ModifyBoost', this, null, null, {...this.boosts});
 			let boost = boosts[statName];
 			const boostTable = [1, 1.5, 2, 2.5, 3, 3.5, 4];
 			if (boost > 6) boost = 6;
@@ -545,7 +551,7 @@ export class Pokemon {
 		for (const stat in this.stats) {
 			statSum += this.calculateStat(stat, this.boosts[stat as BoostName]);
 			awakeningSum += this.calculateStat(
-				stat, this.boosts[stat as BoostName]) + this.battle.getAwakeningValues(this.set, stat);
+				stat, this.boosts[stat as BoostName]) + this.set.evs[stat];
 		}
 		const combatPower = Math.floor(Math.floor(statSum * this.level * 6 / 100) +
 			(Math.floor(awakeningSum) * Math.floor((this.level * 4) / 100 + 2)));
@@ -814,12 +820,9 @@ export class Pokemon {
 			if (moveSlot.id === 'hiddenpower') {
 				moveName = 'Hidden Power ' + this.hpType;
 				if (this.battle.gen < 6) moveName += ' ' + this.hpPower;
-			} else if (moveSlot.id === 'return') {
-				// @ts-ignore - Return's basePowerCallback only takes one parameter
-				moveName = 'Return ' + this.battle.dex.getMove('return').basePowerCallback(this);
-			} else if (moveSlot.id === 'frustration') {
-				// @ts-ignore - Frustration's basePowerCallback only takes one parameter
-				moveName = 'Frustration ' + this.battle.dex.getMove('frustration').basePowerCallback(this);
+			} else if (moveSlot.id === 'return' || moveSlot.id === 'frustration') {
+				const basePowerCallback = this.battle.dex.getMove(moveSlot.id).basePowerCallback as (pokemon: Pokemon) => number;
+				moveName += ' ' + basePowerCallback(this);
 			}
 			let target = moveSlot.target;
 			if (moveSlot.id === 'curse') {
@@ -965,10 +968,8 @@ export class Pokemon {
 					return move + toID(this.hpType) + (this.battle.gen < 6 ? '' : this.hpPower);
 				}
 				if (move === 'frustration' || move === 'return') {
-					const m = this.battle.dex.getMove(move)!;
-					// @ts-ignore - Frustration and Return only require the source Pokemon
-					const basePower = m.basePowerCallback(this);
-					return `${move}${basePower}`;
+					const basePowerCallback = this.battle.dex.getMove(move).basePowerCallback as (pokemon: Pokemon) => number;
+					return move + basePowerCallback(this);
 				}
 				return move;
 			}),
@@ -1036,7 +1037,7 @@ export class Pokemon {
 		for (const i in pokemon.volatiles) {
 			if (this.battle.dex.getEffectByID(i as ID).noCopy) continue;
 			// shallow clones
-			this.volatiles[i] = Object.assign({}, pokemon.volatiles[i]);
+			this.volatiles[i] = {...pokemon.volatiles[i]};
 			if (this.volatiles[i].linkedPokemon) {
 				delete pokemon.volatiles[i].linkedPokemon;
 				delete pokemon.volatiles[i].linkedStatus;
@@ -1067,7 +1068,7 @@ export class Pokemon {
 		this.weighthg = pokemon.weighthg;
 
 		const types = pokemon.getTypes(true);
-		this.setType(pokemon.volatiles.roost ? pokemon.volatiles.roost.typeWas : types, true);
+		this.setType(pokemon.volatiles['roost'] ? pokemon.volatiles['roost'].typeWas : types, true);
 		this.addedType = pokemon.addedType;
 		this.knownType = this.side === pokemon.side && pokemon.knownType;
 		this.apparentType = pokemon.apparentType;
@@ -1271,8 +1272,8 @@ export class Pokemon {
 				this.removeLinkedVolatiles(this.volatiles[i].linkedStatus, this.volatiles[i].linkedPokemon);
 			}
 		}
-		if (this.species.name === 'Eternatus-Eternamax' && this.volatiles.dynamax) {
-			this.volatiles = {dynamax: this.volatiles.dynamax};
+		if (this.species.name === 'Eternatus-Eternamax' && this.volatiles['dynamax']) {
+			this.volatiles = {dynamax: this.volatiles['dynamax']};
 		} else {
 			this.volatiles = {};
 		}
@@ -1289,6 +1290,8 @@ export class Pokemon {
 		this.hurtThisTurn = false;
 		this.newlySwitched = true;
 		this.beingCalledBack = false;
+
+		this.volatileStaleness = undefined;
 
 		this.setSpecies(this.baseSpecies);
 	}
@@ -1944,9 +1947,7 @@ export class Pokemon {
 	destroy() {
 		// deallocate ourself
 		// get rid of some possibly-circular references
-		// @ts-ignore - readonly
-		this.battle = null!;
-		// @ts-ignore - readonly
-		this.side = null!;
+		(this as any).battle = null!;
+		(this as any).side = null!;
 	}
 }

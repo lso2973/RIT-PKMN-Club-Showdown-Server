@@ -203,7 +203,7 @@ export class RoomBattleTimer {
 			if (timerSettings[k] === undefined) delete timerSettings[k];
 		}
 
-		this.settings = Object.assign({
+		this.settings = {
 			dcTimer: !isChallenge,
 			dcTimerBank: isChallenge,
 			starting: isChallenge ? STARTING_TIME_CHALLENGE : STARTING_TIME,
@@ -213,7 +213,8 @@ export class RoomBattleTimer {
 			maxFirstTurn: isChallenge ? MAX_TURN_TIME_CHALLENGE : MAX_TURN_TIME,
 			timeoutAutoChoose: false,
 			accelerate: !timerSettings,
-		}, timerSettings);
+			...timerSettings,
+		};
 		if (this.settings.maxPerTurn <= 0) this.settings.maxPerTurn = Infinity;
 
 		for (const player of this.battle.players) {
@@ -477,12 +478,14 @@ export class RoomBattle extends RoomGames.RoomGame {
 	ended: boolean;
 	active: boolean;
 	replaySaved: boolean;
+	forcePublic: string | null = null;
 	playerTable: {[userid: string]: RoomBattlePlayer};
 	players: RoomBattlePlayer[];
 	p1: RoomBattlePlayer;
 	p2: RoomBattlePlayer;
 	p3: RoomBattlePlayer;
 	p4: RoomBattlePlayer;
+	inviteOnlySetter: ID | null;
 	logData: AnyObject | null;
 	endType: string;
 	/**
@@ -525,6 +528,7 @@ export class RoomBattle extends RoomGames.RoomGame {
 		this.p2 = null!;
 		this.p3 = null!;
 		this.p4 = null!;
+		this.inviteOnlySetter = null!;
 
 		// data to be logged
 		this.allowExtraction = {};
@@ -702,11 +706,9 @@ export class RoomBattle extends RoomGames.RoomGame {
 	}
 
 	async listen() {
-		let next;
 		let disconnected = false;
 		try {
-			// tslint:disable-next-line: no-conditional-assignment
-			while ((next = await this.stream.read())) {
+			for await (const next of this.stream) {
 				this.receive(next.split('\n'));
 			}
 		} catch (err) {
@@ -1025,17 +1027,14 @@ export class RoomBattle extends RoomGames.RoomGame {
 			void this.stream.write(`>player ${slot} ${JSON.stringify(options)}`);
 		}
 
-		if (user) this.room.auth.set(player.id, Users.PLAYER_SYMBOL);
+		if (user) {
+			this.room.auth.set(player.id, Users.PLAYER_SYMBOL);
+			if (this.rated && !this.forcePublic) {
+				this.forcePublic = user.battlesForcedPublic();
+			}
+		}
 		if (user?.inRooms.has(this.roomid)) this.onConnect(user);
 		return player;
-	}
-
-	forcedPublic() {
-		if (!this.rated) return;
-		for (const player of this.players) {
-			const user = player.getUser();
-			if (user?.forcedPublic) return user.forcedPublic;
-		}
 	}
 
 	makePlayer(user: User) {
@@ -1262,21 +1261,15 @@ export class RoomBattleStream extends BattleStream {
  * Process manager
  *********************************************************/
 
-export const PM = new StreamProcessManager(module, () => {
-	return new RoomBattleStream();
-});
+export const PM = new StreamProcessManager(module, () => new RoomBattleStream());
 
 if (!PM.isParentProcess) {
 	// This is a child process!
-	// tslint:disable-next-line: no-var-requires
 	global.Config = require('./config-loader').Config;
-	// tslint:disable-next-line: no-var-requires
 	global.Chat = require('./chat').Chat;
-	// tslint:disable-next-line: no-var-requires
 	global.Dex = require('../sim/dex').Dex;
-	// @ts-ignore ???
 	global.Monitor = {
-		crashlog(error: Error, source = 'A simulator process', details: {} | null = null) {
+		crashlog(error: Error, source = 'A simulator process', details: AnyObject | null = null) {
 			const repr = JSON.stringify([error.name, error.message, source, details]);
 			// @ts-ignore
 			process.send(`THROW\n@!!@${repr}\n${error.stack}`);
@@ -1301,9 +1294,7 @@ if (!PM.isParentProcess) {
 			Monitor.crashlog(err, 'A simulator process');
 		});
 		process.on('unhandledRejection', err => {
-			if (err instanceof Error) {
-				Monitor.crashlog(err, 'A simulator process Promise');
-			}
+			Monitor.crashlog(err as any || {}, 'A simulator process Promise');
 		});
 	}
 
