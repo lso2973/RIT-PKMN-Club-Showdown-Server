@@ -97,7 +97,7 @@ export const Formats: FormatList = [
 			'Relicanth + Meteor Beam', 'Relicanth + Scale Shot',
 
 			'Diancie + Charm', 'Diancie + Fake Tears', 'Diancie + Sand Tomb', 'Diancie + Guard Swap', 'Diancie + Draining Kiss',
-			'Diancie + Mystical Fire', 'Diancie + Metronome', 'Diancie + Amnesia', 'Diancie + Endure', 'Diancie + Baton Pass',
+			'Diancie + Mystical Fire', 'Diancie + move:Metronome', 'Diancie + Amnesia', 'Diancie + Endure', 'Diancie + Baton Pass',
 			'Diancie + Encore', 'Diancie + Stored Power', 'Diancie + Ally Switch', 'Diancie + Play Rough', 'Diancie + Terrain Pulse',
 			'Diancie + Meteor Beam', 'Diancie + Misty Explosion',
 
