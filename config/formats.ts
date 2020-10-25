@@ -70,6 +70,62 @@ export const Formats: FormatList = [
 			'Battle Bond', 'Moody', 'Power Construct', 'Blaziken + Speed Boost', 'Darmanitan-Galar + Gorilla Tactics',
 			'Landorus + Sheer Force', 'Cinderace + Libero', 'Baton Pass', 'Swagger',
 
+			//IoA Moves
+			'Suicune + Crunch', 'Suicune + Helping Hand', 'Suicune + Weather Ball', 'Suicune + Agility', 'Suicune + Liquidation',
+			
+			'Victini + Mega Punch', 'Victini + Mega Kick', 'Victini + Fire Spin', 'Victini + Swift', 'Victini + Power Swap',
+			'Victini + Guard Swap', 'Victini + Speed Swap', 'Victini + Mystical Fire', 'Victini + Baton Pass', 'Victini + Encore',
+			'Victini + Future Sight', 'Victini + Blaze Kick', 'Victini + Scorching Sands', 'Victini + Expanding Force',
+			
+			'Nidoking + Sand Tomb', 'Nidoking + Mud Shot', 'Nidoking + Rock Blast', 'Nidoking + Hex', 'Nidoking + High Horsepower',
+			'Nidoking + Body Press', 'Nidoking + Scorching Sands',
+			
+			'Sceptile + Leafage', 'Sceptile + Assurance', 'Sceptile + Solar Blade', 'Sceptile + Cross Poison',
+			'Sceptile + Breaking Swipe', 'Sceptile + Dragon Dance', 'Sceptile + Grassy Glide', 'Sceptile + Scale Shot',
+			
+			'Zygarde + Swift', 'Zygarde + Payback', 'Zygarde + Retaliate', 'Zygarde + Body Slam', 'Zygarde + Reversal',
+			'Zygarde + Endure', 'Zygarde + Breaking Swipe', 'Zygarde + High Horsepower', 'Zygarde + Scorching Sands',
+			'Zygarde + Skitter Smack', 'Zygarde + Scale Shot',
+			
+			'Buzzwole + Revenge', 'Buzzwole + Body Slam', 'Buzzwole + Close Combat', 'Buzzwole + Darkest Lariat',
+			'Buzzwole + High Horsepower', 'Buzzwole + Coaching', 'Buzzwole + Dual Wingbeat',
+			
+			'Moltres + Gust', 'Moltres + Weather Ball', 'Moltres + Mystical Fire', 'Moltres + Flare Blitz', 'Moltres + Brave Bird',
+			'Moltres + Burning Jealousy', 'Moltres + Scorching Sands', 'Moltres + Dual Wingbeat',
+			
+			'Relicanth + Rock Blast', 'Relicanth + Iron Defense', 'Relicanth + Liquidation', 'Relicanth + Body Press',
+			'Relicanth + Meteor Beam', 'Relicanth + Scale Shot',
+			
+			'Diancie + Charm', 'Diancie + Fake Tears', 'Diancie + Sand Tomb', 'Diancie + Guard Swap', 'Diancie + Draining Kiss',
+			'Diancie + Mystical Fire', 'Diancie + Metronome', 'Diancie + Amnesia', 'Diancie + Endure', 'Diancie + Baton Pass',
+			'Diancie + Encore', 'Diancie + Stored Power', 'Diancie + Ally Switch', 'Diancie + Play Rough', 'Diancie + Terrain Pulse',
+			'Diancie + Meteor Beam', 'Diancie + Misty Explosion',
+			
+			'Heatran + Metal Claw', 'Heatran + Self-Destruct', 'Heatran + Body Slam', 'Heatran + Heavy Slam', 'Heatran + Heat Crash',
+			'Heatran + Body Press', 'Heatran + Burning Jealousy', 'Heatran + Scorching Sands', 'Heatran + Steel Roller',
+			
+			'Tapu Koko + Fairy Wind', 'Tapu Koko + Rest', 'Tapu Koko + Swift', 'Tapu Koko + Assurance', 'Tapu Koko + Eerie Impulse',
+			'Tapu Koko + Endure', 'Tapu Koko + Stored Power',
+			
+			'Metagross + Tackle', 'Metagross + Psycho Cut', 'Metagross + Brutal Swing', 'Metagross + Cosmic Power',
+			'Metagross + Body Press', 'Metagross + Expanding Force', 'Metagross + Meteor Beam', 'Metagross + Steel Roller',
+			
+			'Volcanion + Fire Spin', 'Volcanion + Water Gun', 'Volcanion + Leer', 'Volcanion + Scary Face', 'Volcanion + Self-Destruct',
+			'Volcanion + Scary Face', 'Volcanion + Rain Dance', 'Volcanion + Mud Shot', 'Volcanion + Thunder Fang',
+			'Volcanion + Misty Terrain', 'Volcanion + Focus Energy', 'Volcanion + Endure', 'Volcanion + Heavy Slam',
+			'Volcanion + Heat Crash', 'Volcanion + Body Press', 'Volcanion + Scorching Sands',
+			
+			'Kartana + Solar Blade', 'Kartana + Screech', 'Kartana + Endure',
+			
+			'Aerodactyl + Rock Blast', 'Aerodactyl + Dragon Dance', 'Aerodactyl + Hurricane', 'Aerodactyl + Psychic Fangs',
+			'Aerodactyl + Dual Wingbeat', 'Aerodactyl + Meteor Beam',
+			
+			'Altaria + Fire Spin', 'Altaria + Breaking Swipe', 'Altaria + Hurricane', 'Altaria + Dual Wingbeat',
+			
+			'Blacephalon + Fire Spin', 'Blacephalon + Confuse Ray', 'Blacephalon + Incinerate', 'Blacephalon + Hypnosis',
+			'Blacephalon + Mystical Fire', 'Blacephalon + Fire Punch', 'Blacephalon + Solar Beam', 'Blacephalon + Self-Destruct',
+			'Blacephalon + Rock Blast', 'Blacephalon + Endure', 'Blacephalon + Encore', 'Blacephalon + Zen Headbutt',
+			'Blacephalon + Expanding Force',
 		],
 		onValidateSet(set) {
 			const item = this.dex.getItem(set.item);
