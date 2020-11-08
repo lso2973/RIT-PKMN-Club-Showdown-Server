@@ -40,20 +40,33 @@ export const Formats: FormatList = [
 		],
 	},
 	{
-		name: "[Gen 8] RRC Draft S13",
-		desc: `RIT Pokémon Club's 13th draft season!`,
+		name: "[Gen 8] RRC Draft S14",
+		desc: `RIT Pokémon Club's 14th draft season!`,
 		threads: [
-			`&bullet; <a href="https://docs.google.com/spreadsheets/d/121272v4B8F6APVwI4rtS280VD5xOiXTz_nR0OzI58AU/edit?usp=sharing">Draft Document</a>`,
+			`&bullet; <a href="https://docs.google.com/spreadsheets/d/121272v4B8F6APVwI4rtS280VD5xOiXTz_nR0OzI58AU/edit?usp=sharing">Titan Draft Document</a>`,
+			`&bullet; <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Talon Draft Document</a>`,
 		],
 
 		mod: 'gen8',
 		forcedLevel: 50,
-		gameType: 'doubles',
-		ruleset: ['Obtainable', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod'],
+		gameType: 'singles',
+		ruleset: ['Obtainable', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod',
+					'Sleep Clause Mod', 'Evasion Moves Clause'],
 		banlist: [
-			'Eternatus', 'Jirachi', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings',
-			'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Zacian', 'Zamazenta', 'Zekrom', 'Moody', 'Double Team', 'Minimize',
+			'Dialga', 'Dracovish', 'Eternatus', 'Genesect', 'Giratina', 'Groudon', 'Ho-Oh', 'Calyrex-Ice', 'Kyogre', 'Kyurem-Black',
+			'Kyurem-White', 'Lugia', 'Lunala', 'Magearna', 'Marshadow', 'Mewtwo', 'Naganadel', 'Necrozma-Dusk-Mane', 'Necrozma-Dawn-Wings',
+			'Palkia', 'Pheromosa', 'Rayquaza', 'Reshiram', 'Calyrex-Shadow', 'Solgaleo', 'Spectrier', 'Tapu Lele', 'Tornadus-Therian',
+			'Urshifu', 'Xerneas', 'Yveltal', 'Zacian', 'Zamazenta', 'Zekrom', 'Blaziken + Speed Boost', 'Landorus + Sheer Force',
+			'Cinderace + Libero', 'Moody',
 		],
+		onValidateSet(set) {
+			const item = this.dex.getItem(set.item);
+			if (item?.megaStone) {
+				return [`Mega evolution is not allowed.`];
+			} else if (item?.zMove) {
+				return [`Z-moves are not allowed.`];
+			}
+		},
 	},
 	{
 		name: "[Gen 8] National Dex eSports Draft",
@@ -137,33 +150,6 @@ export const Formats: FormatList = [
 		},
 	},
 	{
-		name: "[Gen 8] Camomons Monotype",
-		desc: `Pok&eacute;mon change type to match their first two moves.`,
-		threads: [
-			`&bullet; <a href="https://www.smogon.com/forums/threads/3656413/">Camomons</a>`,
-		],
-
-		mod: 'gen8',
-		forcedLevel: 50,
-		ruleset: ['Camomons Monotype Clause', 'Obtainable', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Dynamax Clause', 'Sleep Clause Mod', 'Endless Battle Clause'],
-		banlist: [
-			'Darmanitan-Galar', 'Dracovish', 'Eternatus', 'Hydreigon', 'Jirachi', 'Kyurem', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal',
-			'Mew', 'Mewtwo', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Reshiram', 'Shedinja', 'Solgaleo', 'Urshifu', 'Zacian', 'Zamazenta', 'Zekrom', 'Zeraora',
-		],
-		onModifySpecies(species, target, source, effect) {
-			if (!target) return; // Chat command
-			if (effect && ['imposter', 'transform'].includes(effect.id)) return;
-			const types = [...new Set(target.baseMoveSlots.slice(0, 2).map(move => this.dex.getMove(move.id).type))];
-			return {...species, types: types};
-		},
-		onSwitchIn(pokemon) {
-			this.add('-start', pokemon, 'typechange', pokemon.getTypes(true).join('/'), '[silent]');
-		},
-		onAfterMega(pokemon) {
-			this.add('-start', pokemon, 'typechange', pokemon.getTypes(true).join('/'), '[silent]');
-		},
-	},
-	{
 		section: "RIT Archive",
 	},
 	{
@@ -209,6 +195,49 @@ export const Formats: FormatList = [
 			} else if (item?.zMove) {
 				return [`Z-moves are not allowed.`];
 			}
+		},
+	},
+	{
+		name: "[Gen 8] RRC Draft S13",
+		desc: `RIT Pokémon Club's 13th draft season!`,
+		threads: [
+			`&bullet; <a href="https://docs.google.com/spreadsheets/d/121272v4B8F6APVwI4rtS280VD5xOiXTz_nR0OzI58AU/edit?usp=sharing">Draft Document</a>`,
+		],
+
+		mod: 'gen8',
+		forcedLevel: 50,
+		gameType: 'doubles',
+		ruleset: ['Obtainable', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod'],
+		banlist: [
+			'Eternatus', 'Jirachi', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings',
+			'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Zacian', 'Zamazenta', 'Zekrom', 'Moody', 'Double Team', 'Minimize',
+		],
+	},
+	{
+		name: "[Gen 8] Camomons Monotype",
+		desc: `Pok&eacute;mon change type to match their first two moves.`,
+		threads: [
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3656413/">Camomons</a>`,
+		],
+
+		mod: 'gen8',
+		forcedLevel: 50,
+		ruleset: ['Camomons Monotype Clause', 'Obtainable', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Dynamax Clause', 'Sleep Clause Mod', 'Endless Battle Clause'],
+		banlist: [
+			'Darmanitan-Galar', 'Dracovish', 'Eternatus', 'Hydreigon', 'Jirachi', 'Kyurem', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal',
+			'Mew', 'Mewtwo', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Reshiram', 'Shedinja', 'Solgaleo', 'Urshifu', 'Zacian', 'Zamazenta', 'Zekrom', 'Zeraora',
+		],
+		onModifySpecies(species, target, source, effect) {
+			if (!target) return; // Chat command
+			if (effect && ['imposter', 'transform'].includes(effect.id)) return;
+			const types = [...new Set(target.baseMoveSlots.slice(0, 2).map(move => this.dex.getMove(move.id).type))];
+			return {...species, types: types};
+		},
+		onSwitchIn(pokemon) {
+			this.add('-start', pokemon, 'typechange', pokemon.getTypes(true).join('/'), '[silent]');
+		},
+		onAfterMega(pokemon) {
+			this.add('-start', pokemon, 'typechange', pokemon.getTypes(true).join('/'), '[silent]');
 		},
 	},
 	// Sw/Sh Singles
@@ -640,11 +669,44 @@ export const Formats: FormatList = [
 		ruleset: ['Team Preview', 'Cancel Mod'],
 	},
 
+	// Pet Mods
+	///////////////////////////////////////////////////////////////////
+
+	{
+		section: "Pet Mods",
+	},
+	{
+		name: "[Gen 8] ViAbilities",
+		desc: `All abilities are modified to become viable in [Gen 8] OU.`,
+		threads: [
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3664169/">ViAbilities</a>`,
+		],
+
+		mod: 'viabilities',
+		ruleset: ['[Gen 8] OU'],
+		// Dumb hack because Jolteon has 5 abilities for some reason
+		validateSet(set, teamHas) {
+			const species = this.dex.getSpecies(set.species);
+			const ability = this.dex.getAbility(set.ability);
+			if (!(species.name === 'Jolteon' && ability.name === 'Run Away')) {
+				return this.validateSet(set, teamHas);
+			} else {
+				const abil = set.ability;
+				set.ability = 'Battery';
+				const fakeValidation = this.validateSet(set, teamHas);
+				if (fakeValidation?.length) return fakeValidation;
+				set.ability = abil;
+				return null;
+			}
+		},
+	},
+
 	// National Dex
 	///////////////////////////////////////////////////////////////////
 
 	{
 		section: "National Dex",
+		column: 2,
 	},
 	{
 		name: "[Gen 8] National Dex",
@@ -781,38 +843,6 @@ export const Formats: FormatList = [
 			}
 			if (arceus > 1) {
 				return [`You are limited to one Arceus forme.`, `(You have ${arceus} Arceus formes.)`];
-			}
-		},
-	},
-
-	// Pet Mods
-	///////////////////////////////////////////////////////////////////
-
-	{
-		section: "Pet Mods",
-	},
-	{
-		name: "[Gen 8] ViAbilities",
-		desc: `All abilities are modified to become viable in [Gen 8] OU.`,
-		threads: [
-			`&bullet; <a href="https://www.smogon.com/forums/threads/3664169/">ViAbilities</a>`,
-		],
-
-		mod: 'viabilities',
-		ruleset: ['[Gen 8] OU'],
-		// Dumb hack because Jolteon has 5 abilities for some reason
-		validateSet(set, teamHas) {
-			const species = this.dex.getSpecies(set.species);
-			const ability = this.dex.getAbility(set.ability);
-			if (!(species.name === 'Jolteon' && ability.name === 'Run Away')) {
-				return this.validateSet(set, teamHas);
-			} else {
-				const abil = set.ability;
-				set.ability = 'Battery';
-				const fakeValidation = this.validateSet(set, teamHas);
-				if (fakeValidation?.length) return fakeValidation;
-				set.ability = abil;
-				return null;
 			}
 		},
 	},
