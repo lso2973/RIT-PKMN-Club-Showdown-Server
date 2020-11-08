@@ -2503,18 +2503,12 @@ export const Moves: {[moveid: string]: MoveData} = {
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
 		onHit(target) {
-			const noAbilityChange = [
-				'battlebond', 'comatose', 'disguise', 'multitype', 'powerconstruct', 'rkssystem', 'schooling', 'shieldsdown', 'stancechange', 'zenmode',
-			];
-			if (noAbilityChange.includes(target.ability)) return;
+			if (target.getAbility().isPermanent) return;
 			if (target.newlySwitched || this.queue.willMove(target)) return;
 			target.addVolatile('gastroacid');
 		},
 		onAfterSubDamage(damage, target) {
-			const noAbilityChange = [
-				'battlebond', 'comatose', 'disguise', 'multitype', 'powerconstruct', 'rkssystem', 'schooling', 'shieldsdown', 'stancechange', 'zenmode',
-			];
-			if (noAbilityChange.includes(target.ability)) return;
+			if (target.getAbility().isPermanent) return;
 			if (target.newlySwitched || this.queue.willMove(target)) return;
 			target.addVolatile('gastroacid');
 		},
@@ -4006,17 +4000,19 @@ export const Moves: {[moveid: string]: MoveData} = {
 		pp: 5,
 		priority: 0,
 		flags: {protect: 1, mirror: 1, sound: 1, authentic: 1},
-		onHit(target) {
-			if (!target.hp) return;
-			const move = target.lastMove;
-			if (!move || move.isZ || move.isMax) return;
+		secondary: {
+			chance: 100,
+			onHit(target) {
+				if (!target.hp) return;
+				const move = target.lastMove;
+				if (!move || move.isZ || move.isMax) return;
 
-			const ppDeducted = target.deductPP(move.id, 3);
-			if (!ppDeducted) return;
+				const ppDeducted = target.deductPP(move.id, 3);
+				if (!ppDeducted) return;
 
-			this.add('-activate', target, 'move: Eerie Spell', move.name, ppDeducted);
+				this.add('-activate', target, 'move: Eerie Spell', move.name, ppDeducted);
+			},
 		},
-		secondary: null,
 		target: "normal",
 		type: "Psychic",
 	},
@@ -4364,15 +4360,15 @@ export const Moves: {[moveid: string]: MoveData} = {
 		flags: {protect: 1, reflectable: 1, mirror: 1, mystery: 1},
 		onTryHit(target, source) {
 			if (target === source || target.volatiles['dynamax']) return false;
-			const bannedTargetAbilities = [
-				'battlebond', 'comatose', 'disguise', 'multitype', 'powerconstruct', 'rkssystem', 'schooling', 'shieldsdown', 'stancechange', 'truant',
-			];
-			const bannedSourceAbilities = [
-				'battlebond', 'comatose', 'disguise', 'flowergift', 'forecast', 'illusion', 'imposter', 'multitype', 'neutralizinggas', 'powerconstruct', 'powerofalchemy', 'receiver', 'rkssystem', 'schooling', 'shieldsdown', 'stancechange', 'trace', 'zenmode',
+
+			const additionalBannedSourceAbilities = [
+				// Zen Mode included here for compatability with Gen 5-6
+				'flowergift', 'forecast', 'hungerswitch', 'illusion', 'imposter', 'neutralizinggas', 'powerofalchemy', 'receiver', 'trace', 'zenmode',
 			];
 			if (
-				bannedTargetAbilities.includes(target.ability) || bannedSourceAbilities.includes(source.ability) ||
-				target.ability === source.ability
+				target.ability === source.ability ||
+				target.getAbility().isPermanent || target.ability === 'truant' ||
+				source.getAbility().isPermanent || additionalBannedSourceAbilities.includes(source.ability)
 			) {
 				return false;
 			}
@@ -5895,11 +5891,8 @@ export const Moves: {[moveid: string]: MoveData} = {
 		priority: 0,
 		flags: {protect: 1, reflectable: 1, mirror: 1, mystery: 1},
 		volatileStatus: 'gastroacid',
-		onTryHit(pokemon) {
-			const bannedAbilities = [
-				'battlebond', 'comatose', 'disguise', 'multitype', 'powerconstruct', 'rkssystem', 'schooling', 'shieldsdown', 'stancechange', 'zenmode',
-			];
-			if (bannedAbilities.includes(pokemon.ability)) {
+		onTryHit(target) {
+			if (target.getAbility().isPermanent) {
 				return false;
 			}
 		},
@@ -5908,6 +5901,9 @@ export const Moves: {[moveid: string]: MoveData} = {
 			onStart(pokemon) {
 				this.add('-endability', pokemon);
 				this.singleEvent('End', pokemon.getAbility(), pokemon.abilityData, pokemon, pokemon, 'gastroacid');
+			},
+			onCopy(pokemon) {
+				if (pokemon.getAbility().isPermanent) pokemon.removeVolatile('gastroacid');
 			},
 		},
 		secondary: null,
@@ -6303,13 +6299,13 @@ export const Moves: {[moveid: string]: MoveData} = {
 				for (const pokemon of source.side.foe.active) {
 					const move = pokemon.lastMove;
 					if (move && !move.isZ && !move.isMax) {
-						const ppDeducted = pokemon.deductPP(move.id, 4);
+						const ppDeducted = pokemon.deductPP(move.id, 2);
 						if (ppDeducted) {
 							this.add("-activate", pokemon, 'move: G-Max Depletion', move.name, ppDeducted);
-							return;
+							// Don't return here because returning early doesn't trigger
+							// activation text for the second Pokemon in doubles
 						}
 					}
-					return false;
 				}
 			},
 		},
@@ -8343,7 +8339,7 @@ export const Moves: {[moveid: string]: MoveData} = {
 		contestType: "Cool",
 	},
 	holdhands: {
-		num: 615,
+		num: 607,
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
@@ -9844,37 +9840,23 @@ export const Moves: {[moveid: string]: MoveData} = {
 			}
 		},
 		selfdestruct: "ifHit",
-		sideCondition: 'lunardance',
+		slotCondition: 'lunardance',
 		condition: {
-			duration: 2,
-			onStart(side, source) {
-				this.debug('Lunar Dance started on ' + side.name);
-				this.effectData.positions = [];
-				for (const i of side.active.keys()) {
-					this.effectData.positions[i] = false;
-				}
-				this.effectData.positions[source.position] = true;
-			},
-			onRestart(side, source) {
-				this.effectData.positions[source.position] = true;
-			},
-			onSwitchInPriority: 1,
-			onSwitchIn(target) {
-				const positions: boolean[] = this.effectData.positions;
-				if (target.position !== this.effectData.sourcePosition) {
-					return;
-				}
-				if (!target.fainted) {
+			onSwap(target) {
+				if (
+					!target.fainted && (
+						target.hp < target.maxhp ||
+						target.status ||
+						target.moveSlots.some(moveSlot => moveSlot.pp < moveSlot.maxpp)
+					)
+				) {
 					target.heal(target.maxhp);
 					target.setStatus('');
 					for (const moveSlot of target.moveSlots) {
 						moveSlot.pp = moveSlot.maxpp;
 					}
 					this.add('-heal', target, target.getHealth, '[from] move: Lunar Dance');
-					positions[target.position] = false;
-				}
-				if (!positions.some(affected => affected === true)) {
-					target.side.removeSideCondition('lunardance');
+					target.side.removeSlotCondition(target, 'lunardance');
 				}
 			},
 		},
@@ -14268,13 +14250,13 @@ export const Moves: {[moveid: string]: MoveData} = {
 		onTryHit(target, source) {
 			if (target.ability === source.ability) return false;
 
-			const bannedTargetAbilities = [
-				'battlebond', 'comatose', 'disguise', 'flowergift', 'forecast', 'illusion', 'imposter', 'multitype', 'neutralizinggas', 'powerconstruct', 'powerofalchemy', 'receiver', 'rkssystem', 'schooling', 'shieldsdown', 'stancechange', 'trace', 'wonderguard', 'zenmode',
+			const additionalBannedTargetAbilities = [
+				// Zen Mode included here for compatability with Gen 5-6
+				'flowergift', 'forecast', 'hungerswitch', 'illusion', 'imposter', 'neutralizinggas', 'powerofalchemy', 'receiver', 'trace', 'wonderguard', 'zenmode',
 			];
-			const bannedSourceAbilities = [
-				'battlebond', 'comatose', 'disguise', 'multitype', 'powerconstruct', 'rkssystem', 'schooling', 'shieldsdown', 'stancechange',
-			];
-			if (bannedTargetAbilities.includes(target.ability) || bannedSourceAbilities.includes(source.ability)) {
+
+			if (target.getAbility().isPermanent || additionalBannedTargetAbilities.includes(target.ability) ||
+				source.getAbility().isPermanent) {
 				return false;
 			}
 		},
@@ -15276,11 +15258,8 @@ export const Moves: {[moveid: string]: MoveData} = {
 		pp: 15,
 		priority: 0,
 		flags: {protect: 1, reflectable: 1, mirror: 1, mystery: 1},
-		onTryHit(pokemon) {
-			const bannedAbilities = [
-				'battlebond', 'comatose', 'disguise', 'multitype', 'powerconstruct', 'rkssystem', 'schooling', 'shieldsdown', 'simple', 'stancechange', 'truant', 'zenmode',
-			];
-			if (bannedAbilities.includes(pokemon.ability)) {
+		onTryHit(target) {
+			if (target.getAbility().isPermanent || target.ability === 'simple' || target.ability === 'truant') {
 				return false;
 			}
 		},
@@ -15395,11 +15374,11 @@ export const Moves: {[moveid: string]: MoveData} = {
 		priority: 0,
 		flags: {protect: 1, mirror: 1, authentic: 1, mystery: 1},
 		onTryHit(target, source) {
-			const bannedAbilities = [
-				'battlebond', 'comatose', 'disguise', 'gulpmissile', 'hungerswitch', 'iceface', 'illusion', 'multitype', 'neutralizinggas', 'powerconstruct', 'rkssystem', 'schooling', 'shieldsdown', 'stancechange', 'wonderguard', 'zenmode',
-			];
+			const additionalBannedAbilities = ['hungerswitch', 'illusion', 'neutralizinggas', 'wonderguard'];
 			if (
-				target.volatiles['dynamax'] || bannedAbilities.includes(target.ability) || bannedAbilities.includes(source.ability)
+				target.volatiles['dynamax'] ||
+				target.getAbility().isPermanent || source.getAbility().isPermanent ||
+				additionalBannedAbilities.includes(target.ability) || additionalBannedAbilities.includes(source.ability)
 			) {
 				return false;
 			}
@@ -19401,11 +19380,15 @@ export const Moves: {[moveid: string]: MoveData} = {
 		pp: 10,
 		priority: 0,
 		flags: {protect: 1, reflectable: 1, mirror: 1, mystery: 1},
-		onTryHit(pokemon) {
-			const bannedAbilities = [
-				'battlebond', 'comatose', 'disguise', 'insomnia', 'multitype', 'powerconstruct', 'rkssystem', 'schooling', 'shieldsdown', 'stancechange', 'truant', 'zenmode',
-			];
-			if (bannedAbilities.includes(pokemon.ability)) {
+		onTryImmunity(target) {
+			// Truant and Insomnia have special treatment; they fail before
+			// checking accuracy and will double Stomping Tantrum's BP
+			if (target.ability === 'truant' || target.ability === 'insomnia') {
+				return false;
+			}
+		},
+		onTryHit(target) {
+			if (target.getAbility().isPermanent) {
 				return false;
 			}
 		},

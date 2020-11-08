@@ -849,7 +849,7 @@ export class RoomBattle extends RoomGames.RoomGame {
 		// If the room's replay was hidden, disable users from joining after the game is over
 		if (this.room.hideReplay) {
 			this.room.settings.modjoin = '%';
-			this.room.settings.isPrivate = 'hidden';
+			this.room.makePrivate('hidden');
 		}
 		this.room.update();
 	}
@@ -1271,8 +1271,7 @@ if (!PM.isParentProcess) {
 	global.Monitor = {
 		crashlog(error: Error, source = 'A simulator process', details: AnyObject | null = null) {
 			const repr = JSON.stringify([error.name, error.message, source, details]);
-			// @ts-ignore
-			process.send(`THROW\n@!!@${repr}\n${error.stack}`);
+			process.send!(`THROW\n@!!@${repr}\n${error.stack}`);
 		},
 	};
 	global.__version = {head: ''};

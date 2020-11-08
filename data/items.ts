@@ -1027,8 +1027,8 @@ export const Items: {[itemid: string]: ItemData} = {
 		onFractionalPriorityPriority: -2,
 		onFractionalPriority(priority, pokemon) {
 			if (
-				(priority <= 0 && pokemon.hp <= pokemon.maxhp / 4) ||
-				(pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))
+				priority <= 0 &&
+				(pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony')))
 			) {
 				if (pokemon.eatItem()) {
 					this.add('-activate', pokemon, 'item: Custap Berry', '[consumed]');
@@ -1952,6 +1952,15 @@ export const Items: {[itemid: string]: ItemData} = {
 			basePower: 30,
 		},
 		num: 1582,
+		gen: 8,
+	},
+	galaricawreath: {
+		name: "Galarica Wreath",
+		spritenum: 740,
+		fling: {
+			basePower: 30,
+		},
+		num: 1592,
 		gen: 8,
 	},
 	galladite: {
@@ -3461,7 +3470,6 @@ export const Items: {[itemid: string]: ItemData} = {
 		},
 		num: 209,
 		gen: 4,
-		isNonstandard: "Unobtainable",
 	},
 	mimikiumz: {
 		name: "Mimikium Z",
@@ -5135,7 +5143,6 @@ export const Items: {[itemid: string]: ItemData} = {
 		itemUser: ["Latios", "Latias"],
 		num: 225,
 		gen: 3,
-		isNonstandard: "Past",
 	},
 	spelltag: {
 		name: "Spell Tag",

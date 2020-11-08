@@ -730,6 +730,13 @@ export const commands: ChatCommands = {
 		if (!user.autoconfirmed) {
 			return this.errorReply("You must be autoconfirmed to make a groupchat.");
 		}
+
+		const groupchatbanned = Punishments.isGroupchatBanned(user);
+		if (groupchatbanned) {
+			const expireText = Punishments.checkPunishmentExpiration(groupchatbanned);
+			return this.errorReply(`You are banned from using groupchats ${expireText}.`);
+		}
+
 		if (cmd === 'subroomgroupchat') {
 			if (!user.can('mute', null, room)) {
 				return this.errorReply("You can only create subroom groupchats for rooms you're staff in.");
@@ -924,7 +931,7 @@ export const commands: ChatCommands = {
 		this.errorReply("Did you mean /renameroom?");
 	},
 	renamegroupchat: 'renameroom',
-	async renameroom(target, room, user, connection, cmd) {
+	renameroom(target, room, user, connection, cmd) {
 		room = this.requireRoom();
 		if (room.game || room.minorActivity || room.tour) {
 			return this.errorReply("Cannot rename room while a tour/poll/game is running.");
@@ -958,9 +965,7 @@ export const commands: ChatCommands = {
 		}
 		const creatorID = room.roomid.split('-')[1];
 		const id = isGroupchat ? `groupchat-${creatorID}-${toID(target)}` as RoomID : undefined;
-		if (!(await room.rename(target, id))) {
-			return this.errorReply(`An error occured while renaming the room.`);
-		}
+		room.rename(target, id);
 		this.modlog(`RENAME${isGroupchat ? 'GROUPCHAT' : 'ROOM'}`, null, `from ${oldTitle}`);
 		const privacy = room.settings.isPrivate === true ? "Private" :
 			!room.settings.isPrivate ? "Public" :
@@ -1061,11 +1066,14 @@ export const commands: ChatCommands = {
 				}
 				return this.errorReply(`This room is already ${settingName}.`);
 			}
-			room.settings.isPrivate = setting;
 			this.addModAction(`${user.name} made this room ${settingName}.`);
 			this.modlog(`${settingName.toUpperCase()}ROOM`);
-			room.settings.isPrivate = setting;
-			room.saveSettings();
+			if (room.battle) {
+				room.makePrivate(setting);
+			} else {
+				room.settings.isPrivate = setting;
+				room.saveSettings();
+			}
 			room.privacySetter = new Set([user.id]);
 		}
 	},
@@ -1291,7 +1299,7 @@ export const commands: ChatCommands = {
 			if (!this.runBroadcast()) return;
 			if (!room.settings.introMessage) return this.sendReply("This room does not have an introduction set.");
 			this.sendReply('|raw|<div class="infobox infobox-limited">' + room.settings.introMessage.replace(/\n/g, '') + '</div>');
-			if (!this.broadcasting && user.can('declare', null, room) && cmd !== 'topic') {
+			if (!this.broadcasting && user.can('declare', null, room, 'roomintro') && cmd !== 'topic') {
 				const code = Utils.escapeHTML(room.settings.introMessage).replace(/\n/g, '<br />');
 				this.sendReplyBox(`<details open><summary>Source:</summary><code style="white-space: pre-wrap; display: table; tab-size: 3">/roomintro ${code}</code></details>`);
 			}
@@ -1338,7 +1346,7 @@ export const commands: ChatCommands = {
 			this.checkCan('mute', null, room);
 			if (!room.settings.staffMessage) return this.sendReply("This room does not have a staff introduction set.");
 			this.sendReply(`|raw|<div class="infobox">${room.settings.staffMessage.replace(/\n/g, ``)}</div>`);
-			if (user.can('ban', null, room) && cmd !== 'stafftopic') {
+			if (user.can('ban', null, room, 'staffintro') && cmd !== 'stafftopic') {
 				const code = Utils.escapeHTML(room.settings.staffMessage).replace(/\n/g, '<br />');
 				this.sendReplyBox(`<details open><summary>Source:</summary><code style="white-space: pre-wrap; display: table; tab-size: 3">/staffintro ${code}</code></details>`);
 			}

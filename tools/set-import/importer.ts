@@ -7,7 +7,6 @@ import * as smogon from 'smogon';
 
 import * as Streams from '../../lib/streams';
 import {Dex, toID} from '../../sim/dex';
-import {Species} from '../../sim/dex-data';
 import {TeamValidator} from '../../sim/team-validator';
 Dex.includeModData();
 
@@ -446,10 +445,7 @@ export async function getStatisticsURL(
 	format: Format
 ): Promise<{url: string, count: number} | undefined> {
 	const current = index.includes(format.id);
-	// tslint is for some reason reporting that this isn't a Promise for some reason,
-	// but breaking it out into a const seems to fix it
-	const latestPromise = smogon.Statistics.latestDate(format.id, !current);
-	const latest = await latestPromise;
+	const latest = await smogon.Statistics.latestDate(format.id, !current);
 	if (!latest) return undefined;
 	return {url: smogon.Statistics.url(latest.date, format.id, current || 1500), count: latest.count};
 }

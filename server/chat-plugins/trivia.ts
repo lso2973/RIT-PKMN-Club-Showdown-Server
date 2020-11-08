@@ -518,7 +518,7 @@ export class Trivia extends Rooms.RoomGame {
 				const isSameUser = (
 					targetUser.previousIDs.includes(user.id) ||
 					targetUser.previousIDs.some(tarId => user.previousIDs.includes(tarId)) ||
-					targetUser.ips.some(ip => user.ips.includes(ip))
+					!Config.noipchecks && targetUser.ips.some(ip => user.ips.includes(ip))
 				);
 				if (isSameUser) throw new Chat.ErrorMessage(this.room.tr`You have already signed up for this game.`);
 			}
@@ -634,7 +634,7 @@ export class Trivia extends Rooms.RoomGame {
 					const isSameUser = (
 						kickedUser.previousIDs.includes(user.id) ||
 						kickedUser.previousIDs.some(id => user.previousIDs.includes(id)) ||
-						kickedUser.ips.some(ip => user.ips.includes(ip))
+						!Config.noipchecks && kickedUser.ips.some(ip => user.ips.includes(ip))
 					);
 					if (isSameUser) throw new Chat.ErrorMessage(this.room.tr`User ${user.name} has already been kicked from the game.`);
 				}
@@ -695,6 +695,12 @@ export class Trivia extends Rooms.RoomGame {
 	askQuestion() {
 		if (this.isPaused) return;
 		if (!this.questions.length) {
+			if (!this.getCap()) {
+				// If there's no score cap, we declare a winner when we run out of questions,
+				// instead of ending a game with a stalemate
+				this.win(`The game of Trivia has ended because there are no more questions!`);
+				return;
+			}
 			if (this.phaseTimeout) clearTimeout(this.phaseTimeout);
 			this.phaseTimeout = null;
 			broadcast(
@@ -1259,7 +1265,7 @@ export class Mastermind extends Rooms.RoomGame {
 			const isSameUser = (
 				targetUser.previousIDs.includes(user.id) ||
 				targetUser.previousIDs.some(tarId => user.previousIDs.includes(tarId)) ||
-				targetUser.ips.some(ip => user.ips.includes(ip))
+				!Config.noipchecks && targetUser.ips.some(ip => user.ips.includes(ip))
 			);
 			if (isSameUser) throw new Chat.ErrorMessage(this.room.tr`You have already signed up for this game.`);
 		}
@@ -1965,7 +1971,7 @@ const triviaCommands: ChatCommands = {
 		}
 	},
 	movehelp: [
-		`/trivia move [category] | [question] - Change the category of question in the trivia databse. Requires: % @ # &`,
+		`/trivia move [category] | [question] - Change the category of question in the trivia database. Requires: % @ # &`,
 	],
 
 	qs(target, room, user) {
@@ -2306,6 +2312,7 @@ const triviaCommands: ChatCommands = {
 				`<li><code>/trivia reject [index1], [index2], ... [indexn] OR all</code> - Remove questions from the submission database using their index numbers or ranges of them. Requires: @ # &</li>` +
 				`<li><code>/trivia add [category] | [question] | [answer1], [answer2], ... [answern]</code> - Adds question(s) to the question database. Requires: % @ # &</li>` +
 				`<li><code>/trivia delete [question]</code> - Delete a question from the trivia database. Requires: % @ # &</li>` +
+				`<li><code>/trivia move [category] | [question]</code> - Change the category of question in the trivia database. Requires: % @ # &</li>` +
 				`<li><code>/trivia qs</code> - View the distribution of questions in the question database.</li>` +
 				`<li><code>/trivia qs [category]</code> - View the questions in the specified category. Requires: % @ # &</li>` +
 				`<li><code>/trivia clearqs [category]</code> - Clear all questions in the given category. Requires: # &</li>` +

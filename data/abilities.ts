@@ -174,30 +174,32 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 	},
 	asoneglastrier: {
 		onPreStart(pokemon) {
+			this.add('-ability', pokemon, 'As One');
 			this.add('-ability', pokemon, 'Unnerve', pokemon.side.foe);
 		},
 		onFoeTryEatItem: false,
 		onSourceAfterFaint(length, target, source, effect) {
 			if (effect && effect.effectType === 'Move') {
-				this.add('-ability', source, 'Chilling Neigh');
-				this.boost({atk: length}, source, source, null, true);
+				this.boost({atk: length}, source, source, this.dex.getAbility('chillingneigh'));
 			}
 		},
+		isPermanent: true,
 		name: "As One (Glastrier)",
 		rating: 3.5,
 		num: 266,
 	},
 	asonespectrier: {
 		onPreStart(pokemon) {
+			this.add('-ability', pokemon, 'As One');
 			this.add('-ability', pokemon, 'Unnerve', pokemon.side.foe);
 		},
 		onFoeTryEatItem: false,
 		onSourceAfterFaint(length, target, source, effect) {
 			if (effect && effect.effectType === 'Move') {
-				this.add('-ability', source, 'Grim Neigh');
-				this.boost({spa: length}, source, source, null, true);
+				this.boost({spa: length}, source, source, this.dex.getAbility('grimneigh'));
 			}
 		},
+		isPermanent: true,
 		name: "As One (Spectrier)",
 		rating: 3.5,
 		num: 267,
@@ -269,6 +271,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 				move.multihit = 3;
 			}
 		},
+		isPermanent: true,
 		name: "Battle Bond",
 		rating: 4,
 		num: 210,
@@ -441,6 +444,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 			return false;
 		},
 		// Permanent sleep "status" implemented in the relevant sleep-checking effects
+		isPermanent: true,
 		isUnbreakable: true,
 		name: "Comatose",
 		rating: 4,
@@ -746,6 +750,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 				this.damage(pokemon.baseMaxhp / 8, pokemon, pokemon, this.dex.getSpecies(speciesid));
 			}
 		},
+		isPermanent: true,
 		name: "Disguise",
 		rating: 3.5,
 		num: 209,
@@ -956,14 +961,14 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 			},
 			onModifyAtkPriority: 5,
 			onModifyAtk(atk, attacker, defender, move) {
-				if (move.type === 'Fire') {
+				if (move.type === 'Fire' && attacker.hasAbility('flashfire')) {
 					this.debug('Flash Fire boost');
 					return this.chainModify(1.5);
 				}
 			},
 			onModifySpAPriority: 5,
 			onModifySpA(atk, attacker, defender, move) {
-				if (move.type === 'Fire') {
+				if (move.type === 'Fire' && attacker.hasAbility('flashfire')) {
 					this.debug('Flash Fire boost');
 					return this.chainModify(1.5);
 				}
@@ -1304,6 +1309,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 				source.formeChange(forme, effect);
 			}
 		},
+		isPermanent: true,
 		name: "Gulp Missile",
 		rating: 2.5,
 		num: 241,
@@ -1508,6 +1514,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 				pokemon.formeChange('Eiscue', this.effect, true);
 			}
 		},
+		isPermanent: true,
 		name: "Ice Face",
 		rating: 3,
 		num: 248,
@@ -2151,6 +2158,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 	},
 	multitype: {
 		// Multitype's type-changing itself is implemented in statuses.js
+		isPermanent: true,
 		name: "Multitype",
 		rating: 4,
 		num: 121,
@@ -2158,7 +2166,11 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 	mummy: {
 		name: "Mummy",
 		onDamagingHit(damage, target, source, move) {
-			if (move.flags['contact'] && source.ability !== 'mummy') {
+			const sourceAbility = source.getAbility();
+			if (sourceAbility.isPermanent || sourceAbility.id === 'mummy') {
+				return;
+			}
+			if (move.flags['contact']) {
 				const oldAbility = source.setAbility('mummy', target);
 				if (oldAbility) {
 					this.add('-activate', target, 'ability: Mummy', this.dex.getAbility(oldAbility).name, '[of] ' + source);
@@ -2269,6 +2281,15 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		onPreStart(pokemon) {
 			this.add('-ability', pokemon, 'Neutralizing Gas');
 			pokemon.abilityData.ending = false;
+			for (const target of this.getAllActive()) {
+				if (target.illusion) {
+					this.singleEvent('End', this.dex.getAbility('Illusion'), target.abilityData, target, pokemon, 'neutralizinggas');
+				}
+				if (target.volatiles['slowstart']) {
+					delete target.volatiles['slowstart'];
+					this.add('-end', target, 'Slow Start', '[silent]');
+				}
+			}
 		},
 		onEnd(source) {
 			// FIXME this happens before the pokemon switches out, should be the opposite order.
@@ -2633,6 +2654,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 			pokemon.maxhp = newMaxHP;
 			this.add('-heal', pokemon, pokemon.getHealth, '[silent]');
 		},
+		isPermanent: true,
 		name: "Power Construct",
 		rating: 5,
 		num: 211,
@@ -2641,10 +2663,10 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		onAllyFaint(target) {
 			if (!this.effectData.target.hp) return;
 			const ability = target.getAbility();
-			const bannedAbilities = [
-				'battlebond', 'comatose', 'disguise', 'flowergift', 'forecast', 'gulpmissile', 'hungerswitch', 'iceface', 'illusion', 'imposter', 'multitype', 'powerconstruct', 'powerofalchemy', 'receiver', 'rkssystem', 'schooling', 'shieldsdown', 'stancechange', 'trace', 'wonderguard', 'zenmode',
+			const additionalBannedAbilities = [
+				'noability', 'flowergift', 'forecast', 'hungerswitch', 'illusion', 'imposter', 'neutralizinggas', 'powerofalchemy', 'receiver', 'trace', 'wonderguard',
 			];
-			if (bannedAbilities.includes(target.ability)) return;
+			if (target.getAbility().isPermanent || additionalBannedAbilities.includes(target.ability)) return;
 			this.add('-ability', this.effectData.target, ability, '[from] ability: Power of Alchemy', '[of] ' + target);
 			this.effectData.target.setAbility(ability);
 		},
@@ -2661,7 +2683,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 			}
 		},
 		name: "Power Spot",
-		rating: 0,
+		rating: 1,
 		num: 249,
 	},
 	prankster: {
@@ -2850,10 +2872,10 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 		onAllyFaint(target) {
 			if (!this.effectData.target.hp) return;
 			const ability = target.getAbility();
-			const bannedAbilities = [
-				'battlebond', 'comatose', 'disguise', 'flowergift', 'forecast', 'gulpmissile', 'hungerswitch', 'iceface', 'illusion', 'imposter', 'multitype', 'neutralizinggas', 'powerconstruct', 'powerofalchemy', 'receiver', 'rkssystem', 'schooling', 'shieldsdown', 'stancechange', 'trace', 'wonderguard', 'zenmode',
+			const additionalBannedAbilities = [
+				'noability', 'flowergift', 'forecast', 'hungerswitch', 'illusion', 'imposter', 'neutralizinggas', 'powerofalchemy', 'receiver', 'trace', 'wonderguard',
 			];
-			if (bannedAbilities.includes(target.ability)) return;
+			if (target.getAbility().isPermanent || additionalBannedAbilities.includes(target.ability)) return;
 			this.add('-ability', this.effectData.target, ability, '[from] ability: Receiver', '[of] ' + target);
 			this.effectData.target.setAbility(ability);
 		},
@@ -2916,10 +2938,9 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 				}
 			}
 		},
+		onSourceModifyDamagePriority: -1,
 		onSourceModifyDamage(damage, source, target, move) {
 			if (target.abilityData.berryWeaken) {
-				target.abilityData.berryWeaken = "";
-				// Not sure if this is the correct multiplier to get 3/4 total, assuming its taking 1/2 of 1/2 (3/4)
 				return this.chainModify(0.5);
 			}
 		},
@@ -2931,10 +2952,8 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 			const weakenBerries = [
 				'Babiri Berry', 'Charti Berry', 'Chilan Berry', 'Chople Berry', 'Coba Berry', 'Colbur Berry', 'Haban Berry', 'Kasib Berry', 'Kebia Berry', 'Occa Berry', 'Passho Berry', 'Payapa Berry', 'Rindo Berry', 'Roseli Berry', 'Shuca Berry', 'Tanga Berry', 'Wacan Berry', 'Yache Berry',
 			];
-			if (weakenBerries.includes(item.name)) {
-				// Record that the pokemon ate a berry to resist an attack
-				pokemon.abilityData.berryWeaken = "true";
-			}
+			// Record if the pokemon ate a berry to resist the attack
+			pokemon.abilityData.berryWeaken = weakenBerries.includes(item.name);
 		},
 		name: "Ripen",
 		rating: 2,
@@ -2959,6 +2978,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 	},
 	rkssystem: {
 		// RKS System's type-changing itself is implemented in statuses.js
+		isPermanent: true,
 		name: "RKS System",
 		rating: 4,
 		num: 225,
@@ -3103,6 +3123,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 				}
 			}
 		},
+		isPermanent: true,
 		name: "Schooling",
 		rating: 3,
 		num: 208,
@@ -3279,6 +3300,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 			this.add('-immune', target, '[from] ability: Shields Down');
 			return null;
 		},
+		isPermanent: true,
 		isUnbreakable: true,
 		name: "Shields Down",
 		rating: 3,
@@ -3498,6 +3520,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 			const targetForme = (move.id === 'kingsshield' ? 'Aegislash' : 'Aegislash-Blade');
 			if (attacker.species.name !== targetForme) attacker.formeChange(targetForme);
 		},
+		isPermanent: true,
 		name: "Stance Change",
 		rating: 4,
 		num: 176,
@@ -3905,10 +3928,11 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 				if (possibleTargets.length > 1) rand = this.random(possibleTargets.length);
 				const target = possibleTargets[rand];
 				const ability = target.getAbility();
-				const bannedAbilities = [
-					'noability', 'battlebond', 'comatose', 'disguise', 'flowergift', 'forecast', 'gulpmissile', 'hungerswitch', 'iceface', 'illusion', 'imposter', 'multitype', 'neutralizinggas', 'powerconstruct', 'powerofalchemy', 'receiver', 'rkssystem', 'schooling', 'shieldsdown', 'stancechange', 'trace', 'zenmode',
+				const additionalBannedAbilities = [
+					// Zen Mode included here for compatability with Gen 5-6
+					'noability', 'flowergift', 'forecast', 'hungerswitch', 'illusion', 'imposter', 'neutralizinggas', 'powerofalchemy', 'receiver', 'trace', 'zenmode',
 				];
-				if (bannedAbilities.includes(target.ability)) {
+				if (target.getAbility().isPermanent || additionalBannedAbilities.includes(target.ability)) {
 					possibleTargets.splice(rand, 1);
 					continue;
 				}
@@ -4081,8 +4105,13 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 	},
 	wanderingspirit: {
 		onDamagingHit(damage, target, source, move) {
-			if (target.volatiles['dynamax']) return;
-			if (['illusion', 'neutralizinggas', 'wanderingspirit', 'wonderguard'].includes(source.ability)) return;
+			const additionalBannedAbilities = ['hungerswitch', 'illusion', 'neutralizinggas', 'wonderguard'];
+			if (source.getAbility().isPermanent || additionalBannedAbilities.includes(source.ability) ||
+				target.volatiles['dynamax']
+			) {
+				return;
+			}
+
 			if (move.flags['contact']) {
 				const sourceAbility = source.setAbility('wanderingspirit', target);
 				if (!sourceAbility) return;
@@ -4288,6 +4317,7 @@ export const Abilities: {[abilityid: string]: AbilityData} = {
 				}
 			},
 		},
+		isPermanent: true,
 		name: "Zen Mode",
 		rating: 0,
 		num: 161,
