@@ -51,7 +51,7 @@ export const Formats: FormatList = [
 		forcedLevel: 50,
 		gameType: 'singles',
 		ruleset: ['Obtainable', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod',
-					'Sleep Clause Mod', 'Evasion Moves Clause'],
+			'Sleep Clause Mod', 'Evasion Moves Clause'],
 		banlist: [
 			'Dialga', 'Dracovish', 'Eternatus', 'Genesect', 'Giratina', 'Groudon', 'Ho-Oh', 'Calyrex-Ice', 'Kyogre', 'Kyurem-Black',
 			'Kyurem-White', 'Lugia', 'Lunala', 'Magearna', 'Marshadow', 'Mewtwo', 'Naganadel', 'Necrozma-Dusk-Mane', 'Necrozma-Dawn-Wings',
