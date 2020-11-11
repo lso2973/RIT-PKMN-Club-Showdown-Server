@@ -33,7 +33,7 @@ export const Formats: FormatList = [
 		forcedLevel: 50,
 		ruleset: ['Standard', 'Dynamax Clause'],
 		banlist: [
-			'Uber', 'Kyurem-Black', 'Melmetal', 'Moody', 'Swagger',
+			'Uber', 'Genesect', 'Landorus', 'Naganadel', 'Moody', 'Swagger',
 		],
 		unbanlist: [
 			'Darmanitan-Galar',
