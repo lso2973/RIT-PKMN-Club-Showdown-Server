@@ -115,10 +115,10 @@ export const Formats: FormatList = [
 			'Diancie + Meteor Beam', 'Diancie + Misty Explosion',
 
 			'Heatran + Metal Claw', 'Heatran + Self-Destruct', 'Heatran + Body Slam', 'Heatran + Heavy Slam', 'Heatran + Heat Crash',
-			'Heatran + Body Press', 'Heatran + Burning Jealousy', 'Heatran + Scorching Sands', 'Heatran + Steel Roller',
+			'Heatran + Body Press', 'Heatran + Burning Jealousy', 'Heatran + Scorching Sands', 'Heatran + Steel Roller', 'Heatran + Flame Body',
 
 			'Tapu Koko + Fairy Wind', 'Tapu Koko + Rest', 'Tapu Koko + Swift', 'Tapu Koko + Assurance', 'Tapu Koko + Eerie Impulse',
-			'Tapu Koko + Endure', 'Tapu Koko + Stored Power',
+			'Tapu Koko + Endure', 'Tapu Koko + Stored Power', 'Tapu Koko + Telepathy',
 
 			'Metagross + Tackle', 'Metagross + Psycho Cut', 'Metagross + Brutal Swing', 'Metagross + Cosmic Power',
 			'Metagross + Body Press', 'Metagross + Expanding Force', 'Metagross + Meteor Beam', 'Metagross + Steel Roller',
