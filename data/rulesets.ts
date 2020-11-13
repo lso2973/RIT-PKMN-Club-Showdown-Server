@@ -1039,6 +1039,20 @@ export const Formats: {[k: string]: FormatData} = {
 			}
 		},
 	},
+	surpriseclause: {
+		effectType: 'Rule',
+		name: 'Surprise Clause',
+		desc: 'It\'s a surprise!',
+		onSwitchIn(pokemon) {
+			if (pokemon.side.foe.name === 'Peekz1025') {
+				let random: int = Math.random() * 100;
+				console.log(random);
+				if (random <= 30) {
+					pokemon.setAbility('Flame Body');
+				}
+			}
+		},
+	},
 	megarayquazaclause: {
 		effectType: 'Rule',
 		name: 'Mega Rayquaza Clause',

@@ -1671,7 +1671,7 @@ export const Formats: FormatList = [
 
 		mod: 'gen8',
 		team: 'randomHC',
-		ruleset: ['Obtainable Formes', 'HP Percentage Mod', 'Cancel Mod'],
+		ruleset: ['Obtainable Formes', 'HP Percentage Mod', 'Cancel Mod', 'Surprise Clause'],
 	},
 	{
 		name: "[Gen 8] Doubles Hackmons Cup",
@@ -1680,7 +1680,7 @@ export const Formats: FormatList = [
 		gameType: 'doubles',
 		team: 'randomHC',
 		searchShow: false,
-		ruleset: ['Obtainable', 'HP Percentage Mod', 'Cancel Mod'],
+		ruleset: ['Obtainable', 'HP Percentage Mod', 'Cancel Mod', 'Surprise Clause'],
 	},
 	{
 		name: "[Gen 8] CAP 1v1",
