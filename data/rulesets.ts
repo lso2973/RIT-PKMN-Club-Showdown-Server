@@ -1025,10 +1025,8 @@ export const Formats: {[k: string]: FormatData} = {
 		effectType: 'Rule',
 		name: 'Level 100 Clause',
 		desc: 'All Pokémon are automatically set to level 100.',
-		
 		onBegin() {
 			this.add('rule', 'Level 100 Clause: All Pokémon are set to level 100.');
-			
 			for (const pokemon of this.getAllPokemon()) {
 				const species = pokemon.species;
 				const level = 100;
