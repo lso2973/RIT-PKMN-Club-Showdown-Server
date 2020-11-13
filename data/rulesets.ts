@@ -1021,6 +1021,26 @@ export const Formats: {[k: string]: FormatData} = {
 			}
 		},
 	},
+	level100clause: {
+		effectType: 'Rule',
+		name: 'Level 100 Clause',
+		desc: 'All Pokémon are automatically set to level 100.',
+		
+		onBegin() {
+			this.add('rule', 'Level 100 Clause: All Pokémon are set to level 100.');
+			
+			for (const pokemon of this.getAllPokemon()) {
+				const species = pokemon.species;
+				const level = 100;
+				(pokemon as any).level = level;
+				pokemon.set.level = level;
+
+				pokemon.details = species.name + (level === 100 ? '' : ', L' + level) +
+					(pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
+				this.add('detailschange', pokemon, pokemon.details);
+			}
+		},
+	},
 	megarayquazaclause: {
 		effectType: 'Rule',
 		name: 'Mega Rayquaza Clause',
