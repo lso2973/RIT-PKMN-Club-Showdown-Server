@@ -43,15 +43,15 @@ export const Formats: FormatList = [
 		name: "[Gen 8] RRC Draft S14",
 		desc: `RIT Pokémon Club's 14th draft season!`,
 		threads: [
-			`&bullet; <a href="https://docs.google.com/spreadsheets/d/121272v4B8F6APVwI4rtS280VD5xOiXTz_nR0OzI58AU/edit?usp=sharing">Titan Draft Document</a>`,
-			`&bullet; <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Talon Draft Document</a>`,
+			`&bullet; <a href="https://docs.google.com/spreadsheets/d/1q2_ewqPnzX7jmvLL9EccQmy-e8xVqgse9iiWTIsySQo">Titan Draft Document</a>`,
+			`&bullet; <a href="https://docs.google.com/spreadsheets/d/1LDKYaWIrB5qI7uvcNZ9izce9AtLsHdeppJJRdsPgqjg">Talon Draft Document</a>`,
 		],
 
 		mod: 'gen8',
 		forcedLevel: 50,
 		gameType: 'singles',
 		ruleset: ['Obtainable', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod',
-			'Sleep Clause Mod', 'Evasion Moves Clause'],
+			'Sleep Clause Mod', 'Evasion Moves Clause', 'Dynamax Clause'],
 		banlist: [
 			'Dialga', 'Dracovish', 'Eternatus', 'Genesect', 'Giratina', 'Groudon', 'Ho-Oh', 'Calyrex-Ice', 'Kyogre', 'Kyurem-Black',
 			'Kyurem-White', 'Lugia', 'Lunala', 'Magearna', 'Marshadow', 'Mewtwo', 'Naganadel', 'Necrozma-Dusk-Mane', 'Necrozma-Dawn-Wings',
