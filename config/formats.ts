@@ -24,7 +24,6 @@ export const Formats: FormatList = [
 	},
 	{
 		name: "[Gen 8] Test",
-		
 		mod: 'gen8',
 		ruleset: ['Standard'],
 		teamLength: {
