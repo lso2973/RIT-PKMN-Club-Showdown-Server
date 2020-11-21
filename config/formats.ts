@@ -23,6 +23,16 @@ export const Formats: FormatList = [
 		section: "RIT-specific Formats",
 	},
 	{
+		name: "[Gen 8] Test",
+		
+		mod: 'gen8',
+		ruleset: ['Standard'],
+		teamLength: {
+			validate: [1, 7],
+			battle: 7,
+		},
+	},
+	{
 		name: "[Gen 8] Gym Challenge",
 		desc: `Use this format to challenge our 8 Gym Leaders!`,
 		threads: [
