@@ -27,7 +27,7 @@ export const Formats: FormatList = [
 		mod: 'gen8',
 		debug: true,
 		ruleset: [
-			'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 
+			'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'Nickname Clause', 'OHKO Clause',
 			'Evasion Moves Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod',
 		],
 		battle: {trunc: Math.trunc},
