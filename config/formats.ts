@@ -25,7 +25,12 @@ export const Formats: FormatList = [
 	{
 		name: "[Gen 8] Test",
 		mod: 'gen8',
-		ruleset: ['Standard'],
+		debug: true,
+		ruleset: [
+			'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 
+			'Evasion Moves Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod',
+		],
+		battle: {trunc: Math.trunc},
 		teamLength: {
 			validate: [1, 7],
 			battle: 7,
