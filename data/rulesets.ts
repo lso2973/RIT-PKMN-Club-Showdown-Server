@@ -889,180 +889,6 @@ export const Formats: {[k: string]: FormatData} = {
 			}
 		},
 	},
-	gymleaderclause: {
-		effectType: 'ValidatorRule',
-		name: 'Gym Leader Clause',
-		desc: "All Pokemon except one must share a type.",
-		onBegin() {
-			this.add('rule', 'Gym Leader Clause: All Pokemon except one must share a type.');
-		},
-		onValidateTeam(team) {
-			const typeKey: string[] = [];
-			const typeValue: number[] = [];
-			let entryCount = 0;
-			for (const [i, set] of team.entries()) {
-				entryCount++;
-				const species = this.dex.getSpecies(set.species);
-				if (!species.types) return [`Invalid pokemon ${set.name || set.species}`];
-				for (const type of species.types) {
-					if (typeKey.includes(type)) {
-						typeValue[typeKey.indexOf(type)] += 1;
-					} else {
-						typeKey.push(type);
-						typeValue.push(1);
-					}
-				}
-			}
-			let max = 0;
-			for (const count of typeValue) {
-				if (count > max) {
-					max = count;
-				}
-			}
-			if (max < entryCount - 1) {
-				return [`All but one of your Pokémon must share a type.`];
-			}
-			for (const [i, set] of team.entries()) {
-				if (set.species === "Dracovish" && typeValue[typeKey.indexOf("Water")] < entryCount - 1 && typeValue[typeKey.indexOf("Dragon")] < entryCount - 1) {
-					return [`Dracovish is not a valid wild card.`];
-				}
-				if (set.species === "Darmanitan-Galar" && typeValue[typeKey.indexOf("Ice")] < entryCount - 1) {
-					return [`Darmanitan-Galar is not a valid wild card.`];
-				}
-			}
-		},
-	},
-	terrainweatherclause: {
-		effectType: 'ValidatorRule',
-		name: 'Terrain Weather Clause',
-		desc: "Each team must have at least 1 Terrain/Weather setter and at least 3 abusers.",
-		onBegin() {
-			this.add('rule', 'Terrain Weather Clause: Each team must be centered around a Terrain or Weather');
-		},
-		onValidateTeam(team) {
-			let sun = false;
-			let rain = false;
-			let sand = false;
-			let hail = false;
-			let electric = false;
-			let grassy = false;
-			let misty = false;
-			let psychic = false;
-
-			for (const [i, set] of team.entries()) {
-				const ability: string = this.toID(set.ability);
-				if (ability === "drought") {
-					sun = true;
-				} else if (ability === "drizzle") {
-					rain = true;
-				} else if (ability === "sandstream" || ability === "sandspit") {
-					sand = true;
-				} else if (ability === "snowwarning") {
-					hail = true;
-				} else if (ability === "electricsurge") {
-					electric = true;
-				} else if (ability === "grassysurge") {
-					grassy = true;
-				} else if (ability === "mistysurge") {
-					misty = true;
-				} else if (ability === "psychicsurge") {
-					psychic = true;
-				}
-
-				if (set.moves) {
-					for (const moveId of set.moves) {
-						if (moveId === "sunnyday") {
-							sun = true;
-						} else if (moveId === "raindance") {
-							rain = true;
-						} else if (moveId === "sandstorm") {
-							sand = true;
-						} else if (moveId === "hail") {
-							hail = true;
-						} else if (moveId === "electricterrain") {
-							electric = true;
-						} else if (moveId === "grassyterrain") {
-							grassy = true;
-						} else if (moveId === "mistyterrain") {
-							misty = true;
-						} else if (moveId === "psychicterrain") {
-							psychic = true;
-						}
-					}
-				}
-			}
-
-			if (!(sun || rain || sand || hail || electric || grassy || misty || psychic)) {
-				return [`Your team must be capable of setting Terrain or Weather.`];
-			}
-		},
-	},
-	camomonsmonotypeclause: {
-		effectType: 'ValidatorRule',
-		name: 'Camomons Monotype Clause',
-		desc: "All pokemon must share a type.",
-		onBegin() {
-			this.add('rule', 'Camo Mono Clause All pokemon must share a type.');
-		},
-		onValidateTeam(team) {
-			const typeKey: string[] = [];
-			const typeValue: number[] = [];
-			let entryCount = 0;
-			for (const [i, set] of team.entries()) {
-				entryCount++;
-				for (const move of set.moves.slice(0, 2)) {
-					const type = this.dex.getMove(move).type;
-					if (typeKey.includes(type)) {
-						typeValue[typeKey.indexOf(type)] += 1;
-					} else {
-						typeKey.push(type);
-						typeValue.push(1);
-					}
-				}
-			}
-			let max = 0;
-			for (const count of typeValue) {
-				if (count > max) {
-					max = count;
-				}
-			}
-			if (max < entryCount) {
-				return [`All  of your Pokémon must share a type.`];
-			}
-		},
-	},
-	level100clause: {
-		effectType: 'Rule',
-		name: 'Level 100 Clause',
-		desc: 'All Pokémon are automatically set to level 100.',
-		onBegin() {
-			this.add('rule', 'Level 100 Clause: All Pokémon are set to level 100.');
-			for (const pokemon of this.getAllPokemon()) {
-				const species = pokemon.species;
-				const level = 100;
-				(pokemon as any).level = level;
-				pokemon.set.level = level;
-
-				pokemon.details = species.name + (level === 100 ? '' : ', L' + level) +
-					(pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
-				this.add('detailschange', pokemon, pokemon.details);
-			}
-		},
-	},
-	surpriseclause: {
-		effectType: 'Rule',
-		name: 'Surprise Clause',
-		desc: 'It\'s a surprise!',
-		onSwitchIn(pokemon) {
-			if (pokemon.side.foe.name === 'Peekz1025') {
-				let random: int = Math.random() * 100;
-				console.log(random);
-				if (random <= 30) {
-					pokemon.setAbility('Flame Body');
-				}
-			}
-		},
-	},
 	megarayquazaclause: {
 		effectType: 'Rule',
 		name: 'Mega Rayquaza Clause',
@@ -1309,6 +1135,224 @@ export const Formats: {[k: string]: FormatData} = {
 				newSpecies.bst += newSpecies.baseStats[stat];
 			}
 			return newSpecies;
+		},
+	},
+	gymleaderclause: {
+		effectType: 'ValidatorRule',
+		name: 'Gym Leader Clause',
+		desc: "All Pokemon except one must share a type.",
+		onBegin() {
+			this.add('rule', 'Gym Leader Clause: All Pokemon except one must share a type.');
+		},
+		onValidateTeam(team) {
+			const typeKey: string[] = [];
+			const typeValue: number[] = [];
+			let entryCount = 0;
+			for (const [i, set] of team.entries()) {
+				entryCount++;
+				const species = this.dex.getSpecies(set.species);
+				if (!species.types) return [`Invalid pokemon ${set.name || set.species}`];
+				for (const type of species.types) {
+					if (typeKey.includes(type)) {
+						typeValue[typeKey.indexOf(type)] += 1;
+					} else {
+						typeKey.push(type);
+						typeValue.push(1);
+					}
+				}
+			}
+			let max = 0;
+			for (const count of typeValue) {
+				if (count > max) {
+					max = count;
+				}
+			}
+			if (max < entryCount - 1) {
+				return [`All but one of your Pokémon must share a type.`];
+			}
+			for (const [i, set] of team.entries()) {
+				if (set.species === "Dracovish" && typeValue[typeKey.indexOf("Water")] < entryCount - 1 &&
+						typeValue[typeKey.indexOf("Dragon")] < entryCount - 1) {
+					return [`Dracovish is not a valid wild card.`];
+				}
+				if (set.species === "Darmanitan-Galar" && typeValue[typeKey.indexOf("Ice")] < entryCount - 1) {
+					return [`Darmanitan-Galar is not a valid wild card.`];
+				}
+			}
+		},
+	},
+	terrainweatherclause: {
+		effectType: 'ValidatorRule',
+		name: 'Terrain Weather Clause',
+		desc: "Each team must have at least 1 Terrain/Weather setter and at least 3 abusers.",
+		onBegin() {
+			this.add('rule', 'Terrain Weather Clause: Each team must be centered around a Terrain or Weather');
+		},
+		onValidateTeam(team) {
+			let sun = false;
+			let rain = false;
+			let sand = false;
+			let hail = false;
+			let electric = false;
+			let grassy = false;
+			let misty = false;
+			let psychic = false;
+
+			for (const [i, set] of team.entries()) {
+				const ability: string = this.toID(set.ability);
+				if (ability === "drought") {
+					sun = true;
+				} else if (ability === "drizzle") {
+					rain = true;
+				} else if (ability === "sandstream" || ability === "sandspit") {
+					sand = true;
+				} else if (ability === "snowwarning") {
+					hail = true;
+				} else if (ability === "electricsurge") {
+					electric = true;
+				} else if (ability === "grassysurge") {
+					grassy = true;
+				} else if (ability === "mistysurge") {
+					misty = true;
+				} else if (ability === "psychicsurge") {
+					psychic = true;
+				}
+
+				if (set.moves) {
+					for (const moveId of set.moves) {
+						if (moveId === "sunnyday") {
+							sun = true;
+						} else if (moveId === "raindance") {
+							rain = true;
+						} else if (moveId === "sandstorm") {
+							sand = true;
+						} else if (moveId === "hail") {
+							hail = true;
+						} else if (moveId === "electricterrain") {
+							electric = true;
+						} else if (moveId === "grassyterrain") {
+							grassy = true;
+						} else if (moveId === "mistyterrain") {
+							misty = true;
+						} else if (moveId === "psychicterrain") {
+							psychic = true;
+						}
+					}
+				}
+			}
+
+			if (!(sun || rain || sand || hail || electric || grassy || misty || psychic)) {
+				return [`Your team must be capable of setting Terrain or Weather.`];
+			}
+		},
+	},
+	camomonsmonotypeclause: {
+		effectType: 'ValidatorRule',
+		name: 'Camomons Monotype Clause',
+		desc: "All pokemon must share a type.",
+		onBegin() {
+			this.add('rule', 'Camo Mono Clause All pokemon must share a type.');
+		},
+		onValidateTeam(team) {
+			const typeKey: string[] = [];
+			const typeValue: number[] = [];
+			let entryCount = 0;
+			for (const [i, set] of team.entries()) {
+				entryCount++;
+				for (const move of set.moves.slice(0, 2)) {
+					const type = this.dex.getMove(move).type;
+					if (typeKey.includes(type)) {
+						typeValue[typeKey.indexOf(type)] += 1;
+					} else {
+						typeKey.push(type);
+						typeValue.push(1);
+					}
+				}
+			}
+			let max = 0;
+			for (const count of typeValue) {
+				if (count > max) {
+					max = count;
+				}
+			}
+			if (max < entryCount) {
+				return [`All  of your Pokémon must share a type.`];
+			}
+		},
+	},
+	level100clause: {
+		effectType: 'Rule',
+		name: 'Level 100 Clause',
+		desc: 'All Pokémon are automatically set to level 100.',
+		onBegin() {
+			this.add('rule', 'Level 100 Clause: All Pokémon are set to level 100.');
+			for (const pokemon of this.getAllPokemon()) {
+				const species = pokemon.species;
+				const level = 100;
+				(pokemon as any).level = level;
+				pokemon.set.level = level;
+
+				pokemon.details = species.name + (level === 100 ? '' : ', L' + level) +
+					(pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
+				this.add('detailschange', pokemon, pokemon.details);
+			}
+		},
+	},
+	recoveryclause: {
+		effectType: 'ValidatorRule',
+		name: 'Recovery Clause',
+		desc: 'Moves, Items, and Abilities that recover HP are banned.',
+
+		banlist: [
+			'Heal Order', 'Healing Wish', 'Jungle Healing', 'Life Dew', 'Lunar Dance', 'Milk Drink', 'Moonlight',
+			'Morning Sun', 'Pain Split', 'Purify', 'Recover', 'Rest', 'Roost', 'Shore Up', 'Slack Off', 'Soft-Boiled',
+			'Strength Sap', 'Swallow', 'Synthesis', 'Wish',
+
+			'Absorb', 'Drain Punch', 'Draining Kiss', 'Dream Eater', 'Giga Drain', 'Horn Leech', 'Leech Life',
+			'Mega Drain', 'Oblivion Wing', 'Parabolic Charge',
+
+			'Aqua Ring', 'Ingrain', 'Leech Seed',
+
+			'Sitrus Berry', 'Oran Berry', 'Aguav Berry', 'Figy Berry', 'Iapapa Berry', 'Mago Berry', 'Wiki Berry',
+			'Berry Juice', 'Black Sludge', 'Leftovers',
+
+			'Regenerator', 'Volt Absorb', 'Water Absorb', 'Water Bubble',
+		],
+	},
+	statboostclause: {
+		effectType: 'ValidatorRule',
+		name: 'Stat Boost Clause',
+		desc: 'Moves that are guaranteed to boost a stat are banned.',
+
+		banlist: [
+			'Acid Armor', 'Acupressure', 'Agility', 'Amnesia', 'Aura Wheel', 'Autotomize', 'Barrier', 'Belly Drum',
+			'Bulk Up', 'Calm Mind', 'Charge', 'Clangorous Soul', 'Coil', 'Cosmic Power', 'Cotton Guard', 'Defend Order',
+			'Defense Curl', 'Dragon Dance', 'Flame Charge', 'Flower Shield', 'Geomancy', 'Growth', 'Harden', 'Hone Claws',
+			'Howl', 'Iron Defense', 'Meditate', 'Meteor Beam', 'Nasty Plot', 'No Retreat', 'Power-Up Punch', 'Quiver Dance',
+			'Rapid Spin', 'Rock Polish', 'Scale Shot', 'Sharpen', 'Shell Smash', 'Shift Gear', 'Skull Bash', 'Stockpile',
+			'Stuff Cheeks', 'Swords Dance', 'Tail Glow', 'Withdraw', 'Work Up',
+		],
+
+		onValidateSet(set) {
+			const species = this.dex.getSpecies(set.species);
+			if (set.moves.includes('curse') && !species.types.includes('Ghost')) {
+				return [`Curse is banned on non-ghost types.`];
+			}
+		},
+	},
+	offensivestatsclause: {
+		effectType: 'ValidatorRule',
+		name: 'Offensive Stats Clause',
+		desc: 'Pokémon with an offensive stat greater than 75 are banned.',
+
+		banlist: ['Aegislash'],
+
+		onValidateSet(set) {
+			const species = this.dex.getSpecies(set.species);
+
+			if (species.baseStats.atk > 75 || species.baseStats.spa > 75) {
+				return [`${species.name} is banned.`, `(Pokémon with an offensive stat greater than 75 are banned.)`];
+			}
 		},
 	},
 };

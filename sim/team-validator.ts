@@ -250,8 +250,8 @@ export class TeamValidator {
 			problems.push(`Your team has more than than 24 Pok\u00E9mon, which the simulator can't handle.`);
 			return problems;
 		}
-		if (ruleTable.isBanned('nonexistent') && team.length > 6) {
-			problems.push(`Your team has more than than 6 Pok\u00E9mon.`);
+		if (ruleTable.isBanned('nonexistent') && team.length > 7) {
+			problems.push(`Your team has more than than 7 Pok\u00E9mon.`);
 			return problems;
 		}
 

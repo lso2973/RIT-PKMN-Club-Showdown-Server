@@ -23,20 +23,6 @@ export const Formats: FormatList = [
 		section: "RIT-specific Formats",
 	},
 	{
-		name: "[Gen 8] Test",
-		mod: 'gen8',
-		debug: true,
-		ruleset: [
-			'Team Preview', 'Sleep Clause Mod', 'Species Clause', 'Nickname Clause', 'OHKO Clause',
-			'Evasion Moves Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod',
-		],
-		battle: {trunc: Math.trunc},
-		teamLength: {
-			validate: [1, 7],
-			battle: 7,
-		},
-	},
-	{
 		name: "[Gen 8] Gym Challenge",
 		desc: `Use this format to challenge our 8 Gym Leaders!`,
 		threads: [
@@ -83,85 +69,88 @@ export const Formats: FormatList = [
 		},
 	},
 	{
-		name: "[Gen 8] National Dex eSports Draft",
-		desc: `RIT's eSports Draft - A collaboration between eSports and Pokémon Club.`,
+		name: "[Gen 8] Tier Tag",
+		desc: `Pick 1 pokémon from each tier, for 7 total! OU, UU, RU, NU, PU, ZU, LC.`,
 		threads: [
-			`&bullet; <a href="https://docs.google.com/spreadsheets/d/1rNo1vn0BogbPExlZ5LElBVz7cGBs6cGEHYI6CCq_EEQ/edit?pli=1#gid=233644122">Draft Document</a>`,
+			`&bullet; <a href="https://docs.google.com/document/d/1Qz7jUWobEWsANbd4z58xOocKlkLE2ds7iMxNoqk4HPo">Tier Tag</a>`,
 		],
 
 		mod: 'gen8',
-		ruleset: ['Standard NatDex', 'OHKO Clause', 'Evasion Moves Clause', 'Species Clause', 'Dynamax Clause', 'Sleep Clause Mod'],
-		banlist: [
-			'Arceus', 'Darkrai', 'Dialga', 'Giratina', 'Groudon', 'Ho-Oh', 'Kyogre', 'Lugia', 'Mewtwo', 'Necrozma-Dawn-Wings',
-			'Necrozma-Dusk-Mane', 'Necrozma-Ultra', 'Palkia', 'Rayquaza', 'Reshiram', 'Shaymin-Sky', 'Xerneas', 'Yveltal', 'Zekrom',
-			'Battle Bond', 'Moody', 'Power Construct', 'Blaziken + Speed Boost', 'Darmanitan-Galar + Gorilla Tactics',
-			'Landorus + Sheer Force', 'Cinderace + Libero', 'Baton Pass', 'Swagger',
+		ruleset: ['Standard', 'Dynamax Clause'],
+		banlist: ['Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'Baton Pass'],
+		teamLength: {
+			validate: [1, 7],
+			battle: 7,
+		},
 
-			// CT Moves
-			'Suicune + Crunch', 'Suicune + Helping Hand', 'Suicune + Weather Ball', 'Suicune + Agility', 'Suicune + Liquidation',
+		onValidateTeam(team) {
+			const tiers: string[] = [];
+			for (const set of team) {
+				const species = this.dex.getSpecies(set.species);
+				if (species.tier === 'OU') {
+					if (!tiers.includes('OU')) {
+						tiers.push('OU');
+					}
+				} else if (species.tier === 'UU' || species.tier === 'UUBL') {
+					if (!tiers.includes('UU')) {
+						tiers.push('UU');
+					}
+				} else if (species.tier === 'RU' || species.tier === 'RUBL') {
+					if (!tiers.includes('RU')) {
+						tiers.push('RU');
+					}
+				} else if (species.tier === 'NU' || species.tier === 'NUBL') {
+					if (!tiers.includes('NU')) {
+						tiers.push('NU');
+					}
+				} else if (species.tier === 'PU' || species.tier === 'PUBL') {
+					if (!tiers.includes('PU')) {
+						tiers.push('PU');
+					}
+				} else if (species.tier === '(PU)') {
+					if (!tiers.includes('ZU')) {
+						tiers.push('ZU');
+					}
+				} else if (species.tier === 'LC') {
+					if (!tiers.includes('LC')) {
+						tiers.push('LC');
+					}
+				}
+			}
 
-			'Victini + Mega Punch', 'Victini + Mega Kick', 'Victini + Fire Spin', 'Victini + Swift', 'Victini + Power Swap',
-			'Victini + Guard Swap', 'Victini + Speed Swap', 'Victini + Mystical Fire', 'Victini + Baton Pass', 'Victini + Encore',
-			'Victini + Future Sight', 'Victini + Blaze Kick', 'Victini + Scorching Sands', 'Victini + Expanding Force',
-
-			'Nidoking + Sand Tomb', 'Nidoking + Mud Shot', 'Nidoking + Rock Blast', 'Nidoking + Hex', 'Nidoking + High Horsepower',
-			'Nidoking + Body Press', 'Nidoking + Scorching Sands',
-
-			'Sceptile + Leafage', 'Sceptile + Assurance', 'Sceptile + Solar Blade', 'Sceptile + Cross Poison',
-			'Sceptile + Breaking Swipe', 'Sceptile + Dragon Dance', 'Sceptile + Grassy Glide', 'Sceptile + Scale Shot',
-
-			'Zygarde + Swift', 'Zygarde + Payback', 'Zygarde + Retaliate', 'Zygarde + Body Slam', 'Zygarde + Reversal',
-			'Zygarde + Endure', 'Zygarde + Breaking Swipe', 'Zygarde + High Horsepower', 'Zygarde + Scorching Sands',
-			'Zygarde + Skitter Smack', 'Zygarde + Scale Shot',
-
-			'Buzzwole + Revenge', 'Buzzwole + Body Slam', 'Buzzwole + Close Combat', 'Buzzwole + Darkest Lariat',
-			'Buzzwole + High Horsepower', 'Buzzwole + Coaching', 'Buzzwole + Dual Wingbeat',
-
-			'Moltres + Gust', 'Moltres + Weather Ball', 'Moltres + Mystical Fire', 'Moltres + Flare Blitz', 'Moltres + Brave Bird',
-			'Moltres + Burning Jealousy', 'Moltres + Scorching Sands', 'Moltres + Dual Wingbeat',
-
-			'Relicanth + Rock Blast', 'Relicanth + Iron Defense', 'Relicanth + Liquidation', 'Relicanth + Body Press',
-			'Relicanth + Meteor Beam', 'Relicanth + Scale Shot',
-
-			'Diancie + Charm', 'Diancie + Fake Tears', 'Diancie + Sand Tomb', 'Diancie + Guard Swap', 'Diancie + Draining Kiss',
-			'Diancie + Mystical Fire', 'Diancie + move:Metronome', 'Diancie + Amnesia', 'Diancie + Endure', 'Diancie + Baton Pass',
-			'Diancie + Encore', 'Diancie + Stored Power', 'Diancie + Ally Switch', 'Diancie + Play Rough', 'Diancie + Terrain Pulse',
-			'Diancie + Meteor Beam', 'Diancie + Misty Explosion',
-
-			'Heatran + Metal Claw', 'Heatran + Self-Destruct', 'Heatran + Body Slam', 'Heatran + Heavy Slam', 'Heatran + Heat Crash',
-			'Heatran + Body Press', 'Heatran + Burning Jealousy', 'Heatran + Scorching Sands', 'Heatran + Steel Roller', 'Heatran + Flame Body',
-
-			'Tapu Koko + Fairy Wind', 'Tapu Koko + Rest', 'Tapu Koko + Swift', 'Tapu Koko + Assurance', 'Tapu Koko + Eerie Impulse',
-			'Tapu Koko + Endure', 'Tapu Koko + Stored Power', 'Tapu Koko + Telepathy',
-
-			'Metagross + Tackle', 'Metagross + Psycho Cut', 'Metagross + Brutal Swing', 'Metagross + Cosmic Power',
-			'Metagross + Body Press', 'Metagross + Expanding Force', 'Metagross + Meteor Beam', 'Metagross + Steel Roller',
-
-			'Volcanion + Fire Spin', 'Volcanion + Water Gun', 'Volcanion + Leer', 'Volcanion + Scary Face', 'Volcanion + Self-Destruct',
-			'Volcanion + Scary Face', 'Volcanion + Rain Dance', 'Volcanion + Mud Shot', 'Volcanion + Thunder Fang',
-			'Volcanion + Misty Terrain', 'Volcanion + Focus Energy', 'Volcanion + Endure', 'Volcanion + Heavy Slam',
-			'Volcanion + Heat Crash', 'Volcanion + Body Press', 'Volcanion + Scorching Sands',
-
-			'Kartana + Solar Blade', 'Kartana + Screech', 'Kartana + Endure',
-
-			'Aerodactyl + Rock Blast', 'Aerodactyl + Dragon Dance', 'Aerodactyl + Hurricane', 'Aerodactyl + Psychic Fangs',
-			'Aerodactyl + Dual Wingbeat', 'Aerodactyl + Meteor Beam',
-
-			'Altaria + Fire Spin', 'Altaria + Breaking Swipe', 'Altaria + Hurricane', 'Altaria + Dual Wingbeat',
-
-			'Blacephalon + Fire Spin', 'Blacephalon + Confuse Ray', 'Blacephalon + Incinerate', 'Blacephalon + Hypnosis',
-			'Blacephalon + Mystical Fire', 'Blacephalon + Fire Punch', 'Blacephalon + Solar Beam', 'Blacephalon + Self-Destruct',
-			'Blacephalon + Rock Blast', 'Blacephalon + Endure', 'Blacephalon + Encore', 'Blacephalon + Zen Headbutt',
-			'Blacephalon + Expanding Force',
-		],
-		onValidateSet(set) {
-			const item = this.dex.getItem(set.item);
-			if (item?.megaStone) {
-				return [`Mega evolution is not allowed.`];
-			} else if (item?.zMove) {
-				return [`Z-moves are not allowed.`];
+			if (tiers.length !== 7) {
+				const difference = ['OU', 'UU', 'RU', 'NU', 'PU', 'ZU', 'LC'].filter(x => !tiers.includes(x));
+				let diffSentence = `You are missing: `;
+				for (const tier of difference) {
+					diffSentence += tier + `, `;
+				}
+				diffSentence = diffSentence.substring(0, diffSentence.length - 2);
+				return [
+					`You must have one pokémon from each of the following tiers: `,
+					`OU, UU/UUBL, RU/RUBL, NU/NUBL, PU/PUBL, ZU, LC`,
+					diffSentence,
+				];
 			}
 		},
+	},
+	{
+		name: "[Gen 8] Wet Noodle SlapFest",
+		desc: `Only pokémon with offensive stats <=75 are allowed.`,
+		threads: [
+			`&bullet; <a href="https://docs.google.com/document/d/1HaVSk65OUmktW8_iUhuXKlazR3z-il-HapUdsTzaXMw">Wet Noodle SlapFest</a>`,
+		],
+
+		mod: 'gen8',
+		ruleset: ['Standard', 'Offensive Stats Clause', 'Moody Clause', 'Recovery Clause', 'Stat Boost Clause', 'Dynamax Clause'],
+		banlist: [
+			'Blissey', 'Chansey', 'Cresselia', 'Mandibuzz', 'Registeel', 'Toxapex', 'Umbreon', 'Uxie', 'Wishiwashi',
+
+			'Eviolite', 'Light Ball',
+
+			'Contrary', 'Huge Power', 'Pure Power',
+
+			'Body Press', 'Night Shade', 'Seismic Toss',
+		],
 	},
 	{
 		section: "RIT Archive",
@@ -252,6 +241,87 @@ export const Formats: FormatList = [
 		},
 		onAfterMega(pokemon) {
 			this.add('-start', pokemon, 'typechange', pokemon.getTypes(true).join('/'), '[silent]');
+		},
+	},
+	{
+		name: "[Gen 8] National Dex eSports Draft",
+		desc: `RIT's eSports Draft - A collaboration between eSports and Pokémon Club.`,
+		threads: [
+			`&bullet; <a href="https://docs.google.com/spreadsheets/d/1rNo1vn0BogbPExlZ5LElBVz7cGBs6cGEHYI6CCq_EEQ/edit?pli=1#gid=233644122">Draft Document</a>`,
+		],
+
+		mod: 'gen8',
+		ruleset: ['Standard NatDex', 'OHKO Clause', 'Evasion Moves Clause', 'Species Clause', 'Dynamax Clause', 'Sleep Clause Mod'],
+		banlist: [
+			'Arceus', 'Darkrai', 'Dialga', 'Giratina', 'Groudon', 'Ho-Oh', 'Kyogre', 'Lugia', 'Mewtwo', 'Necrozma-Dawn-Wings',
+			'Necrozma-Dusk-Mane', 'Necrozma-Ultra', 'Palkia', 'Rayquaza', 'Reshiram', 'Shaymin-Sky', 'Xerneas', 'Yveltal', 'Zekrom',
+			'Battle Bond', 'Moody', 'Power Construct', 'Blaziken + Speed Boost', 'Darmanitan-Galar + Gorilla Tactics',
+			'Landorus + Sheer Force', 'Cinderace + Libero', 'Baton Pass', 'Swagger',
+
+			// CT Moves
+			'Suicune + Crunch', 'Suicune + Helping Hand', 'Suicune + Weather Ball', 'Suicune + Agility', 'Suicune + Liquidation',
+
+			'Victini + Mega Punch', 'Victini + Mega Kick', 'Victini + Fire Spin', 'Victini + Swift', 'Victini + Power Swap',
+			'Victini + Guard Swap', 'Victini + Speed Swap', 'Victini + Mystical Fire', 'Victini + Baton Pass', 'Victini + Encore',
+			'Victini + Future Sight', 'Victini + Blaze Kick', 'Victini + Scorching Sands', 'Victini + Expanding Force',
+
+			'Nidoking + Sand Tomb', 'Nidoking + Mud Shot', 'Nidoking + Rock Blast', 'Nidoking + Hex', 'Nidoking + High Horsepower',
+			'Nidoking + Body Press', 'Nidoking + Scorching Sands',
+
+			'Sceptile + Leafage', 'Sceptile + Assurance', 'Sceptile + Solar Blade', 'Sceptile + Cross Poison',
+			'Sceptile + Breaking Swipe', 'Sceptile + Dragon Dance', 'Sceptile + Grassy Glide', 'Sceptile + Scale Shot',
+
+			'Zygarde + Swift', 'Zygarde + Payback', 'Zygarde + Retaliate', 'Zygarde + Body Slam', 'Zygarde + Reversal',
+			'Zygarde + Endure', 'Zygarde + Breaking Swipe', 'Zygarde + High Horsepower', 'Zygarde + Scorching Sands',
+			'Zygarde + Skitter Smack', 'Zygarde + Scale Shot',
+
+			'Buzzwole + Revenge', 'Buzzwole + Body Slam', 'Buzzwole + Close Combat', 'Buzzwole + Darkest Lariat',
+			'Buzzwole + High Horsepower', 'Buzzwole + Coaching', 'Buzzwole + Dual Wingbeat',
+
+			'Moltres + Gust', 'Moltres + Weather Ball', 'Moltres + Mystical Fire', 'Moltres + Flare Blitz', 'Moltres + Brave Bird',
+			'Moltres + Burning Jealousy', 'Moltres + Scorching Sands', 'Moltres + Dual Wingbeat',
+
+			'Relicanth + Rock Blast', 'Relicanth + Iron Defense', 'Relicanth + Liquidation', 'Relicanth + Body Press',
+			'Relicanth + Meteor Beam', 'Relicanth + Scale Shot',
+
+			'Diancie + Charm', 'Diancie + Fake Tears', 'Diancie + Sand Tomb', 'Diancie + Guard Swap', 'Diancie + Draining Kiss',
+			'Diancie + Mystical Fire', 'Diancie + move:Metronome', 'Diancie + Amnesia', 'Diancie + Endure', 'Diancie + Baton Pass',
+			'Diancie + Encore', 'Diancie + Stored Power', 'Diancie + Ally Switch', 'Diancie + Play Rough', 'Diancie + Terrain Pulse',
+			'Diancie + Meteor Beam', 'Diancie + Misty Explosion',
+
+			'Heatran + Metal Claw', 'Heatran + Self-Destruct', 'Heatran + Body Slam', 'Heatran + Heavy Slam', 'Heatran + Heat Crash',
+			'Heatran + Body Press', 'Heatran + Burning Jealousy', 'Heatran + Scorching Sands', 'Heatran + Steel Roller', 'Heatran + Flame Body',
+
+			'Tapu Koko + Fairy Wind', 'Tapu Koko + Rest', 'Tapu Koko + Swift', 'Tapu Koko + Assurance', 'Tapu Koko + Eerie Impulse',
+			'Tapu Koko + Endure', 'Tapu Koko + Stored Power', 'Tapu Koko + Telepathy',
+
+			'Metagross + Tackle', 'Metagross + Psycho Cut', 'Metagross + Brutal Swing', 'Metagross + Cosmic Power',
+			'Metagross + Body Press', 'Metagross + Expanding Force', 'Metagross + Meteor Beam', 'Metagross + Steel Roller',
+
+			'Volcanion + Fire Spin', 'Volcanion + Water Gun', 'Volcanion + Leer', 'Volcanion + Scary Face', 'Volcanion + Self-Destruct',
+			'Volcanion + Scary Face', 'Volcanion + Rain Dance', 'Volcanion + Mud Shot', 'Volcanion + Thunder Fang',
+			'Volcanion + Misty Terrain', 'Volcanion + Focus Energy', 'Volcanion + Endure', 'Volcanion + Heavy Slam',
+			'Volcanion + Heat Crash', 'Volcanion + Body Press', 'Volcanion + Scorching Sands',
+
+			'Kartana + Solar Blade', 'Kartana + Screech', 'Kartana + Endure',
+
+			'Aerodactyl + Rock Blast', 'Aerodactyl + Dragon Dance', 'Aerodactyl + Hurricane', 'Aerodactyl + Psychic Fangs',
+			'Aerodactyl + Dual Wingbeat', 'Aerodactyl + Meteor Beam',
+
+			'Altaria + Fire Spin', 'Altaria + Breaking Swipe', 'Altaria + Hurricane', 'Altaria + Dual Wingbeat',
+
+			'Blacephalon + Fire Spin', 'Blacephalon + Confuse Ray', 'Blacephalon + Incinerate', 'Blacephalon + Hypnosis',
+			'Blacephalon + Mystical Fire', 'Blacephalon + Fire Punch', 'Blacephalon + Solar Beam', 'Blacephalon + Self-Destruct',
+			'Blacephalon + Rock Blast', 'Blacephalon + Endure', 'Blacephalon + Encore', 'Blacephalon + Zen Headbutt',
+			'Blacephalon + Expanding Force',
+		],
+		onValidateSet(set) {
+			const item = this.dex.getItem(set.item);
+			if (item?.megaStone) {
+				return [`Mega evolution is not allowed.`];
+			} else if (item?.zMove) {
+				return [`Z-moves are not allowed.`];
+			}
 		},
 	},
 	// Sw/Sh Singles
@@ -524,7 +594,7 @@ export const Formats: FormatList = [
 		threads: [
 			`&bullet; <a href="https://www.smogon.com/forums/threads/3672010/">Doubles OU Metagame Discussion</a>`,
 			`&bullet; <a href="https://www.smogon.com/forums/threads/3658826/">Doubles OU Sample Teams</a>`,
-			`&bullet; <a href="https://www.smogon.com/forums/threads/3673519/">Doubles OU Viability Rankings</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3658242/">Doubles OU Viability Rankings</a>`,
 		],
 
 		mod: 'gen8',
@@ -1064,8 +1134,8 @@ export const Formats: FormatList = [
 			'Moody', 'Shadow Tag', 'Baton Pass', 'Electrify',
 		],
 		restricted: [
-			'Calyrex-Ice', 'Dialga', 'Eternatus', 'Gengar', 'Giratina', 'Groudon', 'Ho-Oh', 'Kyurem-Black', 'Kyurem-White',
-			'Lugia', 'Lunala', 'Marshadow', 'Melmetal', 'Mewtwo', 'Naganadel', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane',
+			'Calyrex-Ice', 'Dialga', 'Eternatus', 'Giratina', 'Groudon', 'Ho-Oh', 'Kyurem-Black', 'Kyurem-White',
+			'Lugia', 'Lunala', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane',
 			'Palkia', 'Rayquaza', 'Regigigas', 'Reshiram', 'Xerneas', 'Yveltal', 'Zacian', 'Zekrom', 'Zygarde-Complete',
 		],
 		onValidateTeam(team) {
@@ -1138,12 +1208,12 @@ export const Formats: FormatList = [
 		ruleset: ['Standard', 'STABmons Move Legality', 'Dynamax Clause'],
 		banlist: [
 			'Calyrex-Ice', 'Calyrex-Shadow', 'Darmanitan-Galar', 'Dialga', 'Dracovish', 'Dragapult', 'Eternatus', 'Genesect', 'Giratina', 'Giratina-Origin', 'Groudon', 'Ho-Oh',
-			'Kartana', 'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Landorus-Base', 'Lugia', 'Lunala', 'Marshadow', 'Mewtwo', 'Naganadel', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane',
-			'Palkia', 'Pheromosa', 'Porygon-Z', 'Rayquaza', 'Reshiram', 'Silvally', 'Solgaleo', 'Thundurus-Base', 'Xerneas', 'Yveltal', 'Zacian', 'Zamazenta', 'Zekrom', 'Zygarde-Base',
+			'Kartana', 'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Landorus-Base', 'Lugia', 'Lunala', 'Marshadow', 'Mewtwo', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Palkia',
+			'Pheromosa', 'Porygon-Z', 'Rayquaza', 'Reshiram', 'Silvally', 'Solgaleo', 'Thundurus-Base', 'Xerneas', 'Yveltal', 'Zacian', 'Zamazenta', 'Zekrom', 'Zygarde-Base',
 			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock', 'Baton Pass',
 		],
 		restricted: [
-			'Acupressure', 'Astral Barrage', 'Belly Drum', 'Bolt Beak', 'Double Iron Bash', 'Electrify', 'Extreme Speed', 'Fishious Rend',
+			'Acupressure', 'Belly Drum', 'Bolt Beak', 'Double Iron Bash', 'Electrify', 'Extreme Speed', 'Fishious Rend',
 			'Geomancy', 'Lovely Kiss', 'Shell Smash', 'Shift Gear', 'Spore', 'Thousand Arrows', 'V-create', 'Wicked Blow',
 		],
 	},
@@ -1297,12 +1367,10 @@ export const Formats: FormatList = [
 			mixedSpecies.evos = [];
 			mixedSpecies.eggGroups = crossSpecies.eggGroups;
 			mixedSpecies.abilities = crossSpecies.abilities;
-			mixedSpecies.bst = 0;
 			let i: StatName;
 			for (i in species.baseStats) {
 				const statChange = crossSpecies.baseStats[i] - crossPrevoSpecies.baseStats[i];
 				mixedSpecies.baseStats[i] = this.clampIntRange(species.baseStats[i] + statChange, 1, 255);
-				mixedSpecies.bst += mixedSpecies.baseStats[i];
 			}
 			if (crossSpecies.types[0] !== crossPrevoSpecies.types[0]) mixedSpecies.types[0] = crossSpecies.types[0];
 			if (crossSpecies.types[1] !== crossPrevoSpecies.types[1]) {
@@ -1350,9 +1418,7 @@ export const Formats: FormatList = [
 			if (godSpecies.forme === 'Crowned') {
 				godSpecies = this.dex.getSpecies(godSpecies.changesFrom || godSpecies.baseSpecies);
 			}
-			newSpecies.bst -= newSpecies.baseStats[stat];
 			newSpecies.baseStats[stat] = godSpecies.baseStats[stat as StatName];
-			newSpecies.bst += newSpecies.baseStats[stat];
 			return newSpecies;
 		},
 	},
@@ -1615,14 +1681,12 @@ export const Formats: FormatList = [
 			};
 			const tier = this.toID(species.tier) || 'ou';
 			if (!(tier in boosts)) return;
-			const pokemon = this.dex.deepClone(species);
-			pokemon.bst = 0;
+			const pokemon: Species = this.dex.deepClone(species);
 			const boost = boosts[tier];
 			let statName: StatName;
-			for (statName in pokemon.baseStats as StatsTable) {
+			for (statName in pokemon.baseStats) {
 				if (statName === 'hp') continue;
 				pokemon.baseStats[statName] = this.clampIntRange(pokemon.baseStats[statName] + boost, 1, 255);
-				pokemon.bst += pokemon.baseStats[statName];
 			}
 			return pokemon;
 		},
@@ -1685,7 +1749,7 @@ export const Formats: FormatList = [
 
 		mod: 'gen8',
 		team: 'randomHC',
-		ruleset: ['Obtainable Formes', 'HP Percentage Mod', 'Cancel Mod', 'Surprise Clause'],
+		ruleset: ['Obtainable Formes', 'HP Percentage Mod', 'Cancel Mod'],
 	},
 	{
 		name: "[Gen 8] Doubles Hackmons Cup",
@@ -1694,7 +1758,7 @@ export const Formats: FormatList = [
 		gameType: 'doubles',
 		team: 'randomHC',
 		searchShow: false,
-		ruleset: ['Obtainable', 'HP Percentage Mod', 'Cancel Mod', 'Surprise Clause'],
+		ruleset: ['Obtainable', 'HP Percentage Mod', 'Cancel Mod'],
 	},
 	{
 		name: "[Gen 8] CAP 1v1",
