@@ -87,8 +87,6 @@ export const Formats: FormatList = [
 			const tiers: string[] = [];
 			for (const set of team) {
 				const species = this.dex.getSpecies(set.species);
-				console.log(species.name);
-				console.log(species.tier);
 				if (species.tier === 'OU') {
 					if (!tiers.includes('OU')) {
 						tiers.push('OU');
