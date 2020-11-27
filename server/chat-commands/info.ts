@@ -491,6 +491,8 @@ export const commands: ChatCommands = {
 				Utils.html`${curUser.connected ? ` \u25C9 ` : ` \u25CC `} ${curUser.name}`
 			);
 		}
+		Utils.sortBy(results, name => name.startsWith('  \u25C9'));
+		if (!results.length) results.push(`No users found.`);
 		return this.sendReplyBox(
 			`Users with a name matching '${target}':<br />${results.join('; ')}`
 		);
@@ -2622,6 +2624,7 @@ export const commands: ChatCommands = {
 		const YouTube = new YoutubeInterface();
 		if (YouTube.linkRegex.test(link)) {
 			buf = await YouTube.generateVideoDisplay(link);
+			this.message = this.message.replace(/&ab_channel=(.*)(&|)/ig, '').replace(/https:\/\/www\./ig, '');
 		} else {
 			try {
 				const [width, height, resized] = await Chat.fitImage(link);
