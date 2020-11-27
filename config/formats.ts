@@ -70,7 +70,7 @@ export const Formats: FormatList = [
 	},
 	{
 		name: "[Gen 8] Tier Tag",
-		desc: `Pick 1 pokémon from each tier, for 7 total! OU, UU, RU, NU, PU, ZU, LC.`,
+		desc: `Pick 1 pokémon from each tier, for 7 total! OU, UU, RU, NU, PU, ZU, NFE, LC.`,
 		threads: [
 			`&bullet; <a href="https://docs.google.com/document/d/1Qz7jUWobEWsANbd4z58xOocKlkLE2ds7iMxNoqk4HPo">Tier Tag</a>`,
 		],
@@ -79,14 +79,16 @@ export const Formats: FormatList = [
 		ruleset: ['Standard', 'Dynamax Clause'],
 		banlist: ['Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'Baton Pass'],
 		teamLength: {
-			validate: [1, 7],
-			battle: 7,
+			validate: [1, 8],
+			battle: 8,
 		},
 
 		onValidateTeam(team) {
 			const tiers: string[] = [];
 			for (const set of team) {
 				const species = this.dex.getSpecies(set.species);
+				console.log(species.name);
+				console.log(species.tier);
 				if (species.tier === 'OU') {
 					if (!tiers.includes('OU')) {
 						tiers.push('OU');
@@ -111,6 +113,10 @@ export const Formats: FormatList = [
 					if (!tiers.includes('ZU')) {
 						tiers.push('ZU');
 					}
+				} else if (species.tier === 'NFE') {
+					if (!tiers.includes('NFE')) {
+						tiers.push('NFE');
+					}
 				} else if (species.tier === 'LC') {
 					if (!tiers.includes('LC')) {
 						tiers.push('LC');
@@ -118,8 +124,8 @@ export const Formats: FormatList = [
 				}
 			}
 
-			if (tiers.length !== 7) {
-				const difference = ['OU', 'UU', 'RU', 'NU', 'PU', 'ZU', 'LC'].filter(x => !tiers.includes(x));
+			if (tiers.length !== 8) {
+				const difference = ['OU', 'UU', 'RU', 'NU', 'PU', 'ZU', 'NFE', 'LC'].filter(x => !tiers.includes(x));
 				let diffSentence = `You are missing: `;
 				for (const tier of difference) {
 					diffSentence += tier + `, `;
@@ -127,7 +133,7 @@ export const Formats: FormatList = [
 				diffSentence = diffSentence.substring(0, diffSentence.length - 2);
 				return [
 					`You must have one pokémon from each of the following tiers: `,
-					`OU, UU/UUBL, RU/RUBL, NU/NUBL, PU/PUBL, ZU, LC`,
+					`OU, UU/UUBL, RU/RUBL, NU/NUBL, PU/PUBL, ZU, NFE, LC`,
 					diffSentence,
 				];
 			}
