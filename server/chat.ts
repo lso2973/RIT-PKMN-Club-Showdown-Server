@@ -50,6 +50,7 @@ export type AnnotatedChatHandler = ChatHandler & {
 	fullCmd: string,
 	isPrivate: boolean,
 	disabled: boolean,
+	aliases: string[],
 };
 export interface ChatCommands {
 	[k: string]: ChatHandler | string | string[] | ChatCommands;
@@ -83,7 +84,7 @@ export type SettingsHandler = (
  * 2. return an altered string - to alter a user's message
  * 3. return undefined to send the original message through
  */
-export type ChatFilter = (
+export type ChatFilter = ((
 	this: CommandContext,
 	message: string,
 	user: User,
@@ -91,7 +92,7 @@ export type ChatFilter = (
 	connection: Connection,
 	targetUser: User | null,
 	originalMessage: string
-) => string | false | null | undefined;
+) => string | false | null | undefined) & {priority?: number};
 
 export type NameFilter = (name: string, user: User) => string;
 export type NicknameFilter = (name: string, user: User) => string | false;
@@ -983,7 +984,7 @@ export class CommandContext extends MessageContext {
 				}
 				if (targetUser.settings.blockPMs &&
 					(targetUser.settings.blockPMs === true || !Users.globalAuth.atLeast(user, targetUser.settings.blockPMs)) &&
-					!user.can('lock')) {
+					!user.can('lock') && targetUser.id !== user.id) {
 					Chat.maybeNotifyBlocked('pm', targetUser, user);
 					if (!targetUser.can('lock')) {
 						throw new Chat.ErrorMessage(this.tr`This user is blocking private messages right now.`);
@@ -993,7 +994,8 @@ export class CommandContext extends MessageContext {
 					}
 				}
 				if (user.settings.blockPMs && (user.settings.blockPMs === true ||
-					!Users.globalAuth.atLeast(targetUser, user.settings.blockPMs)) && !targetUser.can('lock')) {
+					!Users.globalAuth.atLeast(targetUser, user.settings.blockPMs)) && !targetUser.can('lock') &&
+					targetUser.id !== user.id) {
 					throw new Chat.ErrorMessage(this.tr`You are blocking private messages right now.`);
 				}
 			}
@@ -1478,8 +1480,9 @@ export const Chat = new class {
 		// ensure that english is the first entry when we iterate over Chat.languages
 		Chat.languages.set('english' as ID, 'English');
 		for (const dirname of directories) {
+			// translation dirs shouldn't have caps, but things like sourceMaps and the README will
+			if (/[^a-z0-9]/.test(dirname)) continue;
 			const dir = FS(`${TRANSLATION_DIRECTORY}/${dirname}`);
-			if (!dir.isDirectorySync()) continue;
 
 			// For some reason, toID() isn't available as a global when this executes.
 			const languageID = Dex.toID(dirname);
@@ -1525,7 +1528,7 @@ export const Chat = new class {
 	tr(language: ID | null, strings: TemplateStringsArray | string = '', ...keys: any[]) {
 		if (!language) language = 'english' as ID;
 		// If strings is an array (normally the case), combine before translating.
-		const trString = Array.isArray(strings) ? strings.join('${}') : strings;
+		const trString = typeof strings === 'string' ? strings : strings.join('${}');
 
 		if (!Chat.translations.has(language)) {
 			if (!Chat.translationsLoaded) return trString;
@@ -1629,6 +1632,13 @@ export const Chat = new class {
 			if (typeof entry === 'object') {
 				this.annotateCommands(entry, `${namespace}${cmd} `);
 			}
+			if (typeof entry === 'string') {
+				const base = commandTable[entry];
+				if (!base) continue;
+				if (!base.aliases) base.aliases = [];
+				base.aliases.push(cmd);
+				continue;
+			}
 			if (typeof entry !== 'function') continue;
 
 			const handlerCode = entry.toString();
@@ -1636,6 +1646,7 @@ export const Chat = new class {
 			entry.hasRoomPermissions = /\bthis\.(checkCan|can)\([^,)\n]*, [^,)\n]*,/.test(handlerCode);
 			entry.broadcastable = cmd.endsWith('help') || /\bthis\.(?:(check|can|run)Broadcast)\(/.test(handlerCode);
 			entry.isPrivate = /\bthis\.(?:privately(Check)?Can|commandDoesNotExist)\(/.test(handlerCode);
+			if (!entry.aliases) entry.aliases = [];
 
 			// assign properties from the base command if the current command uses CommandContext.run.
 			const runsCommand = /this.run\((?:'|"|`)(.*?)(?:'|"|`)\)/.exec(handlerCode);
@@ -1731,6 +1742,7 @@ export const Chat = new class {
 			this.loadPlugin(`chat-plugins/${file}`);
 		}
 		Chat.oldPlugins = {};
+		Utils.sortBy(Chat.filters, filter => filter.priority || 0);
 	}
 	destroy() {
 		for (const handler of Chat.destroyHandlers) {
@@ -1831,6 +1843,19 @@ export const Chat = new class {
 			fullCmd: fullCmd,
 			handler: commandHandler as AnnotatedChatHandler | null,
 		};
+	}
+	allCommands(table: ChatCommands = Chat.commands) {
+		const results: AnnotatedChatHandler[] = [];
+		for (const cmd in table) {
+			const handler = table[cmd];
+			if (Array.isArray(handler) || !handler || typeof handler === 'string') continue;
+			if (typeof handler === 'object') {
+				results.push(...this.allCommands(handler));
+				continue;
+			}
+			results.push(handler as AnnotatedChatHandler);
+		}
+		return results;
 	}
 
 	/**
