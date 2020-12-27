@@ -144,28 +144,28 @@ export class Modlog {
 			const dbExists = FS(databasePath).existsSync();
 			const SQL = require('better-sqlite3');
 			this.database = new SQL(databasePath);
-			this.database.exec("PRAGMA foreign_keys = ON;");
+			this.database!.exec("PRAGMA foreign_keys = ON;");
 
 			// Set up tables, etc
 
 			if (!dbExists) {
-				this.database.exec(FS(MODLOG_SCHEMA_PATH).readIfExistsSync());
+				this.database!.exec(FS(MODLOG_SCHEMA_PATH).readIfExistsSync());
 			}
 
 			let insertionQuerySource = `INSERT INTO modlog (timestamp, roomid, visual_roomid, action, userid, autoconfirmed_userid, ip, action_taker_userid, note)`;
 			insertionQuerySource += ` VALUES ($time, $roomID, $visualRoomID, $action, $userid, $autoconfirmedID, $ip, $loggedBy, $note)`;
-			this.modlogInsertionQuery = this.database.prepare(insertionQuerySource);
+			this.modlogInsertionQuery = this.database!.prepare(insertionQuerySource);
 
-			this.altsInsertionQuery = this.database.prepare(`INSERT INTO alts (modlog_id, userid) VALUES (?, ?)`);
-			this.renameQuery = this.database.prepare(`UPDATE modlog SET roomid = ? WHERE roomid = ?`);
+			this.altsInsertionQuery = this.database!.prepare(`INSERT INTO alts (modlog_id, userid) VALUES (?, ?)`);
+			this.renameQuery = this.database!.prepare(`UPDATE modlog SET roomid = ? WHERE roomid = ?`);
 
-			this.insertionTransaction = this.database.transaction((entries: Iterable<ModlogEntry>) => {
+			this.insertionTransaction = this.database!.transaction((entries: Iterable<ModlogEntry>) => {
 				for (const entry of entries) {
-					const result = this.modlogInsertionQuery.run(entry);
+					const result = this.modlogInsertionQuery!.run(entry);
 					const rowid = result.lastInsertRowid as number;
 
 					for (const alt of entry.alts || []) {
-						this.altsInsertionQuery.run(rowid, alt);
+						this.altsInsertionQuery!.run(rowid, alt);
 					}
 				}
 			});
