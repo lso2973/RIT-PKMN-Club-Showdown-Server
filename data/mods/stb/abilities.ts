@@ -104,6 +104,24 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	*/
 	// Please keep abilites organized alphabetically based on staff member name!
 	// RibbonNymph
+	pixilatex: {
+		onModifyTypePriority: -1,
+		onModifyType(move, pokemon, target) {
+			const noModifyType = [
+				'judgment', 'multiattack', 'naturalgift', 'revelationdance', 'technoblast', 'terrainpulse', 'weatherball',
+			];
+			if (target.runEffectiveness(move) < 0 && !noModifyType.includes(move.id) && !(move.isZ && move.category !== 'Status')) {
+				move.type = 'Fairy';
+				move.pixilateBoosted = true;
+			}
+		},
+		onBasePowerPriority: 23,
+		onBasePower(basePower, pokemon, target, move) {
+			if (move.pixilateBoosted) return this.chainModify([0x1333, 0x1000]);
+		},
+		name: "Pixilate X",
+		rating: 4,
+	},
 	// ScarTheColossus
 	// torwildheart
 	// VolticHalberd
