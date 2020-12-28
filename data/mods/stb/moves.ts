@@ -152,6 +152,31 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		zMove: {boost: {spd: 1}},
 		contestType: "Beautiful",
 	},
+	// ScarTheColossus
+	balance:{
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: '"Balance"',
+		isNonstandard: 'Custom',
+		desc: "Raises the user’s physical attack and defense by +1 stage and lower its speed by -1 stage. The user regains the item it last used. Fails if the user is holding an item, if the user has not held an item, if the item was a popped Air Balloon, if the item was picked up by a Pokémon with the Pickup Ability, or if the item was lost to Bug Bite, Covet, Incinerate, Knock Off, Pluck, or Thief. Items thrown with Fling can be regained. Burns the user.",
+		shortDesc "Curse + Recycle + self burn",
+		flags: {snatch: 1},
+		boosts: {atk: 1, def: 1, spe -1},
+		onHit(pokemon) {
+			if (pokemon.item || !pokemon.lastItem) return false;
+			const item = pokemon.lastItem;
+			pokemon.lastItem = '';
+			this.add('-item', pokemon, this.dex.getItem(item), '[from] move: "Balance"');
+			pokemon.setItem(item);
+		},
+		status: 'brn',
+		secondary: null,
+		target: "self"
+		type: "Normal",
+		zMove: {boost: {atk: 1}},
+		contestType: "Clever",
+	},
 	// Support for RibbonNymph's Ribbon Surge
 	camouflage: {
 		inherit: true,
