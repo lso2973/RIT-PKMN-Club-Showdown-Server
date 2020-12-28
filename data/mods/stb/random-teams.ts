@@ -54,7 +54,7 @@ export const ssbSets: SSBSets = {
 	},
 };
 
-export class RandomTigerBrosTeams extends RandomTeams {
+export class RandomStaffBrosTeams extends RandomTeams {
 	randomStaffBrosTeam(options: {inBattle?: boolean} = {}) {
 		const team: PokemonSet[] = [];
 		const debug: string[] = []; // Set this to a list of SSB sets to override the normal pool for debugging.
@@ -132,4 +132,4 @@ export class RandomTigerBrosTeams extends RandomTeams {
 	}
 }
 
-export default RandomTigerBrosTeams;
+export default RandomStaffBrosTeams;

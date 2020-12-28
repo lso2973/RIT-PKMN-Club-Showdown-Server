@@ -165,7 +165,7 @@ export const Formats: FormatList = [
 		],
 
 		mod: 'stb',
-		team: 'randomTigerBros',
+		team: 'randomStaffBros',
 		ruleset: ['Dynamax Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
 		onBegin() { // TODO look into making an event to put this right after turn|1
 			// https://discordapp.com/channels/630837856075513856/630845310033330206/716126469528485909
