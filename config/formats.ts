@@ -157,6 +157,30 @@ export const Formats: FormatList = [
 		],
 	},
 	{
+		name: "Super Tieger Bros. (Alpha)",
+		desc: `Buggier than your average format.`,
+		mod: 'stb',
+		team: 'randomTigerBros',
+		ruleset: ['Dynamax Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
+		onSwitchInPriority: 100,
+		onSwitchIn(pokemon) {
+			let name: string = this.toID(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
+			if (this.dex.getSpecies(name).exists || this.dex.getMove(name).exists || this.dex.getAbility(name).exists) {
+				// Certain pokemon have volatiles named after their id
+				// To prevent overwriting those, and to prevent accidentaly leaking
+				// that a pokemon is on a team through the onStart even triggering
+				// at the start of a match, users with pokemon names will need their
+				// statuses to end in "user".
+				name = name + 'user';
+			}
+			// Add the mon's status effect to it as a volatile.
+			const status = this.dex.getEffect(name);
+			if (status?.exists) {
+				pokemon.addVolatile(name, pokemon);
+			}
+		},
+	},
+	{
 		section: "RIT Archive",
 	},
 	{
