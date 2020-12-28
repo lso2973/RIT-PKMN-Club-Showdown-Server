@@ -105,6 +105,9 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	// Please keep abilites organized alphabetically based on staff member name!
 	// RibbonNymph
 	pixilatex: {
+		desc: "When this Pokémon uses an attack that would be either 'not very effective' or does not affect the target due to typing, the attack will become fairy type and the power of the move will be boosted by 1.2x",
+		shortDesc: "User's not-very-effective and no-effect moves become fairy type; 1.2x power",
+		name: "Pixilate X",
 		onModifyTypePriority: -1,
 		onModifyType(move, pokemon, target) {
 			const noModifyType = [
