@@ -135,7 +135,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		isNonstandard: "Custom",
 		gen: 8,
-	}
+	},
 	// torwildheart
 	// VolticHalberd
 	// Support for RibbonNymph's ribbonterrain

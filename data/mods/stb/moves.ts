@@ -95,8 +95,8 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		accuracy: 100,
 		basePower: 80,
 		category: "Special",
-		desc: "For 5 turns, the terrain becomes Ribbon Terrain. During the effect, the power of Fairy type moves is multiplied by 1.3, the power of Dragon type moves is halved, and grounded Pokémon are protected from non-volatile status afflictions."
-		shortDesc: "5 turns. Fairy 1.3x dmg, Dragon 0.5x dmg. Blocks status afflictions."
+		desc: "For 5 turns, the terrain becomes Ribbon Terrain. During the effect, the power of Fairy type moves is multiplied by 1.3, the power of Dragon type moves is halved, and grounded Pokémon are protected from non-volatile status afflictions.",
+		shortDesc: "5 turns. Fairy 1.3x dmg, Dragon 0.5x dmg. Blocks status afflictions.",
 		name: "Ribbon Surge",
 		pp: 10,
 		isNonstandard: "Custom",
@@ -164,9 +164,9 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		pp: 10,
 		isNonstandard: 'Custom',
 		desc: "Raises the user’s physical attack and defense by +1 stage and lower its speed by -1 stage. The user regains the item it last used. Fails if the user is holding an item, if the user has not held an item, if the item was a popped Air Balloon, if the item was picked up by a Pokémon with the Pickup Ability, or if the item was lost to Bug Bite, Covet, Incinerate, Knock Off, Pluck, or Thief. Items thrown with Fling can be regained. Burns the user.",
-		shortDesc "Curse + Recycle + self burn",
+		shortDesc: "Curse + Recycle + self burn",
 		flags: {snatch: 1},
-		boosts: {atk: 1, def: 1, spe -1},
+		boosts: {atk: 1, def: 1, spe: -1},
 		onHit(pokemon) {
 			if (pokemon.item || !pokemon.lastItem) return false;
 			const item = pokemon.lastItem;
@@ -176,7 +176,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		},
 		status: 'brn',
 		secondary: null,
-		target: "self"
+		target: "self",
 		type: "Normal",
 		zMove: {boost: {atk: 1}},
 		contestType: "Clever",
@@ -285,7 +285,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		accuracy: 100,
 		basePower: 40,
 		category: "Physical",
-		name: "Tackle X"
+		name: "Tackle X",
 		pp: 35,
 		priority: 0,
 		flags: {contact: 1, protect: 1, mirror: 1},
