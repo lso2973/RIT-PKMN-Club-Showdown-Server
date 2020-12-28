@@ -47,6 +47,11 @@ export const ssbSets: SSBSets = {
 		signatureMove: 'Balance'
 		evs: {hp: 188, atk: 124, def: 148, spd: 44, spe: 4}, ivs: {spe: 2}, nature: 'Brave'
 	}
+	TestMon: {
+		species: 'Boldore', ability: 'Run Away', item: 'Choice Specs', gender: '',
+		moves: ['Splash', 'Celebrate', 'Tackle'],
+		signatureMove: 'Tackle X',
+	}
 };
 
 export class RandomStaffBrosTeams extends RandomTeams {

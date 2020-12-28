@@ -122,7 +122,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onBasePower(basePower, pokemon, target, move) {
 			if (move.pixilateBoosted) return this.chainModify([0x1333, 0x1000]);
 		},
-		name: "Pixilate X",
+		isNonstandard: "Custom",
 		rating: 4,
 	},
 	// ScarTheColossus

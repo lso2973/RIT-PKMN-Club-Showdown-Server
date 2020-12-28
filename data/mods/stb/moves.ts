@@ -99,6 +99,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		shortDesc: "5 turns. Fairy 1.3x dmg, Dragon 0.5x dmg. Blocks status afflictions."
 		name: "Ribbon Surge",
 		pp: 10,
+		isNonstandard: "Custom",
 		priority: 0,
 		flags: {nonsky: 1},
 		terrain: 'ribbonterrain',
@@ -277,5 +278,20 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				break;
 			}
 		},
+	},
+	// TestMon
+	tacklex: {
+		num: 33,
+		accuracy: 100,
+		basePower: 40,
+		category: "Physical",
+		name: "Tackle X"
+		pp: 35,
+		priority: 0,
+		flags: {contact: 1, protect: 1, mirror: 1},
+		secondary: null,
+		target: "normal",
+		type: "Normal",
+		contestType: "Tough",
 	},
 };
