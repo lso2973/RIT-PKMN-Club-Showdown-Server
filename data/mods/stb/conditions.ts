@@ -55,6 +55,4 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('RibbonNymph')}|Well. This is underfortunate.`);
 		},
 	},
-	// Ribbon Terrain support for RibbonNymph
-
 };
