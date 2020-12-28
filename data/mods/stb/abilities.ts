@@ -123,6 +123,16 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		rating: 4,
 	},
 	// ScarTheColossus
+	stuffedglutton: {
+		desc: "When this Pokémon has 1/2 or less of its maximum HP, it uses certain Berries early. Additionally, when this Pokémon eats a berry, restore ⅓ of its max HP (rounded down) in addition to the berry’s effects.",
+		shortDesc: "Gluttony + Cheek Pouch",
+		name: "Stuffed Glutton",
+		onEatItem(item, pokemon) { // Gluttony is implemented in items
+			this.heal(pokemon.baseMaxhp / 3);
+		},
+		isNonstandard: "Custom",
+		gen: 8,
+	}
 	// torwildheart
 	// VolticHalberd
 	// Support for RibbonNymph's ribbonterrain
