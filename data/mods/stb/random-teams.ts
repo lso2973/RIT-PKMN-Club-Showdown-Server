@@ -132,4 +132,4 @@ export class RandomTigerBrosTeams extends RandomTeams {
 	}
 }
 
-export default RandomStaffBrosTeams;
+export default RandomTigerBrosTeams;
