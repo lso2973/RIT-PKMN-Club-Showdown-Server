@@ -103,4 +103,8 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	*/
 	// Please keep abilites organized alphabetically based on staff member name!
+	// RibbonNymph
+	// ScarTheColossus
+	// torwildheart
+	// VolticHalberd
 };

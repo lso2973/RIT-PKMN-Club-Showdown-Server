@@ -35,7 +35,12 @@ export const ssbSets: SSBSets = {
 	// Nature needs to be a valid nature with the first letter capitalized ex: Modest
 	*/
 	// Please keep sets organized alphabetically based on staff member name!
-	
+	RibbonNymph: {
+		species: 'Sylveon', ability: 'Pixilate X', item: 'Choice Specs', gender: 'F',
+		moves: ['Boomburst', 'Flamethrower', 'Wish'],
+		signatureMove: 'Ribbon Surge',
+		evs: {hp: 252, spa: 252, spd: 4}, ivs: {atk: 0}, nature: 'Modest'
+	}
 };
 
 export class RandomStaffBrosTeams extends RandomTeams {
