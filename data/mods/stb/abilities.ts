@@ -105,6 +105,16 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	// Please keep abilites organized alphabetically based on staff member name!
 	// RibbonNymph
 	// ScarTheColossus
+	stuffedglutton: {
+		desc: "When this Pokémon has 1/2 or less of its maximum HP, it uses certain Berries early. Additionally, when this Pokémon eats a berry, restore ⅓ of its max HP (rounded down) in addition to the berry’s effects.",
+		shortDesc: "Gluttony + Cheek Pouch",
+		name: "Stuffed Glutton",
+		onEatItem(item, pokemon) { // Gluttony is implemented in items
+			this.heal(pokemon.baseMaxhp / 3);
+		},
+		isNonstandard: "Custom",
+		gen: 8,
+	}
 	// torwildheart
 	// VolticHalberd
 };
