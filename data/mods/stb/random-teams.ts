@@ -42,7 +42,7 @@ export const ssbSets: SSBSets = {
 		evs: {hp: 252, spa: 252, spd: 4}, ivs: {atk: 0}, nature: 'Modest'
 	}
 	ScarTheColossus:{
-		species: 'Snorlax', ability: 'Stuffed Glutton', item: 'Figy Berry', gender: 'M',
+		species: 'Snorlax', ability: 'Pancake', item: 'Figy Berry', gender: 'M',
 		moves: ['Facade', 'Earthquake', 'Crunch']
 		signatureMove: 'Balance'
 		evs: {hp: 188, atk: 124, def: 148, spd: 44, spe: 4}, ivs: {spe: 2}, nature: 'Brave'
