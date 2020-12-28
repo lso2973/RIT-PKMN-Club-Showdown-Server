@@ -46,13 +46,25 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	ribbonnymph: {
 		noCopy: true,
 		onStart() {
-			this.add(`c|${getName('RibbonNymph')}|flovely`);
+			this.add(`c|${getName('RibbonNymph')}|:flovely:`);
 		},
 		onSwitchOut() {
 			this.add(`c|${getName('RibbonNymph')}|I’m not specs, I have wish`);
 		},
 		onFaint() {
 			this.add(`c|${getName('RibbonNymph')}|Well. This is underfortunate.`);
+		},
+	},
+	scarthecollosus :{
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('ScarTheCollosus')}|Doubles is inherently more balanced`)
+		},
+		onSwitchOut(){
+			this.add(`c|${getName('ScarTheCollosus')}|You should have set Trick Room`)
+		},
+		onFaint(){
+			this.add(`c|${getName('ScarTheCollosus')}|<a href="https://www.youtube.com/user/ScarTheColossus?sub_confirmation=1">Subscribe to Professor Matt on Youtube</a>`)
 		},
 	},
 };
