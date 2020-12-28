@@ -43,5 +43,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	IMPORTANT: Obtain the username from getName
 	*/
 	// Please keep statuses organized alphabetically based on staff member name!
-	
+	ribbonnymph: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('RibbonNymph')}|flovely`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('RibbonNymph')}|I’m not specs, I have wish`);
+		},
+		onFaint() {
+			this.add(`c|${getName('RibbonNymph')}|Well. This is underfortunate.`);
+		},
+	},
+	// Ribbon Terrain support for RibbonNymph
+
 };
