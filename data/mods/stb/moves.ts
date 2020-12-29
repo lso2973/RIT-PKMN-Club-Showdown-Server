@@ -100,57 +100,15 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		name: "Ribbon Surge",
 		pp: 10,
 		isNonstandard: "Custom",
+		gen: 8,
 		priority: 0,
 		flags: {nonsky: 1},
-		terrain: 'ribbonterrain',
-		condition: {
-			duration: 5,
-			durationCallback(source, effect) {
-				if (source?.hasItem('terrainextender')) {
-					return 8;
-				}
-				return 5;
-			},
-			onSetStatus(status, target, source, effect) {
-				if (!target.isGrounded() || target.isSemiInvulnerable()) return;
-				if (effect && ((effect as Move).status || effect.id === 'yawn')) {
-					this.add('-activate', target, 'move: Ribbon Surge');
-				}
-				return false;
-			},
-			onTryAddVolatile(status, target, source, effect) {
-				if (!target.isGrounded() || target.isSemiInvulnerable()) return;
-				if (status.id === 'confusion') {
-					if (effect.effectType === 'Move' && !effect.secondaries) this.add('-activate', target, 'move: Ribbon Surge');
-					return null;
-				}
-			},
-			onBasePowerPriority: 6,
-			onBasePower(basePower, attacker, defender, move) {
-				if (move.type === 'Dragon' && defender.isGrounded() && !defender.isSemiInvulnerable()) {
-					this.debug('ribbon terrain weaken');
-					return this.chainModify(0.5);
-				}
-				if (move.type === 'Fairy' && attacker.isGrounded()) {
-					this.debug('ribbon terrain boost');
-					return this.chainModify(1.3);
-				}
-			},
-			onStart(battle, source, effect) {
-				if (effect?.effectType === 'Ability') {
-					this.add('-fieldstart', 'move: Ribbon Surge', '[from] ability: ' + effect, '[of] ' + source);
-				} else {
-					this.add('-fieldstart', 'move: Ribbon Surge');
-				}
-			},
-			onResidualOrder: 21,
-			onResidualSubOrder: 2,
-			onEnd(side) {
-				this.add('-fieldend', 'Ribbon Surge');
-			},
+		secondary: null,
+		onHit(target, pokemon) {
+			this.useMove("Ribbon Terrain", pokemon, target);
 		},
 		secondary: null,
-		target: "all",
+		target: "normal",
 		type: "Fairy",
 		zMove: {boost: {spd: 1}},
 		contestType: "Beautiful",
@@ -180,6 +138,74 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		type: "Normal",
 		zMove: {boost: {atk: 1}},
 		contestType: "Clever",
+	},
+	// used for RibbonNymph's move
+	ribbonterrain: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		desc: "For 5 turns, the terrain becomes Ribbon Terrain. During the effect, the power of Fairy type moves is multiplied by 1.3, the power of Dragon type moves is halved, and grounded Pokémon are protected from non-volatile status afflictions.",
+		shortDesc: "5 turns. Fairy 1.3x dmg, Dragon 0.5x dmg. Blocks status afflictions.",
+		name: "Ribbon Terrain",
+		pp: 10,
+		isNonstandard: "Custom",
+		gen: 8,
+		priority: 0,
+		flags: {nonsky: 1},
+		secondary: null,
+		// add target and make the attack and the terrain two moves in a row in one turn maybe?
+		terrain: 'ribbonterrain',
+		condition: {
+			duration: 5,
+			durationCallback(source, effect) {
+				if (source?.hasItem('terrainextender')) {
+					return 8;
+				}
+				return 5;
+			},
+			onSetStatus(status, target, source, effect) {
+				if (!target.isGrounded() || target.isSemiInvulnerable()) return;
+				if (effect && ((effect as Move).status || effect.id === 'yawn')) {
+					this.add('-activate', target, 'move: Ribbon Terrain');
+				}
+				return false;
+			},
+			onTryAddVolatile(status, target, source, effect) {
+				if (!target.isGrounded() || target.isSemiInvulnerable()) return;
+				if (status.id === 'confusion') {
+					if (effect.effectType === 'Move' && !effect.secondaries) this.add('-activate', target, 'move: Ribbon Terrain');
+					return null;
+				}
+			},
+			onBasePowerPriority: 6,
+			onBasePower(basePower, attacker, defender, move) {
+				if (move.type === 'Dragon' && defender.isGrounded() && !defender.isSemiInvulnerable()) {
+					this.debug('ribbon terrain weaken');
+					return this.chainModify(0.5);
+				}
+				if (move.type === 'Fairy' && attacker.isGrounded()) {
+					this.debug('ribbon terrain boost');
+					return this.chainModify(1.3);
+				}
+			},
+			onStart(battle, source, effect) {
+				if (effect?.effectType === 'Ability') {
+					this.add('-fieldstart', 'move: Ribbon Terrain', '[from] ability: ' + effect, '[of] ' + source);
+				} else {
+					this.add('-fieldstart', 'move: Ribbon Terrain');
+				}
+			},
+			onResidualOrder: 21,
+			onResidualSubOrder: 2,
+			onEnd(side) {
+				this.add('-fieldend', 'Ribbon Terrain');
+			},
+		},
+		secondary: null,
+		target: "all",
+		type: "Fairy",
+		zMove: {boost: {spd: 1}},
+		contestType: "Beautiful",
 	},
 	// Support for RibbonNymph's Ribbon Surge
 	camouflage: {
