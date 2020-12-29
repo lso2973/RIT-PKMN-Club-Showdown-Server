@@ -55,16 +55,16 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('RibbonNymph')}|Well. This is underfortunate.`);
 		},
 	},
-	scarthecollosus :{
+	scarthecolossus: {
 		noCopy: true,
 		onStart() {
-			this.add(`c|${getName('ScarTheCollosus')}|Doubles is inherently more balanced`)
+			this.add(`c|${getName('ScarTheColossus')}|Doubles is inherently more balanced`);
 		},
 		onSwitchOut(){
-			this.add(`c|${getName('ScarTheCollosus')}|You should have set Trick Room`)
+			this.add(`c|${getName('ScarTheColossus')}|You should have set Trick Room`);
 		},
 		onFaint(){
-			this.add(`c|${getName('ScarTheCollosus')}|<a href="https://www.youtube.com/user/ScarTheColossus?sub_confirmation=1">Subscribe to Professor Matt on Youtube</a>`)
+			this.add(`c|${getName('ScarTheColossus')}|Subscribe to Professor Matt on Youtube`);
 		},
 	},
 };

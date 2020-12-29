@@ -1,9 +1,9 @@
 export const Items: {[k: string]: ModdedItemData} = {
-	// Modifying Berries for Stuffed Glutton (ScarTheColossus)
+	// Modifying Berries for Pancake(ScarTheColossus)
 	aguavberry: {
 		inherit: true,
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('stuffedglutton')))) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('pancake')))) {
 				pokemon.eatItem();
 			}
 		},
@@ -11,7 +11,7 @@ export const Items: {[k: string]: ModdedItemData} = {
 	apicotberry: {
 		inherit: true,
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && pokemon.hasAbility('gluttony'))) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('pancake')))) {
 				pokemon.eatItem();
 			}
 		},
@@ -19,7 +19,7 @@ export const Items: {[k: string]: ModdedItemData} = {
 	custapberry: {
 		inherit: true,
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('stuffedglutton')))) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('pancake')))) {
 				pokemon.eatItem();
 			}
 		},
@@ -27,7 +27,7 @@ export const Items: {[k: string]: ModdedItemData} = {
 	figyberry: {
 		inherit: true,
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('stuffedglutton')))) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('pancake')))) {
 				pokemon.eatItem();
 			}
 		},
@@ -35,7 +35,7 @@ export const Items: {[k: string]: ModdedItemData} = {
 	ganlonberry: {
 		inherit: true,
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('stuffedglutton')))) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('pancake')))) {
 				pokemon.eatItem();
 			}
 		},
@@ -43,7 +43,7 @@ export const Items: {[k: string]: ModdedItemData} = {
 	iapapaberry: {
 		inherit: true,
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('stuffedglutton')))) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('pancake')))) {
 				pokemon.eatItem();
 			}
 		},
@@ -51,7 +51,7 @@ export const Items: {[k: string]: ModdedItemData} = {
 	lansatberry: {
 		inherit: true,
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('stuffedglutton')))) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('pancake')))) {
 				pokemon.eatItem();
 			}
 		},
@@ -59,7 +59,7 @@ export const Items: {[k: string]: ModdedItemData} = {
 	liechiberry: {
 		inherit: true,
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('stuffedglutton')))) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('pancake')))) {
 				pokemon.eatItem();
 			}
 		},
@@ -67,7 +67,7 @@ export const Items: {[k: string]: ModdedItemData} = {
 	magoberry: {
 		inherit: true,
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('stuffedglutton')))) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('pancake')))) {
 				pokemon.eatItem();
 			}
 		},
@@ -75,7 +75,7 @@ export const Items: {[k: string]: ModdedItemData} = {
 	micleberry: {
 		inherit: true,
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('stuffedglutton')))) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('pancake')))) {
 				pokemon.eatItem();
 			}
 		},
@@ -83,7 +83,7 @@ export const Items: {[k: string]: ModdedItemData} = {
 	petayaberry: {
 		inherit: true,
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('stuffedglutton')))) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('pancake')))) {
 				pokemon.eatItem();
 			}
 		},
@@ -91,7 +91,7 @@ export const Items: {[k: string]: ModdedItemData} = {
 	salacberry: {
 		inherit: true,
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('stuffedglutton')))) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('pancake')))) {
 				pokemon.eatItem();
 			}
 		},
@@ -99,7 +99,7 @@ export const Items: {[k: string]: ModdedItemData} = {
 	starfberry: {
 		inherit: true,
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('stuffedglutton')))) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('pancake')))) {
 				pokemon.eatItem();
 			}
 		},
@@ -107,7 +107,7 @@ export const Items: {[k: string]: ModdedItemData} = {
 	wikiberry: {
 		inherit: true,
 		onUpdate(pokemon) {
-			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('stuffedglutton')))) {
+			if (pokemon.hp <= pokemon.maxhp / 4 || (pokemon.hp <= pokemon.maxhp / 2 && (pokemon.hasAbility('gluttony') || pokemon.hasAbility('pancake')))) {
 				pokemon.eatItem();
 			}
 		},

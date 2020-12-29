@@ -126,7 +126,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		rating: 4,
 	},
 	// ScarTheColossus
-	stuffedglutton: {
+	pancake: {
 		desc: "When this Pokémon has 1/2 or less of its maximum HP, it uses certain Berries early. Additionally, when this Pokémon eats a berry, restore ⅓ of its max HP (rounded down) in addition to the berry’s effects.",
 		shortDesc: "Gluttony + Cheek Pouch",
 		name: "Pancake",
@@ -134,7 +134,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			this.heal(pokemon.baseMaxhp / 3);
 		},
 		isNonstandard: "Custom",
-		gen: 8,
+		rating: 4,
 	},
 	// torwildheart
 	// VolticHalberd
