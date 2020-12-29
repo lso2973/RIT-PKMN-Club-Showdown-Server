@@ -174,8 +174,10 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.add('-item', pokemon, this.dex.getItem(item), '[from] move: Balance');
 			pokemon.setItem(item);
 		},
-		status: 'brn',
-		secondary: null,
+		secondary: {
+			chance: 100,
+			status: 'brn',
+		},
 		target: "self",
 		type: "Normal",
 		zMove: {boost: {atk: 1}},
