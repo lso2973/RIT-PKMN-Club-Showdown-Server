@@ -141,6 +141,21 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		zMove: {boost: {atk: 1}},
 		contestType: "Clever",
 	},
+	//VolticHalberd
+	halburst: {
+		accuracy: 100,
+		basePower: 100,
+		category: "Special",
+		defensiveCategory: "Physical",
+		name: "Halburst",
+		pp: 5,
+		priority: 0,
+		flags: {protect: 1, mirror: 1},
+		secondary: null,
+		target: "normal",
+		type: "Electric",
+		contestType: "Beautiful",//just copied this from psyshock but contest type really doesn't matter so *shrug*
+	},
 	// used for RibbonNymph's move
 	ribbonterrain: {
 		accuracy: true,
@@ -155,7 +170,6 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		priority: 0,
 		flags: {nonsky: 1},
 		secondary: null,
-		// add target and make the attack and the terrain two moves in a row in one turn maybe?
 		terrain: 'ribbonterrain',
 		condition: {
 			duration: 5,
