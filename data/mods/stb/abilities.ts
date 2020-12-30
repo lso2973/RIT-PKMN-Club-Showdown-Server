@@ -145,28 +145,39 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onStart(pokemon, source) {
 			const r = this.random(4);
 			switch (r) {
-			case 0://rain
-				//probably not Necessary, but better off not touching this
-				for (const action of this.queue) {
-					if (action.choice === 'runPrimal' && action.pokemon === source && source.species.id === 'kyogre') return;
-					if (action.choice !== 'runSwitch' && action.choice !== 'runPrimal') break;
-				}
+			case 0:
 				this.field.setWeather('raindance');
 				break;
-			case 1://sun
-				for (const action of this.queue) {
-					if (action.choice === 'runPrimal' && action.pokemon === source && source.species.id === 'groudon') return;
-					if (action.choice !== 'runSwitch' && action.choice !== 'runPrimal') break;
-				}
+			case 1:
 				this.field.setWeather('sunnyday');
 				break;
-			case 2://sand
+			case 2:
 				this.field.setWeather('sandstorm');
 				break;
-			case 3://hail
+			case 3:
 				this.field.setWeather('hail');
 				break;
 			}
+			// Yes I know this next part works weird if the ability is not on a dual-type Electric type
+			let newType = "Normal";
+			switch (pokemon.effectiveWeather()) {
+			case 'sunnyday':
+			case 'desolateland':
+				newType = "Fire";
+				break;
+			case 'raindance':
+			case 'primordialsea':
+				newType = "Water";
+				break;
+			case 'sandstorm':
+				newType = "Rock";
+				break;
+			case 'hail':
+				newType = "Ice";
+				break;
+			}
+			pokemon.setType(pokemon.getTypes(true).map(type => type === "Electric" ? type : newType));
+			this.add('-start', pokemon, 'typechange', pokemon.types.join('/'), '[from] ability: Outside is Frightful');
 		},
 		isNonstandard: "Custom",
 	},
