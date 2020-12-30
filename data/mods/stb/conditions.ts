@@ -67,4 +67,16 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('ScarTheColossus')}|Subscribe to Professor Matt on Youtube`);
 		},
 	},
+	voltichalberd: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('VolticHalberd')}|Let’s Spark some controversy~`);
+		},
+		onSwitchOut(){
+			this.add(`c|${getName('VolticHalberd')}|A brief intermission, dears~`);
+		},
+		onFaint(){
+			this.add(`c|${getName('VolticHalberd')}|You’re a real live-wire, huh?`);
+		},
+	},
 };
