@@ -48,7 +48,7 @@ export const ssbSets: SSBSets = {
 		evs: {hp: 188, atk: 124, def: 148, spd: 44, spe: 4}, ivs: {spe: 2}, nature: 'Brave'
 	},
 	VolticHalberd: {
-		species: 'Heliolisk', ability: 'Outside is Frightful', item: 'Life Orb'
+		species: 'Heliolisk', ability: 'Outside is Frightful', item: 'Life Orb',
 		moves: ['Energy Ball', 'Weather Ball', 'Thunderbolt'],
 		signatureMove: 'Halburst',
 		evs: {hp: 4, spa: 252, spe: 252}, ivs: {atk: 0}, nature: 'Timid'

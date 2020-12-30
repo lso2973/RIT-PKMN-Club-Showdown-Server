@@ -138,6 +138,38 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// torwildheart
 	// VolticHalberd
+	outsideisfrightful: {
+		desc: "On switch-in, this Pokémon randomly summons one of Rain, Sun, Sand, or Hail, and its secondary typing changes to Water, Fire, Rock, or Ice, respectively.",
+		shortDesc: "Sets random weather on entry, changes type to match",
+		name: "Outside is Frightful",
+		onStart(pokemon, source) {
+			const r = this.random(4);
+			switch (r) {
+			case 0://rain
+				//probably not Necessary, but better off not touching this
+				for (const action of this.queue) {
+					if (action.choice === 'runPrimal' && action.pokemon === source && source.species.id === 'kyogre') return;
+					if (action.choice !== 'runSwitch' && action.choice !== 'runPrimal') break;
+				}
+				this.field.setWeather('raindance');
+				break;
+			case 1://sun
+				for (const action of this.queue) {
+					if (action.choice === 'runPrimal' && action.pokemon === source && source.species.id === 'groudon') return;
+					if (action.choice !== 'runSwitch' && action.choice !== 'runPrimal') break;
+				}
+				this.field.setWeather('sunnyday');
+				break;
+			case 2://sand
+				this.field.setWeather('sandstorm');
+				break;
+			case 3://hail
+				this.field.setWeather('hail');
+				break;
+			}
+		},
+		isNonstandard: "Custom",
+	},
 	// Support for RibbonNymph's ribbonterrain
 	mimicry: {
 		inherit: true,
