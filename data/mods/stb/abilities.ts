@@ -141,7 +141,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		desc: "On switch-in, this Pokémon sets a 5-turn field effect that reduces the power of spread moves by 25%, like doubles",
 		shortDesc: "Causes doubles spread reduction for 5 turns.",
 		onStart(pokemon, source){
-			this.field.setPseudoWeather('doublesspreadreduction'); //implemented in moves.ts
+			this.field.addPseudoWeather('doublesspreadreduction'); //implemented in moves.ts
 		},
 		name: "Superior Format Surge",
 		isNonstandard: "Custom",

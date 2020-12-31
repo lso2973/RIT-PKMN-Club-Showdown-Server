@@ -1,6 +1,9 @@
 import {getName} from './conditions';
 import {changeSet, changeMoves} from "./abilities";
 import {ssbSets} from "./random-teams";
+// Used for torwildheart
+import {RandomStaffBrosTeams} from './random-teams';
+import {Pokemon, EffectState} from '../../../sim/pokemon';
 
 
 /**************************************************
