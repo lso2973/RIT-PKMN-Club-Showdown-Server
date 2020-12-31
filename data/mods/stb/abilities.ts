@@ -137,6 +137,15 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		rating: 4,
 	},
 	// torwildheart
+	superiorformatsurge: {
+		desc: "On switch-in, this Pokémon sets a 5-turn field effect that reduces the power of spread moves by 25%, like doubles",
+		shortDesc: "Causes doubles spread reduction for 5 turns.",
+		onStart(pokemon, source){
+			this.field.setPseudoWeather('doublesspreadreduction'); //implemented in moves.ts
+		},
+		name: "Superior Format Surge",
+		isNonstandard: "Custom",
+	},
 	// VolticHalberd
 	outsideisfrightful: {
 		desc: "On switch-in, this Pokémon randomly summons one of Rain, Sun, Sand, or Hail, and its secondary typing changes to Water, Fire, Rock, or Ice, respectively.",

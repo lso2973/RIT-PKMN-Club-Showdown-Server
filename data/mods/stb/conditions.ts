@@ -67,6 +67,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('ScarTheColossus')}|Subscribe to Professor Matt on Youtube`);
 		},
 	},
+	torwildheart:{
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('torwildheart')}|Remember when the club was in the ICPA?`);
+		},
+		onSwitchOut(){
+			this.add(`c|${getName('torwildheart')}|Yeah, lets try something new out`);
+		},
+		onFaint(){
+			this.add(`c|${getName('torwildheart')}|I thought I'd be fine if I had no heat waves I could miss`);
+		},
+	},
 	voltichalberd: {
 		noCopy: true,
 		onStart() {

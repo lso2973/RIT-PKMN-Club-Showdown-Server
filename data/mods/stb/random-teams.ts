@@ -47,8 +47,14 @@ export const ssbSets: SSBSets = {
 		signatureMove: 'Balance',
 		evs: {hp: 188, atk: 124, def: 148, spd: 44, spe: 4}, ivs: {spe: 2}, nature: 'Brave'
 	},
+	torwildheart:{
+		species: 'victini', ability: 'Superior Format Surge', item: 'Leftovers', gender: '',
+		moves: ['Searing Shot', 'Psychic', ['Scorching Sands', 'Energy Ball']],
+		signatureMove: 'I\'m Gonna Try a New Team',
+		evs: {hp: 4, spa: 252, spe: 252}, ivs: {atk: 0}, nature: 'Modest'
+	},
 	VolticHalberd: {
-		species: 'Heliolisk', ability: 'Outside is Frightful', item: 'Life Orb',
+		species: 'Heliolisk', ability: 'Outside is Frightful', item: 'Life Orb', gender: 'M',
 		moves: ['Energy Ball', 'Weather Ball', 'Thunderbolt'],
 		signatureMove: 'Halburst',
 		evs: {hp: 4, spa: 252, spe: 252}, ivs: {atk: 0}, nature: 'Timid'

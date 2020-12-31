@@ -141,6 +141,83 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		zMove: {boost: {atk: 1}},
 		contestType: "Clever",
 	},
+	//torwildheart
+	imgonnatryanewteam:{
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		desc: "Replaces every non-fainted member of the user's team with a Super Tiger Bros. set that is randomly selected from all sets, except those with the move Wonder Trade. Remaining HP and PP percentages, as well as status conditions, are transferred onto the replacement sets. This move fails if it's used by a Pokemon that does not originally know this move. This move fails if the user is not Asheviere.",
+		shortDesc: "Replaces user's team with random STB sets.",
+		name: "I'm Gonna Try a New Team",
+		isNonstandard: "Custom",
+		pp: 2,
+		noPPBoosts: true,
+		priority: 0,
+		flags: {},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Amnesia', source);
+			this.add('-anim', source, 'Double Team', source);
+		},
+		onTryHit(target, source) {
+			if (source.name !== 'torwildheart') {
+				this.add('-fail', source);
+				this.hint("Only torwildheart can use I'm Gonna Try a New Team.");
+				return null;
+			}
+		},
+		onHit(target, source) {
+			// Store percent of HP left, percent of PP left, and status for each pokemon on the user's team
+			const carryOver: {hp: number, status: ID, statusData: EffectState, pp: number[]}[] = [];
+			const currentTeam = source.side.pokemon.slice();
+			for (const pokemon of currentTeam) {
+				carryOver.push({
+					hp: pokemon.hp / pokemon.maxhp,
+					status: pokemon.status,
+					statusData: pokemon.statusData,
+					pp: pokemon.moveSlots.slice().map(m => {
+						return m.pp / m.maxpp;
+					}),
+				});
+				// Handle pokemon with less than 4 moves
+				while (carryOver[carryOver.length - 1].pp.length < 4) {
+					carryOver[carryOver.length - 1].pp.push(1);
+				}
+			}
+			// Generate a new team
+			let team: Pokemon[] = this.teamGenerator.getTeam({name: source.side.name, inBattle: true});
+			// Remove Asheviere from generated teams to not allow duplicates
+			team = team.filter(pokemon => !(pokemon.name === 'torwildheart'));
+			// Overwrite un-fainted pokemon other than the user
+			for (const [i, mon] of currentTeam.entries()) {
+				if (mon.fainted || !mon.hp || mon.position === source.position) continue;
+				let set = team.shift();
+				if (!set) throw new Error('Not enough pokemon left to wonder trade to.');
+				const oldSet = carryOver[i];
+
+				// Bit of a hack so client doesn't crash when formeChange is called for the new pokemon
+				const effect = this.effect;
+				this.effect = {id: ''} as Effect;
+				const pokemon = new Pokemon(set, source.side);
+				this.effect = effect;
+
+				pokemon.hp = Math.floor(pokemon.maxhp * oldSet.hp) || 1;
+				pokemon.status = oldSet.status;
+				if (oldSet.statusData) pokemon.statusData = oldSet.statusData;
+				for (const [j, moveSlot] of pokemon.moveSlots.entries()) {
+					moveSlot.pp = Math.floor(moveSlot.maxpp * oldSet.pp[j]);
+				}
+				pokemon.position = mon.position;
+				currentTeam[i] = pokemon;
+			}
+			source.side.pokemon = currentTeam;
+			this.add('message', `${source.name} is trying a new team!`);
+		},
+		target: "self",
+		type: "Psychic",
+	},
 	//VolticHalberd
 	halburst: {
 		accuracy: 100,
@@ -220,7 +297,6 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				this.add('-fieldend', 'Ribbon Terrain');
 			},
 		},
-		secondary: null,
 		target: "all",
 		type: "Fairy",
 		zMove: {boost: {spd: 1}},
@@ -323,6 +399,54 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				break;
 			}
 		},
+	},
+	// Utility for torwildheart's ability
+	doublesspreadreduction: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		desc: "For 5 turns, the terrain becomes Ribbon Terrain. During the effect, the power of Fairy type moves is multiplied by 1.3, the power of Dragon type moves is halved, and grounded Pokémon are protected from non-volatile status afflictions.",
+		shortDesc: "5 turns. Fairy 1.3x dmg, Dragon 0.5x dmg. Blocks status afflictions.",
+		name: "Doubles Spread Reduction",
+		pp: 10,
+		isNonstandard: "Custom",
+		gen: 8,
+		priority: 0,
+		flags: {nonsky: 1},
+		secondary: null,
+		pseudoWeather: "doublesspreadreduction",
+		condition: {
+			duration: 5,
+			durationCallback(source, effect) {
+				if (source?.hasAbility('persistent')) {
+					this.add('-activate', source, 'ability: Persistent', effect);
+					return 7;
+				}
+				return 5;
+			},
+			onStart(target, source, effect) {
+				if (effect?.effectType === 'Ability') {
+					this.add('-fieldstart', 'move: Doubles Spread Reduction', '[from] ability: ' + effect, '[of] ' + source);
+				} else {
+					this.add('-fieldstart', 'move: Doubles Spread Reduction');
+				}
+			},
+			onBasePowerPriority: 7,
+			onBasePower(basePower, attacker, defender, move){
+				if (move.target === 'allAdjacent' || move.target === 'allAdjacentFoes'){
+					this.debug('doubles spread reduction weaken');
+					return this.chainModify(0.75);
+				}
+			},
+			onResidualOrder: 25,
+			onEnd() {
+				this.add('-fieldend', 'move: Doubles Spread Reduction', '[of] ' + this.effectData.source);
+			},
+		},
+		target: "all",
+		type: "Psychic",
+		zMove: {boost: {spa: 1}},
+		contestType: "Clever",
 	},
 	// TestMon
 	tacklex: {
