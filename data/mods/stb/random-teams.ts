@@ -35,6 +35,12 @@ export const ssbSets: SSBSets = {
 	// Nature needs to be a valid nature with the first letter capitalized ex: Modest
 	*/
 	// Please keep sets organized alphabetically based on staff member name!
+	PseudoPhysics: {
+		species: 'Wobbuffet', ability: 'gonna getcha', item: 'Focus Sash', gender: 'M',
+		moves: ['Encore', 'Mirror Coat', 'Counter'],
+		signatureMove: '{the rest}',
+		evs: {hp: 252, def: 252, spd: 4}, nature: 'Sassy'
+	},
 	RibbonNymph: {
 		species: 'Sylveon', ability: 'Pixilate X', item: 'Choice Specs', gender: 'F',
 		moves: ['Boomburst', 'Flamethrower', 'Wish'],

@@ -43,6 +43,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	IMPORTANT: Obtain the username from getName
 	*/
 	// Please keep statuses organized alphabetically based on staff member name!
+	pseudophysics: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('PseudoPhysics')}|did I getcha?`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('PseudoPhysics')}|damn my slow start hasn't ended yet and I'm getting subbed out smh`);
+		},
+		onFaint() {
+			this.add(`c|${getName('PseudoPhysics')}|:pyukuokay: nice`);
+		},
+	},
 	ribbonnymph: {
 		noCopy: true,
 		onStart() {

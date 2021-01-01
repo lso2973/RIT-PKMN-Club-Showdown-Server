@@ -93,6 +93,37 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	},
 	*/
 	// Please keep sets organized alphabetically based on staff member name!
+	// PseudoPhysics
+	therest: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		desc: "User uses the moves Charm, Amnesia, Safeguard, Splash, Tickle, and Destiny Bond, in that order.",
+		shortDesc: "Charm > Amnesia > Safeguard > Splash > Tickle > Destiny Bond",
+		name: "{the rest}",
+		isNonstandard: "Custom",
+		gen: 8,
+		pp: 5,
+		priority: 0,
+		flags: {authentic: 1},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Extreme Evoboost', source);
+		},
+		onHit(target) {
+			this.useMove("Charm", target);
+			this.useMove("Amnesia", target);
+			this.useMove("Safeguard", target);
+			this.useMove("Splash", target);
+			this.useMove("Tickle", target);
+			this.useMove("Destiny Bond", target);
+		},
+		secondary: null,
+		target: "self",
+		type: "Psychic",
+	},
 	// RibbonNymph
 	ribbonsurge: {
 		accuracy: 100,

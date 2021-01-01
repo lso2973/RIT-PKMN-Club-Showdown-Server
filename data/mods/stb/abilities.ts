@@ -103,6 +103,29 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	*/
 	// Please keep abilites organized alphabetically based on staff member name!
+	// PseudoPhysics
+	gonnagetcha: {
+		desc: "Prevents adjacent opposing Pokemon from choosing to switch out unless they are immune to trapping or also have this Ability or Shadow Tag. Also uses Magic Coat on entry.",
+		shortDesc: "Shadow Tag + Magic Coat on entry",
+		onFoeTrapPokemon(pokemon) {
+			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha')) && this.isAdjacent(pokemon, this.effectData.target)) {
+				pokemon.tryTrap(true);
+			}
+		},
+		onFoeMaybeTrapPokemon(pokemon, source) {
+			if (!source) source = this.effectData.target;
+			if (!source || !this.isAdjacent(pokemon, source)) return;
+			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha'))) {
+				pokemon.maybeTrapped = true;
+			}
+		},
+		onStart(pokemon) {
+			this.useMove("Magic Coat", pokemon);
+		},
+		name: "gonna getcha",
+		isNonstandard: "Custom",
+		rating: 5,
+	},
 	// RibbonNymph
 	pixilatex: {
 		desc: "When this Pokémon uses an attack that would be either 'not very effective' or does not affect the target due to typing, the attack will become fairy type and the power of the move will be boosted by 1.2x",
@@ -189,6 +212,23 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			this.add('-start', pokemon, 'typechange', pokemon.types.join('/'), '[from] ability: Outside is Frightful');
 		},
 		isNonstandard: "Custom",
+	},
+	// Modified Shadow Tag for gonna getcha
+	shadowtag: {
+		inherit: true,
+		desc: "Prevents adjacent opposing Pokemon from choosing to switch out unless they are immune to trapping or also have this Ability or gonna getcha.",
+		onFoeTrapPokemon(pokemon) {
+			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha')) && this.isAdjacent(pokemon, this.effectData.target)) {
+				pokemon.tryTrap(true);
+			}
+		},
+		onFoeMaybeTrapPokemon(pokemon, source) {
+			if (!source) source = this.effectData.target;
+			if (!source || !this.isAdjacent(pokemon, source)) return;
+			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha'))) {
+				pokemon.maybeTrapped = true;
+			}
+		},
 	},
 	// Support for RibbonNymph's ribbonterrain
 	mimicry: {
