@@ -118,7 +118,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		isNonstandard, "Custom",
 		rating: 4.5
-	}
+	},
 	// PseudoPhysics
 	gonnagetcha: {
 		desc: "Prevents adjacent opposing Pokemon from choosing to switch out unless they are immune to trapping or also have this Ability or Shadow Tag. Also uses Magic Coat on entry.",
