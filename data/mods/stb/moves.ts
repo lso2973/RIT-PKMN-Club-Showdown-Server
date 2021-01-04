@@ -104,8 +104,11 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		gen: 8,
 		pp: 5,
 		priority: 0,
-		flags: {contact: 1},
+		flags: {contact: 1, protect: 1},
 		willCrit: true,
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Leaf Blade', source);
+		},
 		secondary: null,
 		isNonstandard: "Custom",
 		target: "normal",
@@ -154,7 +157,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		isNonstandard: "Custom",
 		gen: 8,
 		priority: 0,
-		flags: {nonsky: 1},
+		flags: {nonsky: 1, protect: 1},
 		secondary: null,
 		onHit(target, pokemon) {
 			this.field.setTerrain('ribbonterrain');
