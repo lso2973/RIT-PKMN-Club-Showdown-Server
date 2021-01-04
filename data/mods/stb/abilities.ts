@@ -113,7 +113,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		onAfterMoveSecondary(target, source, move){
 			if(target.getMoveHitData(move).crit){
-				this.boost({atk: 1});
+				source.boost({atk: 1});
 			}
 		},
 		isNonstandard: "Custom",
