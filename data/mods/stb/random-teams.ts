@@ -38,7 +38,7 @@ export const ssbSets: SSBSets = {
 	Peekz1025: {
 		species: 'Sceptile', ability: "Forest's Wrath", item: 'Sceptileite', gender: 'M',
 		moves: ['Dragon Claw', 'Night Slash', 'Earthquake'],
-		SignatureMove: 'Verdant Blade',
+		signatureMove: 'Verdant Blade',
 		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly'
 	},
 	PseudoPhysics: {
