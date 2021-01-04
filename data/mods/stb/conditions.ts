@@ -43,6 +43,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	IMPORTANT: Obtain the username from getName
 	*/
 	// Please keep statuses organized alphabetically based on staff member name!
+	peekz1205:{
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('Peekz1025')}|Prepare to feel the wrath of RIT’s first Grass Gym Leader!`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('Peekz1025')}|Time for another teammate to take the stage`);
+		},
+		onFaint() {
+			this.add(`c|${getName('Peekz1025')}|IT’S A CRIT!`);
+		},
+	}
 	pseudophysics: {
 		noCopy: true,
 		onStart() {

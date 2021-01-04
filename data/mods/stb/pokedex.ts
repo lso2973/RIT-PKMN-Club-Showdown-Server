@@ -6,4 +6,14 @@ export const Pokedex: {[k: string]: ModdedSpeciesData} = {
 		baseStats: {hp: 100, atk: 100, def: 100, spa: 100, spd: 100, spe: 100}, // the base stats for the pokemon
 	},
 	*/
+	//stat changes for Peekz1025
+	sceptile: {
+		inherit: true,
+		baseStats: {hp: 70, atk: 105, def: 65, spa: 85, spd: 85, spe: 120},
+	},
+	sceptilemega:{
+		inherit: true,
+		baseStats: {hp: 70, atk: 145, def: 75, spa: 110, spd: 85, spe: 145},
+		abilities: {0: "Forest's Wrath"},
+	},
 };
