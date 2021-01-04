@@ -107,6 +107,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		flags: {contact: 1},
 		willCrit: true,
 		secondary: null,
+		isNonstandard: "Custom",
 		target: "normal",
 		type: "Grass",
 	},

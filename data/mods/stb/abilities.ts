@@ -116,7 +116,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 				this.boost({atk: 1});
 			}
 		},
-		isNonstandard, "Custom",
+		isNonstandard: "Custom",
 		rating: 4.5
 	},
 	// PseudoPhysics
