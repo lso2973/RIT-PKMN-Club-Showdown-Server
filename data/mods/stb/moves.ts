@@ -139,7 +139,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		flags: {nonsky: 1},
 		secondary: null,
 		onHit(target, pokemon) {
-			this.useMove("Ribbon Terrain", pokemon, target);
+			this.field.setTerrain('ribbonterrain');
 		},
 		secondary: null,
 		target: "normal",
