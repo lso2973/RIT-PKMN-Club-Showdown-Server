@@ -54,7 +54,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		onFaint() {
 			this.add(`c|${getName('Peekz1025')}|IT’S A CRIT!`);
 		},
-	}
+	},
 	pseudophysics: {
 		noCopy: true,
 		onStart() {
