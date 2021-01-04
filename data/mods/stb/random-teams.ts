@@ -36,7 +36,7 @@ export const ssbSets: SSBSets = {
 	*/
 	// Please keep sets organized alphabetically based on staff member name!
 	Peekz1025: {
-		species: 'Sceptile', ability: "Forest's Wrath", item: 'Sceptileite', gender: 'M',
+		species: 'Sceptile', ability: "Forest's Wrath", item: 'Sceptilite', gender: 'M',
 		moves: ['Dragon Claw', 'Night Slash', 'Earthquake'],
 		signatureMove: 'Verdant Blade',
 		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly'
