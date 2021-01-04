@@ -107,7 +107,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		flags: {contact: 1, protect: 1},
 		willCrit: true,
 		onPrepareHit(target, source) {
-			this.add('-anim', source, 'Leaf Blade', source);
+			this.add('-anim', source, 'Leaf Blade', target);
 		},
 		secondary: null,
 		isNonstandard: "Custom",

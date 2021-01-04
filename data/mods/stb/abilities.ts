@@ -112,7 +112,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			pokemon.addVolatile('focusenergy');
 		},
 		onAfterMoveSecondarySelf(target, source, move){
-			if(target.getMoveHitData(move).crit){
+			if(source.getMoveHitData(move).crit){
 				this.boost({atk: 1});
 			}
 		},
