@@ -107,7 +107,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	forestswrath:{
 		desc: "Increases user’s critical hit ratio on entry and the user’s attack is raised by +1 stage when the user successfully lands a critical hit.",
 		shortDesc: "Focus Energy on entry, +1 Atk on crit",
-		name "Forest's Wrath",
+		name: "Forest's Wrath",
 		onStart(pokemon){
 			pokemon.addVolatile('focusenergy');
 		},
