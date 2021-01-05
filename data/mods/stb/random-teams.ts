@@ -53,6 +53,12 @@ export const ssbSets: SSBSets = {
 		signatureMove: 'Ribbon Surge',
 		evs: {hp: 252, spa: 252, spd: 4}, ivs: {atk: 0}, nature: 'Modest'
 	},
+	RubyDragonQueen: {
+		species: 'Dragonite', ability: 'Dragonscale', item: 'Dragon Fang', gender: 'F',
+		moves: ['Roost', 'Curse', 'Extreme Speed'],
+		signatureMove: 'Dragonforce',
+		evs: {hp: 252, atk: 252, spd: 4}, nature: 'Adamant'
+	},
 	ScarTheColossus:{
 		species: 'Snorlax', ability: 'Pancake', item: 'Figy Berry', gender: 'M',
 		moves: ['Facade', 'Earthquake', 'Crunch'],

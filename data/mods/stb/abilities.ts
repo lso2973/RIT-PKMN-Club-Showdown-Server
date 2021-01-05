@@ -164,6 +164,25 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		isNonstandard: "Custom",
 		rating: 4,
 	},
+	// RubyDragonQueen
+	dragonscale: {
+		desc: "Reduces the amount of damage this Pokémon takes when its HP is full. Doubles defense when this Pokémon has a status condition.",
+		shortDesc: "Marvel Scale + Multiscale",
+		name: "Dragon Scale",
+		onModifyDefPriority: 6,
+		onModifyDef(def, pokemon) {
+			if (pokemon.status) {
+				return this.chainModify(1.5);
+			}
+		},
+		onSourceModifyDamage(damage, source, target, move) {
+			if (target.hp >= target.maxhp) {
+				this.debug('Multiscale weaken');
+				return this.chainModify(0.5);
+			}
+		},
+		isNonstandard: "Custom",
+	},
 	// ScarTheColossus
 	pancake: {
 		desc: "When this Pokémon has 1/2 or less of its maximum HP, it uses certain Berries early. Additionally, when this Pokémon eats a berry, restore ⅓ of its max HP (rounded down) in addition to the berry’s effects.",

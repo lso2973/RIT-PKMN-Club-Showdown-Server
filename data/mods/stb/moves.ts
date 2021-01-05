@@ -160,7 +160,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		isNonstandard: "Custom",
 		gen: 8,
 		priority: 0,
-		flags: {nonsky: 1, protect: 1},
+		flags: {nonsky: 1, protect: 1, mirror: 1},
 		secondary: null,
 		onHit(target, pokemon) {
 			this.field.setTerrain('ribbonterrain');
@@ -176,6 +176,33 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		type: "Fairy",
 		zMove: {boost: {spd: 1}},
 		contestType: "Beautiful",
+	},
+	// RubyDragonQueen
+	dragonforce: {
+		accuracy: 85,
+		basePower: 120,
+		category: "Physical",
+		name: 'Dragonforce',
+		pp: 5,
+		priority: 0,
+		isNonstandard: 'Custom',
+		desc: "A powerful Dragon-type attack that ignores screens and hits through Protect and type immunities.",
+		shortDesc: "Ignores all screens and immunities.",
+		flags: {contact: 1, mirror: 1},
+		onTryHit(move) {
+			move.infiltrates = true;
+		},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Outrage', source);
+			this.add('-anim', source, 'Dragon Claw', target);
+		},
+		ignoreImmunity: {'Dragon': true},
+		secondary: null,
+		target: "normal",
+		type: "Dragon",
 	},
 	// ScarTheColossus
 	balance:{
