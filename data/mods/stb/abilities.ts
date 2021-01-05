@@ -176,15 +176,19 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		rating: 4,
 	},
 	// torwildheart
-	superiorformatsurge: {
-		desc: "On switch-in, this Pokémon sets a 5-turn field effect that reduces the power of spread moves by 25%, like doubles",
-		shortDesc: "Causes doubles spread reduction for 5 turns.",
-		onStart(pokemon, source){
-			this.field.addPseudoWeather('doublesspreadreduction'); //implemented in moves.ts
+	toolong: {
+		desc: "At the start of each turn, this pokemon raises its attack, defense, special attack, special defense and speed by +1 stage if the turn count is greater than 25.",
+		shortDesc: "+1 to basic stats if turn > 25",
+		name: "Too Long",
+		onResidualOrder: 26,
+		onResidualSubOrder: 1,
+		onResidual(pokemon) {
+			if (pokemon.activeTurns && this.turn > 25) {
+				this.boost({atk: 1, def: 1, spa: 1, spd: 1, spe: 1});
+			}
 		},
-		name: "Superior Format Surge",
 		isNonstandard: "Custom",
-		rating: 3,
+		rating: 5
 	},
 	// VolticHalberd
 	outsideisfrightful: {

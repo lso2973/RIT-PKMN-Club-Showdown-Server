@@ -97,7 +97,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('torwildheart')}|Remember when the club was in the ICPA?`);
 		},
 		onSwitchOut(){
-			this.add(`c|${getName('torwildheart')}|Yeah, lets try something new out`);
+			this.add(`c|${getName('torwildheart')}|Let me...catch my breath`);
 		},
 		onFaint(){
 			this.add(`c|${getName('torwildheart')}|I thought I'd be fine if I had no heat waves I could miss`);
