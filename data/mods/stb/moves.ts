@@ -154,6 +154,26 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "normal",
 		type: "Steel",
 	},
+	// MeepingtonThe3rd
+	mentalbrick: {
+		accuracy: 100,
+		basePower: 100,
+		category: "Special",
+		name: "Mental Brick",
+		desc: "Has a 30% chance to make the target flinch.",
+		shortDesc: "30% chance to flinch",
+		gen: 8,
+		pp: 15,
+		priority: 0,
+		flags: {contact: 1, protect: 1},
+		secondary: {
+			chance: 30,
+			volatileStatus: 'flinch',
+		},
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Steel",
+	},
 	// Peekz1025
 	verdantblade: {
 		accuracy: 100,

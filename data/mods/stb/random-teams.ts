@@ -47,6 +47,12 @@ export const ssbSets: SSBSets = {
 		signatureMove: 'bonk.',
 		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly'
 	},
+	MeepingtonThe3rd: {
+		species: 'Raichu-Alola', ability: 'Storm Surfing', item: 'Life Orb', gender: 'M',
+		moves: ['Nasty Plot', 'Thunder', 'Splishy Splash'],
+		signatureMove: 'Mental Brick',
+		evs: {spa: 252, spd: 4, spe: 252}, nature: 'Modest'
+	},
 	Peekz1025: {
 		species: 'Sceptile', ability: "Forest's Wrath", item: 'Sceptilite', gender: 'M',
 		moves: ['Dragon Claw', 'Night Slash', 'Earthquake'],
