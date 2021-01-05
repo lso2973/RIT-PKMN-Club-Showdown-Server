@@ -59,6 +59,9 @@ export const Formats: FormatList = [
 			'Urshifu', 'Xerneas', 'Yveltal', 'Zacian', 'Zamazenta', 'Zekrom', 'Blaziken + Speed Boost', 'Landorus + Sheer Force',
 			'Cinderace + Libero', 'Moody',
 		],
+		unbanlist: [
+			'Urshifu-Rapid-Strike',
+		],
 		onValidateSet(set) {
 			const item = this.dex.getItem(set.item);
 			if (item?.megaStone) {
