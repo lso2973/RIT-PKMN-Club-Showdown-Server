@@ -103,6 +103,16 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	*/
 	// Please keep abilites organized alphabetically based on staff member name!
+	// ATcheron
+	snowierwarning: {
+		desc: "Summons Arctic Gales to the battlefield, lowering the speed of non Ice-types by 50% rounded up and damaging non Ice-types by 1/16th of their health rounded down at the end of each turn.",
+		shortDesc: "Summons Arctic Gales. Non-Ice-type: 0.5x speed and 1/16 damage per turn",
+		name: "Snowier Warning",
+		onStart(source) {
+			this.field.setWeather('arcticgales');
+		},
+		isNonstandard: "Custom",
+	},
 	// Banded Bonks
 	rngtraining: {
 		desc: "Raises this Pokemon’s accuracy and evasion by +1 stage on entry and this Pokemon's moves have their secondary effect chance doubled.",
@@ -289,6 +299,78 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			if (!source || !this.isAdjacent(pokemon, source)) return;
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha'))) {
 				pokemon.maybeTrapped = true;
+			}
+		},
+	},
+	// Support for ATcheron's arctic gales
+	forecast: {
+		inherit: true,
+		onUpdate(pokemon) {
+			if (pokemon.baseSpecies.baseSpecies !== 'Castform' || pokemon.transformed) return;
+			let forme = null;
+			switch (pokemon.effectiveWeather()) {
+			case 'sunnyday':
+			case 'desolateland':
+				if (pokemon.species.id !== 'castformsunny') forme = 'Castform-Sunny';
+				break;
+			case 'raindance':
+			case 'primordialsea':
+				if (pokemon.species.id !== 'castformrainy') forme = 'Castform-Rainy';
+				break;
+			case 'arcticgales':
+			case 'hail':
+				if (pokemon.species.id !== 'castformsnowy') forme = 'Castform-Snowy';
+				break;
+			default:
+				if (pokemon.species.id !== 'castform') forme = 'Castform';
+				break;
+			}
+			if (pokemon.isActive && forme) {
+				pokemon.formeChange(forme, this.effect, false, '[msg]');
+			}
+		},
+	},
+	icebody: {
+		inherit: true,
+		onWeather(target, source, effect) {
+			if (effect.id === 'hail' || effect.id === 'arcticgales') {
+				this.heal(target.baseMaxhp / 16);
+			}
+		},
+		onImmunity(type, pokemon) {
+			if (type === 'hail' || type === 'arcticgales') return false;
+		},
+	},
+	iceface: {
+		inherit: true,
+		onStart(pokemon) {
+			if ((this.field.isWeather('hail') || this.field.isWeather('arcticgales')) && pokemon.species.id === 'eiscuenoice' && !pokemon.transformed) {
+				this.add('-activate', pokemon, 'ability: Ice Face');
+				this.effectData.busted = false;
+				pokemon.formeChange('Eiscue', this.effect, true);
+			}
+		},
+		onAnyWeatherStart() {
+			const pokemon = this.effectData.target;
+			if (!pokemon.hp) return;
+			if ((this.field.isWeather('hail') || this.field.isWeather('arcticgales')) && pokemon.species.id === 'eiscuenoice' && !pokemon.transformed) {
+				this.add('-activate', pokemon, 'ability: Ice Face');
+				this.effectData.busted = false;
+				pokemon.formeChange('Eiscue', this.effect, true);
+			}
+		},
+	},
+	overcoat: {
+		inherit: true,
+		onImmunity(type, pokemon) {
+			if (type === 'sandstorm' || type === 'hail' || type === 'powder' || type === 'arcticgales') return false;
+		},
+	},
+	slushrush: {
+		inherit: true,
+		onModifySpe(spe, pokemon) {
+			if (this.field.isWeather('hail') || this.field.isWeather('arcticgales')) {
+				return this.chainModify(2);
 			}
 		},
 	},

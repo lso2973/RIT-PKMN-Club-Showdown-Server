@@ -1,4 +1,11 @@
 export const Items: {[k: string]: ModdedItemData} = {
+	// Modifying Safety Goggles for Arctic Gales weather (ATcheron)
+	safetygoggles: {
+		inherit: true,
+		onImmunity(type, pokemon) {
+			if (type === 'sandstorm' || type === 'hail' || type === 'arcticgales' || type === 'powder') return false;
+		},
+	},
 	// Modifying Berries for Pancake(ScarTheColossus)
 	aguavberry: {
 		inherit: true,

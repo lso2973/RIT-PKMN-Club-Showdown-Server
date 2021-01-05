@@ -93,6 +93,21 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	},
 	*/
 	// Please keep sets organized alphabetically based on staff member name!
+	// ATcheron
+	buffice: {
+		// dummy code for testing
+		accuracy: 100,
+		basePower: 40,
+		category: "Physical",
+		name: "Buff Ice",
+		pp: 35,
+		priority: 0,
+		flags: {contact: 1, protect: 1, mirror: 1},
+		secondary: null,
+		target: "normal",
+		type: "Normal",
+		contestType: "Tough",
+	},
 	// Banded Bonks
 	bonk: {
 		accuracy: 100,
@@ -305,6 +320,178 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "normal",
 		type: "Electric",
 		contestType: "Beautiful",//just copied this from psyshock but contest type really doesn't matter so *shrug*
+	},
+	// Modified moves for ATcheron's Arctic Gales
+	auroraveil: {
+		inherit: true,
+		onTry() {
+			return (this.field.isWeather('hail') || this.field.isWeather('arcticgales'));
+		},
+	},
+	blizzard: {
+		inherit: true,
+		onModifyMove(move) {
+			if (this.field.isWeather('hail') || this.field.isWeather('arcticgales')) move.accuracy = true;
+		},
+	},
+	dig: {
+		inherit: true,
+		condition: {
+			duration: 2,
+			onImmunity(type, pokemon) {
+				if (type === 'sandstorm' || type === 'hail' || type === 'arcticgales') return false;
+			},
+			onInvulnerability(target, source, move) {
+				if (['earthquake', 'magnitude'].includes(move.id)) {
+					return;
+				}
+				return false;
+			},
+			onSourceModifyDamage(damage, source, target, move) {
+				if (move.id === 'earthquake' || move.id === 'magnitude') {
+					return this.chainModify(2);
+				}
+			},
+		},
+	},
+	dive: {
+		inherit: true,
+		condition: {
+			duration: 2,
+			onImmunity(type, pokemon) {
+				if (type === 'sandstorm' || type === 'hail', type === 'arcticgales') return false;
+			},
+			onInvulnerability(target, source, move) {
+				if (['surf', 'whirlpool'].includes(move.id)) {
+					return;
+				}
+				return false;
+			},
+			onSourceModifyDamage(damage, source, target, move) {
+				if (move.id === 'surf' || move.id === 'whirlpool') {
+					return this.chainModify(2);
+				}
+			},
+		},
+	},
+	moonlight: {
+		inherit: true,
+		onHit(pokemon) {
+			let factor = 0.5;
+			switch (pokemon.effectiveWeather()) {
+			case 'sunnyday':
+			case 'desolateland':
+				factor = 0.667;
+				break;
+			case 'raindance':
+			case 'primordialsea':
+			case 'sandstorm':
+			case 'hail':
+			case 'arcticgales':
+				factor = 0.25;
+				break;
+			}
+			return !!this.heal(this.modify(pokemon.maxhp, factor));
+		},
+	},
+	morningsun: {
+		inherit: true,
+		onHit(pokemon) {
+			let factor = 0.5;
+			switch (pokemon.effectiveWeather()) {
+			case 'sunnyday':
+			case 'desolateland':
+				factor = 0.667;
+				break;
+			case 'raindance':
+			case 'primordialsea':
+			case 'sandstorm':
+			case 'hail':
+			case 'arcticgales':
+				factor = 0.25;
+				break;
+			}
+			return !!this.heal(this.modify(pokemon.maxhp, factor));
+		},
+	},
+	solarbeam: {
+		inherit: true,
+		onBasePower(basePower, pokemon, target) {
+			if (['raindance', 'primordialsea', 'sandstorm', 'hail', 'arcticgales'].includes(pokemon.effectiveWeather())) {
+				this.debug('weakened by weather');
+				return this.chainModify(0.5);
+			}
+		},
+	},
+	solarblade: {
+		inherit: true,
+		onBasePower(basePower, pokemon, target) {
+			if (['raindance', 'primordialsea', 'sandstorm', 'hail', 'arcticgales'].includes(pokemon.effectiveWeather())) {
+				this.debug('weakened by weather');
+				return this.chainModify(0.5);
+			}
+		},
+	},
+	synthesis: {
+		inherit: true,
+		onHit(pokemon) {
+			let factor = 0.5;
+			switch (pokemon.effectiveWeather()) {
+			case 'sunnyday':
+			case 'desolateland':
+				factor = 0.667;
+				break;
+			case 'raindance':
+			case 'primordialsea':
+			case 'sandstorm':
+			case 'hail':
+			case 'arcticgales':
+				factor = 0.25;
+				break;
+			}
+			return !!this.heal(this.modify(pokemon.maxhp, factor));
+		},
+	},
+	weatherball: {
+		inherit: true,
+		onModifyType(move, pokemon) {
+			switch (pokemon.effectiveWeather()) {
+			case 'sunnyday':
+			case 'desolateland':
+				move.type = 'Fire';
+				break;
+			case 'raindance':
+			case 'primordialsea':
+				move.type = 'Water';
+				break;
+			case 'sandstorm':
+				move.type = 'Rock';
+				break;
+			case 'hail':
+			case 'arcticgales':
+				move.type = 'Ice';
+				break;
+			}
+		},
+		onModifyMove(move, pokemon) {
+			switch (pokemon.effectiveWeather()) {
+			case 'sunnyday':
+			case 'desolateland':
+				move.basePower *= 2;
+				break;
+			case 'raindance':
+			case 'primordialsea':
+				move.basePower *= 2;
+				break;
+			case 'sandstorm':
+				move.basePower *= 2;
+				break;
+			case 'hail':
+			case 'arcticgales':
+				move.basePower *= 2;
+				break;
+			}
+		},
 	},
 	// used for RibbonNymph's move
 	ribbonterrain: {

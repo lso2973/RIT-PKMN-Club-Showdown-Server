@@ -43,6 +43,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	IMPORTANT: Obtain the username from getName
 	*/
 	// Please keep statuses organized alphabetically based on staff member name!
+	atcheron:{
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('ATcheron')}|Here I come, bringing fun!`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('ATcheron')}|Off I go, back to snow!`);
+		},
+		onFaint() {
+			this.add(`c|${getName('ATcheron')}|The snow is gone and so am I, but this is not my final cry!`);
+		},
+	},
 	bandedbonks:{
 		noCopy: true,
 		onStart() {
@@ -140,4 +152,41 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('VolticHalberd')}|You’re a real live-wire, huh?`);
 		},
 	},
+	// Snowier Warning support for ATcheron
+	arcticgales: {
+		name: 'Arctic Gales',
+		effectType: 'Weather',
+		duration: 5,
+		durationCallback(source, effect) {
+			if (source?.hasItem('icyrock')) {
+				return 8;
+			}
+			return 5;
+		},
+		onStart(battle, source, effect) {
+			if (effect?.effectType === 'Ability') {
+				if (this.gen <= 5) this.effectData.duration = 0;
+				this.add('-weather', 'Arctic Gales', '[from] ability: ' + effect, '[of] ' + source);
+			} else {
+				this.add('-weather', 'Arctic Gales');
+			}
+		},
+		onModifySpe(spe, pokemon) {
+			if (!pokemon.hasType('Ice')) {
+				return this.chainModify(0.5);
+			}
+		},
+		onResidualOrder: 1,
+		onResidual() {
+			this.add('-weather', 'Arctic Gales', '[upkeep]');
+			if (this.field.isWeather('arcticgales')) this.eachEvent('Weather');
+		},
+		onWeather(target) {
+			if (target.hasType('Ice')) return;
+			this.damage(target.baseMaxhp / 16);
+		},
+		onEnd() {
+			this.add('-weather', 'none');
+		},
+	}
 };

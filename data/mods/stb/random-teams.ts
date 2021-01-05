@@ -35,6 +35,12 @@ export const ssbSets: SSBSets = {
 	// Nature needs to be a valid nature with the first letter capitalized ex: Modest
 	*/
 	// Please keep sets organized alphabetically based on staff member name!
+	ATcheron: {
+		species: 'Glaceon', ability: 'Snowier Warning', item: 'Choice Specs', gender: 'F',
+		moves: ['Steam Eruption', 'Searing Shot', 'Earth Power'],
+		signatureMove: 'Buff Ice',
+		evs: {hp: 80, spa: 252, spe: 176}, nature: 'Timid', shiny: true
+	},
 	'Banded Bonks':{
 		species: 'Durant', ability: 'RNG Training', item: 'Choice Band', gender: 'M',
 		moves: ['First Impression', 'Superpower', ['Stomping Tantrum', 'Rock Slide', 'Thunder Fang', 'Crunch', 'Aerial Ace']],
