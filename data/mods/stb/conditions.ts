@@ -43,6 +43,31 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	IMPORTANT: Obtain the username from getName
 	*/
 	// Please keep statuses organized alphabetically based on staff member name!
+	bandedbonks:{
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('Banded Bonks')}|*loads durant*`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('Banded Bonks')}|I'll be back`);
+		},
+		onFaint() {
+			this.add(`c|${getName('Banded Bonks')}|Sometimes you bonk, sometimes you get bonked`);
+		},
+		// Hustle innate ability
+		innateName: 'Hustle',
+		shortDesc: "This Pokemon's Attack is 1.5x and accuracy of its physical attacks is 0.8x.",
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk) {
+			return this.modify(atk, 1.5);
+		},
+		onSourceModifyAccuracyPriority: -1,
+		onSourceModifyAccuracy(accuracy, target, source, move) {
+			if (move.category === 'Physical' && typeof accuracy === 'number') {
+				return this.chainModify([0x0CCD, 0x1000]);
+			}
+		},
+	},
 	peekz1025:{
 		noCopy: true,
 		onStart() {
@@ -97,7 +122,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('torwildheart')}|Remember when the club was in the ICPA?`);
 		},
 		onSwitchOut(){
-			this.add(`c|${getName('torwildheart')}|Yeah, lets try something new out`);
+			this.add(`c|${getName('torwildheart')}|Let me...catch my breath`);
 		},
 		onFaint(){
 			this.add(`c|${getName('torwildheart')}|I thought I'd be fine if I had no heat waves I could miss`);

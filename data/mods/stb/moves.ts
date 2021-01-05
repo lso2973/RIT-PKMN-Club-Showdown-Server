@@ -93,6 +93,26 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	},
 	*/
 	// Please keep sets organized alphabetically based on staff member name!
+	// Banded Bonks
+	bonk: {
+		accuracy: 100,
+		basePower: 100,
+		category: "Physical",
+		name: "bonk.",
+		desc: "Has a 30% chance to make the target flinch.",
+		shortDesc: "30% chance to flinch",
+		gen: 8,
+		pp: 15,
+		priority: 0,
+		flags: {contact: 1, protect: 1},
+		secondary: {
+			chance: 30,
+			volatileStatus: 'flinch',
+		},
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Steel",
+	},
 	// Peekz1025
 	verdantblade: {
 		accuracy: 100,
@@ -205,7 +225,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		type: "Dragon",
 	},
 	// ScarTheColossus
-	balance:{
+	balance: {
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
@@ -234,80 +254,38 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		contestType: "Clever",
 	},
 	//torwildheart
-	imgonnatryanewteam:{
-		accuracy: true,
-		basePower: 0,
-		category: "Status",
-		desc: "Replaces every non-fainted member of the user's team with a Super Tiger Bros. set that is randomly selected from all sets, except those with the move Wonder Trade. Remaining HP and PP percentages, as well as status conditions, are transferred onto the replacement sets. This move fails if it's used by a Pokemon that does not originally know this move. This move fails if the user is not Asheviere.",
-		shortDesc: "Replaces user's team with random STB sets.",
-		name: "I'm Gonna Try a New Team",
-		isNonstandard: "Custom",
-		pp: 2,
-		noPPBoosts: true,
+	psionicslice: {
+		accuracy: 100,
+		basePower: 80,
+		category: "Physical",
+		pp: 10,
 		priority: 0,
-		flags: {},
-		onTryMove() {
+		name: "Psionic Slice",
+		isNonstandard: "Custom",
+		desc: "This move’s base power increases by +2 for each stage the user’s stats have been raised or lowered. Resets the user’s stats after use.",
+		shortDesc: "+2 BP for each stage that is non-zero (ex. -3 Spa gives +6 BP)",
+		flags: {protect: 1, mirror: 1},
+		onTryMove(){
 			this.attrLastMove('[still]');
 		},
-		onPrepareHit(target, source) {
-			this.add('-anim', source, 'Amnesia', source);
-			this.add('-anim', source, 'Double Team', source);
+		onPrepareHit(){
+			this.add('-anim', source, 'Secret Sword', target)
 		},
-		onTryHit(target, source) {
-			if (source.name !== 'torwildheart') {
-				this.add('-fail', source);
-				this.hint("Only torwildheart can use I'm Gonna Try a New Team.");
-				return null;
+		basePowerCallback(pokemon, target, move) {
+			let boosts = 0;
+			let boost: BoostName;
+			for (boost in pokemon.boosts) {
+				boosts += Math.abs(pokemon.boosts[boost]);
+			}
+			return move.basePower + 2 * boosts;
+		},
+		self: {
+			onHit(pokemon){
+				pokemon.clearBoosts();
+				this.add('-clearboost', pokemon);
 			}
 		},
-		onHit(target, source) {
-			// Store percent of HP left, percent of PP left, and status for each pokemon on the user's team
-			const carryOver: {hp: number, status: ID, statusData: EffectState, pp: number[]}[] = [];
-			const currentTeam = source.side.pokemon.slice();
-			for (const pokemon of currentTeam) {
-				carryOver.push({
-					hp: pokemon.hp / pokemon.maxhp,
-					status: pokemon.status,
-					statusData: pokemon.statusData,
-					pp: pokemon.moveSlots.slice().map(m => {
-						return m.pp / m.maxpp;
-					}),
-				});
-				// Handle pokemon with less than 4 moves
-				while (carryOver[carryOver.length - 1].pp.length < 4) {
-					carryOver[carryOver.length - 1].pp.push(1);
-				}
-			}
-			// Generate a new team
-			let team: Pokemon[] = this.teamGenerator.getTeam({name: source.side.name, inBattle: true});
-			// Remove Asheviere from generated teams to not allow duplicates
-			team = team.filter(pokemon => !(pokemon.name === 'torwildheart'));
-			// Overwrite un-fainted pokemon other than the user
-			for (const [i, mon] of currentTeam.entries()) {
-				if (mon.fainted || !mon.hp || mon.position === source.position) continue;
-				let set = team.shift();
-				if (!set) throw new Error('Not enough pokemon left to wonder trade to.');
-				const oldSet = carryOver[i];
-
-				// Bit of a hack so client doesn't crash when formeChange is called for the new pokemon
-				const effect = this.effect;
-				this.effect = {id: ''} as Effect;
-				const pokemon = new Pokemon(set, source.side);
-				this.effect = effect;
-
-				pokemon.hp = Math.floor(pokemon.maxhp * oldSet.hp) || 1;
-				pokemon.status = oldSet.status;
-				if (oldSet.statusData) pokemon.statusData = oldSet.statusData;
-				for (const [j, moveSlot] of pokemon.moveSlots.entries()) {
-					moveSlot.pp = Math.floor(moveSlot.maxpp * oldSet.pp[j]);
-				}
-				pokemon.position = mon.position;
-				currentTeam[i] = pokemon;
-			}
-			source.side.pokemon = currentTeam;
-			this.add('message', `${source.name} is trying a new team!`);
-		},
-		target: "self",
+		target: "normal",
 		type: "Psychic",
 	},
 	//VolticHalberd

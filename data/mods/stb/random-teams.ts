@@ -35,6 +35,12 @@ export const ssbSets: SSBSets = {
 	// Nature needs to be a valid nature with the first letter capitalized ex: Modest
 	*/
 	// Please keep sets organized alphabetically based on staff member name!
+	'Banded Bonks':{
+		species: 'Durant', ability: 'RNG Training', item: 'Choice Band', gender: 'M',
+		moves: ['First Impression', 'Superpower', ['Stomping Tantrum', 'Rock Slide', 'Thunder Fang', 'Crunch', 'Aerial Ace']],
+		signatureMove: 'bonk.',
+		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly'
+	},
 	Peekz1025: {
 		species: 'Sceptile', ability: "Forest's Wrath", item: 'Sceptilite', gender: 'M',
 		moves: ['Dragon Claw', 'Night Slash', 'Earthquake'],
@@ -66,10 +72,10 @@ export const ssbSets: SSBSets = {
 		evs: {hp: 188, atk: 124, def: 148, spd: 44, spe: 4}, ivs: {spe: 2}, nature: 'Brave'
 	},
 	torwildheart:{
-		species: 'victini', ability: 'Superior Format Surge', item: 'Leftovers', gender: '',
-		moves: ['Searing Shot', 'Psychic', ['Scorching Sands', 'Energy Ball']],
-		signatureMove: 'I\'m Gonna Try a New Team',
-		evs: {hp: 4, spa: 252, spe: 252}, ivs: {atk: 0}, nature: 'Modest'
+		species: 'mewtwomegax', ability: 'Too Long', item: 'Expert Belt', gender: '',
+		moves: [['Thunderous Kick', 'High Jump Kick'], ['Ice Punch', 'Thunder Punch'], ['Trop Kick', 'Blaze Kick']],
+		signatureMove: 'Psionic Slice',
+		evs: {hp: 4, atk: 252, spe: 252}, nature: 'Adamant'
 	},
 	VolticHalberd: {
 		species: 'Heliolisk', ability: 'Outside is Frightful', item: 'Life Orb', gender: 'M',
