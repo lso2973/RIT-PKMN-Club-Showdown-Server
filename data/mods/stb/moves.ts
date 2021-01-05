@@ -156,23 +156,29 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	},
 	// MeepingtonThe3rd
 	mentalbrick: {
-		accuracy: 100,
-		basePower: 100,
+		accuracy: true,
+		basePower: 80,
 		category: "Special",
 		name: "Mental Brick",
-		desc: "Has a 30% chance to make the target flinch.",
-		shortDesc: "30% chance to flinch",
+		desc: "This move deals neutral damage to Dark- and Steel-types. This move cannot miss.",
+		shortDesc: "Neutral dmg to Dark/Steel. Can't miss.",
 		gen: 8,
-		pp: 15,
+		pp: 20,
 		priority: 0,
-		flags: {contact: 1, protect: 1},
-		secondary: {
-			chance: 30,
-			volatileStatus: 'flinch',
+		flags: {mirror: 1, protect: 1},
+		onEffectiveness(typeMod, target, type) {
+			if (type === 'Dark' || type === 'Steel') return 0;
 		},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', target, 'Brick Break', target);
+		},
+		secondary: null,
 		isNonstandard: "Custom",
 		target: "normal",
-		type: "Steel",
+		type: "Psychic",
 	},
 	// Peekz1025
 	verdantblade: {
