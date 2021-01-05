@@ -93,6 +93,26 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	},
 	*/
 	// Please keep sets organized alphabetically based on staff member name!
+	// Banded Bonks
+	bonk: {
+		accuracy: 100,
+		basePower: 100,
+		category: "Physical",
+		name: "bonk.",
+		desc: "Has a 30% chance to make the target flinch.",
+		shortDesc: "30% chance to flinch",
+		gen: 8,
+		pp: 15,
+		priority: 0,
+		flags: {contact: 1, protect: 1},
+		secondary: {
+			chance: 30,
+			volatileStatus: 'flinch',
+		},
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Steel",
+	},
 	// Peekz1025
 	verdantblade: {
 		accuracy: 100,
@@ -178,7 +198,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		contestType: "Beautiful",
 	},
 	// ScarTheColossus
-	balance:{
+	balance: {
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
@@ -207,7 +227,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		contestType: "Clever",
 	},
 	//torwildheart
-	psionicslice:{
+	psionicslice: {
 		accuracy: 100,
 		basePower: 80,
 		category: "Physical",
@@ -232,9 +252,11 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			}
 			return move.basePower + 2 * boosts;
 		},
-		onHit(target, source) {
-			source.clearBoosts();
-			this.add('-clearboost', source);
+		self: {
+			onHit(pokemon){
+				pokemon.clearBoosts();
+				this.add('-clearboost', pokemon);
+			}
 		},
 		target: "normal",
 		type: "Psychic",

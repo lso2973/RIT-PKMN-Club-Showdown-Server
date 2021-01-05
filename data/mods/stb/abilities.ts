@@ -103,6 +103,27 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	*/
 	// Please keep abilites organized alphabetically based on staff member name!
+	// Banded Bonks
+	rngtraining: {
+		desc: "Raises this Pokemon’s accuracy and evasion by +1 stage on entry and this Pokemon's moves have their secondary effect chance doubled.",
+		shortDesc: "+1 accuracy and evasion on entry + serene grace",
+		name: "RNG Training",
+		onStart(pokemon) {
+			this.boost({accuracy: 1, evasion: 1});
+		},
+		onModifyMovePriority: -2,
+		onModifyMove(move) {
+			if (move.secondaries) {
+				this.debug('doubling secondary chance');
+				for (const secondary of move.secondaries) {
+					if (secondary.chance) secondary.chance *= 2;
+				}
+			}
+			if (move.self?.chance) move.self.chance *= 2;
+		},
+		isNonstandard: "Custom",
+		Rating: 4,
+	},
 	// Peekz1025
 	forestswrath:{
 		desc: "Increases user’s critical hit ratio on entry and the user’s attack is raised by +1 stage when the user successfully lands a critical hit.",
