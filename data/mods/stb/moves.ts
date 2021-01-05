@@ -141,6 +141,12 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		onHit(target, pokemon) {
 			this.field.setTerrain('ribbonterrain');
 		},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Extreme Evoboost', target);
+		},
 		secondary: null,
 		target: "normal",
 		type: "Fairy",
