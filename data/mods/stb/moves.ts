@@ -95,18 +95,44 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	// Please keep sets organized alphabetically based on staff member name!
 	// ATcheron
 	buffice: {
-		// dummy code for testing
 		accuracy: 100,
-		basePower: 40,
-		category: "Physical",
+		basePower: 90,
+		category: "Special",
 		name: "Buff Ice",
-		pp: 35,
+		desc: "When calculating type effectiveness, this move is supereffective against Water-type Pokemon, regardless of the move's typing. If the target is Water-type, it no longer resists Ice-type attacks until it switches out.",
+		shortDesc: "Freeze Dry + makes Water-types not resist Ice",
+		gen: 8,
+		pp: 15,
 		priority: 0,
-		flags: {contact: 1, protect: 1, mirror: 1},
-		secondary: null,
+		flags: {protect: 1, mirror: 1},
+		onEffectiveness(typeMod, target, type) {
+			if (type === 'Water') return 1;
+		},
+		onHit(target) {
+			target.addVolatile('buffice');
+		},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Ice Beam', target);
+			this.add('-anim', target, 'Blizzard', target);
+		},
+		condition: {
+			onSourceBasePowerPriority: 18,
+			onSourceBasePower(basePower, attacker, defender, move) {
+				if (move.type === 'Ice') {
+					return this.chainModify(2);
+				}
+			},
+		},
+		secondary: {
+			chance: 10,
+			status: 'frz',
+		},
+		isNonstandard: "Custom",
 		target: "normal",
-		type: "Normal",
-		contestType: "Tough",
+		type: "Ice",
 	},
 	// Banded Bonks
 	bonk: {
