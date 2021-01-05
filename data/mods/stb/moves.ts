@@ -93,6 +93,30 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	},
 	*/
 	// Please keep sets organized alphabetically based on staff member name!
+	// Peekz1025
+	verdantblade: {
+		accuracy: 100,
+		basePower: 90,
+		category: "Physical",
+		name: "Verdant Blade",
+		desc: "This move is always a critical hit unless the target is under the effect of Lucky Chant or has the Battle Armor or Shell Armor Abilities.",
+		shortDesc: "Always crits*",
+		gen: 8,
+		pp: 5,
+		priority: 0,
+		flags: {contact: 1, protect: 1},
+		willCrit: true,
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Leaf Blade', target);
+		},
+		secondary: null,
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Grass",
+	},
 	// PseudoPhysics
 	therest: {
 		accuracy: true,
@@ -136,7 +160,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		isNonstandard: "Custom",
 		gen: 8,
 		priority: 0,
-		flags: {nonsky: 1},
+		flags: {nonsky: 1, protect: 1},
 		secondary: null,
 		onHit(target, pokemon) {
 			this.field.setTerrain('ribbonterrain');
@@ -160,6 +184,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		category: "Status",
 		name: 'Balance',
 		pp: 10,
+		priority: 0,
 		isNonstandard: 'Custom',
 		desc: "Raises the user’s physical attack and defense by +1 stage and lower its speed by -1 stage. The user regains the item it last used. Fails if the user is holding an item, if the user has not held an item, if the item was a popped Air Balloon, if the item was picked up by a Pokémon with the Pickup Ability, or if the item was lost to Bug Bite, Covet, Incinerate, Knock Off, Pluck, or Thief. Items thrown with Fling can be regained. Burns the user.",
 		shortDesc: "Curse + Recycle + self burn",

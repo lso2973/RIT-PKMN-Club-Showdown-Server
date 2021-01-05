@@ -103,6 +103,22 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	*/
 	// Please keep abilites organized alphabetically based on staff member name!
+	// Peekz1025
+	forestswrath:{
+		desc: "Increases user’s critical hit ratio on entry and the user’s attack is raised by +1 stage when the user successfully lands a critical hit.",
+		shortDesc: "Focus Energy on entry, +1 Atk on crit",
+		name: "Forest's Wrath",
+		onStart(pokemon){
+			pokemon.addVolatile('focusenergy');
+		},
+		onAfterMoveSecondarySelf(target, source, move){
+			if(source.getMoveHitData(move).crit){
+				this.boost({atk: 1});
+			}
+		},
+		isNonstandard: "Custom",
+		rating: 4.5
+	},
 	// PseudoPhysics
 	gonnagetcha: {
 		desc: "Prevents adjacent opposing Pokemon from choosing to switch out unless they are immune to trapping or also have this Ability or Shadow Tag. Also uses Magic Coat on entry.",
@@ -168,6 +184,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		name: "Superior Format Surge",
 		isNonstandard: "Custom",
+		rating: 3,
 	},
 	// VolticHalberd
 	outsideisfrightful: {
@@ -212,6 +229,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			this.add('-start', pokemon, 'typechange', pokemon.types.join('/'), '[from] ability: Outside is Frightful');
 		},
 		isNonstandard: "Custom",
+		rating: 4,
 	},
 	// Modified Shadow Tag for gonna getcha
 	shadowtag: {

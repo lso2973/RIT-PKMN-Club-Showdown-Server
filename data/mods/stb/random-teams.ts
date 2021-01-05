@@ -35,6 +35,12 @@ export const ssbSets: SSBSets = {
 	// Nature needs to be a valid nature with the first letter capitalized ex: Modest
 	*/
 	// Please keep sets organized alphabetically based on staff member name!
+	Peekz1025: {
+		species: 'Sceptile', ability: "Forest's Wrath", item: 'Sceptilite', gender: 'M',
+		moves: ['Dragon Claw', 'Night Slash', 'Earthquake'],
+		signatureMove: 'Verdant Blade',
+		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly'
+	},
 	PseudoPhysics: {
 		species: 'Wobbuffet', ability: 'gonna getcha', item: 'Focus Sash', gender: 'M',
 		moves: ['Encore', 'Mirror Coat', 'Counter'],
