@@ -256,6 +256,24 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		isNonstandard: "Custom",
 		rating: 4,
 	},
+	// TacocaT_2595
+	stainlesssteel: {
+		desc: "This Pokémon takes 2/3rds damage from supereffective attacks, and raises its defense and special defense when it gets hit by a supereffective move",
+		shortDesc: "When hit by supereffective move: dmg x2/3 and +1 to def and spd",
+		name: "Stainless Steel",
+		onSourceModifyDamage(damage, source, target, move) {
+			if (target.getMoveHitData(move).typeMod > 0) {
+				this.debug('Stainless Steel neutralize');
+				return this.chainModify(0.67);
+			}
+		},
+		onHit(target, source, move) {
+			if (move?.effectType === 'Move' && target.getMoveHitData(move).typeMod > 0) {
+				this.boost({def: 1, spd: 1});
+			}
+		},
+		isNonstandard: "Custom",
+	},
 	// torwildheart
 	toolong: {
 		desc: "At the start of each turn, this pokemon raises its attack, defense, special attack, special defense and speed by +1 stage if the turn count is greater than 25.",

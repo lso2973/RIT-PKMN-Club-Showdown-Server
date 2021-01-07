@@ -128,6 +128,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('ScarTheColossus')}|Subscribe to Professor Matt on Youtube`);
 		},
 	},
+	tacocat2595: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('TacocaT_2595')}|I hope I’m not steeling the spotlight.`);
+		},
+		onSwitchOut(){
+			this.add(`c|${getName('TacocaT_2595')}|I’m having a hard time here, let’s have someone else weigh in.`);
+		},
+		onFaint(){
+			this.add(`c|${getName('TacocaT_2595')}|Oh. Well I suppose I went out with a bang.`);
+		},
+	},
 	torwildheart:{
 		noCopy: true,
 		onStart() {

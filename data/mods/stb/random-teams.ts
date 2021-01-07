@@ -83,6 +83,12 @@ export const ssbSets: SSBSets = {
 		signatureMove: 'Balance',
 		evs: {hp: 188, atk: 124, def: 148, spd: 44, spe: 4}, ivs: {spe: 2}, nature: 'Brave'
 	},
+	'TacocaT_2595': {
+		species: 'Bronzong', ability: 'Stainless Steel', item: 'Leftovers', gender: 'F',
+		moves: ['Recover', 'Bulk Up', ['Heavy Slam', 'Gyro Ball']],
+		signatureMove: 'Kaboom!',
+		evs: {hp: 244, atk: 252, def: 12}, ivs: {spe: 0}, nature: 'Brave', shiny: true
+	},
 	torwildheart:{
 		species: 'mewtwomegax', ability: 'Too Long', item: 'Expert Belt', gender: '',
 		moves: [['Thunderous Kick', 'High Jump Kick'], ['Ice Punch', 'Thunder Punch'], ['Trop Kick', 'Blaze Kick']],

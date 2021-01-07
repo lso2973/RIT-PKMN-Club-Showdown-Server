@@ -320,7 +320,30 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		zMove: {boost: {atk: 1}},
 		contestType: "Clever",
 	},
-	//torwildheart
+	// TacocaT_2595
+	kaboom: {
+		accuracy: 100,
+		basePower: 250,
+		category: "Physical",
+		name: 'Kaboom!',
+		pp: 5,
+		priority: 0,
+		isNonstandard: 'Custom',
+		desc: "The user faints after using this move, even if this move fails for having no target. This move is prevented from executing if any active Pokemon has the Damp Ability. Sets 1 layer of Spikes and Stealth Rocks on the opponent's side if the move succeeds.",
+		shortDesc: "Explosion + Spikes + Stealth Rocks",
+		flags: {protect: 1, mirror: 1},
+		self: {
+			onHit(source) {
+				source.side.foe.addSideCondition('stealthrock');
+				source.side.foe.addSideCondition('spikes');
+			},
+		},
+		selfdestruct: "always",
+		secondary: null,
+		target: "allAdjacent",
+		type: "Normal",
+	},
+	// torwildheart
 	psionicslice: {
 		accuracy: 100,
 		basePower: 80,
