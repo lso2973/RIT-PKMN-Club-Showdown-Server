@@ -332,6 +332,14 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		desc: "The user faints after using this move, even if this move fails for having no target. This move is prevented from executing if any active Pokemon has the Damp Ability. Sets 1 layer of Spikes and Stealth Rocks on the opponent's side if the move succeeds.",
 		shortDesc: "Explosion + Spikes + Stealth Rocks",
 		flags: {protect: 1, mirror: 1},
+		onTryMove(){
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source){
+			this.add('-anim', source, 'Explosion', target)
+			this.add('-anim', source, 'Stealth Rock', target)
+			this.add('-anim', source, 'Spikes', target)
+		},
 		self: {
 			onHit(source) {
 				source.side.foe.addSideCondition('stealthrock');
@@ -340,8 +348,8 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		},
 		selfdestruct: "always",
 		secondary: null,
-		target: "allAdjacent",
-		type: "Normal",
+		target: "normal",
+		type: "Steel",
 	},
 	// torwildheart
 	psionicslice: {
@@ -358,7 +366,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		onTryMove(){
 			this.attrLastMove('[still]');
 		},
-		onPrepareHit(){
+		onPrepareHit(target, source){
 			this.add('-anim', source, 'Secret Sword', target)
 		},
 		basePowerCallback(pokemon, target, move) {
