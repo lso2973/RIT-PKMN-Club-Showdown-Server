@@ -160,6 +160,8 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
+		desc: "Summons a Terrain called Spectral Feild. While Spectral Field is active, all Pokémon on the field gain the Ghost typing in addition to their normal typings, and removes type-based immunities to Ghost-type attacks.",
+		shortDesc: "Terrain that removes type immunity to ghost moves and gives pokemon extra ghost type",
 		name: "Spectral Field",
 		pp: 10,
 		priority: 0,
@@ -189,20 +191,8 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 					}
 				}
 			},
-			onResidualOrder: 5,
-			onResidualSubOrder: 3,
-			onResidual() {
-				this.eachEvent('Terrain');
-			},
-			onTerrain(pokemon) {
-				if (pokemon.isGrounded() && !pokemon.isSemiInvulnerable()) {
-					this.debug('Pokemon is grounded, healing through Grassy Terrain.');
-					this.heal(pokemon.baseMaxhp / 16, pokemon, pokemon);
-				}
-			},
 			onEnd() {
-				if (!this.effectData.duration) this.eachEvent('Terrain');
-				this.add('-fieldend', 'move: Grassy Terrain');
+				this.add('-fieldend', 'move: Spectral Field');
 			},
 		},
 		secondary: null,
