@@ -477,21 +477,26 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onEnd(pokemon) {
 			if (pokemon.illusion) {
 				this.debug('illusion cleared');
-				let disguisedAs = toID(pokemon.illusion.name);
+				let disguisedAs = this.toID(pokemon.illusion.name);
 				pokemon.illusion = null;
 				const details = pokemon.species.name + (pokemon.level === 100 ? '' : ', L' + pokemon.level) +
 					(pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
 				this.add('replace', pokemon, details);
 				this.add('-end', pokemon, 'Illusion');
-				// Handle hippopotas
+				// Handle scenarios where the name of a user is the same as a mon
 				if (this.dex.getSpecies(disguisedAs).exists) disguisedAs += 'user';
 				if (pokemon.volatiles[disguisedAs]) {
 					pokemon.removeVolatile(disguisedAs);
 				}
-				if (!pokemon.volatiles[toID(pokemon.name)]) {
-					const status = this.dex.getEffect(toID(pokemon.name));
+				if (!pokemon.volatiles[this.toID(pokemon.name) + 'break'] && !pokemon.volatiles[this.toID(pokemon.name)]) { 
+					const status = this.dex.getEffect(this.toID(pokemon.name) + 'break'); // first try adding the status with break
 					if (status?.exists) {
-						pokemon.addVolatile(toID(pokemon.name), pokemon);
+						pokemon.addVolatile(this.toID(pokemon.name) + 'break', pokemon);
+					} else { // Then just add the basic status
+						const status = this.dex.getEffect(this.toID(pokemon.name));
+						if (status?.exists) {
+							pokemon.addVolatile(this.toID(pokemon.name), pokemon);
+						}
 					}
 				}
 			}

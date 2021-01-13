@@ -85,6 +85,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	ignoritus: {
 		noCopy: true,
 		onStart() {
+			this.add(`c|${getName('Ignoritus')}|Heard someone was trying to stall :eyes:`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('Ignoritus')}|brb`);
+		},
+		onFaint() {
+			this.add(`c|${getName('Ignoritus')}|Welp, back to Temtem.`);
+		},
+	},
+	ignoritusbreak: {
+		noCopy: true,
+		onStart() {
 			this.add(`c|${getName('Ignoritus')}|Your decisions up to this point have been Baddy Bad`);
 		},
 		onSwitchOut() {
