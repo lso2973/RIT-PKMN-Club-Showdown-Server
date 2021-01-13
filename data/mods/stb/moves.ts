@@ -155,6 +155,88 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "normal",
 		type: "Steel",
 	},
+	// Ignoritus
+	spectralfield:{
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Spectral Field",
+		pp: 10,
+		priority: 0,
+		flags: {nonsky: 1},
+		terrain: 'spectralfield',
+		condition: {
+			duration: 5,
+			durationCallback(source, effect) {
+				if (source?.hasItem('terrainextender')) {
+					return 8;
+				}
+				return 5;
+			},
+			onStart(battle, source, effect) {
+				if (effect?.effectType === 'Ability') {
+					this.add('-fieldstart', 'move: Spectral Field', '[from] ability: ' + effect, '[of] ' + source);
+				} else {
+					this.add('-fieldstart', 'move: Spectral Field');
+				}
+			},
+			onModifyMovePriority: -5,
+			onTryHit(source, target, move) {
+				if (!target.isSemiInvulnerable() && target.isGrounded()){ 
+					if (!move.ignoreImmunity) move.ignoreImmunity = {};
+					if (move.ignoreImmunity !== true) {
+						move.ignoreImmunity['Ghost'] = true;
+					}
+				}
+			},
+			onResidualOrder: 5,
+			onResidualSubOrder: 3,
+			onResidual() {
+				this.eachEvent('Terrain');
+			},
+			onTerrain(pokemon) {
+				if (pokemon.isGrounded() && !pokemon.isSemiInvulnerable()) {
+					this.debug('Pokemon is grounded, healing through Grassy Terrain.');
+					this.heal(pokemon.baseMaxhp / 16, pokemon, pokemon);
+				}
+			},
+			onEnd() {
+				if (!this.effectData.duration) this.eachEvent('Terrain');
+				this.add('-fieldend', 'move: Grassy Terrain');
+			},
+		},
+		secondary: null,
+		target: "all",
+		type: "Ghost",
+		zMove: {boost: {def: 1}},
+		contestType: "Beautiful",
+	},
+	// MeepingtonThe3rd
+	mentalbrick: {
+		accuracy: true,
+		basePower: 80,
+		category: "Special",
+		name: "Mental Brick",
+		desc: "This move deals neutral damage to Dark- and Steel-types. This move cannot miss.",
+		shortDesc: "Neutral dmg to Dark/Steel. Can't miss.",
+		gen: 8,
+		pp: 20,
+		priority: 0,
+		flags: {mirror: 1, protect: 1},
+		onEffectiveness(typeMod, target, type) {
+			if (type === 'Dark' || type === 'Steel') return 0;
+		},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', target, 'Brick Break', target);
+		},
+		secondary: null,
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Psychic",
+	},
 	// MightySharkVGC
 	bettertrickroom: {
 		accuracy: true,
@@ -182,32 +264,6 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		type: "Psychic",
 		zMove: {boost: {accuracy: 1}},
 		contestType: "Clever",
-	},
-	// MeepingtonThe3rd
-	mentalbrick: {
-		accuracy: true,
-		basePower: 80,
-		category: "Special",
-		name: "Mental Brick",
-		desc: "This move deals neutral damage to Dark- and Steel-types. This move cannot miss.",
-		shortDesc: "Neutral dmg to Dark/Steel. Can't miss.",
-		gen: 8,
-		pp: 20,
-		priority: 0,
-		flags: {mirror: 1, protect: 1},
-		onEffectiveness(typeMod, target, type) {
-			if (type === 'Dark' || type === 'Steel') return 0;
-		},
-		onTryMove() {
-			this.attrLastMove('[still]');
-		},
-		onPrepareHit(target, source) {
-			this.add('-anim', target, 'Brick Break', target);
-		},
-		secondary: null,
-		isNonstandard: "Custom",
-		target: "normal",
-		type: "Psychic",
 	},
 	// Peekz1025
 	verdantblade: {

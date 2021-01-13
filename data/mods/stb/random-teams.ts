@@ -47,17 +47,23 @@ export const ssbSets: SSBSets = {
 		signatureMove: 'bonk.',
 		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly'
 	},
-	MightySharkVGC: {
-		species: 'Stakataka', ability: 'Beaster Boost', item: 'Focus Sash', gender: '',
-		moves: ['Gyro Ball', 'Rock Blast', 'Earthquake'],
-		signatureMove: 'Better Trick Room',
-		evs: {hp: 252, atk: 252, spd: 4}, ivs: {def: 14, spe: 0}, nature: 'Lonely',
+	Ignoritus:{
+		species: 'Froslass', ability: 'Illusion', item: 'Focus Sash', Gender: 'M',
+		moves: ['Shadow Ball', 'Ice Beam', 'Sheer Cold'],
+		signatureMove: 'Spectral Field',
+		evs: {spa: 252, spd: 4, spe: 252}, ivs: {atk: 0}, nature: 'Timid'
 	},
 	MeepingtonThe3rd: {
 		species: 'Raichu-Alola', ability: 'Storm Surfing', item: 'Life Orb', gender: 'M',
 		moves: ['Nasty Plot', 'Thunder', 'Splishy Splash'],
 		signatureMove: 'Mental Brick',
 		evs: {spa: 252, spd: 4, spe: 252}, nature: 'Modest'
+	},
+	MightySharkVGC: {
+		species: 'Stakataka', ability: 'Beaster Boost', item: 'Focus Sash', gender: '',
+		moves: ['Gyro Ball', 'Rock Blast', 'Earthquake'],
+		signatureMove: 'Better Trick Room',
+		evs: {hp: 252, atk: 252, spd: 4}, ivs: {def: 14, spe: 0}, nature: 'Lonely',
 	},
 	Peekz1025: {
 		species: 'Sceptile', ability: "Forest's Wrath", item: 'Sceptilite', gender: 'M',
@@ -119,7 +125,7 @@ export const ssbSets: SSBSets = {
 export class RandomStaffBrosTeams extends RandomTeams {
 	randomStaffBrosTeam(options: {inBattle?: boolean} = {}) {
 		const team: PokemonSet[] = [];
-		const debug: string[] = []; // Set this to a list of SSB sets to override the normal pool for debugging.
+		const debug: string[] = ['ScarTheColossus', 'Ignoritus']; // Set this to a list of SSB sets to override the normal pool for debugging.
 		const pool = debug.length ? debug : Object.keys(ssbSets);
 		const typePool: {[k: string]: number} = {};
 		let depth = 0;

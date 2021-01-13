@@ -94,7 +94,6 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('MightySharkVGC')}|dang, i lost AND i missed queue? Sad`);
 		},
 	},
-	},
 	peekz1025:{
 		noCopy: true,
 		onStart() {
