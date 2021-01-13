@@ -115,7 +115,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// Banded Bonks
 	rngtraining: {
-		desc: "Raises this Pokemon’s accuracy and evasion by +1 stage on entry and this Pokemon's moves have their secondary effect chance doubled.",
+		desc: "Raises this Pokémon's accuracy and evasion by +1 stage on entry and this Pokémon's moves have their secondary effect chance doubled.",
 		shortDesc: "+1 accuracy and evasion on entry + serene grace",
 		name: "RNG Training",
 		onStart(pokemon) {
@@ -133,6 +133,37 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		isNonstandard: "Custom",
 		Rating: 4,
+	},
+	// MeepingtonThe3rd
+	stormsurfing: {
+		desc: "On switch-in, this Pokémon summons Electric Terrain, and Heavy Rain begins until this Ability is no longer active in battle. This Pokémon's speed is doubled while on Electric Terrain.",
+		shortDesc: "primordial sea + electric surge + surge surfer",
+		name: "Surge Surfing",
+		onStart(source) {
+			this.field.setWeather('primordialsea');
+			this.field.setTerrain('electricterrain');
+		},
+		onAnySetWeather(target, source, weather) {
+			const strongWeathers = ['desolateland', 'primordialsea', 'deltastream'];
+			if (this.field.getWeather().id === 'primordialsea' && !strongWeathers.includes(weather.id)) return false;
+		},
+		onEnd(pokemon) {
+			if (this.field.weatherData.source !== pokemon) return;
+			for (const target of this.getAllActive()) {
+				if (target === pokemon) continue;
+				if (target.hasAbility('primordialsea') || target.hasAbility('stormsurfing')) {
+					this.field.weatherData.source = target;
+					return;
+				}
+			}
+			this.field.clearWeather();
+		},
+		onModifySpe(spe) {
+			if (this.field.isTerrain('electricterrain')) {
+				return this.chainModify(2);
+			}
+		},
+		isNonstandard: "Custom",
 	},
 	// Peekz1025
 	forestswrath:{
@@ -224,6 +255,24 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		isNonstandard: "Custom",
 		rating: 4,
+	},
+	// TacocaT_2595
+	stainlesssteel: {
+		desc: "This Pokémon takes 2/3rds damage from supereffective attacks, and raises its defense and special defense when it gets hit by a supereffective move",
+		shortDesc: "When hit by supereffective move: dmg x2/3 and +1 to def and spd",
+		name: "Stainless Steel",
+		onSourceModifyDamage(damage, source, target, move) {
+			if (target.getMoveHitData(move).typeMod > 0) {
+				this.debug('Stainless Steel neutralize');
+				return this.chainModify(0.67);
+			}
+		},
+		onHit(target, source, move) {
+			if (move?.effectType === 'Move' && target.getMoveHitData(move).typeMod > 0) {
+				this.boost({def: 1, spd: 1});
+			}
+		},
+		isNonstandard: "Custom",
 	},
 	// torwildheart
 	toolong: {

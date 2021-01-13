@@ -154,6 +154,32 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "normal",
 		type: "Steel",
 	},
+	// MeepingtonThe3rd
+	mentalbrick: {
+		accuracy: true,
+		basePower: 80,
+		category: "Special",
+		name: "Mental Brick",
+		desc: "This move deals neutral damage to Dark- and Steel-types. This move cannot miss.",
+		shortDesc: "Neutral dmg to Dark/Steel. Can't miss.",
+		gen: 8,
+		pp: 20,
+		priority: 0,
+		flags: {mirror: 1, protect: 1},
+		onEffectiveness(typeMod, target, type) {
+			if (type === 'Dark' || type === 'Steel') return 0;
+		},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', target, 'Brick Break', target);
+		},
+		secondary: null,
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Psychic",
+	},
 	// Peekz1025
 	verdantblade: {
 		accuracy: 100,
@@ -294,7 +320,38 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		zMove: {boost: {atk: 1}},
 		contestType: "Clever",
 	},
-	//torwildheart
+	// TacocaT_2595
+	kaboom: {
+		accuracy: 100,
+		basePower: 250,
+		category: "Physical",
+		name: 'Kaboom!',
+		pp: 5,
+		priority: 0,
+		isNonstandard: 'Custom',
+		desc: "The user faints after using this move, even if this move fails for having no target. This move is prevented from executing if any active Pokemon has the Damp Ability. Sets 1 layer of Spikes and Stealth Rocks on the opponent's side if the move succeeds.",
+		shortDesc: "Explosion + Spikes + Stealth Rocks",
+		flags: {protect: 1, mirror: 1},
+		onTryMove(){
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source){
+			this.add('-anim', source, 'Explosion', target)
+			this.add('-anim', source, 'Stealth Rock', target)
+			this.add('-anim', source, 'Spikes', target)
+		},
+		self: {
+			onHit(source) {
+				source.side.foe.addSideCondition('stealthrock');
+				source.side.foe.addSideCondition('spikes');
+			},
+		},
+		selfdestruct: "always",
+		secondary: null,
+		target: "normal",
+		type: "Steel",
+	},
+	// torwildheart
 	psionicslice: {
 		accuracy: 100,
 		basePower: 80,

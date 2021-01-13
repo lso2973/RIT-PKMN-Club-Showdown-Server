@@ -47,6 +47,12 @@ export const ssbSets: SSBSets = {
 		signatureMove: 'bonk.',
 		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly'
 	},
+	MeepingtonThe3rd: {
+		species: 'Raichu-Alola', ability: 'Storm Surfing', item: 'Life Orb', gender: 'M',
+		moves: ['Nasty Plot', 'Thunder', 'Splishy Splash'],
+		signatureMove: 'Mental Brick',
+		evs: {spa: 252, spd: 4, spe: 252}, nature: 'Modest'
+	},
 	Peekz1025: {
 		species: 'Sceptile', ability: "Forest's Wrath", item: 'Sceptilite', gender: 'M',
 		moves: ['Dragon Claw', 'Night Slash', 'Earthquake'],
@@ -76,6 +82,12 @@ export const ssbSets: SSBSets = {
 		moves: ['Facade', 'Earthquake', 'Crunch'],
 		signatureMove: 'Balance',
 		evs: {hp: 188, atk: 124, def: 148, spd: 44, spe: 4}, ivs: {spe: 2}, nature: 'Brave'
+	},
+	'TacocaT_2595': {
+		species: 'Bronzong', ability: 'Stainless Steel', item: 'Leftovers', gender: 'F',
+		moves: ['Recover', 'Bulk Up', ['Heavy Slam', 'Gyro Ball']],
+		signatureMove: 'Kaboom!',
+		evs: {hp: 244, atk: 252, def: 12}, ivs: {spe: 0}, nature: 'Brave', shiny: true
 	},
 	torwildheart:{
 		species: 'mewtwomegax', ability: 'Too Long', item: 'Expert Belt', gender: '',
