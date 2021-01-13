@@ -61,7 +61,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('Banded Bonks')}|*loads durant*`);
 		},
 		onSwitchOut() {
-			this.add(`c|${getName('Banded Bonks')}|I'll be back`);
+			this.add(`c|${getName('Banded Bonks')}|Sorry, my free trial of being out has expired, give me a second`);
 		},
 		onFaint() {
 			this.add(`c|${getName('Banded Bonks')}|Sometimes you bonk, sometimes you get bonked`);

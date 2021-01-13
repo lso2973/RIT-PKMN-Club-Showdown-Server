@@ -309,8 +309,8 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		onTryMove(){
 			this.attrLastMove('[still]');
 		},
-		onPrepareHit(){
-			this.add('-anim', source, 'Secret Sword', target)
+		onPrepareHit(target, source){
+			this.add('-anim', source, 'Secret Sword', target);
 		},
 		basePowerCallback(pokemon, target, move) {
 			let boosts = 0;
