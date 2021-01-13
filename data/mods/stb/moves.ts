@@ -145,7 +145,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		gen: 8,
 		pp: 15,
 		priority: 0,
-		flags: {contact: 1, protect: 1},
+		flags: {contact: 1, mirror: 1, protect: 1},
 		secondary: {
 			chance: 30,
 			volatileStatus: 'flinch',
@@ -154,6 +154,34 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		isNonstandard: "Custom",
 		target: "normal",
 		type: "Steel",
+	},
+	// MightySharkVGC
+	bettertrickroom: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Better Trick Room",
+		desc: "For 5 turns, the Speed of every Pokemon is recalculated for the purposes of determining turn order. During the effect, each Pokemon's Speed is considered to be (10000 - its normal Speed), and if this value is greater than 8191, 8192 is subtracted from it. If this move is used during the effect, the effect ends. Additionally, if this move is successful and the user has not fainted, the user switches out even if it is trapped and is replaced immediately by a selected party member. The user does not switch out if there are no unfainted party members.",
+		shortDesc: "TR + Teleport",
+		gen: 8,
+		pp: 5,
+		priority: -7,
+		flags: {mirror: 1},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', target, 'Trick Room', target);
+			this.add('-anim', target, 'Teleport', target);
+		},
+		selfSwitch: true,
+		onHit(target, pokemon){
+			this.field.setPseudoweather('trickroom');
+		},
+		target: "all",
+		type: "Psychic",
+		zMove: {boost: {accuracy: 1}},
+		contestType: "Clever",
 	},
 	// MeepingtonThe3rd
 	mentalbrick: {
@@ -192,7 +220,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		gen: 8,
 		pp: 5,
 		priority: 0,
-		flags: {contact: 1, protect: 1},
+		flags: {contact: 1, mirror: 1, protect: 1},
 		willCrit: true,
 		onTryMove() {
 			this.attrLastMove('[still]');

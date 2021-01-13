@@ -47,6 +47,12 @@ export const ssbSets: SSBSets = {
 		signatureMove: 'bonk.',
 		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly'
 	},
+	MightySharkVGC: {
+		species: 'Stakataka', ability: 'Beaster Boost', item: 'Focus Sash', gender: '',
+		moves: ['Gyro Ball', 'Rock Blast', 'Earthquake'],
+		signatureMove: 'Better Trick Room',
+		evs: {hp: 252, atk: 252, spd: 4}, ivs: {def: 14, spe: 0}, nature 'Lonely',
+	},
 	MeepingtonThe3rd: {
 		species: 'Raichu-Alola', ability: 'Storm Surfing', item: 'Life Orb', gender: 'M',
 		moves: ['Nasty Plot', 'Thunder', 'Splishy Splash'],
