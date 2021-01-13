@@ -150,6 +150,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			chance: 30,
 			volatileStatus: 'flinch',
 		},
+		// No move animation needed
 		isNonstandard: "Custom",
 		target: "normal",
 		type: "Steel",
