@@ -71,14 +71,29 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		shortDesc: "This Pokemon's Attack is 1.5x and accuracy of its physical attacks is 0.8x.",
 		onModifyAtkPriority: 5,
 		onModifyAtk(atk) {
+			if (pokemon.illusion) return;
 			return this.modify(atk, 1.5);
 		},
 		onSourceModifyAccuracyPriority: -1,
 		onSourceModifyAccuracy(accuracy, target, source, move) {
+			if (pokemon.illusion) return;
 			if (move.category === 'Physical' && typeof accuracy === 'number') {
 				return this.chainModify([0x0CCD, 0x1000]);
 			}
 		},
+	},
+	mightysharkvgc:{
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('MightySharkVGC')}|sure, i can play a match or two while I'm in queue`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('MightySharkVGC')}|brb queue popped`);
+		},
+		onFaint() {
+			this.add(`c|${getName('MightySharkVGC')}|dang, i lost AND i missed queue? Sad`);
+		},
+	},
 	},
 	peekz1025:{
 		noCopy: true,
