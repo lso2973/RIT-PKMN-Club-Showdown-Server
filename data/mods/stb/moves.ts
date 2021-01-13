@@ -171,14 +171,14 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.attrLastMove('[still]');
 		},
 		onPrepareHit(target, source) {
-			this.add('-anim', target, 'Trick Room', target);
-			this.add('-anim', target, 'Teleport', target);
+			this.add('-anim', source, 'Trick Room', source);
+			this.add('-anim', source, 'Teleport', source);
 		},
 		selfSwitch: true,
 		onHit(target, pokemon){
-			this.field.setPseudoweather('trickroom');
+			this.field.addPseudoWeather('trickroom');
 		},
-		target: "all",
+		target: "self",
 		type: "Psychic",
 		zMove: {boost: {accuracy: 1}},
 		contestType: "Clever",

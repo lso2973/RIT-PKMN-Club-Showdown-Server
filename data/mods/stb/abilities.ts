@@ -166,16 +166,16 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		isNonstandard: "Custom",
 	},
 	// MightySharkVGC
-	beasterboost{
+	beasterboost: {
 		desc: "This Pokemon's Attack and Defense are raised by +1 stage and its speed is lowered by -1 stage if it attacks and knocks out another Pokemon.",
-		shortDesc "Moxie but curse rather than attack boost",
+		shortDesc: "Moxie but curse rather than attack boost",
 		name: "Beaster Boost",
 		onSourceAfterFaint(length, target, source, effect) {
 			if (effect && effect.effectType === 'Move') {
 				this.boost({atk: length, def: length, spe: length*-1}, source);
 			}
 		},
-		isNonstandard "Custom",
+		isNonstandard: "Custom",
 		rating: 4,
 	},
 	// Peekz1025
