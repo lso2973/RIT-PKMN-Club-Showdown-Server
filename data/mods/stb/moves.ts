@@ -294,8 +294,8 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.attrLastMove('[still]');
 		},
 		onPrepareHit(target, source) {
-			this.add('-anim', source, 'Explosion', target);
-			this.add('-anim', source, 'Sacred Fire', target);
+			this.add('-anim', source, 'Sacred Fire', source);
+			this.add('-anim', source, 'Inferno Overdrive', target);
 		},
 		selfdestruct: "always",
 		secondary: null,

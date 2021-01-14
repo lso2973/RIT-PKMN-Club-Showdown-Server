@@ -183,13 +183,20 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		desc: "If this Pokemon were to faint, fully heal it and then remove this ability perminantly",
 		shortDesc: "Fully heal once after fainting then lose ability",
 		name: "From the Ashes",
+		onDamagePriority: -100,
+		onBeforeMove(source, target, move){
+			if ((move['selfdestruct'] === "always" || move['selfdestruct'] === "onhit") && !this.effectData.ashes){
+				this.effectData.ashes = true;
+				move['selfdestruct'] = null;
+				source.heal(source.maxhp);
+			}
+		},
 		onDamage(damage, source, target, effect){
-			if (damage >= target.hp){
-				target.heal(target.maxhp);
-				target.clearAbility();
+			if (damage >= source.hp && effect && !this.effectData.ashes){
+				this.effectData.ashes = true;
+				source.heal(source.maxhp);
 				return 0;
 			}
-			return damage;
 		},
 	},
 	// Peekz1025
