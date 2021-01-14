@@ -50,7 +50,7 @@ export const ssbSets: SSBSets = {
 	Ignoritus:{
 		species: 'Froslass', ability: 'Illusion', item: 'Focus Sash', Gender: 'M',
 		moves: ['Shadow Ball', 'Ice Beam', 'Sheer Cold'],
-		signatureMove: 'Spectral Field',
+		signatureMove: 'Spectral Terrain',
 		evs: {spa: 252, spd: 4, spe: 252}, ivs: {atk: 0}, nature: 'Timid'
 	},
 	MeepingtonThe3rd: {
@@ -125,7 +125,7 @@ export const ssbSets: SSBSets = {
 export class RandomStaffBrosTeams extends RandomTeams {
 	randomStaffBrosTeam(options: {inBattle?: boolean} = {}) {
 		const team: PokemonSet[] = [];
-		const debug: string[] = ['ScarTheColossus', 'Ignoritus']; // Set this to a list of SSB sets to override the normal pool for debugging.
+		const debug: string[] = []; // Set this to a list of SSB sets to override the normal pool for debugging.
 		const pool = debug.length ? debug : Object.keys(ssbSets);
 		const typePool: {[k: string]: number} = {};
 		let depth = 0;

@@ -156,18 +156,18 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		type: "Steel",
 	},
 	// Ignoritus
-	spectralfield:{
+	spectralterrain:{
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		desc: "Summons a Terrain called Spectral Feild. While Spectral Field is active, all Pokémon on the field gain the Ghost typing in addition to their normal typings, and removes type-based immunities to Ghost-type attacks.",
+		desc: "Summons Spectral Terrain. While Spectral Terrain is active, all Pokémon on the field gain the Ghost typing in addition to their normal typings, and removes type-based immunities to Ghost-type attacks.",
 		shortDesc: "Terrain that removes type immunity to ghost moves and gives pokemon extra ghost type",
-		name: "Spectral Field",
+		name: "Spectral Terrain",
 		pp: 10,
 		priority: 0,
 		flags: {nonsky: 1},
-		terrain: 'spectralfield',
-		condition: {
+		terrain: 'spectralterrain',
+		condition: { // TODO: Make the adding ghost type part less cursed
 			duration: 5,
 			durationCallback(source, effect) {
 				if (source?.hasItem('terrainextender')) {
@@ -177,9 +177,9 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			},
 			onStart(battle, source, effect) {
 				if (effect?.effectType === 'Ability') {
-					this.add('-fieldstart', 'move: Spectral Field', '[from] ability: ' + effect, '[of] ' + source);
+					this.add('-fieldstart', 'move: Spectral Terrain', '[from] ability: ' + effect, '[of] ' + source);
 				} else {
-					this.add('-fieldstart', 'move: Spectral Field');
+					this.add('-fieldstart', 'move: Spectral Terrain');
 				}
 			},
 			onModifyMovePriority: -5,
@@ -191,14 +191,31 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 					}
 				}
 			},
-			onEnd() {
-				this.add('-fieldend', 'move: Spectral Field');
+			onBeforeMove(source, target, move){
+				this.eachEvent('Terrain');
+			},
+			onTerrain(pokemon){
+				if (pokemon.hasType('Ghost') || !pokemon.isGrounded()) return;
+				if (!pokemon.addType('Ghost')) return;
+				this.add('-start', pokemon, 'typeadd', 'Ghost', '[from] terrain: Spectral Terrain');
+			},
+			onEnd(field) { 
+				var side;
+				var mon;
+				for (side of field.battle.sides){
+					for (mon of side.pokemon){
+						if (mon.addedType === 'Ghost'){
+							mon.addedType = '';
+						}
+					}
+				}
+				this.add('-fieldend', 'move: Spectral Terrain');
 			},
 		},
 		secondary: null,
 		target: "all",
 		type: "Ghost",
-		zMove: {boost: {def: 1}},
+		zMove: {boost: {spd: 1}},
 		contestType: "Beautiful",
 	},
 	// MeepingtonThe3rd
