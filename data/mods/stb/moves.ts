@@ -167,6 +167,13 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		priority: 0,
 		flags: {nonsky: 1},
 		terrain: 'spectralterrain',
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Never-Ending Nightmare', source);
+			this.add('-anim', target, 'Never-Ending Nightmare', target);
+		},
 		condition: { // TODO: Make the adding ghost type part less cursed
 			duration: 5,
 			durationCallback(source, effect) {
