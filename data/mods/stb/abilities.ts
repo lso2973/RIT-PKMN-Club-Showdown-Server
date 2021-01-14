@@ -178,6 +178,20 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		isNonstandard: "Custom",
 		rating: 4,
 	},
+	// njjoltiks
+	fromtheashes:{
+		desc: "If this Pokemon were to faint, fully heal it and then remove this ability perminantly",
+		shortDesc: "Fully heal once after fainting then lose ability",
+		name: "From the Ashes",
+		onDamage(damage, source, target, effect){
+			if (damage >= target.hp){
+				target.heal(target.maxhp);
+				target.clearAbility();
+				return 0;
+			}
+			return damage;
+		},
+	},
 	// Peekz1025
 	forestswrath:{
 		desc: "Increases user’s critical hit ratio on entry and the user’s attack is raised by +1 stage when the user successfully lands a critical hit.",

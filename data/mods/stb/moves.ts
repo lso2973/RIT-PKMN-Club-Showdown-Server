@@ -279,6 +279,30 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		zMove: {boost: {accuracy: 1}},
 		contestType: "Clever",
 	},
+	// njjoltiks
+	burnout: {
+		accuracy: 100,
+		basePower: 250,
+		category: "Physical",
+		desc: "The user faints after using this move, even if this move fails for having no target. This move is prevented from executing if any active Pokemon has the Damp Ability.",
+		shortDesc: "User faints after use",
+		name: "Burn Out",
+		pp: 5,
+		priority: 0,
+		flags: {protect: 1, mirror: 1},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Explosion', target);
+			this.add('-anim', source, 'Sacred Fire', target);
+		},
+		selfdestruct: "always",
+		secondary: null,
+		target: "allAdjacent",
+		type: "Fire",
+		contestType: "Beautiful",
+	},
 	// Peekz1025
 	verdantblade: {
 		accuracy: 100,

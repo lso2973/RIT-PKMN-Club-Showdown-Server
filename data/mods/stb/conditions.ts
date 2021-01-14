@@ -70,13 +70,13 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		innateName: 'Hustle',
 		shortDesc: "This Pokemon's Attack is 1.5x and accuracy of its physical attacks is 0.8x.",
 		onModifyAtkPriority: 5,
-		onModifyAtk(atk) {
-			if (pokemon.illusion) return;
+		onModifyAtk(atk, source, target, move) {
+			if (source.illusion) return;
 			return this.modify(atk, 1.5);
 		},
 		onSourceModifyAccuracyPriority: -1,
 		onSourceModifyAccuracy(accuracy, target, source, move) {
-			if (pokemon.illusion) return;
+			if (source.illusion) return;
 			if (move.category === 'Physical' && typeof accuracy === 'number') {
 				return this.chainModify([0x0CCD, 0x1000]);
 			}
@@ -116,6 +116,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 		onFaint() {
 			this.add(`c|${getName('MightySharkVGC')}|dang, i lost AND i missed queue? Sad`);
+		},
+	},
+	njjoltiks: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('njjoltiks')}|Caw!`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('njjoltiks')}|Caw?`);
+		},
+		onFaint() {
+			this.add(`c|${getName('njjoltiks')}|Caw...`);
 		},
 	},
 	peekz1025:{
