@@ -118,6 +118,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('Ignoritus')}|Welp, back to Temtem.`);
 		},
 	},
+	meepingtonthe3rd:{
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('MeepingtonThe3rd')}|Meep`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('MeepingtonThe3rd')}|Moop`);
+		},
+		onFaint() {
+			this.add(`c|${getName('MeepingtonThe3rd')}|Meh`);
+		},
+	},
 	mightysharkvgc:{
 		noCopy: true,
 		onStart() {
@@ -176,6 +188,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 		onFaint() {
 			this.add(`c|${getName('RibbonNymph')}|Well. This is underfortunate.`);
+		},
+	},
+	rubydragonqueen:{
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('RubyDragonQueen')}|It's dragon time! ^V^`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('RubyDragonQueen')}|Alright, I'm out, who's up next?`);
+		},
+		onFaint() {
+			this.add(`c|${getName('RubyDragonQueen')}|I HAVE BEEN SLAIN!`);
 		},
 	},
 	scarthecolossus: {

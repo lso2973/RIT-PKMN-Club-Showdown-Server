@@ -544,6 +544,13 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		shortDesc: "Uses def instead of spd",
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
+		onTryMove(){
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source){
+			this.add('-anim', source, 'Thousand Arrows', target);
+			this.add('-anim', target, 'Thousand Waves', target);
+		},
 		secondary: null,
 		target: "normal",
 		type: "Electric",
