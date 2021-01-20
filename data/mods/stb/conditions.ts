@@ -82,6 +82,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			}
 		},
 	},
+	broil: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('broil')}|Hi, @everyone!`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('broil')}|this isn't the last you'll see of me!`);
+		},
+		onFaint() {
+			this.add(`c|${getName('broil')}|cya o/`);
+		},
+	},
 	ignoritus: {
 		noCopy: true,
 		onStart() {

@@ -47,6 +47,12 @@ export const ssbSets: SSBSets = {
 		signatureMove: 'bonk.',
 		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly'
 	},
+	broil: {
+		species: 'Furfrou-Pharaoh', ability: 'Magical Coat', item: 'Chesto Berry', gender: 'M',
+		moves: ['Cotton Guard', 'Rest', 'Body Press'],
+		signatureMove: "Pharaoh's Curse",
+		evs: {hp: 252, def: 252, spd: 4}, nature: 'Impish'
+	},
 	Ignoritus:{
 		species: 'Froslass', ability: 'Illusion', item: 'Focus Sash', Gender: 'M',
 		moves: ['Shadow Ball', 'Ice Beam', 'Sheer Cold'],

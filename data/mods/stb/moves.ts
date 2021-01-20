@@ -155,6 +155,22 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "normal",
 		type: "Steel",
 	},
+	// broil
+	pharaohscurse:{
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		desc: "Gives the target the curse effect which causes the target to lose 1/4 of its maximum HP, rounded down, at the end of each turn while it is active. If the target uses Baton Pass, the replacement will continue to be affected. Fails if there is no target or if the target is already affected.",
+		shortDesc: "Afflicts the target with curse",
+		name: "Pharaoh's Curse",
+		volatileStatus: 'curse'
+		pp: 15,
+		priority: 0,
+		flags: {authentic: 1},
+		type: "Ghost",
+		zMove: {effect: 'curse'},
+		contestType: "Tough",
+	}
 	// Ignoritus
 	spectralterrain:{
 		accuracy: true,

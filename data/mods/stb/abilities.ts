@@ -134,6 +134,29 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		isNonstandard: "Custom",
 		Rating: 4,
 	},
+	// broil
+	magicalcoat: {
+		desc: "This Pokemon's Defense is doubled and if the last item this Pokemon used is a Berry, there is a 50% chance it gets restored at the end of each turn. If Sunny Day is active, this chance is 100%.",
+		shortDesc: "Fur Coat+Harvest",
+		name: "Magical Coat",
+		onModifyDefPriority: 6,
+		onModifyDef(def) {
+			return this.chainModify(2);
+		},
+		onResidualOrder: 26,
+		onResidualSubOrder: 1,
+		onResidual(pokemon) {
+			if (this.field.isWeather(['sunnyday', 'desolateland']) || this.randomChance(1, 2)) {
+				if (pokemon.hp && !pokemon.item && this.dex.getItem(pokemon.lastItem).isBerry) {
+					pokemon.setItem(pokemon.lastItem);
+					pokemon.lastItem = '';
+					this.add('-item', pokemon, pokemon.getItem(), '[from] ability: Harvest');
+				}
+			}
+		},
+		isNonstandard: "Custom",
+		Rating: 4,
+	},
 	// MeepingtonThe3rd
 	stormsurfing: {
 		desc: "On switch-in, this Pokémon summons Electric Terrain, and Heavy Rain begins until this Ability is no longer active in battle. This Pokémon's speed is doubled while on Electric Terrain.",
