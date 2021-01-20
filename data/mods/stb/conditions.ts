@@ -61,10 +61,11 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('Banded Bonks')}|*loads durant*`);
 		},
 		onSwitchOut() {
-			this.add(`c|${getName('Banded Bonks')}|Sorry, my free trial of being out has expired, give me a second`);
+			this.add(`c|${getName('Banded Bonks')}|Sorry gotta get my team sanity checked, brb`);
 		},
 		onFaint() {
-			this.add(`c|${getName('Banded Bonks')}|Sometimes you bonk, sometimes you get bonked`);
+			this.add(`c|${getName('Banded Bonks')}| `);
+			this.add(`raw|<img src="https://media1.tenor.com/images/bc1b3ab8289d2e60843e9823ee90f412/tenor.gif?itemid=8019684" height="250" width="250">`);
 		},
 		// Hustle innate ability
 		innateName: 'Hustle',
@@ -92,6 +93,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 		onFaint() {
 			this.add(`c|${getName('broil')}|cya o/`);
+		},
+	},
+	creeperman129poke: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('Creeperman129Poke')}|Creeper, aw man`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('Creeperman129Poke')}|Bye *double backflips*`);
+		},
+		onFaint() {
+			this.add(`c|${getName('Creeperman129Poke')}|*1000 Souls have been released*`);
 		},
 	},
 	ignoritus: {

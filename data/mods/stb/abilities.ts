@@ -157,6 +157,22 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		isNonstandard: "Custom",
 		Rating: 4,
 	},
+	// Creeperman129Poke
+	spiritualabsorb: {
+		desc: "This Pokemon is immune to Ghost-type moves and restores 1/4 of its maximum HP, rounded down, when hit by a Ghost-type move.",
+		shortDesc: "x Absorb for Ghost",
+		name: "Spritiual Absorb",
+		onTryHit(target, source, move) {
+			if (target !== source && move.type === 'Ghost') {
+				if (!this.heal(target.baseMaxhp / 4)) {
+					this.add('-immune', target, '[from] ability: Spiritual Absorb');
+				}
+				return null;
+			}
+		},
+		name: "Spiritual Absorb",
+		rating: 3.6,
+	},
 	// MeepingtonThe3rd
 	stormsurfing: {
 		desc: "On switch-in, this Pokémon summons Electric Terrain, and Heavy Rain begins until this Ability is no longer active in battle. This Pokémon's speed is doubled while on Electric Terrain.",
