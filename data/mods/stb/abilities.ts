@@ -113,6 +113,20 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		isNonstandard: "Custom",
 	},
+	// bad_wolf42
+	friendshaped: {
+		desc: "At the end of each turn, the opposing Pokemon's Atk and Sp.Atk are lowered by -1 stage.",
+		shortDesc: "lower opponent's offenses by -1 stage",
+		onResidualOrder: 26,
+		onResidualSubOrder: 1,
+		onResidual(pokemon, target) {
+			if (pokemon.activeTurns) {
+				this.boost({atk: -1, spa: -1}, target);
+			}
+		},
+		name: 'Friend Shaped',
+		isNonstandard: "Custom",
+	},
 	// Banded Bonks
 	rngtraining: {
 		desc: "Raises this Pokémon's accuracy and evasion by +1 stage on entry and this Pokémon's moves have their secondary effect chance doubled.",
