@@ -137,7 +137,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	// bad_wolf42
 	rollaround: {
 		num: 813,
-		accuracy: 90,
+		accuracy: 100,
 		basePower: 20,
 		basePowerCallback(pokemon, target, move) {
 			return 20 * move.hit;
@@ -148,9 +148,13 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		priority: 0,
 		flags: {contact: 1, protect: 1, mirror: 1},
 		multihit: 3,
-		multiaccuracy: true,
-		onHit(target, pokemon) {
-			
+		multiaccuracy: false,
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onHit(target, source) {
+			this.add('-anim', source, 'Mud Sport', target);
+			this.add('-anim', source, 'Spikes', target);
 		},
 		onAfterHit(target, pokemon) {
 			if (pokemon.hp && pokemon.removeVolatile('leechseed')) {

@@ -55,6 +55,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('ATcheron')}|The snow is gone and so am I, but this is not my final cry!`);
 		},
 	},
+	bad_wolf42: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('bad_wolf42')}|Welcome to Bionicle Fan Club`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('bad_wolf42')}|Be right back, I have to go plan for a draft battle.`);
+		},
+		onFaint() {
+			this.add(`c|${getName('bad_wolf42')}|How could you hurt him??? He is Friend Shaped!`);
+		},
+	},
 	bandedbonks:{
 		noCopy: true,
 		onStart() {
