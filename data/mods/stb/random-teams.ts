@@ -41,7 +41,7 @@ export const ssbSets: SSBSets = {
 		signatureMove: 'Buff Ice',
 		evs: {hp: 80, spa: 252, spe: 176}, nature: 'Timid', shiny: true
 	},
-	bad_wolf42: {
+	'bad_wolf42': {
 		species: 'Phanpy', ability: "Friend Shaped", item: 'Eviolite', gender: 'M',
 		moves: ['Protect', 'Stealth Rock', 'Slack Off'],
 		signatureMove: 'Roll Around',
@@ -101,6 +101,12 @@ export const ssbSets: SSBSets = {
 		signatureMove: 'Verdant Blade',
 		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly'
 	},
+	Planetaeus: {
+		species: 'Delphox', ability: 'Burning Spirit', item: 'Iron Ball', gender: 'M',
+		moves: ['Flame Charge', 'Grass Knot', 'Fire Blast'],
+		signatureMove: 'Prestigitation',
+		evs: {atk: 4, spa: 252, spe: 252}, nature: 'Hasty'
+	},
 	PseudoPhysics: {
 		species: 'Wobbuffet', ability: 'gonna getcha', item: 'Focus Sash', gender: 'M',
 		moves: ['Encore', 'Mirror Coat', 'Counter'],
@@ -155,7 +161,7 @@ export const ssbSets: SSBSets = {
 export class RandomStaffBrosTeams extends RandomTeams {
 	randomStaffBrosTeam(options: {inBattle?: boolean} = {}) {
 		const team: PokemonSet[] = [];
-		const debug: string[] = ['TacocaT_2595', 'crimsonKangaroo']; // Set this to a list of SSB sets to override the normal pool for debugging.
+		const debug: string[] = ['TacocaT_2595', 'crimsonKangaroo', 'Planetaeus']; // Set this to a list of SSB sets to override the normal pool for debugging.
 		const pool = debug.length ? debug : Object.keys(ssbSets);
 		const typePool: {[k: string]: number} = {};
 		let depth = 0;

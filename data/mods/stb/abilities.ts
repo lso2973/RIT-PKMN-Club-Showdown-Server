@@ -283,6 +283,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onDamagePriority: -100,
 		onBeforeMove(source, target, move){
 			if ((move['selfdestruct'] === "always" || move['selfdestruct'] === "onhit") && !this.effectData.ashes){
+				this.add('-ability', source, 'From the Ashes');
 				this.effectData.ashes = true;
 				move['selfdestruct'] = null;
 				source.heal(source.maxhp);
@@ -290,11 +291,14 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		onDamage(damage, source, target, effect){
 			if (damage >= source.hp && effect && !this.effectData.ashes){
+				this.add('-ability', source, 'From the Ashes');
 				this.effectData.ashes = true;
 				source.heal(source.maxhp);
 				return 0;
 			}
 		},
+		isNonstandard: "Custom",
+		rating: 5,
 	},
 	// Peekz1025
 	forestswrath:{
@@ -311,6 +315,19 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		isNonstandard: "Custom",
 		rating: 4.5
+	},
+	// Planetaeus
+	burningspirit: {
+		desc: "100% chance a Pokemon making contact with this Pokemon will be burned.",
+		shortDesc: "100% Flame Body",
+		name: "Burning Spirit",
+		onDamagingHit(damage, target, source, move) {
+			if (move.flags['contact']) {
+				source.trySetStatus('brn', target);
+			}
+		},
+		isNonstandard: "Custom",
+		rating: 3
 	},
 	// PseudoPhysics
 	gonnagetcha: {

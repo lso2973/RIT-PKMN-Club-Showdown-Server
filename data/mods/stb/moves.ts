@@ -458,6 +458,63 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "normal",
 		type: "Grass",
 	},
+	// Planetaeus
+	prestigitation: {
+		accuracy: 100,
+		basePower: 80,
+		category: "Special",
+		name: "Prestigitation",
+		desc: "The user swaps its held item with the target's held item. Fails if either the user or the target is holding a Mail or Z-Crystal, if neither is holding an item, if the user is trying to give or take a Mega Stone to or from the species that can Mega Evolve with it, or if the user is trying to give or take a Blue Orb, a Red Orb, a Griseous Orb, a Plate, a Drive, or a Memory to or from a Kyogre, a Groudon, a Giratina, an Arceus, a Genesect, or a Silvally, respectively. The target is immune to this move if it has the Sticky Hold Ability.",
+		shortDesc: "Psychic move that tricks",
+		gen: 8,
+		pp: 10,
+		priority: 0,
+		flags: {mirror: 1, protect: 1},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Psychic', target);
+			this.add('-anim', source, 'Trick', target);
+		},
+		onTryImmunity(target) {
+			return !target.hasAbility('stickyhold');
+		},
+		onHit(target, source, move) {
+			const yourItem = target.takeItem(source);
+			const myItem = source.takeItem();
+			if (target.item || source.item || (!yourItem && !myItem)) {
+				if (yourItem) target.item = yourItem.id;
+				if (myItem) source.item = myItem.id;
+				return false;
+			}
+			if (
+				(myItem && !this.singleEvent('TakeItem', myItem, source.itemData, target, source, move, myItem)) ||
+				(yourItem && !this.singleEvent('TakeItem', yourItem, target.itemData, source, target, move, yourItem))
+			) {
+				if (yourItem) target.item = yourItem.id;
+				if (myItem) source.item = myItem.id;
+				return false;
+			}
+			this.add('-activate', source, 'move: Trick', '[of] ' + target);
+			if (myItem) {
+				target.setItem(myItem);
+				this.add('-item', target, myItem, '[from] move: Trick');
+			} else {
+				this.add('-enditem', target, yourItem, '[silent]', '[from] move: Trick');
+			}
+			if (yourItem) {
+				source.setItem(yourItem);
+				this.add('-item', source, yourItem, '[from] move: Trick');
+			} else {
+				this.add('-enditem', source, myItem, '[silent]', '[from] move: Trick');
+			}
+		},
+		secondary: null,
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Psychic",
+	},
 	// PseudoPhysics
 	therest: {
 		accuracy: true,

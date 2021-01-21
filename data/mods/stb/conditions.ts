@@ -191,6 +191,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('Peekz1025')}|IT’S A CRIT!`);
 		},
 	},
+	planetaeus: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('Planetaeus')}|Flameo, Hotman!`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('Planetaeus')}|And now, for my next trick...`);
+		},
+		onFaint() {
+			this.add(`c|${getName('Planetaeus')}|The show... must... burn on...`);
+		},
+	},
 	pseudophysics: {
 		noCopy: true,
 		onStart() {
