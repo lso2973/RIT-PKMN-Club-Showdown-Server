@@ -265,26 +265,28 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	stareater: {
 		accuracy: 100,
 		basePower: 80,
-		category: "special",
-		desc: "Gives the target the curse effect which causes the target to lose 1/4 of its maximum HP, rounded down, at the end of each turn while it is active. If the target uses Baton Pass, the replacement will continue to be affected. Fails if there is no target or if the target is already affected.",
-		shortDesc: "Afflicts the target with curse",
+		category: "physical",
+		desc: "Restores HP equal to the average of the target's Atk and SpAtk stats, and lowers whichever one is higher by one stage.",
+		shortDesc: "Heals by target's (Atk+SpA)/2, -1 to higher stat.",
 		name: "Star Eater",
-		secondary: {
-			chance: 100,
-			volatileStatus: 'curse',
+		flags: {protect: 1, mirror: 1, heal: 1},
+		onHit(target, source) {
+			const stat = (target.getStat('atk', false, true) + target.getStat('spa', false, true))/2;
+			const success = this.boost(target.getStat('atk', false, true) > target.getStat('spa', false, true) ? {atk: -1} : {spa: -1}, target, source, null, false, true);
+			return !!(this.heal(stat, source, target) || success);
 		},
 		onTryMove() {
 			this.attrLastMove('[still]');
 		},
 		onPrepareHit(target, source) {
-			this.add('-anim', source, 'Dark Void', target);
+			this.add('-anim', source, 'Giga Drain', target);
+			this.add('-anim', source, 'Sunsteel Strike', target);
 		},
-		pp: 5,
+		secondary: null,
+		pp: 10,
 		priority: 0,
 		target: "normal",
-		flags: {authentic: 1},
-		type: "Ghost",
-		contestType: "Tough",
+		type: "Steel",
 	},
 	// Ignoritus
 	spectralterrain:{
