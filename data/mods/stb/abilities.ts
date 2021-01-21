@@ -115,7 +115,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// bad_wolf42
 	friendshaped: {
-		desc: "At the end of each turn, the opposing Pokemon's Atk and Sp.Atk are lowered by -1 stage.",
+		desc: "At the end of each turn, the opposing Pokémon's Atk and Sp.Atk are lowered by -1 stage.",
 		shortDesc: "lower opponent's offenses by -1 stage",
 		onResidualOrder: 26,
 		onResidualSubOrder: 1,
@@ -151,7 +151,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// broil
 	magicalcoat: {
-		desc: "This Pokemon's Defense is doubled and if the last item this Pokemon used is a Berry, there is a 50% chance it gets restored at the end of each turn. If Sunny Day is active, this chance is 100%.",
+		desc: "This Pokémon's Defense is doubled and if the last item this Pokémon used is a Berry, there is a 50% chance it gets restored at the end of each turn. If Sunny Day is active, this chance is 100%.",
 		shortDesc: "Fur Coat+Harvest",
 		name: "Magical Coat",
 		onModifyDefPriority: 6,
@@ -174,7 +174,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// Creeperman129Poke
 	spiritualabsorb: {
-		desc: "This Pokemon is immune to Ghost-type moves and restores 1/4 of its maximum HP, rounded down, when hit by a Ghost-type move.",
+		desc: "This Pokémon is immune to Ghost-type moves and restores 1/4 of its maximum HP, rounded down, when hit by a Ghost-type move.",
 		shortDesc: "x Absorb for Ghost",
 		onTryHit(target, source, move) {
 			if (target !== source && move.type === 'Ghost') {
@@ -265,7 +265,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// MightySharkVGC
 	beasterboost: {
-		desc: "This Pokemon's Attack and Defense are raised by +1 stage and its speed is lowered by -1 stage if it attacks and knocks out another Pokemon.",
+		desc: "This Pokémon's Attack and Defense are raised by +1 stage and its speed is lowered by -1 stage if it attacks and knocks out another Pokémon.",
 		shortDesc: "Moxie but curse rather than attack boost",
 		name: "Beaster Boost",
 		onSourceAfterFaint(length, target, source, effect) {
@@ -278,7 +278,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// njjoltiks
 	fromtheashes:{
-		desc: "If this Pokemon were to faint, fully heal it and then remove this ability perminantly",
+		desc: "If this Pokémon were to faint, fully heal it and then remove this ability permanently.",
 		shortDesc: "Fully heal once after fainting then lose ability",
 		name: "From the Ashes",
 		onDamagePriority: -100,
@@ -319,7 +319,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// Planetaeus
 	burningspirit: {
-		desc: "100% chance a Pokemon making contact with this Pokemon will be burned.",
+		desc: "100% chance a Pokémon making contact with this Pokémon will be burned.",
 		shortDesc: "100% Flame Body",
 		name: "Burning Spirit",
 		onDamagingHit(damage, target, source, move) {
@@ -332,7 +332,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// PseudoPhysics
 	gonnagetcha: {
-		desc: "Prevents adjacent opposing Pokemon from choosing to switch out unless they are immune to trapping or also have this Ability or Shadow Tag. Also uses Magic Coat on entry.",
+		desc: "Prevents adjacent opposing Pokémon from choosing to switch out unless they are immune to trapping or also have this Ability or Shadow Tag. Also uses Magic Coat on entry.",
 		shortDesc: "Shadow Tag + Magic Coat on entry",
 		onFoeTrapPokemon(pokemon) {
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha')) && this.isAdjacent(pokemon, this.effectData.target)) {
@@ -407,7 +407,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// Steeevo34 
 	awizardssecret: {
-		desc: "When this pokemon enters Trick Room or Trick Room starts with it on the field, it swaps its attack and defense stats until it is switched out.",
+		desc: "When this Pokémon enters Trick Room or Trick Room starts with it on the field, it swaps its attack and defense stats until it is switched out.",
 		shortDesc: "Power Trick upon hitting TR",
 		name: "A Wizard's Secret",
 		// Yes all 4 are necessary, look into making this less cursed
@@ -454,7 +454,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// torwildheart
 	toolong: {
-		desc: "At the start of each turn, this pokemon raises its attack, defense, special attack, special defense and speed by +1 stage if the turn count is greater than 25.",
+		desc: "At the start of each turn, this Pokémon raises its attack, defense, special attack, special defense and speed by +1 stage if the turn count is greater than 25.",
 		shortDesc: "+1 to basic stats if turn > 25",
 		name: "Too Long",
 		onResidualOrder: 26,
@@ -515,7 +515,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	// Modified Shadow Tag for gonna getcha
 	shadowtag: {
 		inherit: true,
-		desc: "Prevents adjacent opposing Pokemon from choosing to switch out unless they are immune to trapping or also have this Ability or gonna getcha.",
+		desc: "Prevents adjacent opposing Pokémon from choosing to switch out unless they are immune to trapping or also have this Ability or gonna getcha.",
 		onFoeTrapPokemon(pokemon) {
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha')) && this.isAdjacent(pokemon, this.effectData.target)) {
 				pokemon.tryTrap(true);

@@ -81,7 +81,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 		// Hustle innate ability
 		innateName: 'Hustle',
-		shortDesc: "This Pokemon's Attack is 1.5x and accuracy of its physical attacks is 0.8x.",
+		shortDesc: "This Pokémon's Attack is 1.5x and accuracy of its physical attacks is 0.8x.",
 		onModifyAtkPriority: 5,
 		onModifyAtk(atk, source, target, move) {
 			if (source.illusion) return;
