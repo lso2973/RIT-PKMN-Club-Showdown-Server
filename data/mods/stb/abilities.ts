@@ -126,6 +126,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		name: 'Friend Shaped',
 		isNonstandard: "Custom",
+		rating: 4,
 	},
 	// Banded Bonks
 	rngtraining: {
@@ -403,6 +404,35 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		isNonstandard: "Custom",
 		rating: 4,
+	},
+	// Steeevo34 
+	awizardssecret: {
+		desc: "When this pokemon enters Trick Room or Trick Room starts with it on the field, it swaps its attack and defense stats until it is switched out.",
+		shortDesc: "Power Trick upon hitting TR",
+		name: "A Wizard's Secret",
+		// Yes all 4 are necessary, look into making this less cursed
+		onStart (pokemon) {
+			if (this.field.pseudoWeather.trickroom){
+				pokemon.addVolatile('powertrick');
+			}
+		},
+		onAfterMoveSecondarySelf(source, target, move){
+			if (this.field.pseudoWeather.trickroom && !source.volatiles.powertrick){
+				source.addVolatile('powertrick');
+			}
+		},
+		onBeforeMove(source, target, move){
+			if (this.field.pseudoWeather.trickroom && !source.volatiles.powertrick){
+				source.addVolatile('powertrick');
+			}
+		},
+		onResidual(source) {
+			if (this.field.pseudoWeather.trickroom && !source.volatiles.powertrick){
+				source.addVolatile('powertrick');
+			}
+		},
+		isNonstandard: "Custom",
+		rating: 3,
 	},
 	// TacocaT_2595
 	stainlesssteel: {

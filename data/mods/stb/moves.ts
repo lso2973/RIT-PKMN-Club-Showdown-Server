@@ -637,6 +637,30 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		zMove: {boost: {atk: 1}},
 		contestType: "Clever",
 	},
+	// Steeevo34
+	retroincabulate: {
+		accuracy: 80,
+		basePower: 90,
+		category: "Physical",
+		name: 'Retroincabulate',
+		pp: 5,
+		priority: 0,
+		isNonstandard: 'Custom',
+		desc: "If this move hits, for 5 turns, the evasiveness of all active Pokemon is multiplied by 0.6. At the time of use, Bounce, Fly, Magnet Rise, Sky Drop, and Telekinesis end immediately for all active Pokemon. During the effect, Bounce, Fly, Flying Press, High Jump Kick, Jump Kick, Magnet Rise, Sky Drop, Splash, and Telekinesis are prevented from being used by all active Pokemon. Ground-type attacks, Spikes, Toxic Spikes, Sticky Web, and the Arena Trap Ability can affect Flying types or Pokemon with the Levitate Ability. Fails if gravity is always in effect.",
+		shortDesc: "Rock Move into Gravity",
+		onTryMove(){
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source){
+			this.add('-anim', source, 'Stone Edge', target)
+			this.add('-anim', source, 'Rock Slide', target)
+		},
+		flags: {protect: 1, mirror: 1},
+		pseudoWeather: 'gravity',
+		secondary: null,
+		target: "normal",
+		type: "Rock",
+	},
 	// TacocaT_2595
 	kaboom: {
 		accuracy: 100,

@@ -251,6 +251,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('ScarTheColossus')}|Subscribe to Professor Matt on Youtube`);
 		},
 	},
+	steeevo34: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('Steeevo34')}|Behold, the Boi`);
+		},
+		onSwitchOut(){
+			this.add(`c|${getName('Steeevo34')}|You shall be spared... For now.`);
+		},
+		onFaint(){
+			this.add(`c|${getName('Steeevo34')}|A wizard takes his secrets to the grave`);
+		},
+	},
 	tacocat2595: {
 		noCopy: true,
 		onStart() {
