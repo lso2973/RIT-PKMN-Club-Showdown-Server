@@ -175,7 +175,6 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	spiritualabsorb: {
 		desc: "This Pokemon is immune to Ghost-type moves and restores 1/4 of its maximum HP, rounded down, when hit by a Ghost-type move.",
 		shortDesc: "x Absorb for Ghost",
-		name: "Spritiual Absorb",
 		onTryHit(target, source, move) {
 			if (target !== source && move.type === 'Ghost') {
 				if (!this.heal(target.baseMaxhp / 4)) {
@@ -186,6 +185,51 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		name: "Spiritual Absorb",
 		rating: 3.6,
+	},
+	// crimsonKangaroo
+	solarwind: {
+		desc: "Reflects status moves and any stat-lowering effects this Pokémon receives.",
+		shortDesc: "Mirror Armor + Magic Bounce",
+		name: "Solar Wind",
+		onBoost(boost, target, source, effect) {
+			// Don't bounce self stat changes, or boosts that have already bounced
+			if (target === source || !boost || effect.id === 'solarwind' || effect.id === 'mirrorarmor') return;
+			let b: BoostName;
+			for (b in boost) {
+				if (boost[b]! < 0) {
+					if (target.boosts[b] === -6) continue;
+					const negativeBoost: SparseBoostsTable = {};
+					negativeBoost[b] = boost[b];
+					delete boost[b];
+					this.add('-ability', target, 'Solar Wind');
+					this.boost(negativeBoost, source, target, null, true);
+				}
+			}
+		},
+		onTryHitPriority: 1,
+		onTryHit(target, source, move) {
+			if (target === source || move.hasBounced || !move.flags['reflectable']) {
+				return;
+			}
+			const newMove = this.dex.getActiveMove(move.id);
+			newMove.hasBounced = true;
+			newMove.pranksterBoosted = false;
+			this.useMove(newMove, target, source);
+			return null;
+		},
+		onAllyTryHitSide(target, source, move) {
+			if (target.side === source.side || move.hasBounced || !move.flags['reflectable']) {
+				return;
+			}
+			const newMove = this.dex.getActiveMove(move.id);
+			newMove.hasBounced = true;
+			newMove.pranksterBoosted = false;
+			this.useMove(newMove, this.effectData.target, source);
+			return null;
+		},
+		condition: {
+			duration: 1,
+		},
 	},
 	// MeepingtonThe3rd
 	stormsurfing: {
@@ -507,6 +551,25 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onModifySpe(spe, pokemon) {
 			if (this.field.isWeather('hail') || this.field.isWeather('arcticgales')) {
 				return this.chainModify(2);
+			}
+		},
+	},
+	// Modified Mirror Armor for crimsonKangaroo's Solar Wind
+	mirrorarmor: {
+		inherit: true,
+		onBoost(boost, target, source, effect) {
+			// Don't bounce self stat changes, or boosts that have already bounced
+			if (target === source || !boost || effect.id === 'solarwind' || effect.id === 'mirrorarmor') return;
+			let b: BoostName;
+			for (b in boost) {
+				if (boost[b]! < 0) {
+					if (target.boosts[b] === -6) continue;
+					const negativeBoost: SparseBoostsTable = {};
+					negativeBoost[b] = boost[b];
+					delete boost[b];
+					this.add('-ability', target, 'Mirror Armor');
+					this.boost(negativeBoost, source, target, null, true);
+				}
 			}
 		},
 	},

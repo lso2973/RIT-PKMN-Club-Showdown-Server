@@ -261,6 +261,31 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		type: "Ghost",
 		contestType: "Tough",
 	},
+	// crimsonKangaroo
+	stareater: {
+		accuracy: 100,
+		basePower: 80,
+		category: "special",
+		desc: "Gives the target the curse effect which causes the target to lose 1/4 of its maximum HP, rounded down, at the end of each turn while it is active. If the target uses Baton Pass, the replacement will continue to be affected. Fails if there is no target or if the target is already affected.",
+		shortDesc: "Afflicts the target with curse",
+		name: "Star Eater",
+		secondary: {
+			chance: 100,
+			volatileStatus: 'curse',
+		},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Dark Void', target);
+		},
+		pp: 5,
+		priority: 0,
+		target: "normal",
+		flags: {authentic: 1},
+		type: "Ghost",
+		contestType: "Tough",
+	},
 	// Ignoritus
 	spectralterrain:{
 		accuracy: true,
