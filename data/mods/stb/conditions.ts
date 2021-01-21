@@ -55,7 +55,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('ATcheron')}|The snow is gone and so am I, but this is not my final cry!`);
 		},
 	},
-	bad_wolf42: {
+	badwolf42: {
 		noCopy: true,
 		onStart() {
 			this.add(`c|${getName('bad_wolf42')}|Welcome to Bionicle Fan Club`);
