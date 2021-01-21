@@ -285,6 +285,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		secondary: null,
 		pp: 10,
 		priority: 0,
+		isNonstandard: "Custom",
 		target: "normal",
 		type: "Steel",
 	},

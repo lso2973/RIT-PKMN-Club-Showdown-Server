@@ -152,7 +152,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	// broil
 	magicalcoat: {
 		desc: "This Pokémon's Defense is doubled and if the last item this Pokémon used is a Berry, there is a 50% chance it gets restored at the end of each turn. If Sunny Day is active, this chance is 100%.",
-		shortDesc: "Fur Coat+Harvest",
+		shortDesc: "Fur Coat + Harvest",
 		name: "Magical Coat",
 		onModifyDefPriority: 6,
 		onModifyDef(def) {

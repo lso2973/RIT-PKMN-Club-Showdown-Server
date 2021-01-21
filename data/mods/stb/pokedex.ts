@@ -6,6 +6,11 @@ export const Pokedex: {[k: string]: ModdedSpeciesData} = {
 		baseStats: {hp: 100, atk: 100, def: 100, spa: 100, spd: 100, spe: 100}, // the base stats for the pokemon
 	},
 	*/
+	//type change for broil
+	furfrou: {
+		inherit: true,
+		types: ["Normal", "Ghost"],
+	},
 	//stat changes for Peekz1025
 	sceptile: {
 		inherit: true,
