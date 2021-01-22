@@ -656,7 +656,7 @@ export const Scripts: ModdedBattleScriptsData = {
 		return damage;
 	},
 
-	// For Spandan's custom move and Brandon's ability
+	// For Spandan's and AWood's custom move and Brandon's ability
 	getDamage(pokemon, target, move, suppressMessages = false) {
 		if (typeof move === 'string') move = this.dex.getActiveMove(move);
 
@@ -800,6 +800,10 @@ export const Scripts: ModdedBattleScriptsData = {
 		defense = this.runEvent('Modify' + statTable[defenseStat], defender, attacker, move, defense);
 
 		if (this.gen <= 4 && ['explosion', 'selfdestruct'].includes(move.id) && defenseStat === 'def') {
+			defense = this.clampIntRange(Math.floor(defense / 2), 1);
+		}
+
+		if (['headshot'].includes(move.id) && defenseStat === 'def') {
 			defense = this.clampIntRange(Math.floor(defense / 2), 1);
 		}
 

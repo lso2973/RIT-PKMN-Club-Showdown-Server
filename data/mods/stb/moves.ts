@@ -153,9 +153,37 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "normal",
 		type: "Ice",
 	},
+	// AWood
+	headshot: {
+		accuracy: 100,
+		basePower: 250,
+		category: "Physical",
+		name: "Headshot",
+		desc: "The user faints after using this move, unless this move has no target. The target's Defense is halved during damage calculation. This move is prevented from executing if any active Pokemon has the Damp Ability. Summons Hail.",
+		shortDesc: "Gen IV Explosion + Hail",
+		gen: 8,
+		pp: 5,
+		priority: 0,
+		flags: {protect: 1, mirror: 1},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onHit(target, source) {
+			this.add('-anim', source, 'Blizzard', source);
+			this.add('-anim', source, 'Explosion', target);
+		},
+		self: {
+			onHit(source) {
+				this.field.setWeather('hail');
+			},
+		},
+		selfdestruct: "always",
+		secondary: null,
+		target: "allAdjacent",
+		type: "Normal",
+	},
 	// bad_wolf42
 	rollaround: {
-		num: 813,
 		accuracy: 100,
 		basePower: 20,
 		basePowerCallback(pokemon, target, move) {
@@ -165,6 +193,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		desc: "This move hits three times. Has base power 20, 40, and 60 for respect hits 1, 2, and 3. Each time the move hits, the user's speed is increased by one stage, removes entry hazards from the user's side of the field, and the user sets a layer of spikes.",
 		shortDesc: "Triple Axel but 100 accuracy and Rapid Spin + Spikes",
 		name: "Roll Around",
+		gen: 8,
 		pp: 10,
 		priority: 0,
 		flags: {contact: 1, protect: 1, mirror: 1},
@@ -248,6 +277,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		desc: "Gives the target the curse effect which causes the target to lose 1/4 of its maximum HP, rounded down, at the end of each turn while it is active. If the target uses Baton Pass, the replacement will continue to be affected. Fails if there is no target or if the target is already affected.",
 		shortDesc: "Afflicts the target with curse",
 		name: "Pharaoh's Curse",
+		gen: 8,
 		volatileStatus: 'curse',
 		pp: 15,
 		priority: 0,
@@ -281,6 +311,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		flags: {authentic: 1},
 		type: "Ghost",
 		contestType: "Tough",
+		gen: 8,
 	},
 	// crimsonKangaroo
 	stareater: {
@@ -290,6 +321,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		desc: "Restores HP equal to the average of the target's Atk and SpAtk stats, and lowers whichever one is higher by one stage.",
 		shortDesc: "Heals by target's (Atk+SpA)/2, -1 to higher stat.",
 		name: "Star Eater",
+		gen: 8,
 		flags: {protect: 1, mirror: 1, heal: 1},
 		onHit(target, source) {
 			const stat = (target.getStat('atk', false, true) + target.getStat('spa', false, true))/2;

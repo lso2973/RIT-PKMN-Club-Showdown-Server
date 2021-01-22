@@ -56,6 +56,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('ATcheron')}|The snow is gone and so am I, but this is not my final cry!`);
 		},
 	},
+	awood:{
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('AWood')}|Time to get de_dusted!`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('AWood')}|Rotating to A...`);
+		},
+		onFaint() {
+			this.add(`c|${getName('AWood')}|Boom.`);
+		},
+	},
 	badwolf42: {
 		noCopy: true,
 		onStart() {
