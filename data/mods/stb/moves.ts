@@ -1033,7 +1033,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		inherit: true,
 		onModifyPriority(priority, source, target, move) {
 			if (source.side.sideConditions['busteraura']) {
-				return priority + 3;
+				return priority + 1;
 			}
 		},
 	},
@@ -1041,7 +1041,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		inherit: true,
 		onModifyPriority(priority, source, target, move) {
 			if (source.side.sideConditions['busteraura']) {
-				return priority + 3;
+				return priority + 1;
 			}
 		},
 	},
@@ -1049,7 +1049,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		inherit: true,
 		onModifyPriority(priority, source, target, move) {
 			if (source.side.sideConditions['busteraura']) {
-				return priority + 3;
+				return priority + 1;
 			}
 		},
 	},
@@ -1057,7 +1057,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		inherit: true,
 		onModifyPriority(priority, source, target, move) {
 			if (source.side.sideConditions['busteraura']) {
-				return priority + 3;
+				return priority + 1;
 			}
 		},
 	},
