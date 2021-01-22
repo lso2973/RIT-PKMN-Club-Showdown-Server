@@ -162,12 +162,14 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			return 20 * move.hit;
 		},
 		category: "Physical",
+		desc: "This move hits three times. Has base power 20, 40, and 60 for respect hits 1, 2, and 3. Each time the move hits, the user's speed is increased by one stage, removes entry hazards from the user's side of the field, and the user sets a layer of spikes.",
+		shortDesc: "Triple Axel but 100 accuracy and Rapid Spin + Spikes",
 		name: "Roll Around",
 		pp: 10,
 		priority: 0,
 		flags: {contact: 1, protect: 1, mirror: 1},
 		multihit: 3,
-		multiaccuracy: false,
+		multiaccuracy: true,
 		onTryMove() {
 			this.attrLastMove('[still]');
 		},
