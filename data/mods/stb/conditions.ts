@@ -296,7 +296,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('TacocaT_2595')}|I’m having a hard time here, let’s have someone else weigh in.`);
 		},
 		onFaint(){
-			this.add(`c|${getName('TacocaT_2595')}|Oh. Well I suppose I went out with a bang.`);
+			this.add(`c|${getName('TacocaT_2595')}|/html <img src="https://cdn.discordapp.com/emojis/680288953068421130.gif?v=1" />`);
 		},
 	},
 	torwildheart:{

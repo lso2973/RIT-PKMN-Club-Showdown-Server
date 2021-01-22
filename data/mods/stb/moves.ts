@@ -762,6 +762,9 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.add('-anim', source, 'Stealth Rock', target)
 			this.add('-anim', source, 'Spikes', target)
 		},
+		onHit() {
+			this.add(`c|${getName('TacocaT_2595')}|Oh. Well at least I went out with a bang.`);
+		},
 		self: {
 			onHit(source) {
 				source.side.foe.addSideCondition('stealthrock');
