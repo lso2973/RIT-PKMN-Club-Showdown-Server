@@ -227,6 +227,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('PseudoPhysics')}|:pyukuokay: nice`);
 		},
 	},
+	quantumtangler: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('QuantumTangler')}|What's the secret to a good joke? Timing, of course.`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('QuantumTangler')}|My actions make more sense if you assume we're playing generation II.`);
+		},
+		onFaint() {
+			this.add(`c|${getName('QuantumTangler')}|You always need to be PUNctual.`);
+		},
+	},
 	ribbonnymph: {
 		noCopy: true,
 		onStart() {

@@ -547,6 +547,86 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "self",
 		type: "Psychic",
 	},
+	// QuantumTangler
+	stalemeta: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		desc: "All Pokémon immediately lose up to 12 stages of all non-defensive stats and lose five levels. Sticky Webs is applied to the opponent's field. Each Pokémon that has not yet moved has their selected action replaced with a random known attack.",
+		shortDesc: "To both sides: -12 to Atk, Spa, Spe, -5 to lvl. To target: Sticky Web + target uses random known move",
+		name: "Stale Meta",
+		pp: 5,
+		isNonstandard: "Custom",
+		gen: 8,
+		priority: 3,
+		flags: {protect: 1, mirror: 1, reflectable: 1},
+		onHit(target, source) {
+			this.boost({atk: -12, spa: -12, spe: -12}, target);
+			this.boost({atk: -12, spa: -12, spe: -12}, source);
+
+			// level down opponent
+			const tarspecies = target.species;
+			const tarlevel = target.level - 5;
+			(target as any).level = tarlevel;
+			target.set.level = tarlevel;
+			target.formeChange(tarspecies);
+
+			target.details = tarspecies.name + (tarlevel === 100 ? '' : ', L' + tarlevel) +
+				(target.gender === '' ? '' : ', ' + target.gender) + (target.set.shiny ? ', shiny' : '');
+			this.add('detailschange', target, target.details);
+
+			const tarnewHP = Math.floor(Math.floor(
+				2 * tarspecies.baseStats['hp'] + target.set.ivs['hp'] + Math.floor(target.set.evs['hp'] / 4) + 100
+			) * tarlevel / 100 + 10);
+			target.hp = tarnewHP - (target.maxhp - target.hp);
+			target.maxhp = tarnewHP;
+			this.add('-heal', target, target.getHealth, '[silent]');
+
+			//level down user
+			const srcspecies = source.species;
+			const srclevel = source.level - 5;
+			(source as any).level = srclevel;
+			source.set.level = srclevel;
+			source.formeChange(srcspecies);
+
+			source.details = srcspecies.name + (srclevel === 100 ? '' : ', L' + srclevel) +
+				(source.gender === '' ? '' : ', ' + source.gender) + (source.set.shiny ? ', shiny' : '');
+			this.add('detailschange', source, source.details);
+
+			const srcnewHP = Math.floor(Math.floor(
+				2 * srcspecies.baseStats['hp'] + source.set.ivs['hp'] + Math.floor(source.set.evs['hp'] / 4) + 100
+			) * srclevel / 100 + 10);
+			source.hp = srcnewHP - (source.maxhp - source.hp);
+			source.maxhp = srcnewHP;
+			this.add('-heal', source, source.getHealth, '[silent]');
+
+			source.side.foe.addSideCondition('stickyweb');
+
+			const action = this.queue.willMove(target);
+			const selectedMove = action?.choice === 'move' ? action.move : null;
+			if (!selectedMove || target.volatiles['mustrecharge']) {
+				return false;
+			}
+			const moves = [];
+			for (const moveSlot of target.moveSlots) {
+				const moveid = moveSlot.id;
+				const move = this.dex.getMove(moveid);
+				moves.push(moveid);
+			}
+			let randomMove = '';
+			if (moves.length) randomMove = this.sample(moves);
+			if (!randomMove) {
+				return false;
+			}
+			this.useMove(randomMove, target);
+		},
+		secondary: {
+			chance: 100,
+			volatileStatus: 'flinch',
+		},
+		target: "normal",
+		type: "CoolTrainer",
+	},
 	// RibbonNymph
 	ribbonsurge: {
 		accuracy: 100,

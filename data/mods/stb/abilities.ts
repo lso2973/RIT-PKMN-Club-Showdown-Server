@@ -353,6 +353,14 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		isNonstandard: "Custom",
 		rating: 5,
 	},
+	// QuantumTangler
+	metabuster: {
+		desc: "Prevents adjacent opposing Pokémon from choosing to switch out unless they are immune to trapping or also have this Ability or Shadow Tag. Also uses Magic Coat on entry.",
+		shortDesc: "Shadow Tag + Magic Coat on entry",
+		name: "Meta Buster",
+		isNonstandard: "Custom",
+		rating: 5,
+	},
 	// RibbonNymph
 	pixilatex: {
 		desc: "When this Pokémon uses an attack that would be either 'not very effective' or does not affect the target due to typing, the attack will become fairy type and the power of the move will be boosted by 1.2x",

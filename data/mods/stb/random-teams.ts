@@ -113,6 +113,12 @@ export const ssbSets: SSBSets = {
 		signatureMove: '{the rest}',
 		evs: {hp: 252, def: 252, spd: 4}, nature: 'Sassy'
 	},
+	QuantumTangler: {
+		species: 'Gardevoir', ability: 'Meta Buster', item: ['Expert Belt', 'Shell Bell'], gender: 'M',
+		moves: ['Psychic', 'Moonblast', 'Healing Wish'],
+		signatureMove: 'Stale Meta',
+		evs: {spa: 252, spd: 4, spe: 252}, ivs: {atk: 0}, nature: 'Timid', shiny: true
+	},
 	RibbonNymph: {
 		species: 'Sylveon', ability: 'Pixilate X', item: 'Choice Specs', gender: 'F',
 		moves: ['Boomburst', 'Flamethrower', 'Wish'],
@@ -167,7 +173,7 @@ export const ssbSets: SSBSets = {
 export class RandomStaffBrosTeams extends RandomTeams {
 	randomStaffBrosTeam(options: {inBattle?: boolean} = {}) {
 		const team: PokemonSet[] = [];
-		const debug: string[] = ['TacocaT_2595', 'crimsonKangaroo', 'Planetaeus', 'njjoltiks', 'Steeevo34']; // Set this to a list of SSB sets to override the normal pool for debugging.
+		const debug: string[] = []; // Set this to a list of SSB sets to override the normal pool for debugging.
 		const pool = debug.length ? debug : Object.keys(ssbSets);
 		const typePool: {[k: string]: number} = {};
 		let depth = 0;
