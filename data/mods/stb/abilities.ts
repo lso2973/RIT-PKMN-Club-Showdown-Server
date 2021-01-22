@@ -236,20 +236,15 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// gigigecko26
 	rabies: {
+		desc: "Making contact with this Pokemon starts the Rabies effect for the attacker. Rabies - The Pokémon will gain a Rabies Count of 4 if it doesn't already have a rabies count. At the end of each turn including the turn used, the Pokémon will take 1/16 max hp in damage, and the rabies count of all active Pokémon lowers by 1 and Pokémon faint if the number reaches 0. The rabies count is reset to 4 for all Pokémon that switch out.",
+		shortDesc: "Poison Point x Perish Body",
 		onDamagingHit(damage, target, source, move) {
-			if (!move.flags['contact']) return;
-
-			let announced = false;
-			for (const pokemon of [target, source]) {
-				if (pokemon.volatiles['perishsong']) continue;
-				if (!announced) {
-					this.add('-ability', target, 'Perish Body');
-					announced = true;
-				}
-				pokemon.addVolatile('perishsong');
+			if (move.flags['contact']) {
+				source.trySetStatus('rabies', target);
 			}
 		},
 		name: "Rabies",
+		isNonstandard: "Custom",
 	},
 	// MeepingtonThe3rd
 	stormsurfing: {

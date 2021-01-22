@@ -373,6 +373,31 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add('-weather', 'none');
 		},
 	},
+	// Support for gigigecko26's Rabies
+	rabies: {
+		name: 'rabies',
+		effectType: 'Status',
+		onStart(target, source, sourceEffect) {
+			this.effectData.stage = 4;
+			if (sourceEffect && sourceEffect.effectType === 'Ability') {
+				this.add('-status', target, 'rabies', '[from] ability: ' + sourceEffect.name, '[of] ' + source);
+			} else {
+				this.add('-status', target, 'rabies');
+			}
+			this.add('-start', pokemon, 'rabies');
+		},
+		onSwitchIn() {
+			this.effectData.stage = 4;
+		},
+		onResidualOrder: 9,
+		onResidual(pokemon) {
+			this.effectData.stage--;
+			this.damage(this.clampIntRange(pokemon.baseMaxhp / 16, 1));
+			if (this.effectData.stage <= 0) {
+				pokemon.faint();
+			}
+		},
+	},
 	// Meta Buster support for QuantumTangler
 	busteraura: {
 		name: 'Buster Aura',
