@@ -605,7 +605,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			const action = this.queue.willMove(target);
 			const selectedMove = action?.choice === 'move' ? action.move : null;
 			if (!selectedMove || target.volatiles['mustrecharge']) {
-				return false;
+				return null;
 			}
 			const moves = [];
 			for (const moveSlot of target.moveSlots) {
@@ -616,7 +616,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			let randomMove = '';
 			if (moves.length) randomMove = this.sample(moves);
 			if (!randomMove) {
-				return false;
+				return null;
 			}
 			this.useMove(randomMove, target);
 		},

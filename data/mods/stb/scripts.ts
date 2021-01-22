@@ -380,6 +380,70 @@ export const Scripts: ModdedBattleScriptsData = {
 
 		return true;
 	},
+
+	// for QuantumTangler's Meta Buster
+	hitStepAccuracy(targets, pokemon, move) {
+		const hitResults = [];
+		for (const [i, target] of targets.entries()) {
+			this.activeTarget = target;
+			// calculate true accuracy
+			let accuracy = move.accuracy;
+			if (move.ohko) { // bypasses accuracy modifiers
+				if (!target.isSemiInvulnerable()) {
+					accuracy = 30;
+					if (move.ohko === 'Ice' && this.gen >= 7 && !pokemon.hasType('Ice') && !pokemon.ability === 'metabuster') {
+						accuracy = 20;
+					}
+					if (!target.volatiles['dynamax'] && pokemon.level >= target.level &&
+						(move.ohko === true || !target.hasType(move.ohko))) {
+						accuracy += (pokemon.level - target.level);
+					} else {
+						this.add('-immune', target, '[ohko]');
+						hitResults[i] = false;
+						continue;
+					}
+				}
+			} else {
+				accuracy = this.runEvent('ModifyAccuracy', target, pokemon, move, accuracy);
+				if (accuracy !== true) {
+					let boost = 0;
+					if (!move.ignoreAccuracy) {
+						const boosts = this.runEvent('ModifyBoost', pokemon, null, null, {...pokemon.boosts});
+						boost = this.clampIntRange(boosts['accuracy'], -6, 6);
+					}
+					if (!move.ignoreEvasion) {
+						const boosts = this.runEvent('ModifyBoost', target, null, null, {...target.boosts});
+						boost = this.clampIntRange(boost - boosts['evasion'], -6, 6);
+					}
+					if (boost > 0) {
+						accuracy = this.trunc(accuracy * (3 + boost) / 3);
+					} else if (boost < 0) {
+						accuracy = this.trunc(accuracy * 3 / (3 - boost));
+					}
+				}
+			}
+			if (move.alwaysHit || (move.id === 'toxic' && this.gen >= 8 && pokemon.hasType('Poison'))) {
+				accuracy = true; // bypasses ohko accuracy modifiers
+			} else {
+				accuracy = this.runEvent('Accuracy', target, pokemon, move, accuracy);
+			}
+			if (accuracy !== true && !this.randomChance(accuracy, 100)) {
+				if (move.smartTarget) {
+					move.smartTarget = false;
+				} else {
+					if (!move.spreadHit) this.attrLastMove('[miss]');
+					this.add('-miss', pokemon, target);
+				}
+				if (!move.ohko && pokemon.hasItem('blunderpolicy') && pokemon.useItem()) {
+					this.boost({spe: 2}, pokemon);
+				}
+				hitResults[i] = false;
+				continue;
+			}
+			hitResults[i] = true;
+		}
+		return hitResults;
+	},
 	afterMoveSecondaryEvent(targets, pokemon, move) {
 		// console.log(`${targets}, ${pokemon}, ${move}`)
 		if (
