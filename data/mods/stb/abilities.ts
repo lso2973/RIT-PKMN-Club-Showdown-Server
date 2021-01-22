@@ -123,7 +123,10 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onResidualSubOrder: 1,
 		onResidual(pokemon, target) {
 			if (pokemon.activeTurns) {
-				this.boost({atk: -1, spa: -1}, target);
+				for (const target of pokemon.side.foe.active) {
+					this.add('-ability', pokemon, 'Friend Shaped', 'boost');
+					this.boost({atk: -1, spa: -1}, target, pokemon, null, true);
+				}
 			}
 		},
 		name: 'Friend Shaped',
