@@ -53,6 +53,25 @@ const USEFUL_MOVES = [
 	"woodhammer", "xscissor", "yawn", "zapcannon", "zenheadbutt", "zingzap",
 ];
 
+export function changeLevel(context: Battle, pokemon: Pokemon, levelDiff: number) {
+	const species = pokemon.species;
+	const level = pokemon.level + levelDiff;
+	(pokemon as any).level = level;
+	pokemon.set.level = level;
+	pokemon.formeChange(species);
+
+	pokemon.details = species.name + (level === 100 ? '' : ', L' + level) +
+		(pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
+	this.add('detailschange', pokemon, pokemon.details);
+
+	const newHP = Math.floor(Math.floor(
+		2 * species.baseStats['hp'] + pokemon.set.ivs['hp'] + Math.floor(pokemon.set.evs['hp'] / 4) + 100
+	) * level / 100 + 10);
+	pokemon.hp = newHP - (pokemon.maxhp - pokemon.hp);
+	pokemon.maxhp = newHP;
+	this.add('-heal', pokemon, pokemon.getHealth, '[silent]');
+}
+
 export const Moves: {[k: string]: ModdedMoveData} = {
 	/*
 	// Example
@@ -1006,6 +1025,39 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			case 'arcticgales':
 				move.basePower *= 2;
 				break;
+			}
+		},
+	},
+	// Modified OHKO moves for QuantumTangler's Buster Aura
+	fissure: {
+		inherit: true,
+		onModifyPriority(priority, source, target, move) {
+			if (source.side.sideConditions['busteraura']) {
+				return priority + 3;
+			}
+		},
+	},
+	guillotine: {
+		inherit: true,
+		onModifyPriority(priority, source, target, move) {
+			if (source.side.sideConditions['busteraura']) {
+				return priority + 3;
+			}
+		},
+	},
+	horndrill: {
+		inherit: true,
+		onModifyPriority(priority, source, target, move) {
+			if (source.side.sideConditions['busteraura']) {
+				return priority + 3;
+			}
+		},
+	},
+	sheercold: {
+		inherit: true,
+		onModifyPriority(priority, source, target, move) {
+			if (source.side.sideConditions['busteraura']) {
+				return priority + 3;
 			}
 		},
 	},

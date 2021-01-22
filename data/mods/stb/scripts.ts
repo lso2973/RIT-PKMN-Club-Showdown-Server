@@ -381,7 +381,7 @@ export const Scripts: ModdedBattleScriptsData = {
 		return true;
 	},
 
-	// for QuantumTangler's Meta Buster
+	// Modded for QuantumTangler's Meta Buster
 	hitStepAccuracy(targets, pokemon, move) {
 		const hitResults = [];
 		for (const [i, target] of targets.entries()) {
@@ -394,13 +394,50 @@ export const Scripts: ModdedBattleScriptsData = {
 					if (move.ohko === 'Ice' && this.gen >= 7 && !pokemon.hasType('Ice') && !pokemon.ability === 'metabuster') {
 						accuracy = 20;
 					}
-					if (!target.volatiles['dynamax'] && pokemon.level >= target.level &&
+					if (!target.volatiles['dynamax'] && pokemon.level >= (pokemon.side.sideConditions['busteraura'] ? target.level/2 : target.level) &&
 						(move.ohko === true || !target.hasType(move.ohko))) {
-						accuracy += (pokemon.level - target.level);
+						accuracy += (pokemon.level - (pokemon.side.sideConditions['busteraura'] ? target.level/2 : target.level));
 					} else {
 						this.add('-immune', target, '[ohko]');
 						hitResults[i] = false;
 						continue;
+					}
+					// boosts from when used while in Buster Aura
+					if (pokemon.side.sideConditions['busteraura']) {
+						// level up
+						const species = pokemon.species;
+						const level = pokemon.level + 5;
+						(pokemon as any).level = level;
+						pokemon.set.level = level;
+						pokemon.formeChange(species);
+
+						pokemon.details = species.name + (level === 100 ? '' : ', L' + level) +
+							(pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
+						this.add('detailschange', pokemon, pokemon.details);
+
+						const newHP = Math.floor(Math.floor(
+							2 * species.baseStats['hp'] + pokemon.set.ivs['hp'] + Math.floor(pokemon.set.evs['hp'] / 4) + 100
+						) * level / 100 + 10);
+						pokemon.hp = newHP - (pokemon.maxhp - pokemon.hp);
+						pokemon.maxhp = newHP;
+						this.add('-heal', pokemon, pokemon.getHealth, '[silent]');
+
+						// stat boost
+						const stats: BoostName[] = [];
+						let stat: BoostName;
+						for (stat in pokemon.boosts) {
+							if (pokemon.boosts[stat] < 6) {
+								stats.push(stat);
+							}
+						}
+						if (stats.length) {
+							const randomStat = this.sample(stats);
+							const boost: SparseBoostsTable = {};
+							boost[randomStat] = 2;
+							this.boost(boost);
+						} else {
+							return false;
+						}
 					}
 				}
 			} else {

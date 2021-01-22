@@ -357,8 +357,8 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// QuantumTangler
 	metabuster: {
-		desc: "This Pokémon's speed is doubled, and it is treated as Ice-type for Sheer Cold's accuracy check. Summons a Buster Aura",
-		shortDesc: "x2 Spe, better acc w/ Sheer Cold. Buster Aura: ",
+		desc: "This Pokémon's speed is doubled, and it is treated as Ice-type for Sheer Cold's accuracy check. Summons a Buster Aura which gives each mon an OHKO move and five levels on switch-in, halves the opponent's level when calculating the accuracy of OHKO moves, increases the priority of OHKO moves by 3 tiers, and gives the user of an OHKO move +5 levels and +1 to a random stat.",
+		shortDesc: "x2 Spe, better acc w/ Sheer Cold. Summons Buster Aura.",
 		name: "Meta Buster",
 		onModifySpe(spe, pokemon) {
 			return this.chainModify(2);

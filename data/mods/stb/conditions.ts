@@ -366,7 +366,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		name: 'Buster Aura',
 		duration: 0,
 		onStart(side) {
-			this.add('-sidestart', side, 'ability: Meta Buster');
+			this.add('-sidestart', side, 'ability: Buster Aura');
 		},
 		onSwitchIn(pokemon) {
 			// levels-up pokemon
