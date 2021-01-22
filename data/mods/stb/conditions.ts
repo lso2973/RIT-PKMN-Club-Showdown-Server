@@ -119,6 +119,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('Creeperman129Poke')}|*1000 Souls have been released*`);
 		},
 	},
+	crimsonkangaroo: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('crimsonKangaroo')}|Taste the cosmos!`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('crimsonKangaroo')}|The sun sets, but it'll rise again.`);
+		},
+		onFaint() {
+			this.add(`c|${getName('crimsonKangaroo')}|Looks like this star's gone out...`);
+		},
+	},
 	ignoritus: {
 		noCopy: true,
 		onStart() {
