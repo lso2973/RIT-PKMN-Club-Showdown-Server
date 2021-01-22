@@ -21,4 +21,9 @@ export const Pokedex: {[k: string]: ModdedSpeciesData} = {
 		baseStats: {hp: 70, atk: 145, def: 75, spa: 110, spd: 85, spe: 145},
 		abilities: {0: "Forest's Wrath"},
 	},
+	//stat changes for gigigecko26
+	zigzagoon: {
+		inherit: true,
+		baseStats: {hp: 80, atk: 100, def: 100, spa: 120, spd: 80, spe: 110},
+	},
 };

@@ -308,6 +308,42 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "normal",
 		type: "Steel",
 	},
+	// gigigecko26
+	internettroll: {
+		accuracy: 100,
+		basePower: 120,
+		category: "Special",
+		desc: "A powerfully toxic move that has an 80/20 chance to either Poison or Burn the opponent, respectively.",
+		shortDesc: "80% chance to poison, otherwise burn",
+		name: "Internet Troll",
+		pp: 5,
+		priority: 0,
+		flags: {protect: 1, mirror: 1},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Nasty Plot', source);
+			this.add('-anim', source, 'Bonemerang', target);
+			this.add('-anim', source, 'Sludge Wave', target);
+			this.add('-anim', source, 'V-Create', source);
+			this.add('-anim', source, 'Snore', source);
+		},
+		secondary: {
+			chance: 100,
+			onHit(target, source) {
+				const result = this.random(5);
+				if (result === 0) {
+					target.trySetStatus('brn', source);
+				} else {
+					target.trySetStatus('psn', source);
+				}
+			},
+		},
+		target: "normal",
+		type: "Poison",
+		isNonstandard: "Custom",
+	},
 	// Ignoritus
 	spectralterrain:{
 		accuracy: true,
@@ -375,6 +411,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		secondary: null,
 		target: "all",
 		type: "Ghost",
+		isNonstandard: "Custom",
 		zMove: {boost: {spd: 1}},
 		contestType: "Beautiful",
 	},

@@ -132,6 +132,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('crimsonKangaroo')}|Looks like this star's gone out...`);
 		},
 	},
+	gigigecko26: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('gigigecko26')}|get out of my dump!`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('gigigecko26')}|good more trash for me`);
+		},
+		onFaint() {
+			this.add(`c|${getName('gigigecko26')}|I'll be back and in greater numbers!`);
+		},
+	},
 	ignoritus: {
 		noCopy: true,
 		onStart() {

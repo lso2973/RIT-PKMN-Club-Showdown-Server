@@ -234,6 +234,23 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			duration: 1,
 		},
 	},
+	// gigigecko26
+	rabies: {
+		onDamagingHit(damage, target, source, move) {
+			if (!move.flags['contact']) return;
+
+			let announced = false;
+			for (const pokemon of [target, source]) {
+				if (pokemon.volatiles['perishsong']) continue;
+				if (!announced) {
+					this.add('-ability', target, 'Perish Body');
+					announced = true;
+				}
+				pokemon.addVolatile('perishsong');
+			}
+		},
+		name: "Rabies",
+	},
 	// MeepingtonThe3rd
 	stormsurfing: {
 		desc: "On switch-in, this Pokémon summons Electric Terrain, and Heavy Rain begins until this Ability is no longer active in battle. This Pokémon's speed is doubled while on Electric Terrain.",
