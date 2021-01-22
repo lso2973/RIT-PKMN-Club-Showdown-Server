@@ -359,5 +359,11 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		onEnd() {
 			this.add('-weather', 'none');
 		},
-	}
+	},
+	// Meta Buster support for QuantumTangler
+	busteraura: {
+		name: 'Buster Aura',
+		duration: 0,
+
+	},
 };

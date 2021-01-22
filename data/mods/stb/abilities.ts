@@ -355,8 +355,8 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// QuantumTangler
 	metabuster: {
-		desc: "Prevents adjacent opposing Pokémon from choosing to switch out unless they are immune to trapping or also have this Ability or Shadow Tag. Also uses Magic Coat on entry.",
-		shortDesc: "Shadow Tag + Magic Coat on entry",
+		desc: "This Pokémon's speed is doubled, and it is treated as Ice-type for Sheer Cold's accuracy check. Summons a Buster Aura",
+		shortDesc: "x2 Spe, better acc w/ Sheer Cold. Buster Aura: ",
 		name: "Meta Buster",
 		onModifySpe(spe, pokemon) {
 			return this.chainModify(2);
