@@ -1,5 +1,6 @@
 import {FS} from '../../../lib/fs';
 import {toID} from '../../../sim/dex-data';
+import {changeMoves} from "./abilities";
 
 // Used in many abilities, placed here to reduce the number of updates needed and to reduce the chance of errors
 const STRONG_WEATHERS = ['desolateland', 'primordialsea', 'deltastream', 'heavyhailstorm', 'winterhail'];
@@ -364,6 +365,49 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	busteraura: {
 		name: 'Buster Aura',
 		duration: 0,
+		onStart(side) {
+			this.add('-sidestart', side, 'ability: Meta Buster');
+		},
+		onSwitchIn(pokemon) {
+			// levels-up pokemon
+			const species = pokemon.species;
+			const level = pokemon.level + 5;
+			(pokemon as any).level = level;
+			pokemon.set.level = level;
+			pokemon.formeChange(species);
 
+			pokemon.details = species.name + (level === 100 ? '' : ', L' + level) +
+				(pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
+			this.add('detailschange', pokemon, pokemon.details);
+
+			const newHP = Math.floor(Math.floor(
+				2 * species.baseStats['hp'] + pokemon.set.ivs['hp'] + Math.floor(pokemon.set.evs['hp'] / 4) + 100
+			) * level / 100 + 10);
+			pokemon.hp = newHP - (pokemon.maxhp - pokemon.hp);
+			pokemon.maxhp = newHP;
+			this.add('-heal', pokemon, pokemon.getHealth, '[silent]');
+
+			// adds ohko move
+			// cancels early if pokemon already has an ohko move, and prepares list of already-existing moves
+			const newMoves = [];
+			for (const moveSlot of pokemon.moveSlots) {
+				const moveid = moveSlot.id;
+				const move = this.dex.getMove(moveid);
+				if (move.ohko) {
+					return null;
+				}
+				newMoves.push(moveid);
+			}
+			// picks an ohko move based on the pokemon's type
+			let newOHKO: string = 'guillotine';
+			if (pokemon.hasType('Psychic')) newOHKO = 'sheercold';
+			if (pokemon.hasType('Ground')) newOHKO = 'fissure';
+			if (pokemon.hasType('Ice')) newOHKO = 'sheercold';
+			newMoves.push(newOHKO);
+			const newMoveSlots = changeMoves(this, pokemon, newMoves);
+			pokemon.moveSlots = newMoveSlots;
+			// @ts-ignore
+			pokemon.baseMoveSlots = newMoveSlots;
+		},
 	},
 };

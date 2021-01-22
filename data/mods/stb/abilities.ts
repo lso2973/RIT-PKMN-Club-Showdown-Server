@@ -85,6 +85,8 @@ export function changeMoves(context: Battle, pokemon: Pokemon, newMoves: (string
 			disabledSource: '',
 			used: false,
 		};
+		//gives free pp for moves gained through QuantumTangler's Buster Aura
+		if (!moveSlot.pp) moveSlot.pp = 5;
 		result.push(moveSlot);
 		slot++;
 	}
@@ -360,6 +362,30 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		name: "Meta Buster",
 		onModifySpe(spe, pokemon) {
 			return this.chainModify(2);
+		},
+		onStart(source) {
+			source.side.addSideCondition('busteraura');
+			// adds ohko move
+			// cancels early if pokemon already has an ohko move, and prepares list of already-existing moves
+			const newMoves = [];
+			for (const moveSlot of source.moveSlots) {
+				const moveid = moveSlot.id;
+				const move = this.dex.getMove(moveid);
+				if (move.ohko) {
+					return null;
+				}
+				newMoves.push(moveid);
+			}
+			// picks an ohko move based on the pokemon's type
+			let newOHKO: string = 'guillotine';
+			if (source.hasType('Psychic')) newOHKO = 'sheercold';
+			if (source.hasType('Ground')) newOHKO = 'fissure';
+			if (source.hasType('Ice')) newOHKO = 'sheercold';
+			newMoves.push(newOHKO);
+			const newMoveSlots = changeMoves(this, source, newMoves);
+			source.moveSlots = newMoveSlots;
+			// @ts-ignore
+			source.baseMoveSlots = newMoveSlots;
 		},
 		isNonstandard: "Custom",
 		rating: 5,

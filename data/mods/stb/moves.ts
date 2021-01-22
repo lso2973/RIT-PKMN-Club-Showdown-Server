@@ -602,6 +602,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 
 			source.side.foe.addSideCondition('stickyweb');
 
+			// randomize opponent's move
 			const action = this.queue.willMove(target);
 			const selectedMove = action?.choice === 'move' ? action.move : null;
 			if (!selectedMove || target.volatiles['mustrecharge']) {
