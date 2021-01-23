@@ -169,8 +169,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.attrLastMove('[still]');
 		},
 		onHit(target, source) {
-			this.add('-anim', source, 'Blizzard', source);
-			this.add('-anim', source, 'Explosion', target);
+			this.add('-anim', source, 'Bullet Punch', target);
 		},
 		self: {
 			onHit(source) {

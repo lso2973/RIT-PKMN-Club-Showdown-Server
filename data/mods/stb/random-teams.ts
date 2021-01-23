@@ -185,7 +185,7 @@ export const ssbSets: SSBSets = {
 export class RandomStaffBrosTeams extends RandomTeams {
 	randomStaffBrosTeam(options: {inBattle?: boolean} = {}) {
 		const team: PokemonSet[] = [];
-		const debug: string[] = ['TacocaT_2595','ATcheron','Ignoritus','bad_wolf42','ScarTheColossus','AWood']; // Set this to a list of SSB sets to override the normal pool for debugging.
+		const debug: string[] = ['AWood']; // Set this to a list of SSB sets to override the normal pool for debugging.
 		const pool = debug.length ? debug : Object.keys(ssbSets);
 		const typePool: {[k: string]: number} = {};
 		let depth = 0;
