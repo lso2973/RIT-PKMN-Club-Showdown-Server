@@ -646,7 +646,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		desc: "All Pokémon immediately lose up to 12 stages of all non-defensive stats and lose five levels. Sticky Webs is applied to the opponent's field. Each Pokémon that has not yet moved has their selected action replaced with a random known attack.",
+		desc: "All Pokémon immediately lose up to 12 stages of all non-defensive stats and lose five levels. Sticky Webs is applied to the opponent's field. Each Pokémon that has not yet moved has their selected action replaced with a random known attack. Usually goes first.",
 		shortDesc: "To both sides: -12 to Atk, Spa, Spe, -5 to lvl. To target: Sticky Web + target uses random known move",
 		name: "Stale Meta",
 		pp: 5,
