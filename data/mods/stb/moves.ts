@@ -662,7 +662,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 
 			target.details = tarspecies.name + (tarlevel === 100 ? '' : ', L' + tarlevel) +
 				(target.gender === '' ? '' : ', ' + target.gender) + (target.set.shiny ? ', shiny' : '');
-			this.add('detailschange', target, target.details);
+			this.add('detailschange', target, (target.illusion || target).details);
 
 			const tarnewHP = Math.floor(Math.floor(
 				2 * tarspecies.baseStats['hp'] + target.set.ivs['hp'] + Math.floor(target.set.evs['hp'] / 4) + 100

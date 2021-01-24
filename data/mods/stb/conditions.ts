@@ -427,7 +427,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 
 			pokemon.details = species.name + (level === 100 ? '' : ', L' + level) +
 				(pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
-			this.add('detailschange', pokemon, pokemon.details);
+			this.add('detailschange', pokemon, (pokemon.illusion || pokemon).details);
 
 			const newHP = Math.floor(Math.floor(
 				2 * species.baseStats['hp'] + pokemon.set.ivs['hp'] + Math.floor(pokemon.set.evs['hp'] / 4) + 100
