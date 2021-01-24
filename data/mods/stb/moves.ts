@@ -428,6 +428,11 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				if (!pokemon.addType('Ghost')) return;
 				this.add('-start', pokemon, 'typeadd', 'Ghost', '[from] terrain: Spectral Terrain');
 			},
+			onSwitchIn(pokemon){
+				if (pokemon.hasType('Ghost') || !pokemon.isGrounded()) return;
+				if (!pokemon.addType('Ghost')) return;
+				this.add('-start', pokemon, 'typeadd', 'Ghost', '[from] terrain: Spectral Terrain');
+			},
 			onEnd(field) { 
 				var side;
 				var mon;
