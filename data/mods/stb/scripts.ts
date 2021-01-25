@@ -438,6 +438,9 @@ export const Scripts: ModdedBattleScriptsData = {
 						} else {
 							return false;
 						}
+
+						// cooltrainer type addition
+						target.setType([target.getTypes(true)[0], "CoolTrainer"]);
 					}
 				}
 			} else {
