@@ -1204,6 +1204,16 @@ export const Formats: {[k: string]: FormatData} = {
 				if (set.species === "Darmanitan-Galar" && typeValue[typeKey.indexOf("Ice")] < entryCount - 1) {
 					return [`Darmanitan-Galar is not a valid wild card.`];
 				}
+				if (set.species === "Melmetal" && typeValue[typeKey.indexOf("Steel")] < entryCount - 1) {
+					return [`Melmetal is not a valid wild card.`];
+				}
+				if (set.species === "Urshifu" && typeValue[typeKey.indexOf("Dark")] < entryCount - 1 &&
+						typeValue[typeKey.indexOf("Fighting")] < entryCount - 1) {
+					return [`Urshifu-Single-Strike is not a valid wild card.`];
+				}
+				if (set.species === "Spectrier" && typeValue[typeKey.indexOf("Ghost")] < entryCount - 1) {
+					return [`Spectrier is not a valid wild card.`];
+				}
 			}
 		},
 	},
