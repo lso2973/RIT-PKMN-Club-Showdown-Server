@@ -413,7 +413,7 @@ export const Scripts: ModdedBattleScriptsData = {
 
 						pokemon.details = species.name + (level === 100 ? '' : ', L' + level) +
 							(pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
-						this.add('detailschange', pokemon, pokemon.details);
+						this.add('detailschange', pokemon, (pokemon.illusion || pokemon).details);
 
 						const newHP = Math.floor(Math.floor(
 							2 * species.baseStats['hp'] + pokemon.set.ivs['hp'] + Math.floor(pokemon.set.evs['hp'] / 4) + 100
@@ -433,8 +433,8 @@ export const Scripts: ModdedBattleScriptsData = {
 						if (stats.length) {
 							const randomStat = this.sample(stats);
 							const boost: SparseBoostsTable = {};
-							boost[randomStat] = 2;
-							this.boost(boost);
+							boost[randomStat] = 1;
+							this.boost(boost, pokemon);
 						} else {
 							return false;
 						}
