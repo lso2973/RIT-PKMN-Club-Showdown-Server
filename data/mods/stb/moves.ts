@@ -671,44 +671,27 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.add('-anim', source, 'Flash', target);
 		},
 		onHit(target, source) {
-			this.boost({atk: -12, spa: -12, spe: -12}, target);
-			this.boost({atk: -12, spa: -12, spe: -12}, source);
+			const pokelist = [target, source];
+			for (const poke of pokelist){
+				this.boost({atk: -12, spa: -12, spe: -12}, poke);
+				// level down opponent
+				const species = poke.species;
+				const level = poke.level - 5;
+				(poke as any).level = level;
+				poke.set.level = level;
+				poke.formeChange(species);
 
-			// level down opponent
-			const tarspecies = target.species;
-			const tarlevel = target.level - 5;
-			(target as any).level = tarlevel;
-			target.set.level = tarlevel;
-			target.formeChange(tarspecies);
+				poke.details = species.name + (level === 100 ? '' : ', L' + level) +
+					(poke.gender === '' ? '' : ', ' + poke.gender) + (poke.set.shiny ? ', shiny' : '');
+				this.add('detailschange', poke, (poke.illusion || poke).details);
 
-			target.details = tarspecies.name + (tarlevel === 100 ? '' : ', L' + tarlevel) +
-				(target.gender === '' ? '' : ', ' + target.gender) + (target.set.shiny ? ', shiny' : '');
-			this.add('detailschange', target, (target.illusion || target).details);
-
-			const tarnewHP = Math.floor(Math.floor(
-				2 * tarspecies.baseStats['hp'] + target.set.ivs['hp'] + Math.floor(target.set.evs['hp'] / 4) + 100
-			) * tarlevel / 100 + 10);
-			target.hp = tarnewHP - (target.maxhp - target.hp);
-			target.maxhp = tarnewHP;
-			this.add('-heal', target, target.getHealth, '[silent]');
-
-			//level down user
-			const srcspecies = source.species;
-			const srclevel = source.level - 5;
-			(source as any).level = srclevel;
-			source.set.level = srclevel;
-			source.formeChange(srcspecies);
-
-			source.details = srcspecies.name + (srclevel === 100 ? '' : ', L' + srclevel) +
-				(source.gender === '' ? '' : ', ' + source.gender) + (source.set.shiny ? ', shiny' : '');
-			this.add('detailschange', source, source.details);
-
-			const srcnewHP = Math.floor(Math.floor(
-				2 * srcspecies.baseStats['hp'] + source.set.ivs['hp'] + Math.floor(source.set.evs['hp'] / 4) + 100
-			) * srclevel / 100 + 10);
-			source.hp = srcnewHP - (source.maxhp - source.hp);
-			source.maxhp = srcnewHP;
-			this.add('-heal', source, source.getHealth, '[silent]');
+				const newHP = Math.floor(Math.floor(
+					2 * species.baseStats['hp'] + poke.set.ivs['hp'] + Math.floor(poke.set.evs['hp'] / 4) + 100
+				) * level / 100 + 10);
+				poke.hp = newHP - (poke.maxhp - poke.hp);
+				poke.maxhp = newHP;
+				this.add('-heal', poke, poke.getHealth, '[silent]');
+			}
 
 			source.side.foe.addSideCondition('stickyweb');
 		},
