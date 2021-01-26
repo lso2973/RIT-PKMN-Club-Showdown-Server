@@ -312,6 +312,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onBeforeMove(source, target, move){
 			if ((move['selfdestruct'] === "always" || move['selfdestruct'] === "onhit") && !this.effectData.ashes){
 				this.add('-ability', source, 'From the Ashes');
+				this.add('-message', `${source.name}'s rejuvenating power protects and heals itself`);
 				this.effectData.ashes = true;
 				move['selfdestruct'] = null;
 				source.heal(source.maxhp);
@@ -320,6 +321,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onDamage(damage, source, target, effect){
 			if (damage >= source.hp && effect && !this.effectData.ashes){
 				this.add('-ability', source, 'From the Ashes');
+				this.add('-message', `${source.name}'s rejuvenating power protects and heals itself`);
 				this.effectData.ashes = true;
 				source.heal(source.maxhp);
 				return 0;

@@ -90,7 +90,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 		onFaint() {
 			this.add(`c|${getName('Banded Bonks')}| `);
-			this.add(`raw|<img src="https://media1.tenor.com/images/bc1b3ab8289d2e60843e9823ee90f412/tenor.gif?itemid=8019684" height="250" width="250">`);
+			this.add(`raw|<img src="https://media1.tenor.com/images/bc1b3ab8289d2e60843e9823ee90f412/tenor.gif?itemid=8019684">`);
 		},
 		// Hustle innate ability
 		innateName: 'Hustle',

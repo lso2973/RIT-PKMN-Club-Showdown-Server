@@ -191,12 +191,12 @@ export const stbSets: STBSets = {
 export class RandomStaffBrosTeams extends RandomTeams {
 	randomStaffBrosTeam(options: {inBattle?: boolean} = {}) {
 		const team: PokemonSet[] = [];
-		const debug: string[] = []; // Set this to a list of SSB sets to override the normal pool for debugging.
-		const pool = debug.length ? debug : Object.keys(ssbSets);
+		const debug: string[] = ['njjoltiks']; // Set this to a list of SSB sets to override the normal pool for debugging.
+		const pool = debug.length ? debug : Object.keys(stbSets);
 		const typePool: {[k: string]: number} = {};
 		let depth = 0;
 		while (pool.length && team.length < 6) {
-			if (depth >= 200) throw new Error(`Infinite loop in Super Staff Bros team generation.`);
+			if (depth >= 200) throw new Error(`Infinite loop in Super Tiger Bros team generation.`);
 			depth++;
 			const name = this.sampleNoReplace(pool);
 			const stbSet: STBSet = this.dex.deepClone(stbSets[name]);
