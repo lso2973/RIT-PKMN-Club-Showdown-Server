@@ -374,9 +374,11 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		onStart(battle, source, effect) {
 			if (effect?.effectType === 'Ability') {
 				if (this.gen <= 5) this.effectData.duration = 0;
-				this.add('-weather', 'Arctic Gales', '[from] ability: ' + effect, '[of] ' + source);
+				this.add('-weather', 'Arctic Gales', '[from] ability: ' + effect, '[of] ' + source, '[silent]');
+				this.add('-message', "Arctic gales blow through the arena!");
 			} else {
-				this.add('-weather', 'Arctic Gales');
+				this.add('-weather', 'Arctic Gales', '[silent]');
+				this.add('-message', "Arctic gales blow through the arena!");
 			}
 		},
 		onModifySpe(spe, pokemon) {
@@ -386,7 +388,8 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 		onResidualOrder: 1,
 		onResidual() {
-			this.add('-weather', 'Arctic Gales', '[upkeep]');
+			this.add('-weather', 'Arctic Gales', '[upkeep]', '[silent]');
+			this.add('-message', "(The Arctic gales are raging.)");
 			if (this.field.isWeather('arcticgales')) this.eachEvent('Weather');
 		},
 		onWeather(target) {
@@ -394,7 +397,8 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.damage(target.baseMaxhp / 16);
 		},
 		onEnd() {
-			this.add('-weather', 'none');
+			this.add('-weather', 'none', '[silent]');
+			this.add('-message', "The Arctic gales subsided.");
 		},
 	},
 	// Support for gigigecko26's Rabies
