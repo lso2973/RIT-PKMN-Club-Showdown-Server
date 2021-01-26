@@ -662,6 +662,14 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		gen: 8,
 		priority: 3,
 		flags: {protect: 1, mirror: 1, reflectable: 1},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Mind Reader', target);
+			this.add('-anim', source, 'Yawn', target);
+			this.add('-anim', source, 'Flash', target);
+		},
 		onHit(target, source) {
 			this.boost({atk: -12, spa: -12, spe: -12}, target);
 			this.boost({atk: -12, spa: -12, spe: -12}, source);
@@ -924,6 +932,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		name: "Hax Dance",
 		pp: 15,
 		priority: 2,
+		isNonstandard: 'Custom',
 		flags: {snatch: 1, dance: 1, nonsky: 1},
 		onTryMove(){
 			this.attrLastMove('[still]');
