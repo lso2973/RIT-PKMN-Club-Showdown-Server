@@ -547,7 +547,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		desc: "This Pokemon's moves and their effects ignore the Abilities of other Pokemon. This Pokemon can hit Fairy types with Dragon-type moves.",
 		shortDesc: "Mold Breaker + Dragon Scrappy",
 		onStart(pokemon) {
-			this.add('-ability', pokemon, 'Mold Breaker');
+			this.add('-ability', pokemon, 'Fey Breaker');
 		},
 		onModifyMove(move) {
 			move.ignoreAbility = true;
