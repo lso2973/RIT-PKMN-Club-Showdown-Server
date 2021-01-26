@@ -731,10 +731,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			}
 			this.useMove(randomMove, target);
 		},
-		secondary: {
-			chance: 100,
-			volatileStatus: 'flinch',
-		},
+		secondary: null,
 		target: "normal",
 		type: "CoolTrainer",
 	},
@@ -776,8 +773,8 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		pp: 5,
 		priority: 0,
 		isNonstandard: 'Custom',
-		desc: "A powerful Dragon-type attack that ignores screens and hits through Protect and type immunities.",
-		shortDesc: "Ignores all screens and immunities.",
+		desc: "A powerful Dragon-type attack that ignores screens and substitute and hits through Protect and type immunities.",
+		shortDesc: "Ignores all screens, substitute and immunities.",
 		flags: {contact: 1, mirror: 1},
 		onTryHit(move) {
 			move.infiltrates = true;
@@ -928,7 +925,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		basePower: 0,
 		category: "Status",
 		desc: "The user takes 1/4 of its maximum HP, rounded down, and puts it into a substitute to take its place in battle. The substitute is removed once enough damage is inflicted on it, or if the user switches out or faints. Baton Pass can be used to transfer the substitute to an ally, and the substitute will keep its remaining HP. Until the substitute is broken, it receives damage from all attacks made by other Pokemon and shields the user from status effects and stat stage changes caused by other Pokemon. Sound-based moves and Pokemon with the Infiltrator Ability ignore substitutes. The user still takes normal damage from weather and status effects while behind its substitute. If the substitute breaks during a multi-hit attack, the user will take damage from any remaining hits. If a substitute is created while the user is trapped by a binding move, the binding effect ends immediately. Fails if the user does not have enough HP remaining to create a substitute without fainting, or if it already has a substitute. Also raises the user's Attack and Speed by 1 stage. Nearly always goes first.",
-		shortDesc: "+2 DD & Sub",
+		shortDesc: "+2 priority DD & Sub",
 		name: "Hax Dance",
 		pp: 15,
 		priority: 2,
