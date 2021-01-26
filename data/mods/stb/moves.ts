@@ -711,26 +711,30 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.add('-heal', source, source.getHealth, '[silent]');
 
 			source.side.foe.addSideCondition('stickyweb');
-
-			// randomize opponent's move
-			const action = this.queue.willMove(target);
-			const selectedMove = action?.choice === 'move' ? action.move : null;
-			if (!selectedMove || target.volatiles['mustrecharge']) {
-				return null;
-			}
-			const moves = [];
-			for (const moveSlot of target.moveSlots) {
-				const moveid = moveSlot.id;
-				const move = this.dex.getMove(moveid);
-				moves.push(moveid);
-			}
-			let randomMove = '';
-			if (moves.length) randomMove = this.sample(moves);
-			if (!randomMove) {
-				return null;
-			}
-			this.useMove(randomMove, target);
 		},
+		volatileStatus: 'stalemeta',
+		condition: {
+			duration: 1,
+			noCopy: true,
+			onOverrideAction(pokemon, target, move) {
+				if (!move || pokemon.volatiles['mustrecharge']) {
+					return null;
+				}
+				const moves = [];
+				for (const moveSlot of pokemon.moveSlots) {
+					const moveid = moveSlot.id;
+					moves.push(moveid);
+				}
+				let randomMove = '';
+				if (moves.length) randomMove = this.sample(moves);
+				if (!randomMove) {
+					return null;
+				}
+				this.add('-singleturn', pokemon, 'Stale Meta');
+				return randomMove;
+			},
+		},
+		start: "  [POKEMON]'s move choice was randomized!",
 		secondary: null,
 		target: "normal",
 		type: "CoolTrainer",
