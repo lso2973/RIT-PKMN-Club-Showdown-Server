@@ -880,7 +880,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		name: "Psionic Slice",
 		isNonstandard: "Custom",
 		desc: "This move’s base power increases by +2 for each stage the user’s stats have been raised or lowered. Resets the user’s stats after use.",
-		shortDesc: "+2 BP for each stage that is non-zero (ex. -3 Spa gives +6 BP)",
+		shortDesc: "+2 BP for each stage of stat change",
 		flags: {protect: 1, mirror: 1},
 		onTryMove(){
 			this.attrLastMove('[still]');
