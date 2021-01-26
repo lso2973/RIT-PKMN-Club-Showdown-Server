@@ -336,6 +336,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('torwildheart')}|I thought I'd be fine if I had no heat waves I could miss`);
 		},
 	},
+	touketsuningen: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('touketsu_ningen')}|It’s Dance time!!!`);
+		},
+		onSwitchOut(){
+			this.add(`c|${getName('touketsu_ningen')}|Wait, I’m not done dancing`);
+		},
+		onFaint(){
+			this.add(`c|${getName('touketsu_ningen')}|I knew I should have brought dragonite instead`);
+		},
+	},
 	voltichalberd: {
 		noCopy: true,
 		onStart() {

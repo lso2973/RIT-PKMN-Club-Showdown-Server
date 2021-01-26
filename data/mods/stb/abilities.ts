@@ -519,6 +519,26 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		isNonstandard: "Custom",
 		rating: 5
 	},
+	// touketsu_ningen
+	feybreaker: {
+		desc: "This Pokemon's moves and their effects ignore the Abilities of other Pokemon. This Pokemon can hit Fairy types with Dragon-type moves.",
+		shortDesc: "Mold Breaker + Dragon Scrappy",
+		onStart(pokemon) {
+			this.add('-ability', pokemon, 'Mold Breaker');
+		},
+		onModifyMove(move) {
+			move.ignoreAbility = true;
+		},
+				onModifyMove(move) {
+			if (!move.ignoreImmunity) move.ignoreImmunity = {};
+			if (move.ignoreImmunity !== true) {
+				move.ignoreImmunity['Dragon'] = true;
+			}
+		},
+		name: "Fey Breaker",
+		rating: 4,
+		isNonstandard: "Custom",
+	},
 	// VolticHalberd
 	outsideisfrightful: {
 		desc: "On switch-in, this Pokémon randomly summons one of Rain, Sun, Sand, or Hail, and its secondary typing changes to Water, Fire, Rock, or Ice, respectively.",

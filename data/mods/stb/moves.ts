@@ -914,6 +914,47 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "normal",
 		type: "Psychic",
 	},
+	// touketsu_ningen
+	haxdance: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		desc: "The user takes 1/4 of its maximum HP, rounded down, and puts it into a substitute to take its place in battle. The substitute is removed once enough damage is inflicted on it, or if the user switches out or faints. Baton Pass can be used to transfer the substitute to an ally, and the substitute will keep its remaining HP. Until the substitute is broken, it receives damage from all attacks made by other Pokemon and shields the user from status effects and stat stage changes caused by other Pokemon. Sound-based moves and Pokemon with the Infiltrator Ability ignore substitutes. The user still takes normal damage from weather and status effects while behind its substitute. If the substitute breaks during a multi-hit attack, the user will take damage from any remaining hits. If a substitute is created while the user is trapped by a binding move, the binding effect ends immediately. Fails if the user does not have enough HP remaining to create a substitute without fainting, or if it already has a substitute. Also raises the user's Attack and Speed by 1 stage. Nearly always goes first.",
+		shortDesc: "+2 DD & Sub",
+		name: "Hax Dance",
+		pp: 15,
+		priority: 2,
+		flags: {snatch: 1, dance: 1, nonsky: 1},
+		onTryMove(){
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source){
+			this.add('-anim', source, 'Substitute', source);
+		},
+		boosts: {
+			atk: 1,
+			spe: 1,
+		},
+		onTryHit(target) {
+			if (target.volatiles['substitute']) {
+				this.add('-fail', target, 'move: Hax Dance');
+				return null;
+			}
+			if (target.hp <= target.maxhp / 4 || target.maxhp === 1) { // Shedinja clause
+				this.add('-fail', target, 'move: Hax Dance', '[weak]');
+				return null;
+			}
+		},
+		onHit(target) {
+			this.directDamage(target.maxhp / 4);
+		},
+		volatileStatus: 'substitute',
+		secondary: null,
+		target: "self",
+		type: "Dragon",
+		zMove: {effect: 'clearnegativeboost'},
+		contestType: "Cool",
+	},
 	//VolticHalberd
 	halburst: {
 		accuracy: 100,
