@@ -730,11 +730,10 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				if (!randomMove) {
 					return null;
 				}
-				this.add('-singleturn', pokemon, 'Stale Meta');
+				this.add('-singleturn', pokemon, 'Stale Meta', '[silent]');
 				return randomMove;
 			},
 		},
-		start: "  [POKEMON]'s move choice was randomized!",
 		secondary: null,
 		target: "normal",
 		type: "CoolTrainer",
