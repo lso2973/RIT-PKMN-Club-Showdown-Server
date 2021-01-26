@@ -1,6 +1,6 @@
 import RandomTeams from '../../random-teams';
 
-export interface SSBSet {
+export interface STBSet {
 	species: string;
 	ability: string | string[];
 	item: string | string[];
@@ -15,9 +15,9 @@ export interface SSBSet {
 	happiness?: number;
 	skip?: string;
 }
-interface SSBSets {[k: string]: SSBSet}
+interface STBSets {[k: string]: STBSet}
 
-export const ssbSets: SSBSets = {
+export const stbSets: STBSets = {
 	/*
 	// Example:
 	Username: {
@@ -199,12 +199,12 @@ export class RandomStaffBrosTeams extends RandomTeams {
 			if (depth >= 200) throw new Error(`Infinite loop in Super Staff Bros team generation.`);
 			depth++;
 			const name = this.sampleNoReplace(pool);
-			const ssbSet: SSBSet = this.dex.deepClone(ssbSets[name]);
-			if (ssbSet.skip) continue;
+			const stbSet: STBSet = this.dex.deepClone(stbSets[name]);
+			if (stbSet.skip) continue;
 
 			// Enforce typing limits
 			if (!debug.length) { // Type limits are ignored when debugging
-				const types = this.dex.getSpecies(ssbSet.species).types;
+				const types = this.dex.getSpecies(stbSet.species).types;
 				let rejected = false;
 				for (const type of types) {
 					if (typePool[type] === undefined) typePool[type] = 0;
@@ -214,7 +214,7 @@ export class RandomStaffBrosTeams extends RandomTeams {
 						break;
 					}
 				}
-				if (ssbSet.ability === 'Wonder Guard') {
+				if (stbSet.ability === 'Wonder Guard') {
 					if (!typePool['wonderguard']) {
 						typePool['wonderguard'] = 1;
 					} else {
@@ -230,25 +230,25 @@ export class RandomStaffBrosTeams extends RandomTeams {
 
 			const set: PokemonSet = {
 				name: name,
-				species: ssbSet.species,
-				item: Array.isArray(ssbSet.item) ? this.sampleNoReplace(ssbSet.item) : ssbSet.item,
-				ability: Array.isArray(ssbSet.ability) ? this.sampleNoReplace(ssbSet.ability) : ssbSet.ability,
+				species: stbSet.species,
+				item: Array.isArray(stbSet.item) ? this.sampleNoReplace(stbSet.item) : stbSet.item,
+				ability: Array.isArray(stbSet.ability) ? this.sampleNoReplace(stbSet.ability) : stbSet.ability,
 				moves: [],
-				nature: ssbSet.nature ? Array.isArray(ssbSet.nature) ? this.sampleNoReplace(ssbSet.nature) : ssbSet.nature : 'Serious',
-				gender: ssbSet.gender || this.sample(['M', 'F', 'N']),
-				evs: ssbSet.evs ? {...{hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0}, ...ssbSet.evs} :
+				nature: stbSet.nature ? Array.isArray(stbSet.nature) ? this.sampleNoReplace(stbSet.nature) : stbSet.nature : 'Serious',
+				gender: stbSet.gender || this.sample(['M', 'F', 'N']),
+				evs: stbSet.evs ? {...{hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0}, ...stbSet.evs} :
 				{hp: 84, atk: 84, def: 84, spa: 84, spd: 84, spe: 84},
-				ivs: {...{hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31}, ...ssbSet.ivs},
-				level: ssbSet.level || 100,
-				happiness: typeof ssbSet.happiness === 'number' ? ssbSet.happiness : 255,
-				shiny: typeof ssbSet.shiny === 'number' ? this.randomChance(1, ssbSet.shiny) : !!ssbSet.shiny,
+				ivs: {...{hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31}, ...stbSet.ivs},
+				level: stbSet.level || 100,
+				happiness: typeof stbSet.happiness === 'number' ? stbSet.happiness : 255,
+				shiny: typeof stbSet.shiny === 'number' ? this.randomChance(1, stbSet.shiny) : !!stbSet.shiny,
 			};
-			while (set.moves.length < 3 && ssbSet.moves.length > 0) {
-				let move = this.sampleNoReplace(ssbSet.moves);
+			while (set.moves.length < 3 && stbSet.moves.length > 0) {
+				let move = this.sampleNoReplace(stbSet.moves);
 				if (Array.isArray(move)) move = this.sampleNoReplace(move);
 				set.moves.push(move);
 			}
-			set.moves.push(ssbSet.signatureMove);
+			set.moves.push(stbSet.signatureMove);
 
 			// Any set specific tweaks occur here.
 			if (set.name === 'Marshmallon' && !set.moves.includes('Head Charge')) set.moves[this.random(3)] = 'Head Charge';

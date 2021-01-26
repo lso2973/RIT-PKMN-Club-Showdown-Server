@@ -108,12 +108,13 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	// ATcheron
 	snowierwarning: {
 		desc: "Summons Arctic Gales to the battlefield, lowering the speed of non Ice-types by 50% rounded up and damaging non Ice-types by 1/16th of their health rounded down at the end of each turn.",
-		shortDesc: "Summons Arctic Gales. Non-Ice-type: 0.5x speed and 1/16 damage per turn",
+		shortDesc: "Summons Arctic Gales. Non ice types: 0.5x speed and 1/16 damage per turn",
 		name: "Snowier Warning",
 		onStart(source) {
 			this.field.setWeather('arcticgales');
 		},
 		isNonstandard: "Custom",
+		gen: 8,
 	},
 	// bad_wolf42
 	friendshaped: {
@@ -131,6 +132,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		name: 'Friend Shaped',
 		isNonstandard: "Custom",
+		gen: 8,
 		rating: 4,
 	},
 	// Banded Bonks
@@ -152,6 +154,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			if (move.self?.chance) move.self.chance *= 2;
 		},
 		isNonstandard: "Custom",
+		gen: 8,
 		Rating: 4,
 	},
 	// broil
@@ -175,6 +178,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			}
 		},
 		isNonstandard: "Custom",
+		gen: 8,
 		Rating: 4,
 	},
 	// Creeperman129Poke
@@ -190,6 +194,8 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			}
 		},
 		name: "Spiritual Absorb",
+		isNonstandard: "Custom",
+		gen: 8,
 		rating: 3.6,
 	},
 	// crimsonKangaroo
@@ -236,6 +242,8 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		condition: {
 			duration: 1,
 		},
+		isNonstandard: "Custom",
+		gen: 8,
 	},
 	// gigigecko26
 	rabies: {
@@ -248,6 +256,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		name: "Rabies",
 		isNonstandard: "Custom",
+		gen: 8,
 	},
 	// MeepingtonThe3rd
 	stormsurfing: {
@@ -279,6 +288,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			}
 		},
 		isNonstandard: "Custom",
+		gen: 8,
 	},
 	// MightySharkVGC
 	beasterboost: {
@@ -316,6 +326,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			}
 		},
 		isNonstandard: "Custom",
+		gen: 8,
 		rating: 5,
 	},
 	// Peekz1025
@@ -332,6 +343,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			}
 		},
 		isNonstandard: "Custom",
+		gen: 8,
 		rating: 4.5
 	},
 	// Planetaeus
@@ -345,6 +357,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			}
 		},
 		isNonstandard: "Custom",
+		gen: 8,
 		rating: 3
 	},
 	// PseudoPhysics
@@ -368,6 +381,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		name: "gonna getcha",
 		isNonstandard: "Custom",
+		gen: 8,
 		rating: 5,
 	},
 	// QuantumTangler
@@ -403,12 +417,13 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			source.baseMoveSlots = newMoveSlots;
 		},
 		isNonstandard: "Custom",
+		gen: 8,
 		rating: 5,
 	},
 	// RibbonNymph
 	pixilatex: {
 		desc: "When this Pokémon uses an attack that would be either 'not very effective' or does not affect the target due to typing, the attack will become fairy type and the power of the move will be boosted by 1.2x",
-		shortDesc: "User's not-very-effective and no-effect moves become fairy type; 1.2x power",
+		shortDesc: "User's not-very-effective or less moves become fairy type; 1.2x power",
 		name: "Pixilate X",
 		onModifyTypePriority: -1,
 		onModifyType(move, pokemon, target) {
@@ -425,6 +440,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			if (move.pixilateBoosted) return this.chainModify([0x1333, 0x1000]);
 		},
 		isNonstandard: "Custom",
+		gen: 8,
 		rating: 4,
 	},
 	// RubyDragonQueen
@@ -445,6 +461,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			}
 		},
 		isNonstandard: "Custom",
+		gen: 8,
 	},
 	// ScarTheColossus
 	pancake: {
@@ -455,6 +472,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			this.heal(pokemon.baseMaxhp / 3);
 		},
 		isNonstandard: "Custom",
+		gen: 8,
 		rating: 4,
 	},
 	// Steeevo34 
@@ -484,6 +502,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			}
 		},
 		isNonstandard: "Custom",
+		gen: 8,
 		rating: 3,
 	},
 	// TacocaT_2595
@@ -503,6 +522,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			}
 		},
 		isNonstandard: "Custom",
+		gen: 8,
 	},
 	// torwildheart
 	toolong: {
@@ -517,6 +537,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			}
 		},
 		isNonstandard: "Custom",
+		gen: 8,
 		rating: 5
 	},
 	// touketsu_ningen
@@ -538,6 +559,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		name: "Fey Breaker",
 		rating: 4,
 		isNonstandard: "Custom",
+		gen: 8,
 	},
 	// VolticHalberd
 	outsideisfrightful: {
@@ -582,6 +604,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			this.add('-start', pokemon, 'typechange', pokemon.types.join('/'), '[from] ability: Outside is Frightful');
 		},
 		isNonstandard: "Custom",
+		gen: 8,
 		rating: 4,
 	},
 	// Modified Shadow Tag for gonna getcha
