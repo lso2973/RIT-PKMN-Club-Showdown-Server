@@ -286,8 +286,25 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		onHit(target, source) {
 			this.add('-anim', source, 'Freezing Glare', target);
 		},
+		onTryHit(target, source, move) {
+			if (move.volatileStatus && (target.volatiles['curse'] || target.volatiles['pharaohscurse'] || targer.volatiles['haunting'])) {
+				return false;
+			}
+		},
 		gen: 8,
-		volatileStatus: 'curse',
+		volatileStatus: 'pharaohscurse',
+		condition: {
+			onStart(pokemon, source) {
+				this.add('-start', pokemon, 'Pharaoh\'s Curse', '[silent]');
+				this.add('-message', `${pokemon.name} was afflicted with the Pharaoh's Curse!`);
+			},
+			onResidualOrder: 10,
+			onResidual(pokemon) {
+				// todo: silence the -damage that battle.damage calls.
+				this.damage(pokemon.baseMaxhp / 4);
+				//this.add('-message', `${pokemon.name} is afflicted by the Pharaoh's Curse!`);
+			},
+		},
 		pp: 15,
 		priority: 0,
 		flags: {authentic: 1},
@@ -307,13 +324,28 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		name: "Haunting",
 		secondary: {
 			chance: 100,
-			volatileStatus: 'curse',
+			volatileStatus: 'haunting',
 		},
 		onTryMove() {
 			this.attrLastMove('[still]');
 		},
 		onPrepareHit(target, source) {
 			this.add('-anim', source, 'Dark Void', target);
+		},
+		condition: {
+			onStart(pokemon, source) {
+				if (pokemon.volatiles['curse'] || pokemon.volatiles['pharaohscurse'] || pokemon.volatiles['haunting']) {
+					return null;
+				}
+				this.add('-start', pokemon, 'Haunting', '[silent]');
+				this.add('-message', `${pokemon.name} became Haunted!`);
+			},
+			onResidualOrder: 10,
+			onResidual(pokemon) {
+				// todo: silence the -damage that battle.damage calls.
+				this.damage(pokemon.baseMaxhp / 4);
+				//this.add('-message', `${pokemon.name} is afflicted by the Haunting!`);
+			},
 		},
 		pp: 5,
 		priority: 0,
@@ -723,6 +755,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 					return null;
 				}
 				this.add('-singleturn', pokemon, 'Stale Meta', '[silent]');
+				this.add('-message', `${pokemon.name}'s next move was randomized!`);
 				return randomMove;
 			},
 		},
@@ -1156,6 +1189,19 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			case 'arcticgales':
 				move.basePower *= 2;
 				break;
+			}
+		},
+	},
+	// Modified Curse to be mutually exclusive with broil's and Creeperman129Poke's Curse-like moves
+	curse: {
+		inherit: true,
+		onTryHit(target, source, move) {
+			if (!source.hasType('Ghost')) {
+				delete move.volatileStatus;
+				delete move.onHit;
+				move.self = {boosts: {spe: -1, atk: 1, def: 1}};
+			} else if (move.volatileStatus && (target.volatiles['curse'] || target.volatiles['pharaohscurse'] || target.volatiles['haunting'])) {
+				return false;
 			}
 		},
 	},
