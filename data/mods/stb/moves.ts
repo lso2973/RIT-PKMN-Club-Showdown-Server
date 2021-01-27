@@ -1271,7 +1271,10 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			onTryAddVolatile(status, target, source, effect) {
 				if (!target.isGrounded() || target.isSemiInvulnerable()) return;
 				if (status.id === 'confusion') {
-					if (effect.effectType === 'Move' && !effect.secondaries) this.add('-activate', target, 'move: Ribbon Terrain');
+					if (effect.effectType === 'Move' && !effect.secondaries){
+						this.add('-activate', target, 'move: Ribbon Terrain', '[silent]');
+						this.add('-message', `${pokemon.name} surrounds itself with protective ribbons!`);
+					}
 					return null;
 				}
 			},
@@ -1288,15 +1291,18 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			},
 			onStart(battle, source, effect) {
 				if (effect?.effectType === 'Ability') {
-					this.add('-fieldstart', 'move: Ribbon Terrain', '[from] ability: ' + effect, '[of] ' + source);
+					this.add('-fieldstart', 'move: Ribbon Terrain', '[from] ability: ' + effect, '[of] ' + source, '[silent]');
+					this.add('-message', "  Ribbons swirl around the battlefield!");
 				} else {
-					this.add('-fieldstart', 'move: Ribbon Terrain');
+					this.add('-fieldstart', 'move: Ribbon Terrain', '[silent]');
+					this.add('-message', "  Ribbons swirl around the battlefield!");
 				}
 			},
 			onResidualOrder: 21,
 			onResidualSubOrder: 2,
 			onEnd(side) {
-				this.add('-fieldend', 'Ribbon Terrain');
+				this.add('-fieldend', 'Ribbon Terrain', '[silent]');
+				this.add('-message', "  The ribbons disappeared from the battlefield.");
 			},
 		},
 		target: "all",

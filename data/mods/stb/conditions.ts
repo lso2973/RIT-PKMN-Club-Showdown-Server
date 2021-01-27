@@ -374,7 +374,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		onStart(battle, source, effect) {
 			if (effect?.effectType === 'Ability') {
 				if (this.gen <= 5) this.effectData.duration = 0;
-				this.add('-weather', 'Arctic Gales', '[from] ability: ' + effect, '[of] ' + source, '[silent]');
+				this.add('-weather', 'Arctic Gales', '[from] ability: ' + effect, '[of] ' + source);
 				this.add('-message', "Arctic gales blow through the arena!");
 			} else {
 				this.add('-weather', 'Arctic Gales', '[silent]');
