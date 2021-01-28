@@ -65,3 +65,5 @@ local_settings.py
 .svn
 
 pip-log.txt
+config/chat-plugins/mafia-logs.json
+config/chatrooms.json
