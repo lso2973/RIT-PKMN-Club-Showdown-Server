@@ -38,6 +38,7 @@ export const Pokedex: {[k: string]: ModdedSpeciesData} = {
 	// Annika
 	mewtwomegay: {
 		inherit: true,
+		baseStats: {hp: 106, atk: 110, def: 90, spa: 154, spd: 90, spe: 130},
 		abilities: {0: "Overprotective"},
 	},
 	// A Quag To The Past
@@ -114,7 +115,7 @@ export const Pokedex: {[k: string]: ModdedSpeciesData} = {
 	pichu: {
 		inherit: true,
 		types: ["Electric", "Water"],
-		baseStats: {hp: 70, atk: 80, def: 55, spa: 75, spd: 75, spe: 100},
+		baseStats: {hp: 60, atk: 85, def: 50, spa: 95, spd: 85, spe: 110},
 	},
 	// Inactive
 	gyaradosmega: {

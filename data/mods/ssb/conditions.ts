@@ -148,7 +148,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('Andrew')}|purple sus`);
 		},
 		onFaint() {
-			this.add(`c|${getName('Andrew')}|EasyOnTheHills is impostor! He vented in front of me in admin! Vote him out next!`);
+			this.add(`c|${getName('Andrew')}|tidal otter is impostor! He vented in front of me in admin! Vote him out next!`);
 		},
 	},
 	annika: {
@@ -338,6 +338,10 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('brouha')}|sobL`);
 		},
 	},
+	buffy: {
+		noCopy: true,
+		// No quotes requested
+	},
 	cake: {
 		noCopy: true,
 		innateName: "h",
@@ -402,10 +406,6 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 				return false;
 			}
 		},
-	},
-	celestial: {
-		noCopy: true,
-		// No quotes requested
 	},
 	celine: {
 		noCopy: true,
@@ -757,8 +757,8 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('INStruct')}|yall suck im going home`);
 		},
 		innateName: "Last Laugh",
-		desc: "Upon fainting, this Pokemon deals damage to all Pokemon that have made contact with it equal to 50% of their max HP. This damage cannot KO Pokemon.",
-		shortDesc: "Upon fainting, deal 50% of their max HP to all foes that this Pokemon contacted.",
+		desc: "Upon fainting to an opponent's direct attack, this Pokemon deals damage to all Pokemon that have made contact with it equal to 50% of their max HP. This damage cannot KO Pokemon.",
+		shortDesc: "Upon foe KOing user, deal 50% of their max HP to all foes that this Pokemon contacted.",
 		// Extinction Level Event Innate
 		onSourceHit(target, source, move) {
 			if (source.illusion) return;
@@ -784,7 +784,10 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 					let collateral = this.clampIntRange(foe.baseMaxhp / 2, 1);
 					this.add('-message', `${foe.name} became insane and attacked themselves!`);
 					if (collateral >= foe.hp) collateral = foe.hp - 1;
-					this.directDamage(collateral, foe);
+					foe.hp = foe.hp - collateral;
+					if (foe === source) {
+						this.add('-damage', foe, foe.getHealth);
+					}
 				}
 			}
 		},
@@ -1248,13 +1251,16 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	partman: {
 		noCopy: true,
 		onStart(source) {
-			this.add(`c|${getName('PartMan')}|${[`OMA HI ${source.side.name.toUpperCase()} BIG FAN`, `HYDRO IS A NERD`][this.random(2)]}`);
+			this.add(`c|${getName('PartMan')}|${[`OMA HI ${source.side.name.toUpperCase()} BIG FAN`, `HYDRO IS A NERD`, `Greetings, today we are all gathered here to pay respects to - wait, this is only ${source.side.foe.name}'s funeral. Never mind.`, `__I'm on fiiiiiiiiiiire__`, `/me hugs`, `A SACRIFICE FOR SNOM`, `${source.side.name} more like nerd`, `NER`][this.random(8)]}`);
 		},
-		onSwitchOut() {
-			this.add(`c|${getName('PartMan')}|/me flees`);
+		onSwitchOut(source) {
+			this.add(`c|${getName('PartMan')}|Hi ${source.side.name}, I'm PartMan!`);
+			this.add(`c|${getName('PartMan')}|Hi PartMan, I'm PartMan!`);
+			this.add(`c|${getName('PartMan')}|Hi PartMan, I'm PartMan!`);
+			this.add(`c|${getName('Hydro')}|/log PartMan was muted by Hydro for 7 minutes. (flood)`);
 		},
 		onFaint() {
-			this.add(`c|${getName('PartMan')}|B-booli. >.<`);
+			this.add(`c|${getName('PartMan')}|${['B-booli. >.<', 'Remember to dab on iph', 'Excuse me what', 'RUDE', ':pout:', '/html <img src="https://allyourmeme.com/wp-content/uploads/2019/05/damn-it-hurts-right-in-my-meow-meow.jpeg" height=50% width=50% />'][this.random(6)]}`);
 		},
 	},
 	peapodc: {
@@ -1403,7 +1409,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	rageuser: {
 		noCopy: true,
 		onStart() {
-			this.add(`c|${getName('Rage')}|Hello there`);
+			this.add(`c|${getName('Rage')}|/html <img src="https://media1.tenor.com/images/2eada1bbeb4ed4182079cf00070324a2/tenor.gif" />`);
 		},
 		onSwitchOut() {
 			this.add(`c|${getName('Rage')}|im off, cya lads`);
@@ -1620,14 +1626,25 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('The Immortal')}|ban stall`);
 		},
 	},
+	thewaffleman: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('thewaffleman')}|Whats Good Youtube its your boy thewaffleman`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('thewaffleman')}|Never Gonna Give You Up`);
+		},
+		onFaint() {
+			this.add(`c|${getName('thewaffleman')}|coyg`);
+		},
+	},
 	tiki: {
 		noCopy: true,
 		onStart() {
 			this.add(`c|${getName('tiki')}|just tiki.`);
 		},
 		onSwitchOut() {
-			this.add(`c|${getName('tiki')}|`);
-			this.add(`raw|<img src="https://i.imgur.com/0ZRGwvv.png" />`);
+			this.add(`c|${getName('tiki')}|/html <img src="https://i.imgur.com/0ZRGwvv.png" />`);
 		},
 		onFaint() {
 			this.add(`c|${getName('tiki')}|aksfgkjag o k`);
@@ -1648,7 +1665,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	trickster: {
 		noCopy: true,
 		onStart() {
-			this.add(`c|${getName('Trickster')}|(¤﹏¤).`);
+			this.add(`c|${getName('Trickster')}|(¤﹏¤)`);
 		},
 		onSwitchOut() {
 			this.add(`c|${getName('Trickster')}|(︶︹︺)`);
@@ -1708,20 +1725,6 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 		onFaint() {
 			this.add(`c|${getName('vooper')}|I guess Kung Fu isn't for everyone...`);
-		},
-	},
-	xjoelituh: {
-		noCopy: true,
-		onStart() {
-			this.add(`c|${getName('xJoelituh')}|Hey, how can I help you?`);
-		},
-		onSwitchOut() {
-			this.add(`c|${getName('xJoelituh')}|Hold on, I need a second opinion.`);
-		},
-		onFaint() {
-			let str = '';
-			for (let x = 0; x < 10; x++) str += String.fromCharCode(48 + this.random(79));
-			this.add(`c|${getName('xJoelituh')}|${str} ok`);
 		},
 	},
 	yuki: {
@@ -1930,30 +1933,6 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			}
 		},
 	},
-	// Custom status for A Quag To The Past's signature move
-	bounty: {
-		name: 'bounty',
-		effectType: 'Status',
-		onStart(target, source, sourceEffect) {
-			if (sourceEffect.effectType === 'Ability') {
-				this.add('-start', target, 'bounty', '[from] ability: ' + sourceEffect.name, '[of] ' + source);
-			} else {
-				this.add('-start', target, 'bounty');
-			}
-		},
-		onSwitchIn(pokemon) {
-			if (pokemon.status === 'bounty') {
-				this.add('-start', pokemon, 'bounty');
-			}
-		},
-		onFaint(target, source, effect) {
-			if (effect?.effectType !== 'Move') return;
-			if (source) {
-				this.add('-activate', target, 'ability: Bounty');
-				this.boost({atk: 1, def: 1, spa: 1, spd: 1, spe: 1}, source, target, effect);
-			}
-		},
-	},
 	// Brilliant Condition for Arcticblast
 	brilliant: {
 		name: 'Brilliant',
@@ -2014,7 +1993,22 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add('-message', 'The Storm Surge receded.');
 		},
 		onModifySpe() {
-			return this.chainModify(0.25);
+			return this.chainModify(0.5);
+		},
+	},
+	// Kipkluif, needs to end in mod to not trigger aelita/andrew's effect
+	degeneratormod: {
+		onBeforeSwitchOut(pokemon) {
+			let alreadyAdded = false;
+			for (const source of this.effectData.sources) {
+				if (!source.hp || source.volatiles['gastroacid']) continue;
+				if (!alreadyAdded) {
+					const foe = pokemon.side.foe.active[0];
+					if (foe) this.add('-activate', foe, 'ability: Degenerator');
+					alreadyAdded = true;
+				}
+				this.damage((pokemon.baseMaxhp * 33) / 100, pokemon);
+			}
 		},
 	},
 	// For ravioliqueen
@@ -2042,7 +2036,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			pokemon.addVolatile('wistfulthinking');
 		},
 	},
-	// boost for LittEleven's move
+	// focus punch effect for litt's move
 	nexthuntcheck: {
 		duration: 1,
 		onStart(pokemon) {
@@ -2187,7 +2181,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 				for (const key of keys) {
 					side.removeSideCondition(key);
 					if (!silentRemove.includes(key)) {
-						this.add('-sideend', target.side, this.dex.getEffect(key).name, '[from] ability: Turbulence');
+						this.add('-sideend', side, this.dex.getEffect(key).name, '[from] ability: Turbulence');
 					}
 				}
 			}
