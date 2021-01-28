@@ -94,94 +94,6 @@ export const Formats: FormatList = [
 		},
 	},
 	{
-		name: "[Gen 8] Tier Tag",
-		desc: `Pick 1 pokémon from each tier, for 7 total! OU, UU, RU, NU, PU, ZU, NFE, LC.`,
-		threads: [
-			`&bullet; <a href="https://docs.google.com/document/d/1Qz7jUWobEWsANbd4z58xOocKlkLE2ds7iMxNoqk4HPo">Tier Tag</a>`,
-		],
-
-		mod: 'gen8',
-		ruleset: ['Standard', 'Dynamax Clause'],
-		banlist: ['Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'Baton Pass'],
-		teamLength: {
-			validate: [1, 8],
-			battle: 8,
-		},
-
-		onValidateTeam(team) {
-			const tiers: string[] = [];
-			for (const set of team) {
-				const species = this.dex.getSpecies(set.species);
-				if (species.tier === 'OU') {
-					if (!tiers.includes('OU')) {
-						tiers.push('OU');
-					}
-				} else if (species.tier === 'UU' || species.tier === 'UUBL') {
-					if (!tiers.includes('UU')) {
-						tiers.push('UU');
-					}
-				} else if (species.tier === 'RU' || species.tier === 'RUBL') {
-					if (!tiers.includes('RU')) {
-						tiers.push('RU');
-					}
-				} else if (species.tier === 'NU' || species.tier === 'NUBL') {
-					if (!tiers.includes('NU')) {
-						tiers.push('NU');
-					}
-				} else if (species.tier === 'PU' || species.tier === 'PUBL') {
-					if (!tiers.includes('PU')) {
-						tiers.push('PU');
-					}
-				} else if (species.tier === '(PU)') {
-					if (!tiers.includes('ZU')) {
-						tiers.push('ZU');
-					}
-				} else if (species.tier === 'NFE') {
-					if (!tiers.includes('NFE')) {
-						tiers.push('NFE');
-					}
-				} else if (species.tier === 'LC') {
-					if (!tiers.includes('LC')) {
-						tiers.push('LC');
-					}
-				}
-			}
-
-			if (tiers.length !== 8) {
-				const difference = ['OU', 'UU', 'RU', 'NU', 'PU', 'ZU', 'NFE', 'LC'].filter(x => !tiers.includes(x));
-				let diffSentence = `You are missing: `;
-				for (const tier of difference) {
-					diffSentence += tier + `, `;
-				}
-				diffSentence = diffSentence.substring(0, diffSentence.length - 2);
-				return [
-					`You must have one pokémon from each of the following tiers: `,
-					`OU, UU/UUBL, RU/RUBL, NU/NUBL, PU/PUBL, ZU, NFE, LC`,
-					diffSentence,
-				];
-			}
-		},
-	},
-	{
-		name: "[Gen 8] Wet Noodle SlapFest",
-		desc: `Only pokémon with offensive stats <=75 are allowed.`,
-		threads: [
-			`&bullet; <a href="https://docs.google.com/document/d/1HaVSk65OUmktW8_iUhuXKlazR3z-il-HapUdsTzaXMw">Wet Noodle SlapFest</a>`,
-		],
-
-		mod: 'gen8',
-		ruleset: ['Standard', 'Offensive Stats Clause', 'Moody Clause', 'Recovery Clause', 'Stat Boost Clause', 'Dynamax Clause'],
-		banlist: [
-			'Blissey', 'Chansey', 'Cresselia', 'Mandibuzz', 'Registeel', 'Toxapex', 'Umbreon', 'Uxie', 'Wishiwashi',
-
-			'Eviolite', 'Light Ball',
-
-			'Contrary', 'Huge Power', 'Pure Power',
-
-			'Body Press', 'Night Shade', 'Seismic Toss',
-		],
-	},
-	{
 		section: "RIT Archive",
 	},
 	{
@@ -335,6 +247,94 @@ export const Formats: FormatList = [
 				return [`Z-moves are not allowed.`];
 			}
 		},
+	},
+	{
+		name: "[Gen 8] Tier Tag",
+		desc: `Pick 1 pokémon from each tier, for 7 total! OU, UU, RU, NU, PU, ZU, NFE, LC.`,
+		threads: [
+			`&bullet; <a href="https://docs.google.com/document/d/1Qz7jUWobEWsANbd4z58xOocKlkLE2ds7iMxNoqk4HPo">Tier Tag</a>`,
+		],
+
+		mod: 'gen8',
+		ruleset: ['Standard', 'Dynamax Clause'],
+		banlist: ['Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'Baton Pass'],
+		teamLength: {
+			validate: [1, 8],
+			battle: 8,
+		},
+
+		onValidateTeam(team) {
+			const tiers: string[] = [];
+			for (const set of team) {
+				const species = this.dex.getSpecies(set.species);
+				if (species.tier === 'OU') {
+					if (!tiers.includes('OU')) {
+						tiers.push('OU');
+					}
+				} else if (species.tier === 'UU' || species.tier === 'UUBL') {
+					if (!tiers.includes('UU')) {
+						tiers.push('UU');
+					}
+				} else if (species.tier === 'RU' || species.tier === 'RUBL') {
+					if (!tiers.includes('RU')) {
+						tiers.push('RU');
+					}
+				} else if (species.tier === 'NU' || species.tier === 'NUBL') {
+					if (!tiers.includes('NU')) {
+						tiers.push('NU');
+					}
+				} else if (species.tier === 'PU' || species.tier === 'PUBL') {
+					if (!tiers.includes('PU')) {
+						tiers.push('PU');
+					}
+				} else if (species.tier === '(PU)') {
+					if (!tiers.includes('ZU')) {
+						tiers.push('ZU');
+					}
+				} else if (species.tier === 'NFE') {
+					if (!tiers.includes('NFE')) {
+						tiers.push('NFE');
+					}
+				} else if (species.tier === 'LC') {
+					if (!tiers.includes('LC')) {
+						tiers.push('LC');
+					}
+				}
+			}
+
+			if (tiers.length !== 8) {
+				const difference = ['OU', 'UU', 'RU', 'NU', 'PU', 'ZU', 'NFE', 'LC'].filter(x => !tiers.includes(x));
+				let diffSentence = `You are missing: `;
+				for (const tier of difference) {
+					diffSentence += tier + `, `;
+				}
+				diffSentence = diffSentence.substring(0, diffSentence.length - 2);
+				return [
+					`You must have one pokémon from each of the following tiers: `,
+					`OU, UU/UUBL, RU/RUBL, NU/NUBL, PU/PUBL, ZU, NFE, LC`,
+					diffSentence,
+				];
+			}
+		},
+	},
+	{
+		name: "[Gen 8] Wet Noodle SlapFest",
+		desc: `Only pokémon with offensive stats <=75 are allowed.`,
+		threads: [
+			`&bullet; <a href="https://docs.google.com/document/d/1HaVSk65OUmktW8_iUhuXKlazR3z-il-HapUdsTzaXMw">Wet Noodle SlapFest</a>`,
+		],
+
+		mod: 'gen8',
+		ruleset: ['Standard', 'Offensive Stats Clause', 'Moody Clause', 'Recovery Clause', 'Stat Boost Clause', 'Dynamax Clause'],
+		banlist: [
+			'Blissey', 'Chansey', 'Cresselia', 'Mandibuzz', 'Registeel', 'Toxapex', 'Umbreon', 'Uxie', 'Wishiwashi',
+
+			'Eviolite', 'Light Ball',
+
+			'Contrary', 'Huge Power', 'Pure Power',
+
+			'Body Press', 'Night Shade', 'Seismic Toss',
+		],
 	},
 	// Sw/Sh Singles
 	///////////////////////////////////////////////////////////////////
