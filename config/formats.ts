@@ -58,7 +58,7 @@ export const Formats: FormatList = [
 			'Uber', 'Genesect', 'Landorus', 'Naganadel', 'Moody', 'Swagger',
 		],
 		unbanlist: [
-			'Darmanitan-Galar',
+			'Darmanitan-Galar', 'Landorus-Therian',
 		],
 	},
 	{
