@@ -286,7 +286,7 @@ export const Punishments = new class {
 				buf += Punishments.renderEntry(entry, id);
 			}
 			return buf;
-		});
+		}, {throttle: 5000});
 	}
 
 	saveRoomPunishments() {
@@ -302,7 +302,7 @@ export const Punishments = new class {
 				buf += Punishments.renderEntry(entry, id);
 			}
 			return buf;
-		});
+		}, {throttle: 5000});
 	}
 
 	getEntry(entryId: string) {
@@ -742,7 +742,7 @@ export const Punishments = new class {
 	 *********************************************************/
 
 	async ban(
-		user: User, expireTime: number | null, id: ID | PunishType | null, ignoreAlts: boolean, ...reason: string[]
+		user: User | ID, expireTime: number | null, id: ID | PunishType | null, ignoreAlts: boolean, ...reason: string[]
 	) {
 		if (!expireTime) expireTime = Date.now() + GLOBALBAN_DURATION;
 		const punishment = ['BAN', id, expireTime, ...reason] as Punishment;
@@ -896,7 +896,8 @@ export const Punishments = new class {
 		}
 		const waitTime = Math.min(timeLeft, MAX_PUNISHMENT_TIMER_LENGTH);
 		user.punishmentTimer = setTimeout(() => {
-			Punishments.checkPunishmentTime(user, punishment);
+			// make sure we're not referencing a pre-hotpatch Punishments instance
+			global.Punishments.checkPunishmentTime(user, punishment);
 		}, waitTime);
 	}
 	async namelock(
@@ -954,16 +955,15 @@ export const Punishments = new class {
 		const punishment = ['BATTLEBAN', id, expireTime, ...reason] as Punishment;
 
 		// Handle tournaments the user was in before being battle banned
-		for (const games of user.games.keys()) {
-			const game = Rooms.get(games)!.getGame(Tournaments.Tournament);
-			if (!game) continue; // this should never happen
+		for (const room of Rooms.rooms.values()) {
+			const game = room.getGame(Tournaments.Tournament);
+			if (!game || !user.inGame(room)) continue;
 			if (game.isTournamentStarted) {
 				game.disqualifyUser(user.id, null, null);
 			} else if (!game.isTournamentStarted) {
 				game.removeUser(user.id);
 			}
 		}
-
 		return Punishments.roomPunish("battle", user, punishment);
 	}
 	unbattleban(userid: string) {
@@ -1006,8 +1006,7 @@ export const Punishments = new class {
 		const groupchatsCreated = [];
 		const targetUser = Users.get(user);
 		if (targetUser) {
-			for (const roomid of targetUser.inRooms || []) {
-				const targetRoom = Rooms.get(roomid);
+			for (const targetRoom of targetUser.getRooms()) {
 				if (!targetRoom?.roomid.startsWith('groupchat-')) continue;
 				if (targetRoom.game && targetRoom.game.removeBannedUser) {
 					targetRoom.game.removeBannedUser(targetUser);
@@ -1350,8 +1349,8 @@ export const Punishments = new class {
 
 	checkName(user: User, userid: string, registered: boolean) {
 		if (userid.startsWith('guest')) return;
-		for (const roomid of user.inRooms) {
-			Punishments.checkNewNameInRoom(user, userid, roomid);
+		for (const room of user.getRooms()) {
+			Punishments.checkNewNameInRoom(user, userid, room.roomid);
 		}
 		let punishment = Punishments.userids.get(userid);
 		const battleban = Punishments.isBattleBanned(user);
@@ -1598,6 +1597,16 @@ export const Punishments = new class {
 		if (room.parent) return Punishments.isRoomBanned(user, room.parent.roomid);
 	}
 
+	isBlacklistedSharedIp(ip: string) {
+		const num = IPTools.ipToNumber(ip);
+		for (const [blacklisted, reason] of this.sharedIpBlacklist) {
+			const range = IPTools.stringToRange(blacklisted);
+			if (!range) throw new Error("Falsy range in sharedIpBlacklist");
+			if (IPTools.checkPattern([range], num)) return reason;
+		}
+		return false;
+	}
+
 	/**
 	 * Returns an array of all room punishments associated with a user.
 	 *
@@ -1655,7 +1664,7 @@ export const Punishments = new class {
 		// `Punishments.roomIps.get(roomid)` guaranteed to exist above
 		(roomid ? Punishments.roomIps.get(roomid)! : Punishments.ips).forEach((punishment, ip) => {
 			const [punishType, id, expireTime, reason, ...rest] = punishment;
-			if (id.startsWith('#')) return;
+			if (id !== '#rangelock' && id.startsWith('#')) return;
 			let entry = punishmentTable.get(id);
 
 			if (entry) {

@@ -1043,7 +1043,7 @@ export const commands: ChatCommands = {
 		return this.sendReplyBox(set);
 	},
 	ssbhelp: [
-		`/ssb [staff member] - Displays a staff member's Super Staff Bros. Brawl set and custom features.`,
+		`/ssb [staff member] - Displays a staff member's Super Staff Bros. set and custom features.`,
 	],
 
 	stb(target, room, user) {
