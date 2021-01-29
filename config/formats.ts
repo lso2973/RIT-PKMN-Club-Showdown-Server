@@ -94,7 +94,7 @@ export const Formats: FormatList = [
 		},
 	},
 	{
-		name: "[Gen 8] Super Tiger Bros (Alpha)",
+		name: "[Gen 8] Super Tiger Bros (Beta)",
 		desc: "The club's unique take on Super Staff Bros.",
 		threads: [
 			`&bullet; <a href="https://docs.google.com/document/d/16Pqc6xW09PqmdP6lAKJwaGSrjDLUH4Po2x-6jSuS4jk/edit?usp=sharing">Roster</a>`,
