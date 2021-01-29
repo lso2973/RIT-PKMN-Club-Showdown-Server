@@ -5,6 +5,7 @@
 
 import {FS} from "../../lib/fs";
 import {SSBSet, ssbSets} from "../../data/mods/ssb/random-teams";
+import {STBSet, stbSets} from "../../data/mods/stb/random-teams";
 import {Utils} from "../../lib/utils";
 
 const GEN_NAMES: {[k: string]: string} = {
@@ -613,6 +614,240 @@ function SSBSets(target: string) {
 	return buf;
 }
 
+//full duplication of all of the above functions is most certainly unnecessary, but I can trim it down later - Jolyne
+
+function generateSTBSet(set: STBSet, dex: ModdedDex, baseDex: ModdedDex) {
+	if (set.skip) {
+		const baseSet = toID(Object.values(stbSets[set.skip]).join());
+		const skipSet = toID(Object.values(set).join()).slice(0, -toID(set.skip).length);
+		if (baseSet === skipSet) return ``;
+	}
+	let buf = ``;
+	buf += `<details><summary>Set</summary>`;
+	buf += `<ul style="list-style-type:none;"><li>${set.species}${set.gender !== '' ? ` (${set.gender})` : ``} @ ${Array.isArray(set.item) ? set.item.map(x => dex.getItem(x).name).join(' / ') : dex.getItem(set.item).name}</li>`;
+	buf += `<li>Ability: ${Array.isArray(set.ability) ? set.ability.map(x => dex.getAbility(x).name).join(' / ') : dex.getAbility(set.ability).name}</li>`;
+	if (set.shiny) buf += `<li>Shiny: ${typeof set.shiny === 'number' ? `Sometimes` : `Yes`}</li>`;
+	if (set.evs) {
+		const evs: string[] = [];
+		let ev: StatName;
+		for (ev in set.evs) {
+			if (set.evs[ev] === 0) continue;
+			evs.push(`${set.evs[ev]} ${STAT_NAMES[ev]}`);
+		}
+		buf += `<li>EVs: ${evs.join(" / ")}</li>`;
+	}
+	if (set.nature) {
+		buf += `<li>${Array.isArray(set.nature) ? set.nature.join(" / ") : formatNature(set.nature)} Nature</li>`;
+	}
+	if (set.ivs) {
+		const ivs: string[] = [];
+		let iv: StatName;
+		for (iv in set.ivs) {
+			if (set.ivs[iv] === 31) continue;
+			ivs.push(`${set.ivs[iv]} ${STAT_NAMES[iv]}`);
+		}
+		buf += `<li>IVs: ${ivs.join(" / ")}</li>`;
+	}
+	for (const moveid of set.moves) {
+		buf += `<li>- ${Array.isArray(moveid) ? moveid.map(x => dex.getMove(x).name).join(" / ") : dex.getMove(moveid).name}</li>`;
+	}
+	const italicize = !baseDex.getMove(set.signatureMove).exists;
+	buf += `<li>- ${italicize ? `<i>` : ``}${dex.getMove(set.signatureMove).name}${italicize ? `</i>` : ``}</li>`;
+	buf += `</ul>`;
+	buf += `</details>`;
+	return buf;
+}
+
+function generateSTBItemInfo(set: STBSet, dex: ModdedDex, baseDex: ModdedDex) {
+	let buf = ``;
+	if (!Array.isArray(set.item)) {
+		const baseItem = baseDex.getItem(set.item);
+		const sigItem = dex.getItem(set.item);
+		if (!baseItem.exists || (baseItem.desc || baseItem.shortDesc) !== (sigItem.desc || sigItem.shortDesc)) {
+			buf += `<hr />`;
+			buf += Chat.getDataItemHTML(sigItem);
+			const details: {[k: string]: string} = {
+				Gen: String(sigItem.gen),
+			};
+
+			if (dex.gen >= 4) {
+				if (sigItem.fling) {
+					details["Fling Base Power"] = String(sigItem.fling.basePower);
+					if (sigItem.fling.status) details["Fling Effect"] = sigItem.fling.status;
+					if (sigItem.fling.volatileStatus) details["Fling Effect"] = sigItem.fling.volatileStatus;
+					if (sigItem.isBerry) details["Fling Effect"] = "Activates the Berry's effect on the target.";
+					if (sigItem.id === 'whiteherb') details["Fling Effect"] = "Restores the target's negative stat stages to 0.";
+					if (sigItem.id === 'mentalherb') {
+						const flingEffect = "Removes the effects of Attract, Disable, Encore, Heal Block, Taunt, and Torment from the target.";
+						details["Fling Effect"] = flingEffect;
+					}
+				} else {
+					details["Fling"] = "This item cannot be used with Fling.";
+				}
+			}
+			if (sigItem.naturalGift && dex.gen >= 3) {
+				details["Natural Gift Type"] = sigItem.naturalGift.type;
+				details["Natural Gift Base Power"] = String(sigItem.naturalGift.basePower);
+			}
+			if (sigItem.isNonstandard && sigItem.isNonstandard !== "Custom") {
+				details[`Unobtainable in Gen ${dex.gen}`] = "";
+			}
+			buf += `<font size="1">${Object.keys(details).map(detail => {
+				if (details[detail] === '') return detail;
+				return `<font color="#686868">${detail}:</font> ${details[detail]}`;
+			}).join("&nbsp;|&ThickSpace;")}</font>`;
+		}
+	}
+	return buf;
+}
+
+function generateSTBAbilityInfo(set: STBSet, dex: ModdedDex, baseDex: ModdedDex) {
+	let buf = ``;
+	if (!Array.isArray(set.ability) && !baseDex.getAbility(set.ability).exists) {
+		const sigAbil = Dex.deepClone(dex.getAbility(set.ability));
+		if (!sigAbil.desc && !sigAbil.shortDesc) {
+			sigAbil.desc = `This ability doesn't have a description. Try contacting the STB dev team.`;
+		}
+		buf += `<hr />`;
+		buf += Chat.getDataAbilityHTML(sigAbil);
+		const details: {[k: string]: string} = {
+			Gen: String(sigAbil.gen) || 'CAP',
+		};
+		buf += `<font size="1">${Object.keys(details).map(detail => {
+			if (details[detail] === '') return detail;
+			return `<font color="#686868">${detail}:</font> ${details[detail]}`;
+		}).join("&nbsp;|&ThickSpace;")}</font>`;
+		if (sigAbil.desc && sigAbil.shortDesc && sigAbil.desc !== sigAbil.shortDesc) {
+			buf += `<details><summary><strong>In-Depth Description</strong></summary>${sigAbil.desc}</details>`;
+		}
+	}
+	return buf;
+}
+
+function generateSTBPokemonInfo(species: string, dex: ModdedDex, baseDex: ModdedDex) {
+	let buf = ``;
+	const origSpecies = baseDex.getSpecies(species);
+	const newSpecies = dex.getSpecies(species);
+	if (
+		newSpecies.types.join('/') !== origSpecies.types.join('/') ||
+		Object.values(newSpecies.abilities).join('/') !== Object.values(origSpecies.abilities).join('/') ||
+		Object.values(newSpecies.baseStats).join('/') !== Object.values(origSpecies.baseStats).join('/')
+	) {
+		buf += `<hr />`;
+		buf += Chat.getDataPokemonHTML(newSpecies, dex.gen, 'STB');
+		let weighthit = 20;
+		if (newSpecies.weighthg >= 2000) {
+			weighthit = 120;
+		} else if (newSpecies.weighthg >= 1000) {
+			weighthit = 100;
+		} else if (newSpecies.weighthg >= 500) {
+			weighthit = 80;
+		} else if (newSpecies.weighthg >= 250) {
+			weighthit = 60;
+		} else if (newSpecies.weighthg >= 100) {
+			weighthit = 40;
+		}
+		const details: {[k: string]: string} = {
+			"Dex#": String(newSpecies.num),
+			Gen: String(newSpecies.gen) || 'CAP',
+			Height: `${newSpecies.heightm} m`,
+		};
+		details["Weight"] = `${newSpecies.weighthg / 10} kg <em>(${weighthit} BP)</em>`;
+		if (newSpecies.color && dex.gen >= 5) details["Dex Colour"] = newSpecies.color;
+		if (newSpecies.eggGroups && dex.gen >= 2) details["Egg Group(s)"] = newSpecies.eggGroups.join(", ");
+		const evos: string[] = [];
+		for (const evoName of newSpecies.evos) {
+			const evo = dex.getSpecies(evoName);
+			if (evo.gen <= dex.gen) {
+				const condition = evo.evoCondition ? ` ${evo.evoCondition}` : ``;
+				switch (evo.evoType) {
+				case 'levelExtra':
+					evos.push(`${evo.name} (level-up${condition})`);
+					break;
+				case 'levelFriendship':
+					evos.push(`${evo.name} (level-up with high Friendship${condition})`);
+					break;
+				case 'levelHold':
+					evos.push(`${evo.name} (level-up holding ${evo.evoItem}${condition})`);
+					break;
+				case 'useItem':
+					evos.push(`${evo.name} (${evo.evoItem})`);
+					break;
+				case 'levelMove':
+					evos.push(`${evo.name} (level-up with ${evo.evoMove}${condition})`);
+					break;
+				case 'other':
+					evos.push(`${evo.name} (${evo.evoCondition})`);
+					break;
+				case 'trade':
+					evos.push(`${evo.name} (trade${evo.evoItem ? ` holding ${evo.evoItem}` : condition})`);
+					break;
+				default:
+					evos.push(`${evo.name} (${evo.evoLevel}${condition})`);
+				}
+			}
+		}
+		if (!evos.length) {
+			details[`<font color="#686868">Does Not Evolve</font>`] = "";
+		} else {
+			details["Evolution"] = evos.join(", ");
+		}
+		buf += `<font size="1">${Object.keys(details).map(detail => {
+			if (details[detail] === '') return detail;
+			return `<font color="#686868">${detail}:</font> ${details[detail]}`;
+		}).join("&nbsp;|&ThickSpace;")}</font>`;
+	}
+	return buf;
+}
+
+function STBSets(target: string) {
+	const baseDex = Dex;
+	const dex = Dex.forFormat('gen8supertigerbros(alpha)');
+	if (!Object.keys(stbSets).map(toID).includes(toID(target))) {
+		return {e: `Error: ${target.trim()} doesn't have a [Gen 8] Super Tiger Bros (Beta) set.`};
+	}
+	let displayName = '';
+	const names = [];
+	for (const member in stbSets) {
+		if (toID(member).startsWith(toID(target))) names.push(member);
+		if (toID(member) === toID(target)) displayName = member;
+	}
+	let buf = '';
+	for (const name of names) {
+		if (buf) buf += `<hr>`;
+		const set = stbSets[name];
+		const mutatedSpecies = dex.getSpecies(set.species);
+		if (!set.skip) {
+			buf += Utils.html`<h1><psicon pokemon="${mutatedSpecies.id}">${displayName === 'yuki' ? name : displayName}</h1>`;
+		} else {
+			buf += `<details><summary><psicon pokemon="${set.species}"><strong>${name.split('-').slice(1).join('-') + ' forme'}</strong></summary>`;
+		}
+		buf += generateSTBSet(set, dex, baseDex);
+		const item = dex.getItem(set.item as string);
+		if (!set.skip || set.signatureMove !== stbSets[set.skip].signatureMove) {
+			const sigMove = baseDex.getMove(set.signatureMove).exists && !Array.isArray(set.item) &&
+				typeof item.zMove === 'string' ?
+				dex.getMove(item.zMove) : dex.getMove(set.signatureMove);
+			buf += generateSSBMoveInfo(sigMove, dex);
+			if (sigMove.id === 'blackbird') buf += generateSSBMoveInfo(dex.getMove('gaelstrom'), dex);
+		}
+		buf += generateSTBItemInfo(set, dex, baseDex);
+		buf += generateSTBAbilityInfo(set, dex, baseDex);
+		buf += generateSSBInnateInfo(name, dex, baseDex);
+		buf += generateSTBPokemonInfo(set.species, dex, baseDex);
+		if (!Array.isArray(set.item) && item.megaStone) {
+			buf += generateSTBPokemonInfo(item.megaStone, dex, baseDex);
+		// Psynergy, Struchni, and Raj.shoot have itemless Mega Evolutions
+		} else if (['Aggron', 'Rayquaza'].includes(set.species)) {
+			buf += generateSTBPokemonInfo(`${set.species}-Mega`, dex, baseDex);
+		} else if (set.species === 'Charizard') {
+			buf += generateSTBPokemonInfo('Charizard-Mega-X', dex, baseDex);
+		}
+		if (set.skip) buf += `</details>`;
+	}
+	return buf;
+}
+
 export const commands: ChatCommands = {
 	randbats: 'randombattles',
 	randombattles(target, room, user) {
@@ -809,5 +1044,18 @@ export const commands: ChatCommands = {
 	},
 	ssbhelp: [
 		`/ssb [staff member] - Displays a staff member's Super Staff Bros. set and custom features.`,
+	],
+
+	stb(target, room, user) {
+		if (!this.runBroadcast()) return;
+		if (!target) return this.parse(`/help stb`);
+		const set = STBSets(target);
+		if (typeof set !== 'string') {
+			throw new Chat.ErrorMessage(set.e);
+		}
+		return this.sendReplyBox(set);
+	},
+	stbhelp: [
+		`/stb [club member] - Displays a club member's Super Tiger Bros. set and custom features.`,
 	],
 };
