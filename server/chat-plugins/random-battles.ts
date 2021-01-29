@@ -614,7 +614,7 @@ function SSBSets(target: string) {
 	return buf;
 }
 
-//full duplication of all of the above functions is most certainly unnecessary, but I can trim it down later - Jolyne
+// full duplication of all of the above functions is most certainly unnecessary, but I can trim it down later - Jolyne
 
 function generateSTBSet(set: STBSet, dex: ModdedDex, baseDex: ModdedDex) {
 	if (set.skip) {
