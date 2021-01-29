@@ -1313,6 +1313,18 @@ export class CommandContext extends MessageContext {
 		}
 		return game;
 	}
+	requireMinorActivity<T extends MinorActivity>(constructor: new (...args: any[]) => T) {
+		const room = this.requireRoom();
+		if (!room.minorActivity) {
+			throw new Chat.ErrorMessage(`This command requires a ${constructor.name} (this room has no minor activity).`);
+		}
+		const game = room.getMinorActivity(constructor);
+		// must be a different game
+		if (!game) {
+			throw new Chat.ErrorMessage(`This command requires a ${constructor.name} (this minor activity is a(n) ${room.minorActivity.name}).`);
+		}
+		return game;
+	}
 	commandDoesNotExist(): never {
 		if (this.cmdToken === '!') {
 			throw new Chat.ErrorMessage(`The command "${this.cmdToken}${this.fullCmd}" does not exist.`);
@@ -1320,6 +1332,11 @@ export class CommandContext extends MessageContext {
 		throw new Chat.ErrorMessage(
 			`The command "${this.cmdToken}${this.fullCmd}" does not exist. To send a message starting with "${this.cmdToken}${this.fullCmd}", type "${this.cmdToken}${this.cmdToken}${this.fullCmd}".`
 		);
+	}
+	refreshPage(pageid: string) {
+		if (this.connection.openPages?.has(pageid)) {
+			this.parse(`/join view-${pageid}`);
+		}
 	}
 }
 
@@ -1612,8 +1629,21 @@ export const Chat = new class {
 
 		const initialRoomlogLength = room?.log.getLineCount();
 		const context = new CommandContext({message, room, user, connection});
+		const start = Date.now();
 		const result = context.parse();
-
+		if (typeof result?.then === 'function') {
+			void result.then(() => {
+				const timeUsed = Date.now() - start;
+				if (timeUsed > 3000) {
+					this.logSlowMessage(timeUsed, context);
+				}
+			});
+		} else {
+			const timeUsed = Date.now() - start;
+			if (timeUsed > 1000) {
+				this.logSlowMessage(timeUsed, context);
+			}
+		}
 		if (room && room.log.getLineCount() !== initialRoomlogLength) {
 			room.messagesSent++;
 			for (const [handler, numMessages] of room.nthMessageHandlers) {
@@ -1622,6 +1652,19 @@ export const Chat = new class {
 		}
 
 		return result;
+	}
+	logSlowMessage(timeUsed: number, context: CommandContext) {
+		const logRoom = Rooms.get('slowlog');
+		const logMessage = (
+			`[slow] ${timeUsed}ms - ${context.user.name} (${context.connection.ip}): ` +
+			`<${context.room ? context.room.roomid : context.pmTarget ? `PM:${context.pmTarget?.name}` : 'CMD'}> ` +
+			`${context.message.replace(/\n/ig, ' ')}`
+		);
+		if (logRoom) {
+			logRoom.add(`|c|&|/log ` + logMessage).update();
+		} else {
+			Monitor.warn(logMessage);
+		}
 	}
 	sendPM(message: string, user: User, pmTarget: User, onlyRecipient: User | null = null) {
 		const buf = `|pm|${user.getIdentity()}|${pmTarget.getIdentity()}|${message}`;
