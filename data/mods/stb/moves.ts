@@ -287,7 +287,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.add('-anim', source, 'Freezing Glare', target);
 		},
 		onTryHit(target, source, move) {
-			if (move.volatileStatus && (target.volatiles['curse'] || target.volatiles['pharaohscurse'] || targer.volatiles['haunting'])) {
+			if (move.volatileStatus && (target.volatiles['curse'] || target.volatiles['pharaohscurse'] || target.volatiles['haunting'])) {
 				return false;
 			}
 		},
