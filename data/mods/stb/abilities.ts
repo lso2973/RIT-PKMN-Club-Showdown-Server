@@ -262,7 +262,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	stormsurfing: {
 		desc: "On switch-in, this Pokémon summons Electric Terrain, and Heavy Rain begins until this Ability is no longer active in battle. This Pokémon's speed is doubled while on Electric Terrain.",
 		shortDesc: "primordial sea + electric surge + surge surfer",
-		name: "Surge Surfing",
+		name: "Storm Surfing",
 		onStart(source) {
 			this.field.setWeather('primordialsea');
 			this.field.setTerrain('electricterrain');
