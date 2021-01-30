@@ -1153,39 +1153,6 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			}
 		},
 	},
-	// Modified OHKO moves for QuantumTangler's Buster Aura
-	fissure: {
-		inherit: true,
-		onModifyPriority(priority, source, target, move) {
-			if (source.side.sideConditions['busteraura']) {
-				return priority + 1;
-			}
-		},
-	},
-	guillotine: {
-		inherit: true,
-		onModifyPriority(priority, source, target, move) {
-			if (source.side.sideConditions['busteraura']) {
-				return priority + 1;
-			}
-		},
-	},
-	horndrill: {
-		inherit: true,
-		onModifyPriority(priority, source, target, move) {
-			if (source.side.sideConditions['busteraura']) {
-				return priority + 1;
-			}
-		},
-	},
-	sheercold: {
-		inherit: true,
-		onModifyPriority(priority, source, target, move) {
-			if (source.side.sideConditions['busteraura']) {
-				return priority + 1;
-			}
-		},
-	},
 	// used for RibbonNymph's move
 	ribbonterrain: {
 		accuracy: true,
