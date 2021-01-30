@@ -1,15 +1,11 @@
-import {SSBSet, ssbSets} from "./random-teams";
-import {getName} from './conditions';
-
-// Used in many abilities, placed here to reduce the number of updates needed and to reduce the chance of errors
-const STRONG_WEATHERS = ['desolateland', 'primordialsea', 'deltastream'];
+import {STBSet} from "./random-teams";
 
 /**
  * Assigns a new set to a Pokémon
  * @param pokemon the Pokemon to assign the set to
  * @param newSet the SSBSet to assign
  */
-export function changeSet(context: Battle, pokemon: Pokemon, newSet: SSBSet, changeAbility = false) {
+export function changeSet(context: Battle, pokemon: Pokemon, newSet: STBSet, changeAbility = false) {
 	const evs: StatsTable = {
 		hp: newSet.evs?.hp || 0,
 		atk: newSet.evs?.atk || 0,
@@ -85,7 +81,7 @@ export function changeMoves(context: Battle, pokemon: Pokemon, newMoves: (string
 			disabledSource: '',
 			used: false,
 		};
-		//gives free pp for moves gained through QuantumTangler's Buster Aura
+		// gives free pp for moves gained through QuantumTangler's Buster Aura
 		if (!moveSlot.pp) moveSlot.pp = 5;
 		result.push(moveSlot);
 		slot++;
@@ -124,9 +120,9 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onResidualSubOrder: 1,
 		onResidual(pokemon, target) {
 			if (pokemon.activeTurns) {
-				for (const target of pokemon.side.foe.active) {
+				for (const foe of pokemon.side.foe.active) {
 					this.add('-ability', pokemon, 'Friend Shaped', 'boost');
-					this.boost({atk: -1, spa: -1}, target, pokemon, null, true);
+					this.boost({atk: -1, spa: -1}, foe, pokemon, null, true);
 				}
 			}
 		},
@@ -155,7 +151,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		isNonstandard: "Custom",
 		gen: 8,
-		Rating: 4,
+		rating: 4,
 	},
 	// broil
 	magicalcoat: {
@@ -179,7 +175,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		isNonstandard: "Custom",
 		gen: 8,
-		Rating: 4,
+		rating: 4,
 	},
 	// Creeperman129Poke
 	spiritualabsorb: {
@@ -297,29 +293,29 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		name: "Beaster Boost",
 		onSourceAfterFaint(length, target, source, effect) {
 			if (effect && effect.effectType === 'Move') {
-				this.boost({atk: length, def: length, spe: length*-1}, source);
+				this.boost({atk: length, def: length, spe: length * -1}, source);
 			}
 		},
 		isNonstandard: "Custom",
 		rating: 4,
 	},
 	// njjoltiks
-	fromtheashes:{
+	fromtheashes: {
 		desc: "If this Pokémon were to faint, fully heal it and then remove this ability permanently.",
 		shortDesc: "Fully heal once after fainting then lose ability",
 		name: "From the Ashes",
 		onDamagePriority: -100,
-		onBeforeMove(source, target, move){
-			if ((move['selfdestruct'] === "always" || move['selfdestruct'] === "onhit") && !this.effectData.ashes){
+		onBeforeMove(source, target, move) {
+			if ((move['selfdestruct'] === "always" || move['selfdestruct'] === "onhit") && !this.effectData.ashes) {
 				this.add('-ability', source, 'From the Ashes');
 				this.add('-message', `${source.name}'s rejuvenating power protects and heals itself`);
 				this.effectData.ashes = true;
-				move['selfdestruct'] = null;
+				move['selfdestruct'] = undefined;
 				source.heal(source.maxhp);
 			}
 		},
-		onDamage(damage, source, target, effect){
-			if (damage >= source.hp && effect && !this.effectData.ashes){
+		onDamage(damage, source, target, effect) {
+			if (damage >= source.hp && effect && !this.effectData.ashes) {
 				this.add('-ability', source, 'From the Ashes');
 				this.add('-message', `${source.name}'s rejuvenating power protects and heals itself`);
 				this.effectData.ashes = true;
@@ -332,21 +328,21 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		rating: 5,
 	},
 	// Peekz1025
-	forestswrath:{
+	forestswrath: {
 		desc: "Increases user’s critical hit ratio on entry and the user’s attack is raised by +1 stage when the user successfully lands a critical hit.",
 		shortDesc: "Focus Energy on entry, +1 Atk on crit",
 		name: "Forest's Wrath",
-		onStart(pokemon){
+		onStart(pokemon) {
 			pokemon.addVolatile('focusenergy');
 		},
-		onAfterMoveSecondarySelf(target, source, move){
-			if(source.getMoveHitData(move).crit){
+		onAfterMoveSecondarySelf(target, source, move) {
+			if (source.getMoveHitData(move).crit) {
 				this.boost({atk: 1});
 			}
 		},
 		isNonstandard: "Custom",
 		gen: 8,
-		rating: 4.5
+		rating: 4.5,
 	},
 	// Planetaeus
 	burningspirit: {
@@ -360,14 +356,15 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		isNonstandard: "Custom",
 		gen: 8,
-		rating: 3
+		rating: 3,
 	},
 	// PseudoPhysics
 	gonnagetcha: {
 		desc: "Prevents adjacent opposing Pokémon from choosing to switch out unless they are immune to trapping or also have this Ability or Shadow Tag. Also uses Magic Coat on entry.",
 		shortDesc: "Shadow Tag + Magic Coat on entry",
 		onFoeTrapPokemon(pokemon) {
-			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha')) && this.isAdjacent(pokemon, this.effectData.target)) {
+			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha')) &&
+					this.isAdjacent(pokemon, this.effectData.target)) {
 				pokemon.tryTrap(true);
 			}
 		},
@@ -408,7 +405,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 				newMoves.push(moveid);
 			}
 			// picks an ohko move based on the pokemon's type
-			let newOHKO: string = 'guillotine';
+			let newOHKO = 'guillotine';
 			if (source.hasType('Psychic')) newOHKO = 'sheercold';
 			if (source.hasType('Ground')) newOHKO = 'fissure';
 			if (source.hasType('Ice')) newOHKO = 'sheercold';
@@ -477,29 +474,29 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		gen: 8,
 		rating: 4,
 	},
-	// Steeevo34 
+	// Steeevo34
 	awizardssecret: {
 		desc: "When this Pokémon enters Trick Room or Trick Room starts with it on the field, it swaps its attack and defense stats until it is switched out.",
 		shortDesc: "Power Trick upon hitting TR",
 		name: "A Wizard's Secret",
 		// Yes all 4 are necessary, look into making this less cursed
-		onStart (pokemon) {
-			if (this.field.pseudoWeather.trickroom){
+		onStart(pokemon) {
+			if (this.field.pseudoWeather.trickroom) {
 				pokemon.addVolatile('powertrick');
 			}
 		},
-		onAfterMoveSecondarySelf(source, target, move){
-			if (this.field.pseudoWeather.trickroom && !source.volatiles.powertrick){
+		onAfterMoveSecondarySelf(source, target, move) {
+			if (this.field.pseudoWeather.trickroom && !source.volatiles.powertrick) {
 				source.addVolatile('powertrick');
 			}
 		},
-		onBeforeMove(source, target, move){
-			if (this.field.pseudoWeather.trickroom && !source.volatiles.powertrick){
+		onBeforeMove(source, target, move) {
+			if (this.field.pseudoWeather.trickroom && !source.volatiles.powertrick) {
 				source.addVolatile('powertrick');
 			}
 		},
 		onResidual(source) {
-			if (this.field.pseudoWeather.trickroom && !source.volatiles.powertrick){
+			if (this.field.pseudoWeather.trickroom && !source.volatiles.powertrick) {
 				source.addVolatile('powertrick');
 			}
 		},
@@ -540,7 +537,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		isNonstandard: "Custom",
 		gen: 8,
-		rating: 5
+		rating: 5,
 	},
 	// touketsu_ningen
 	feybreaker: {
@@ -550,9 +547,6 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			this.add('-ability', pokemon, 'Fey Breaker');
 		},
 		onModifyMove(move) {
-			move.ignoreAbility = true;
-		},
-				onModifyMove(move) {
 			if (!move.ignoreImmunity) move.ignoreImmunity = {};
 			if (move.ignoreImmunity !== true) {
 				move.ignoreImmunity['Dragon'] = true;
@@ -568,7 +562,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		desc: "On switch-in, this Pokémon randomly summons one of Rain, Sun, Sand, or Hail, and its secondary typing changes to Water, Fire, Rock, or Ice, respectively.",
 		shortDesc: "Sets random weather on entry, changes type to match",
 		name: "Outside is Frightful",
-		onStart(pokemon, source) {
+		onStart(pokemon) {
 			const r = this.random(4);
 			switch (r) {
 			case 0:
@@ -614,7 +608,8 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		inherit: true,
 		desc: "Prevents adjacent opposing Pokémon from choosing to switch out unless they are immune to trapping or also have this Ability or gonna getcha.",
 		onFoeTrapPokemon(pokemon) {
-			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha')) && this.isAdjacent(pokemon, this.effectData.target)) {
+			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha')) &&
+					this.isAdjacent(pokemon, this.effectData.target)) {
 				pokemon.tryTrap(true);
 			}
 		},
@@ -668,7 +663,8 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	iceface: {
 		inherit: true,
 		onStart(pokemon) {
-			if ((this.field.isWeather('hail') || this.field.isWeather('arcticgales')) && pokemon.species.id === 'eiscuenoice' && !pokemon.transformed) {
+			if ((this.field.isWeather('hail') || this.field.isWeather('arcticgales')) &&
+					pokemon.species.id === 'eiscuenoice' && !pokemon.transformed) {
 				this.add('-activate', pokemon, 'ability: Ice Face');
 				this.effectData.busted = false;
 				pokemon.formeChange('Eiscue', this.effect, true);
@@ -677,7 +673,8 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onAnyWeatherStart() {
 			const pokemon = this.effectData.target;
 			if (!pokemon.hp) return;
-			if ((this.field.isWeather('hail') || this.field.isWeather('arcticgales')) && pokemon.species.id === 'eiscuenoice' && !pokemon.transformed) {
+			if ((this.field.isWeather('hail') || this.field.isWeather('arcticgales')) &&
+					pokemon.species.id === 'eiscuenoice' && !pokemon.transformed) {
 				this.add('-activate', pokemon, 'ability: Ice Face');
 				this.effectData.busted = false;
 				pokemon.formeChange('Eiscue', this.effect, true);
@@ -769,13 +766,13 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 				if (pokemon.volatiles[disguisedAs]) {
 					pokemon.removeVolatile(disguisedAs);
 				}
-				if (!pokemon.volatiles[this.toID(pokemon.name) + 'break'] && !pokemon.volatiles[this.toID(pokemon.name)]) { 
+				if (!pokemon.volatiles[this.toID(pokemon.name) + 'break'] && !pokemon.volatiles[this.toID(pokemon.name)]) {
 					const status = this.dex.getEffect(this.toID(pokemon.name) + 'break'); // first try adding the status with break
 					if (status?.exists) {
 						pokemon.addVolatile(this.toID(pokemon.name) + 'break', pokemon);
 					} else { // Then just add the basic status
-						const status = this.dex.getEffect(this.toID(pokemon.name));
-						if (status?.exists) {
+						const statusEffect = this.dex.getEffect(this.toID(pokemon.name));
+						if (statusEffect?.exists) {
 							pokemon.addVolatile(this.toID(pokemon.name), pokemon);
 						}
 					}

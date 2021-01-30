@@ -121,14 +121,13 @@ export abstract class Auth extends Map<ID, GroupSymbol | ''> {
 
 		const symbol = auth.getEffectiveSymbol(user);
 
-		let targetSymbol = target as GroupSymbol | string;
-		const targetID = toID(target);
-		// if it's there after a toID, probably not a symbol
-		if (targetID) {
-			targetSymbol = auth.get(targetID);
-		}
-		if (typeof target === 'object' && target !== null) {
-			targetSymbol = (target as User).tempGroup;
+		let targetSymbol: EffectiveGroupSymbol | null;
+		if (!target) {
+			targetSymbol = null;
+		} else if (typeof target === 'string' && !toID(target)) { // empty ID -> target is a group symbol
+			targetSymbol = target as EffectiveGroupSymbol;
+		} else {
+			targetSymbol = auth.get(target as User | ID);
 		}
 		if (!targetSymbol || ['whitelist', 'trusted', 'autoconfirmed'].includes(targetSymbol)) {
 			targetSymbol = Auth.defaultSymbol();

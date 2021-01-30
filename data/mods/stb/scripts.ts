@@ -391,12 +391,12 @@ export const Scripts: ModdedBattleScriptsData = {
 			if (move.ohko) { // bypasses accuracy modifiers
 				if (!target.isSemiInvulnerable()) {
 					accuracy = 30;
-					if (move.ohko === 'Ice' && this.gen >= 7 && !pokemon.hasType('Ice') && !pokemon.ability === 'metabuster') {
+					if (move.ohko === 'Ice' && this.gen >= 7 && !pokemon.hasType('Ice') && !pokemon.hasAbility('metabuster')) {
 						accuracy = 20;
 					}
 					if (!target.volatiles['dynamax'] && pokemon.level >= target.level &&
-						(move.ohko === true || !target.hasType(move.ohko))) {
-						accuracy += (pokemon.level - (pokemon.side.sideConditions['busteraura'] ? 3*target.level/4 : target.level));
+						  (move.ohko === true || !target.hasType(move.ohko))) {
+						accuracy += (pokemon.level - (pokemon.side.sideConditions['busteraura'] ? 3 * target.level / 4 : target.level));
 					} else {
 						this.add('-immune', target, '[ohko]');
 						hitResults[i] = false;
@@ -436,7 +436,7 @@ export const Scripts: ModdedBattleScriptsData = {
 							boost[randomStat] = 1;
 							this.boost(boost, pokemon);
 						} else {
-							return false;
+							return [false];
 						}
 
 						// cooltrainer type addition

@@ -50,6 +50,7 @@ import {Auth, GlobalAuth, PLAYER_SYMBOL, HOST_SYMBOL, RoomPermission, GlobalPerm
 const MINUTES = 60 * 1000;
 const IDLE_TIMER = 60 * MINUTES;
 const STAFF_IDLE_TIMER = 30 * MINUTES;
+const CONNECTION_EXPIRY_TIME = 24 * 60 * MINUTES;
 
 import type {StreamWorker} from '../lib/process-manager';
 
@@ -667,12 +668,12 @@ export class User extends Chat.MessageContext {
 	 */
 	async rename(name: string, token: string, newlyRegistered: boolean, connection: Connection) {
 		let userid = toID(name);
-		if (userid !== this.id) {
+		if (userid !== this.id && this.named) {
 			for (const game of this.getGames()) {
-				if (game.ended) continue;
-				if (game.allowRenames || !this.named) continue;
-				this.popup(`You can't change your name right now because you're in ${game.title}, which doesn't allow renaming.`);
-				return false;
+				if (!game.allowRenames) {
+					this.popup(`You can't change your name right now because you're in ${game.title}, which doesn't allow renaming.`);
+					return false;
+				}
 			}
 		}
 
@@ -1027,8 +1028,8 @@ export class User extends Chat.MessageContext {
 	getGames() {
 		const games: RoomGame[] = [];
 		for (const curRoom of Rooms.rooms.values()) {
-			if (this.inGame(curRoom)) {
-				games.push(curRoom.game!);
+			if (curRoom.game && this.id in curRoom.game.playerTable && !curRoom.game.ended) {
+				games.push(curRoom.game);
 			}
 		}
 		return games;
@@ -1342,7 +1343,7 @@ export class User extends Chat.MessageContext {
 		// cancel tour challenges
 		// no need for a popup because users can't change their name while in a tournament anyway
 		for (const game of this.getGames()) {
-			(game as any)?.cancelChallenge?.(this);
+			(game as any).cancelChallenge?.(this);
 		}
 	}
 	updateReady(connection: Connection | null = null) {
@@ -1492,8 +1493,7 @@ export class User extends Chat.MessageContext {
 	destroy() {
 		// deallocate user
 		for (const game of this.getGames()) {
-			if (!game || game.ended) continue;
-			if (game.forfeit) game.forfeit(this);
+			game.forfeit?.(this);
 		}
 		this.clearChatQueue();
 		this.destroyPunishmentTimer();
@@ -1530,6 +1530,13 @@ function pruneInactive(threshold: number) {
 		}
 		if (!user.connected && (now - user.lastDisconnected) > threshold) {
 			user.destroy();
+		}
+		if (!user.can('addhtml')) {
+			for (const connection of user.connections) {
+				if (now - connection.lastActiveTime > CONNECTION_EXPIRY_TIME) {
+					connection.destroy();
+				}
+			}
 		}
 	}
 }
@@ -1662,13 +1669,8 @@ function socketReceive(worker: StreamWorker, workerid: number, socketid: string,
 		void FS('logs/emergency.log').append(`[${user} (${connection.ip})] ${roomId}|${message}\n`);
 	}
 
-	const startTime = Date.now();
 	for (const line of lines) {
 		if (user.chat(line, room, connection) === false) break;
-	}
-	const deltaTime = Date.now() - startTime;
-	if (deltaTime > 1000) {
-		Monitor.warn(`[slow] ${deltaTime}ms - ${user.name} <${connection.ip}>: ${roomId}|${message}`);
 	}
 }
 

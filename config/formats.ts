@@ -95,7 +95,7 @@ export const Formats: FormatList = [
 	},
 	{
 		name: "[Gen 8] Super Tiger Bros (Beta)",
-		desc: "The club's unique take on Super Staff Bros.",
+		desc: "The club's unique take on Super Staff Bros. Developed by Brian (Banded Bonks) and Jolyne (TacocaT_2595).",
 		threads: [
 			`&bullet; <a href="https://docs.google.com/document/d/16Pqc6xW09PqmdP6lAKJwaGSrjDLUH4Po2x-6jSuS4jk/edit?usp=sharing">Roster</a>`,
 		],
@@ -103,11 +103,10 @@ export const Formats: FormatList = [
 		mod: 'stb',
 		team: 'randomStaffBros',
 		ruleset: ['Dynamax Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
-		onBegin() { // TODO look into making an event to put this right after turn|1
-			// https://discordapp.com/channels/630837856075513856/630845310033330206/716126469528485909
-			// Requires client change
+		onBegin() {
 			this.add(`raw|<div class='broadcast-green'><b>Wondering what all these custom moves, abilities, and items do?<br />Check out the <a href="https://docs.google.com/document/d/16Pqc6xW09PqmdP6lAKJwaGSrjDLUH4Po2x-6jSuS4jk/edit?usp=sharing" target="_blank">Super Tiger Bros Guide</a> or use the /stb command!</b></div>`);
-
+			this.add('message', 'A big thanks to Brian (Banded Bonks) and Jolyne (TacocaT_2595) for developing this format!');
+			this.add('message', '');
 			this.add('message', [
 				'THE BATTLE FOR SURVIVAL BEGINS!', 'WHO WILL SURVIVE?', 'GET READY TO KEEP UP!', 'GET READY!', 'DARE TO BELIEVE YOU CAN SURVIVE!', 'THERE CAN BE ONLY ONE WINNER!', 'GET READY FOR THE FIGHT OF YOUR LIFE!', 'WHO WILL PREVAIL?', 'ONLY ONE TEAM WILL BE LEFT STANDING!', 'BATTLE WITHOUT LIMITS!',
 			][this.random(10)]);
