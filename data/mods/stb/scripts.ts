@@ -394,7 +394,7 @@ export const Scripts: ModdedBattleScriptsData = {
 					if (move.ohko === 'Ice' && this.gen >= 7 && !pokemon.hasType('Ice') && !pokemon.ability === 'metabuster') {
 						accuracy = 20;
 					}
-					if (!target.volatiles['dynamax'] && pokemon.level >= (pokemon.side.sideConditions['busteraura'] ? 3*target.level/4 : target.level) &&
+					if (!target.volatiles['dynamax'] && pokemon.level >= target.level &&
 						(move.ohko === true || !target.hasType(move.ohko))) {
 						accuracy += (pokemon.level - (pokemon.side.sideConditions['busteraura'] ? 3*target.level/4 : target.level));
 					} else {
