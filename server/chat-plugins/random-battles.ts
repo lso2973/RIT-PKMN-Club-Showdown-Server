@@ -802,7 +802,7 @@ function generateSTBPokemonInfo(species: string, dex: ModdedDex, baseDex: Modded
 
 function STBSets(target: string) {
 	const baseDex = Dex;
-	const dex = Dex.forFormat('gen8supertigerbros(alpha)');
+	const dex = Dex.forFormat('gen8supertigerbros(beta)');
 	if (!Object.keys(stbSets).map(toID).includes(toID(target))) {
 		return {e: `Error: ${target.trim()} doesn't have a [Gen 8] Super Tiger Bros (Beta) set.`};
 	}
