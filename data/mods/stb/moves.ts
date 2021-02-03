@@ -287,7 +287,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.add('-anim', source, 'Freezing Glare', target);
 		},
 		onTryHit(target, source, move) {
-			if (move.volatileStatus && (target.volatiles['curse'] || target.volatiles['pharaohscurse'] || targer.volatiles['haunting'])) {
+			if (move.volatileStatus && (target.volatiles['curse'] || target.volatiles['pharaohscurse'] || targer.volatiles['hauntingcurse'])) {
 				return false;
 			}
 		},
@@ -307,7 +307,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		},
 		pp: 15,
 		priority: 0,
-		flags: {authentic: 1},
+		flags: {authentic: 1, protect: 1},
 		isNonstandard: "Custom",
 		target: 'randomNormal',
 		type: "Ghost",
@@ -322,19 +322,19 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		desc: "Gives the target the curse effect which causes the target to lose 1/4 of its maximum HP, rounded down, at the end of each turn while it is active. If the target uses Baton Pass, the replacement will continue to be affected. Fails if there is no target or if the target is already affected.",
 		shortDesc: "Afflicts the target with curse",
 		name: "Haunting",
-		secondary: {
-			chance: 100,
-			volatileStatus: 'haunting',
-		},
 		onTryMove() {
 			this.attrLastMove('[still]');
 		},
 		onPrepareHit(target, source) {
 			this.add('-anim', source, 'Dark Void', target);
 		},
+		secondary: {
+			chance: 100,
+			volatileStatus: 'haunting',
+		},
 		condition: {
 			onStart(pokemon, source) {
-				if (pokemon.volatiles['curse'] || pokemon.volatiles['pharaohscurse'] || pokemon.volatiles['haunting']) {
+				if (pokemon.volatiles['curse'] || pokemon.volatiles['pharaohscurse'] || pokemon.volatiles['hauntingcurse']) {
 					return null;
 				}
 				this.add('-start', pokemon, 'Haunting', '[silent]');
@@ -351,7 +351,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		priority: 0,
 		isNonstandard: "Custom",
 		target: "normal",
-		flags: {authentic: 1},
+		flags: {protect: 1},
 		type: "Ghost",
 		contestType: "Tough",
 		gen: 8,
@@ -1200,7 +1200,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				delete move.volatileStatus;
 				delete move.onHit;
 				move.self = {boosts: {spe: -1, atk: 1, def: 1}};
-			} else if (move.volatileStatus && (target.volatiles['curse'] || target.volatiles['pharaohscurse'] || target.volatiles['haunting'])) {
+			} else if (move.volatileStatus && (target.volatiles['curse'] || target.volatiles['pharaohscurse'] || target.volatiles['hauntingcurse'])) {
 				return false;
 			}
 		},
