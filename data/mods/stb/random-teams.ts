@@ -39,61 +39,61 @@ export const stbSets: STBSets = {
 		species: 'Glaceon', ability: 'Snowier Warning', item: 'Choice Specs', gender: 'F',
 		moves: ['Steam Eruption', 'Searing Shot', 'Earth Power'],
 		signatureMove: 'Buff Ice',
-		evs: {hp: 80, spa: 252, spe: 176}, nature: 'Timid', shiny: true
+		evs: {hp: 80, spa: 252, spe: 176}, nature: 'Timid', shiny: true,
 	},
 	AWood: {
 		species: 'glaliemega', ability: 'Refrigerate', item: 'Salac Berry', gender: 'M',
-		moves: ['Avalanche', 'Endure','Body Slam'],
+		moves: ['Avalanche', 'Endure', 'Body Slam'],
 		signatureMove: 'Headshot',
-		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly'
+		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly',
 	},
 	'bad_wolf42': {
 		species: 'Phanpy', ability: "Friend Shaped", item: 'Eviolite', gender: 'M',
 		moves: ['Protect', 'Stealth Rock', 'Slack Off'],
 		signatureMove: 'Roll Around',
-		evs: {hp: 252, def: 4, spd: 252}, nature: 'Careful'
+		evs: {hp: 252, def: 4, spd: 252}, nature: 'Careful',
 	},
-	'Banded Bonks':{
+	'Banded Bonks': {
 		species: 'Durant', ability: 'RNG Training', item: 'Choice Band', gender: 'M',
 		moves: ['First Impression', 'Superpower', ['Stomping Tantrum', 'Rock Slide', 'Thunder Fang', 'Crunch', 'Aerial Ace']],
 		signatureMove: 'bonk.',
-		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly'
+		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly',
 	},
 	broil: {
 		species: 'Furfrou-Pharaoh', ability: 'Magical Coat', item: 'Chesto Berry', gender: 'M',
 		moves: ['Cotton Guard', 'Rest', 'Body Press'],
 		signatureMove: "Pharaoh's Curse",
-		evs: {hp: 252, def: 252, spd: 4}, nature: 'Impish'
+		evs: {hp: 252, def: 252, spd: 4}, nature: 'Impish',
 	},
 	Creeperman129Poke: {
 		species: 'Chandelure', ability: 'Spiritual Absorb', item: 'Life Orb', gender: 'M',
 		moves: ['Fusion Flare', 'Energy Ball', 'Shadow Ball'],
 		signatureMove: 'Haunting',
-		evs: {hp: 4, spa: 252, spe: 252}, ivs: {atk: 0}, nature: 'Timid'
+		evs: {hp: 4, spa: 252, spe: 252}, ivs: {atk: 0}, nature: 'Timid',
 	},
 	crimsonKangaroo: {
 		species: 'Solgaleo', ability: 'Solar Wind', item: 'Weakness Policy', gender: '',
 		moves: ['Cosmic Power', 'Psychic Fangs', 'Body Press'],
 		signatureMove: 'Star Eater',
-		evs: {hp: 252, atk: 4, spe: 252}, nature: 'Jolly'
+		evs: {hp: 252, atk: 4, spe: 252}, nature: 'Jolly',
 	},
 	gigigecko26: {
 		species: 'Zigzagoon', ability: 'Rabies', item: 'Eviolite', gender: 'M',
 		moves: ['Zippy Zap', 'Earthquake', 'Psyshock'],
 		signatureMove: 'Internet Troll',
-		evs: {hp: 252, def: 4, spe: 252}, nature: 'Jolly'
+		evs: {hp: 252, def: 4, spe: 252}, nature: 'Jolly',
 	},
-	Ignoritus:{
-		species: 'Froslass', ability: 'Illusion', item: 'Focus Sash', Gender: 'M',
+	Ignoritus: {
+		species: 'Froslass', ability: 'Illusion', item: 'Focus Sash', gender: 'M',
 		moves: ['Shadow Ball', 'Ice Beam', 'Sheer Cold'],
 		signatureMove: 'Spectral Terrain',
-		evs: {spa: 252, spd: 4, spe: 252}, ivs: {atk: 0}, nature: 'Timid'
+		evs: {spa: 252, spd: 4, spe: 252}, ivs: {atk: 0}, nature: 'Timid',
 	},
 	MeepingtonThe3rd: {
 		species: 'Raichu-Alola', ability: 'Storm Surfing', item: 'Life Orb', gender: 'M',
 		moves: ['Nasty Plot', 'Thunder', 'Splishy Splash'],
 		signatureMove: 'Mental Brick',
-		evs: {spa: 252, spd: 4, spe: 252}, nature: 'Modest'
+		evs: {spa: 252, spd: 4, spe: 252}, nature: 'Modest',
 	},
 	MightySharkVGC: {
 		species: 'Stakataka', ability: 'Beaster Boost', item: 'Focus Sash', gender: '',
@@ -101,83 +101,83 @@ export const stbSets: STBSets = {
 		signatureMove: 'Better Trick Room',
 		evs: {hp: 252, atk: 252, spd: 4}, ivs: {def: 14, spe: 0}, nature: 'Lonely',
 	},
-	njjoltiks:{
+	njjoltiks: {
 		species: 'Ho-Oh', ability: 'From the Ashes', item: 'Choice Band', gender: '',
 		moves: ['Sacred Fire', 'Brave Bird', 'Leech Life'],
-		signatureMove: 'Burn Out',		
-		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly', shiny: true
+		signatureMove: 'Burn Out',
+		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly', shiny: true,
 	},
 	Peekz1025: {
 		species: 'Sceptile', ability: "Forest's Wrath", item: 'Sceptilite', gender: 'M',
 		moves: ['Dragon Claw', 'Night Slash', 'Earthquake'],
 		signatureMove: 'Verdant Blade',
-		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly'
+		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly',
 	},
 	Planetaeus: {
 		species: 'Delphox', ability: 'Burning Spirit', item: 'Iron Ball', gender: 'M',
 		moves: ['Flame Charge', 'Grass Knot', 'Fire Blast'],
 		signatureMove: 'Prestigitation',
-		evs: {atk: 4, spa: 252, spe: 252}, nature: 'Hasty'
+		evs: {atk: 4, spa: 252, spe: 252}, nature: 'Hasty',
 	},
 	PseudoPhysics: {
 		species: 'Wobbuffet', ability: 'gonna getcha', item: 'Focus Sash', gender: 'M',
 		moves: ['Encore', 'Mirror Coat', 'Counter'],
 		signatureMove: '{the rest}',
-		evs: {hp: 252, def: 252, spd: 4}, nature: 'Sassy'
+		evs: {hp: 252, def: 252, spd: 4}, nature: 'Sassy',
 	},
 	QuantumTangler: {
 		species: 'Gardevoir', ability: 'Meta Buster', item: ['Expert Belt', 'Shell Bell'], gender: 'M',
 		moves: ['Psychic', 'Moonblast', 'Healing Wish'],
 		signatureMove: 'Stale Meta',
-		evs: {spa: 252, spd: 4, spe: 252}, ivs: {atk: 0}, nature: 'Timid', shiny: true
+		evs: {spa: 252, spd: 4, spe: 252}, ivs: {atk: 0}, nature: 'Timid', shiny: true,
 	},
 	RibbonNymph: {
 		species: 'Sylveon', ability: 'Pixilate X', item: 'Choice Specs', gender: 'F',
 		moves: ['Boomburst', 'Flamethrower', 'Wish'],
 		signatureMove: 'Ribbon Surge',
-		evs: {hp: 252, spa: 252, spd: 4}, ivs: {atk: 0}, nature: 'Modest'
+		evs: {hp: 252, spa: 252, spd: 4}, ivs: {atk: 0}, nature: 'Modest',
 	},
 	RubyDragonQueen: {
 		species: 'Dragonite', ability: 'Dragonscale', item: 'Dragon Fang', gender: 'F',
 		moves: ['Roost', 'Curse', 'Extreme Speed'],
 		signatureMove: 'Dragonforce',
-		evs: {hp: 252, atk: 252, spd: 4}, nature: 'Adamant'
+		evs: {hp: 252, atk: 252, spd: 4}, nature: 'Adamant',
 	},
 	Steeevo34: {
 		species: 'Shuckle', ability: "A Wizard's Secret", item: 'Lum Berry', gender: 'M',
 		moves: ['Trick Room', 'Earthquake', 'Swords Dance'],
 		signatureMove: 'Retroincabulate',
-		evs: {hp: 252, def: 252, spd: 4}, ivs: {spe: 0}, nature: 'Relaxed'
+		evs: {hp: 252, def: 252, spd: 4}, ivs: {spe: 0}, nature: 'Relaxed',
 	},
-	ScarTheColossus:{
+	ScarTheColossus: {
 		species: 'Snorlax', ability: 'Pancake', item: 'Figy Berry', gender: 'M',
 		moves: ['Facade', 'Earthquake', 'Crunch'],
 		signatureMove: 'Balance',
-		evs: {hp: 188, atk: 124, def: 148, spd: 44, spe: 4}, ivs: {spe: 2}, nature: 'Brave'
+		evs: {hp: 188, atk: 124, def: 148, spd: 44, spe: 4}, ivs: {spe: 2}, nature: 'Brave',
 	},
 	'TacocaT_2595': {
 		species: 'Bronzong', ability: 'Stainless Steel', item: 'Leftovers', gender: 'F',
 		moves: ['Recover', 'Bulk Up', ['Heavy Slam', 'Gyro Ball']],
 		signatureMove: 'Kaboom!',
-		evs: {hp: 244, atk: 252, def: 12}, ivs: {spe: 0}, nature: 'Brave', shiny: true
+		evs: {hp: 244, atk: 252, def: 12}, ivs: {spe: 0}, nature: 'Brave', shiny: true,
 	},
-	torwildheart:{
+	torwildheart: {
 		species: 'mewtwomegax', ability: 'Too Long', item: 'Expert Belt', gender: '',
 		moves: [['Thunderous Kick', 'High Jump Kick'], ['Ice Punch', 'Thunder Punch'], ['Trop Kick', 'Blaze Kick']],
 		signatureMove: 'Psionic Slice',
-		evs: {hp: 4, atk: 252, spe: 252}, nature: 'Adamant'
+		evs: {hp: 4, atk: 252, spe: 252}, nature: 'Adamant',
 	},
 	'touketsu_ningen': {
 		species: "Haxorus", ability: 'Fey Breaker', item: 'Life Orb', gender: 'M',
 		moves: ['Outrage', 'Earthquake', 'Sunsteel Strike'],
 		signatureMove: 'Hax Dance',
-		evs: {hp: 4, atk: 252, spe: 252}, nature: 'Adamant'
+		evs: {hp: 4, atk: 252, spe: 252}, nature: 'Adamant',
 	},
 	VolticHalberd: {
 		species: 'Heliolisk', ability: 'Outside is Frightful', item: 'Life Orb', gender: 'M',
 		moves: ['Energy Ball', 'Weather Ball', 'Thunderbolt'],
 		signatureMove: 'Halburst',
-		evs: {hp: 4, spa: 252, spe: 252}, ivs: {atk: 0}, nature: 'Timid'
+		evs: {hp: 4, spa: 252, spe: 252}, ivs: {atk: 0}, nature: 'Timid',
 	},
 	/*
 	TestMon: {

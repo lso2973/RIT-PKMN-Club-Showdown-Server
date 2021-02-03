@@ -2,9 +2,6 @@ import {FS} from '../../../lib/fs';
 import {toID} from '../../../sim/dex-data';
 import {changeMoves} from "./abilities";
 
-// Used in many abilities, placed here to reduce the number of updates needed and to reduce the chance of errors
-const STRONG_WEATHERS = ['desolateland', 'primordialsea', 'deltastream', 'heavyhailstorm', 'winterhail'];
-
 // Similar to User.usergroups. Cannot import here due to users.ts requiring Chat
 // This also acts as a cache, meaning ranks will only update when a hotpatch/restart occurs
 const usergroups: {[userid: string]: string} = {};
@@ -44,7 +41,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	IMPORTANT: Obtain the username from getName
 	*/
 	// Please keep statuses organized alphabetically based on staff member name!
-	atcheron:{
+	atcheron: {
 		noCopy: true,
 		onStart() {
 			this.add(`c|${getName('ATcheron')}|Here I come, bringing fun!`);
@@ -56,7 +53,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('ATcheron')}|The snow is gone and so am I, but this is not my final cry!`);
 		},
 	},
-	awood:{
+	awood: {
 		noCopy: true,
 		onStart() {
 			this.add(`c|${getName('AWood')}|Time to get de_dusted!`);
@@ -80,7 +77,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('bad_wolf42')}|How could you hurt him??? He is Friend Shaped!`);
 		},
 	},
-	bandedbonks:{
+	bandedbonks: {
 		noCopy: true,
 		onStart() {
 			this.add(`c|${getName('Banded Bonks')}|*loads durant*`);
@@ -180,7 +177,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('Ignoritus')}|Welp, back to Temtem.`);
 		},
 	},
-	meepingtonthe3rd:{
+	meepingtonthe3rd: {
 		noCopy: true,
 		onStart() {
 			this.add(`c|${getName('MeepingtonThe3rd')}|Meep`);
@@ -192,7 +189,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('MeepingtonThe3rd')}|Meh`);
 		},
 	},
-	mightysharkvgc:{
+	mightysharkvgc: {
 		noCopy: true,
 		onStart() {
 			this.add(`c|${getName('MightySharkVGC')}|sure, i can play a match or two while I'm in queue`);
@@ -216,7 +213,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('njjoltiks')}|Caw...`);
 		},
 	},
-	peekz1025:{
+	peekz1025: {
 		noCopy: true,
 		onStart() {
 			this.add(`c|${getName('Peekz1025')}|Prepare to feel the wrath of RIT’s first Grass Gym Leader!`);
@@ -276,7 +273,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('RibbonNymph')}|Well. This is underfortunate.`);
 		},
 	},
-	rubydragonqueen:{
+	rubydragonqueen: {
 		noCopy: true,
 		onStart() {
 			this.add(`c|${getName('RubyDragonQueen')}|It's dragon time! ^V^`);
@@ -293,10 +290,10 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		onStart() {
 			this.add(`c|${getName('ScarTheColossus')}|Doubles is inherently more balanced`);
 		},
-		onSwitchOut(){
+		onSwitchOut() {
 			this.add(`c|${getName('ScarTheColossus')}|You should have set Trick Room`);
 		},
-		onFaint(){
+		onFaint() {
 			this.add(`c|${getName('ScarTheColossus')}|Subscribe to Professor Matt on Youtube`);
 		},
 	},
@@ -305,10 +302,10 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		onStart() {
 			this.add(`c|${getName('Steeevo34')}|Behold, the Boi`);
 		},
-		onSwitchOut(){
+		onSwitchOut() {
 			this.add(`c|${getName('Steeevo34')}|You shall be spared... For now.`);
 		},
-		onFaint(){
+		onFaint() {
 			this.add(`c|${getName('Steeevo34')}|A wizard takes his secrets to the grave`);
 		},
 	},
@@ -317,22 +314,22 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		onStart() {
 			this.add(`c|${getName('TacocaT_2595')}|I hope I’m not steeling the spotlight.`);
 		},
-		onSwitchOut(){
+		onSwitchOut() {
 			this.add(`c|${getName('TacocaT_2595')}|I’m having a hard time here, let’s have someone else weigh in.`);
 		},
-		onFaint(){
+		onFaint() {
 			this.add(`c|${getName('TacocaT_2595')}|/html <img src="https://cdn.discordapp.com/emojis/680288953068421130.gif?v=1" />`);
 		},
 	},
-	torwildheart:{
+	torwildheart: {
 		noCopy: true,
 		onStart() {
 			this.add(`c|${getName('torwildheart')}|Remember when the club was in the ICPA?`);
 		},
-		onSwitchOut(){
+		onSwitchOut() {
 			this.add(`c|${getName('torwildheart')}|Let me...catch my breath`);
 		},
-		onFaint(){
+		onFaint() {
 			this.add(`c|${getName('torwildheart')}|I thought I'd be fine if I had no heat waves I could miss`);
 		},
 	},
@@ -341,10 +338,10 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		onStart() {
 			this.add(`c|${getName('touketsu_ningen')}|It’s Dance time!!!`);
 		},
-		onSwitchOut(){
+		onSwitchOut() {
 			this.add(`c|${getName('touketsu_ningen')}|Wait, I’m not done dancing`);
 		},
-		onFaint(){
+		onFaint() {
 			this.add(`c|${getName('touketsu_ningen')}|I knew I should have brought dragonite instead`);
 		},
 	},
@@ -353,10 +350,10 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		onStart() {
 			this.add(`c|${getName('VolticHalberd')}|Let’s Spark some controversy~`);
 		},
-		onSwitchOut(){
+		onSwitchOut() {
 			this.add(`c|${getName('VolticHalberd')}|A brief intermission, dears~`);
 		},
-		onFaint(){
+		onFaint() {
 			this.add(`c|${getName('VolticHalberd')}|You’re a real live-wire, huh?`);
 		},
 	},
@@ -412,7 +409,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			} else {
 				this.add('-status', target, 'rabies');
 			}
-			this.add('-start', pokemon, 'rabies');
+			this.add('-start', target, 'rabies');
 		},
 		onSwitchIn() {
 			this.effectData.stage = 4;
@@ -464,7 +461,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 				newMoves.push(moveid);
 			}
 			// picks an ohko move based on the pokemon's type
-			let newOHKO: string = 'guillotine';
+			let newOHKO = 'guillotine';
 			if (pokemon.hasType('Psychic')) newOHKO = 'sheercold';
 			if (pokemon.hasType('Ground')) newOHKO = 'fissure';
 			if (pokemon.hasType('Ice')) newOHKO = 'sheercold';
