@@ -6,7 +6,7 @@
  *
  * @license MIT license
  */
-import {Utils} from '../../lib/utils';
+import {Utils} from '../../lib';
 
 type Color = 'Green' | 'Yellow' | 'Red' | 'Blue' | 'Black';
 interface Card {
@@ -208,6 +208,8 @@ export class UNO extends Rooms.RoomGame {
 	onRename(user: User, oldUserid: ID, isJoining: boolean, isForceRenamed: boolean) {
 		if (!(oldUserid in this.playerTable) || user.id === oldUserid) return false;
 		if (!user.named && !isForceRenamed) {
+			user.games.delete(this.roomid);
+			user.updateSearch();
 			return; // dont set users to their guest accounts.
 		}
 		this.playerTable[user.id] = this.playerTable[oldUserid];
@@ -243,9 +245,6 @@ export class UNO extends Rooms.RoomGame {
 				this.topCard.changedColor = this.discards[1].changedColor || this.discards[1].color;
 				this.sendToRoom(`|raw|${Utils.escapeHTML(name)} has not picked a color, the color will stay as <span style="color: ${textColors[this.topCard.changedColor]}">${this.topCard.changedColor}</span>.`);
 			}
-
-			if (this.timer) clearTimeout(this.timer);
-			this.nextTurn();
 		}
 		if (this.awaitUno === userid) this.awaitUno = null;
 
@@ -253,6 +252,7 @@ export class UNO extends Rooms.RoomGame {
 		this.discards.push(...this.playerTable[userid].hand);
 
 		this.removePlayer(this.playerTable[userid]);
+		this.nextTurn();
 		return name;
 	}
 

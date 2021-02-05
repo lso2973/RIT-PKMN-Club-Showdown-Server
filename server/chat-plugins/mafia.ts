@@ -1,4 +1,4 @@
-import {Utils} from '../../lib/utils';
+import {Utils, FS} from '../../lib';
 
 interface MafiaData {
 	// keys for all of these are IDs
@@ -88,8 +88,6 @@ interface MafiaIDEAPlayerData {
 	originalChoices: string[];
 	picks: {[choice: string]: string | null};
 }
-
-import {FS} from '../../lib/fs';
 
 const DATA_FILE = 'config/chat-plugins/mafia-data.json';
 const LOGS_FILE = 'config/chat-plugins/mafia-logs.json';
@@ -338,7 +336,7 @@ class Mafia extends Rooms.RoomGame {
 		if (this.phase !== 'signups') return user.sendTo(this.room, `|error|The game of ${this.title} has already started.`);
 		this.canJoin(user, true);
 		if (this.playerCount >= this.playerCap) return user.sendTo(this.room, `|error|The game of ${this.title} is full.`);
-		this.addPlayer(user);
+		if (!this.addPlayer(user)) return user.sendTo(this.room, `|error|You have already joined the game of ${this.title}.`);
 		if (this.subs.includes(user.id)) this.subs.splice(this.subs.indexOf(user.id), 1);
 		this.playerTable[user.id].updateHtmlRoom();
 		this.sendRoom(`${this.playerTable[user.id].name} has joined the game.`);
@@ -701,7 +699,7 @@ class Mafia extends Rooms.RoomGame {
 		if (target === player.id && !this.selfEnabled) return this.sendUser(userid, `|error|Self lynching is not allowed.`);
 		const hammering = this.hammerCount - 1 <= (this.lynches[target] ? this.lynches[target].count : 0);
 		if (target === player.id && !hammering && this.selfEnabled === 'hammer') {
-			return this.sendUser(userid, `|error|You may only lynch yourself when you placing the hammer vote.`);
+			return this.sendUser(userid, `|error|You may only lynch yourself when placing the hammer vote.`);
 		}
 		if (player.hammerRestriction !== null) {
 			this.sendUser(userid, `${this.hammerCount - 1} <= ${(this.lynches[target] ? this.lynches[target].count : 0)}`);

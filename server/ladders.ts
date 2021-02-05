@@ -97,8 +97,8 @@ class Ladder extends LadderStore {
 			connection.popup(`You are barred from starting any new games until your battle ban expires.`);
 			return null;
 		}
-		const games = user.getGames();
-		if (Monitor.countConcurrentBattle(games.length, connection)) {
+		const gameCount = user.games.size;
+		if (Monitor.countConcurrentBattle(gameCount, connection)) {
 			return null;
 		}
 		if (Monitor.countPrepBattle(connection.ip, connection)) {
@@ -171,7 +171,7 @@ class Ladder extends LadderStore {
 			valResult = await validator.validateTeam(team, {removeNicknames});
 		}
 
-		if (valResult.charAt(0) !== '1') {
+		if (!valResult.startsWith('1')) {
 			connection.popup(
 				`Your team was rejected for the following reasons:\n\n` +
 				`- ` + valResult.slice(1).replace(/\n/g, `\n- `)
@@ -179,7 +179,7 @@ class Ladder extends LadderStore {
 			return null;
 		}
 
-		const settings = {...user.battleSettings, team: valResult.slice(1) as string};
+		const settings = {...user.battleSettings, team: valResult.slice(1)};
 		user.battleSettings.inviteOnly = false;
 		user.battleSettings.hidden = false;
 		return new BattleReady(userid, this.formatid, settings, rating, challengeType);
@@ -402,13 +402,29 @@ class Ladder extends LadderStore {
 		return userSearches;
 	}
 	static updateSearch(user: User, connection: Connection | null = null) {
-		const gamesEntries = user.getGames().map(game => (
-			[game.room.roomid, game.title + (game.allowRenames ? '' : '*')]
-		));
-
+		let games: {[k: string]: string} | null = {};
+		let atLeastOne = false;
+		for (const roomid of user.games) {
+			const room = Rooms.get(roomid);
+			if (!room) {
+				Monitor.warn(`while searching, room ${roomid} expired for user ${user.id} in rooms ${[...user.inRooms]} and games ${[...user.games]}`);
+				user.games.delete(roomid);
+				continue;
+			}
+			const game = room.game;
+			if (!game) {
+				Monitor.warn(`while searching, room ${roomid} has no game for user ${user.id} in rooms ${[...user.inRooms]} and games ${[...user.games]}`);
+				user.games.delete(roomid);
+				continue;
+			}
+			games[roomid] = game.title + (game.allowRenames ? '' : '*');
+			atLeastOne = true;
+		}
+		if (!atLeastOne) games = null;
+		const searching = Ladders.getSearches(user);
 		(connection || user).send(`|updatesearch|` + JSON.stringify({
-			searching: Ladders.getSearches(user),
-			games: gamesEntries.length ? Object.fromEntries(gamesEntries) : null,
+			searching,
+			games,
 		}));
 	}
 	hasSearch(user: User) {

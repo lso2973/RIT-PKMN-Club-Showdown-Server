@@ -6,9 +6,7 @@
  * @author Kris
  */
 
-import {FS} from '../../lib/fs';
-import {Net} from '../../lib/net';
-import {Utils} from '../../lib/utils';
+import {FS, Net, Utils} from '../../lib';
 import {YouTube, VideoData} from './youtube';
 
 const LASTFM_DB = 'config/chat-plugins/lastfm.json';
@@ -645,7 +643,7 @@ export const pages: PageTable = {
 	async recommendations(query, user, connection) {
 		const room = this.requireRoom();
 		this.checkCan('mute', null, room);
-		if (!user.inRoom(room)) throw new Chat.ErrorMessage(`You must be in ${room.title} to view this page.`);
+		if (!user.inRooms.has(room.roomid)) throw new Chat.ErrorMessage(`You must be in ${room.title} to view this page.`);
 		this.title = 'Recommendations';
 		let buf = `<div class="pad">`;
 		buf += `<button style="float:right" class="button" name="send" value="/j view-recommendations-${room.roomid}"><i class="fa fa-refresh"></i> Refresh</button>`;
@@ -667,7 +665,7 @@ export const pages: PageTable = {
 	async suggestedrecommendations(query, user, connection) {
 		const room = this.requireRoom();
 		this.checkCan('mute', null, room);
-		if (!user.inRoom(room)) throw new Chat.ErrorMessage(`You must be in ${room.title} to view this page.`);
+		if (!user.inRooms.has(room.roomid)) throw new Chat.ErrorMessage(`You must be in ${room.title} to view this page.`);
 		this.title = 'Suggested Recommendations';
 		let buf = `<div class="pad">`;
 		buf += `<button style="float:right" class="button" name="send" value="/j view-suggestedrecommendations-${room.roomid}"><i class="fa fa-refresh"></i> Refresh</button>`;

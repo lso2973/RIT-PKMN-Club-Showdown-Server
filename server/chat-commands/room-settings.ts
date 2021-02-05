@@ -6,7 +6,7 @@
  *
  * @license MIT
  */
-import {Utils} from '../../lib/utils';
+import {Utils} from '../../lib';
 import type {EffectiveGroupSymbol, RoomPermission} from '../user-groups';
 
 const RANKS = Config.groupsranking;
@@ -165,9 +165,17 @@ export const commands: ChatCommands = {
 		this.modlog(`AUTOMODCHAT`, null, `${rank}: ${time} minutes`);
 		room.saveSettings();
 	},
+	automodchathelp: [
+		`/automodchat [number], [rank] - Sets modchat [rank] to automatically turn on after [number] minutes. [number] must be between 5 and 480. Requires: # &`,
+		`/automodchat off - Turns off automodchat.`,
+	],
 
-	inviteonlynext: 'ionext',
-	ionext(target, room, user) {
+	ionext() {
+		this.errorReply(`"ionext" is an outdated feature. Hidden battles now have password-protected URLs, making them fully secure against eavesdroppers.`);
+		this.errorReply(`You probably want to switch from /ionext to /hidenext, and from /ioo to /hideroom`);
+	},
+
+	inviteonlynext(target, room, user) {
 		const groupConfig = Config.groups[Users.PLAYER_SYMBOL];
 		if (!groupConfig?.editprivacy) return this.errorReply(`/ionext - Access denied.`);
 		if (this.meansNo(target)) {
@@ -180,9 +188,9 @@ export const commands: ChatCommands = {
 			this.sendReply(`Your next battle will be invite-only${user.battlesForcedPublic() ? `, unless it is rated` : ``}.`);
 		}
 	},
-	ionexthelp: [
-		`/ionext - Sets your next battle to be invite-only.`,
-		`/ionext off - Sets your next battle to be publicly visible.`,
+	inviteonlynexthelp: [
+		`/inviteonlynext - Sets your next battle to be invite-only.`,
+		`/inviteonlynext off - Sets your next battle to be publicly visible.`,
 	],
 
 	ioo: 'inviteonly',
