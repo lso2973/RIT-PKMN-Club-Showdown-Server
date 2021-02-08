@@ -102,7 +102,8 @@ interface TriviaLeaderboard {
 
 interface TriviaGame {
 	mode: string;
-	length: string;
+	/** if number, question cap, else score cap */
+	length: keyof typeof LENGTHS | number;
 	category: string;
 	creator?: string;
 }
@@ -117,6 +118,7 @@ interface TriviaData {
 	altLeaderboard?: TriviaLeaderboard;
 	ladder?: TriviaLadder;
 	history?: TriviaGame[];
+	moveEventQuestions?: boolean;
 }
 
 interface TopPlayer {
@@ -413,7 +415,7 @@ export class Trivia extends Rooms.RoomGame {
 	hasModifiedData: boolean;
 	constructor(
 		room: Room, mode: string, category: string,
-		length: string, questions: TriviaQuestion[], creator: string,
+		length: keyof typeof LENGTHS | number, questions: TriviaQuestion[], creator: string,
 		isRandomMode = false, isSubGame = false
 	) {
 		super(room, isSubGame);
@@ -465,7 +467,16 @@ export class Trivia extends Rooms.RoomGame {
 	}
 
 	getCap() {
-		return LENGTHS[this.game.length].cap;
+		if (this.game.length in LENGTHS) return {points: LENGTHS[this.game.length].cap};
+		if (typeof this.game.length === 'number') return {questions: this.game.length};
+		throw new Error(`Couldn't determine cap for Trivia game with length ${this.game.length}`);
+	}
+
+	getDisplayableCap() {
+		const cap = this.getCap();
+		if (cap.questions) return `${cap.questions} questions`;
+		if (cap.points) return `${cap.points} points`;
+		return `Infinite`;
 	}
 
 	/**
@@ -571,18 +582,16 @@ export class Trivia extends Rooms.RoomGame {
 	 * Handles setup that shouldn't be done from the constructor.
 	 */
 	init() {
-		const cap = this.getCap() || this.room.tr`Infinite`;
 		broadcast(
 			this.room,
 			this.room.tr`Signups for a new trivia game have begun!`,
-			this.room.tr`Mode: ${this.game.mode} | Category: ${this.game.category} | Score cap: ${cap}<br />` +
+			this.room.tr`Mode: ${this.game.mode} | Category: ${this.game.category} | Cap: ${this.getDisplayableCap()}<br />` +
 			this.room.tr`Enter /trivia join to sign up for the trivia game.`
 		);
 	}
 
 	getDescription() {
-		const cap = this.getCap() || this.room.tr`Infinite`;
-		return this.room.tr`Mode: ${this.game.mode} | Category: ${this.game.category} | Score cap: ${cap}`;
+		return this.room.tr`Mode: ${this.game.mode} | Category: ${this.game.category} | Cap: ${this.getDisplayableCap()}`;
 	}
 
 	/**
@@ -678,7 +687,8 @@ export class Trivia extends Rooms.RoomGame {
 	askQuestion() {
 		if (this.isPaused) return;
 		if (!this.questions.length) {
-			if (!this.getCap()) {
+			const cap = this.getCap();
+			if (!cap.questions && !cap.points) {
 				// If there's no score cap, we declare a winner when we run out of questions,
 				// instead of ending a game with a stalemate
 				this.win(`The game of Trivia has ended because there are no more questions!`);
@@ -706,7 +716,7 @@ export class Trivia extends Rooms.RoomGame {
 		this.setTallyTimeout();
 
 		// Move question categories if needed
-		if (question.category === MOVE_QUESTIONS_AFTER_USE_FROM_CATEGORY) {
+		if (triviaData.moveEventQuestions && question.category === MOVE_QUESTIONS_AFTER_USE_FROM_CATEGORY) {
 			if (!triviaData.questions![MOVE_QUESTIONS_AFTER_USE_TO_CATEGORY]) {
 				triviaData.questions![MOVE_QUESTIONS_AFTER_USE_TO_CATEGORY] = [];
 			}
@@ -850,7 +860,7 @@ export class Trivia extends Rooms.RoomGame {
 	getPrizes() {
 		// Reward players more in longer infinite games
 		const multiplier = this.game.length === 'infinite' ? Math.floor(this.questionNumber / 25) || 1 : 1;
-		return LENGTHS[this.game.length].prizes.map(prize => prize * multiplier);
+		return (LENGTHS[this.game.length]?.prizes || [5, 3, 1]).map(prize => prize * multiplier);
 	}
 
 	getTopPlayers(options: {max: number | null, requirePoints?: boolean} = {max: null, requirePoints: true}): TopPlayer[] {
@@ -888,7 +898,7 @@ export class Trivia extends Rooms.RoomGame {
 		const winnerParts: ((k: TopPlayer) => string)[] = [
 			winner => this.room.tr`User ${mapper(winner)} won the game of ${this.game.mode} ` +
 				this.room.tr`mode trivia under the ${this.game.category} category with ` +
-				`${this.getCap() ? this.room.tr`a cap of ${this.getCap()} points` : this.room.tr`no score cap`}, ` +
+				this.room.tr`a cap of ${this.getDisplayableCap()} ` +
 				this.room.tr`with ${winner.player.points} points and ` +
 				this.room.tr`${winner.player.correctAnswers} correct answers`,
 			winner => this.room.tr` Second place: ${mapper(winner)} (${winner.player.points} points)`,
@@ -939,7 +949,9 @@ export class FirstModeTrivia extends Trivia {
 			this.room.tr`Answer(s): ${this.curAnswers.join(', ')}` + `<br />` +
 			this.room.tr`They gained <strong>5</strong> points!` + `<br />` +
 			this.room.tr`The top 5 players are: ${this.formatPlayerList({max: 5})}`;
-		if (this.getCap() && player.points >= this.getCap()) {
+
+		const cap = this.getCap();
+		if ((cap.points && player.points >= cap.points) || (cap.questions && this.questionNumber >= cap.questions)) {
 			this.win(buffer);
 			return;
 		}
@@ -1020,11 +1032,14 @@ export class TimerModeTrivia extends Trivia {
 		);
 		const innerBuffer: Map<number, [string, number][]> = new Map([5, 4, 3, 2, 1].map(n => [n, []]));
 
-		let winner = false;
 
 		const now = hrtimeToNanoseconds(process.hrtime());
 		const askedAt = hrtimeToNanoseconds(this.askedAt);
 		const totalDiff = now - askedAt;
+		const cap = this.getCap();
+
+		let winner = cap.questions && this.questionNumber >= cap.questions;
+
 		for (const i in this.playerTable) {
 			const player = this.playerTable[i];
 			if (!player.isCorrect) {
@@ -1040,7 +1055,7 @@ export class TimerModeTrivia extends Trivia {
 			const pointBuffer = innerBuffer.get(points) || [];
 			pointBuffer.push([Utils.escapeHTML(player.name), playerAnsweredAt]);
 
-			if (this.getCap() && player.points >= this.getCap()) {
+			if (cap.points && player.points >= cap.points) {
 				winner = true;
 			}
 
@@ -1121,12 +1136,14 @@ export class NumberModeTrivia extends Trivia {
 
 		const points = this.calculatePoints(innerBuffer.length);
 		if (points) {
-			let winner = false;
+			const cap = this.getCap();
+			// We add 1 questionNumber because it starts at 0
+			let winner = cap.questions && this.questionNumber >= cap.questions;
 			for (const i in this.playerTable) {
 				const player = this.playerTable[i];
 				if (player.isCorrect) player.incrementPoints(points, this.questionNumber);
 
-				if (this.getCap() && player.points >= this.getCap()) {
+				if (cap.points && player.points >= cap.points) {
 					winner = true;
 				}
 
@@ -1186,13 +1203,14 @@ export class TriumvirateModeTrivia extends Trivia {
 		correctPlayers.sort((a, b) =>
 			(hrtimeToNanoseconds(a.currentAnsweredAt) > hrtimeToNanoseconds(b.currentAnsweredAt) ? 1 : -1));
 
-		let winner = false;
+		const cap = this.getCap();
+		let winner = cap.questions && this.questionNumber >= cap.questions;
 		const playersWithPoints = [];
 		for (const player of correctPlayers) {
 			const points = this.calculatePoints(correctPlayers.indexOf(player));
 			player.incrementPoints(points, this.questionNumber);
 			playersWithPoints.push(`${Utils.escapeHTML(player.name)} (${points})`);
-			if (this.getCap() && player.points >= this.getCap()) {
+			if (cap.points && player.points >= cap.points) {
 				winner = true;
 			}
 		}
@@ -1553,10 +1571,15 @@ const triviaCommands: ChatCommands = {
 		const categoryID = toID(targets[1]);
 		const category = CATEGORY_ALIASES[categoryID] || categoryID;
 		let questions = getQuestions(category);
-		const length = toID(targets[2]);
-		if (!LENGTHS[length]) return this.errorReply(this.tr`"${length}" is an invalid game length.`);
+		let length: ID | number = toID(targets[2]);
+		if (!LENGTHS[length]) {
+			length = parseInt(length);
+			if (isNaN(length) || length < 1) return this.errorReply(this.tr`"${length}" is an invalid game length.`);
+		}
+
 		// Assume that infinite mode will last for at least 75 points
-		if (questions.length < (LENGTHS[length].cap || 75) / 5) {
+		const questionsNecessary = typeof length === 'string' ? (LENGTHS[length].cap || 75) / 5 : length;
+		if (questions.length < questionsNecessary) {
 			if (category === 'random') {
 				return this.errorReply(
 					this.tr`There are not enough questions in the randomly chosen category to finish a trivia game.`
@@ -1712,7 +1735,7 @@ const triviaCommands: ChatCommands = {
 		}
 		let buffer = `${game.isPaused ? this.tr`There is a paused trivia game` : this.tr`There is a trivia game in progress`}, ` +
 			this.tr`and it is in its ${game.phase} phase.` + `<br />` +
-			this.tr`Mode: ${game.game.mode} | Category: ${game.game.category} | Score cap: ${game.getCap() || "Infinite"}`;
+			this.tr`Mode: ${game.game.mode} | Category: ${game.game.category} | Cap: ${game.getDisplayableCap()}`;
 
 		const player = game.playerTable[tarUser.id];
 		if (player) {
@@ -2016,6 +2039,46 @@ const triviaCommands: ChatCommands = {
 		`/trivia move [category] | [question] - Change the category of question in the trivia database. Requires: % @ # &`,
 	],
 
+	migrate(target, room, user) {
+		room = this.requireRoom('questionworkshop' as RoomID);
+		this.checkCan('editroom', null, room);
+
+		const [sourceCategory, destinationCategory] = target.split(',').map(toID);
+
+		for (const category of [sourceCategory, destinationCategory]) {
+			if (category in MAIN_CATEGORIES) throw new Chat.ErrorMessage(`Main categories cannot be used with /trivia migrate`);
+			if (!(category in ALL_CATEGORIES)) throw new Chat.ErrorMessage(`"${category}" is not a valid category`);
+		}
+
+		const sourceCategoryName = ALL_CATEGORIES[sourceCategory];
+		const destinationCategoryName = ALL_CATEGORIES[destinationCategory];
+
+		if (!triviaData.questions![sourceCategory]?.length) {
+			throw new Chat.ErrorMessage(`There are no questions in the ${sourceCategoryName} category.`);
+		}
+		if (!triviaData.questions![destinationCategory]) triviaData.questions![destinationCategory] = [];
+
+		const command = `/trivia migrate ${sourceCategory}, ${destinationCategory}`;
+		if (user.lastCommand !== command) {
+			this.sendReply(`Are you SURE that you want to PERMANENTLY move all questions in the category ${sourceCategoryName} to ${destinationCategoryName}?`);
+			this.sendReply(`This cannot be undone.`);
+			this.sendReply(`Type the command again to confirm.`);
+
+			user.lastCommand = command;
+			return;
+		}
+
+		triviaData.questions![destinationCategory] = triviaData.questions![destinationCategory]
+			.concat(triviaData.questions![sourceCategory]);
+		triviaData.questions![sourceCategory] = [];
+
+		this.modlog(`TRIVIAQUESTION MIGRATE`, null, `${sourceCategoryName} to ${destinationCategoryName}`);
+		this.privateModAction(`${user.name} migrated all questions in the category ${sourceCategoryName} to ${destinationCategoryName}.`);
+	},
+	migratehelp: [
+		`/trivia migrate [source category], [destination category] — Moves all questions in a category to another category. Requires: # &`,
+	],
+
 	qs(target, room, user) {
 		room = this.requireRoom('questionworkshop' as RoomID);
 
@@ -2126,6 +2189,41 @@ const triviaCommands: ChatCommands = {
 	searchhelp: [
 		`/trivia search [type], [query] - Searches for questions based on their type and their query. This command is case-insensitive. Valid types: submissions, subs, questions, qs. Requires: + % @ * &`,
 		`/trivia casesensitivesearch [type], [query] - Like /trivia search, but is case sensitive (capital letters matter). Requires: + % @ * &`,
+	],
+
+	moveusedevent(target, room, user) {
+		room = this.requireRoom('questionworkshop' as RoomID);
+		const fromCatName = ALL_CATEGORIES[MOVE_QUESTIONS_AFTER_USE_FROM_CATEGORY];
+		const toCatName = ALL_CATEGORIES[MOVE_QUESTIONS_AFTER_USE_TO_CATEGORY];
+		if (target) {
+			this.checkCan('editroom', null, room);
+
+			if (this.meansYes(target)) {
+				if (triviaData.moveEventQuestions) throw new Chat.ErrorMessage(`Moving used event questions is already enabled.`);
+				triviaData.moveEventQuestions = true;
+			} else if (this.meansNo(target)) {
+				if (!triviaData.moveEventQuestions) throw new Chat.ErrorMessage(`Moving used event questions is already disabled.`);
+				triviaData.moveEventQuestions = false;
+			} else {
+				return this.parse(`/help trivia moveusedevent`);
+			}
+			writeTriviaData();
+
+			this.modlog(`TRIVIA MOVE USED EVENT QUESTIONS`, null, triviaData.moveEventQuestions ? 'ON' : 'OFF');
+			this.sendReply(
+				`Trivia questions in the ${fromCatName} category will ${triviaData.moveEventQuestions ? 'now' : 'no longer'} be moved to the ${toCatName} category after they are used.`
+			);
+		} else {
+			this.sendReply(
+				triviaData.moveEventQuestions ?
+					`Trivia questions in the ${fromCatName} category will be moved to the ${toCatName} category after use.` :
+					`Moving event questions after usage is currently disabled.`
+			);
+		}
+	},
+	moveusedeventhelp: [
+		`/trivia moveusedevent - Tells you whether or not moving used event questions to a different category is enabled.`,
+		`/trivia moveusedevent [on or off] - Toggles moving used event questions to a different category. Requires: # &`,
 	],
 
 	rank(target, room, user) {
@@ -2336,6 +2434,7 @@ const triviaCommands: ChatCommands = {
 				`<li>Medium: 35 point score cap. The winner gains 4 leaderboard points.</li>` +
 				`<li>Long: 50 point score cap. The winner gains 5 leaderboard points.</li>` +
 				`<li>Infinite: No score cap. The winner gains 5 leaderboard points, which increases the more questions they answer.</li>` +
+				`<li>You may also specify a number for length; in this case, the game will end after that number of questions have been asked.</li>` +
 			`</ul></details>` +
 			`<details><summary><strong>Game commands</strong></summary><ul>` +
 				`<li><code>/trivia new [mode], [category], [length]</code> - Begin signups for a new Trivia game. Requires: + % @ # &</li>` +
@@ -2358,9 +2457,12 @@ const triviaCommands: ChatCommands = {
 				`<li><code>/trivia add [category] | [question] | [answer1], [answer2], ... [answern]</code> - Adds question(s) to the question database. Requires: % @ # &</li>` +
 				`<li><code>/trivia delete [question]</code> - Delete a question from the trivia database. Requires: % @ # &</li>` +
 				`<li><code>/trivia move [category] | [question]</code> - Change the category of question in the trivia database. Requires: % @ # &</li>` +
+				`<li><code>/trivia migrate [source category], [destination category]</code> — Moves all questions in a category to another category. Requires: # &</li>` +
 				`<li><code>/trivia qs</code> - View the distribution of questions in the question database.</li>` +
 				`<li><code>/trivia qs [category]</code> - View the questions in the specified category. Requires: % @ # &</li>` +
 				`<li><code>/trivia clearqs [category]</code> - Clear all questions in the given category. Requires: # &</li>` +
+				`<li><code>/trivia moveusedevent<code> - Tells you whether or not moving used event questions to a different category is enabled.</li>` +
+				`<li><code>/trivia moveusedevent [on or off]</code> - Toggles moving used event questions to a different category. Requires: # &</li>` +
 			`</ul></details>` +
 			`<details><summary><strong>Informational commands</strong></summary><ul>` +
 				`<li><code>/trivia search [type], [query]</code> - Searches for questions based on their type and their query. Valid types: <code>submissions</code>, <code>subs</code>, <code>questions</code>, <code>qs</code>. Requires: + % @ # &</li>` +
