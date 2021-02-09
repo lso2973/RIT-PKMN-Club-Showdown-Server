@@ -117,7 +117,7 @@ interface TriviaData {
 	leaderboard?: TriviaLeaderboard;
 	altLeaderboard?: TriviaLeaderboard;
 	ladder?: TriviaLadder;
-	history?: TriviaGame[];
+	history?: (TriviaGame & {scores?: Map<ID, number>})[];
 	moveEventQuestions?: boolean;
 }
 
@@ -744,7 +744,7 @@ export class Trivia extends Rooms.RoomGame {
 	sendQuestion(question: TriviaQuestion) {
 		broadcast(
 			this.room,
-			this.room.tr`Question${this.game.length === 'infinite' ? ` ${this.questionNumber}` : ''}: ${question.question}`,
+			this.room.tr`Question ${this.questionNumber}: ${question.question}`,
 			this.room.tr`Category: ${ALL_CATEGORIES[question.category]}`
 		);
 	}
@@ -850,7 +850,14 @@ export class Trivia extends Rooms.RoomGame {
 		});
 
 		if (!triviaData.history) triviaData.history = [];
-		triviaData.history.push(this.game);
+		if (typeof this.game.length === 'number') this.game.length = `${this.game.length} questions`;
+
+		const scores = new Map(this.getTopPlayers().map(player => [player.player.id, player.player.points]));
+		triviaData.history.push({
+			...this.game,
+			length: typeof this.game.length === 'number' ? `${this.game.length} questions` : this.game.length,
+			scores,
+		});
 		if (triviaData.history.length > 10) triviaData.history.shift();
 
 		this.hasModifiedData = true;
@@ -2067,6 +2074,7 @@ const triviaCommands: ChatCommands = {
 			user.lastCommand = command;
 			return;
 		}
+		user.lastCommand = '';
 
 		triviaData.questions![destinationCategory] = triviaData.questions![destinationCategory]
 			.concat(triviaData.questions![sourceCategory]);
@@ -2326,6 +2334,18 @@ const triviaCommands: ChatCommands = {
 	},
 	historyhelp: [`/trivia history - View a list of the 10 most recently played trivia games.`],
 
+	lastofficialscore(target, room, user) {
+		room = this.requireRoom('trivia' as RoomID);
+		this.runBroadcast();
+
+		const lastGame = triviaData.history?.[triviaData.history.length - 1];
+		if (!lastGame?.scores) throw new Chat.ErrorMessage(`There are no scores recorded for the last Trivia game.`);
+
+		const scores = [...lastGame.scores].map(([userid, score]) => `${userid} (${score})`).join(', ');
+		this.sendReplyBox(`The scores for the last Trivia game are: ${scores}`);
+	},
+	lastofficialscorehelp: [`/trivia lastofficialscore - View the scores from the last Trivia game. Intended for bots.`],
+
 	removepoints: 'addpoints',
 	addpoints(target, room, user, connection, cmd) {
 		room = this.requireRoom('trivia' as RoomID);
@@ -2470,6 +2490,7 @@ const triviaCommands: ChatCommands = {
 				`<li><code>/trivia status [player]</code> - lists the player's standings (your own if no player is specified) and the list of players in the current trivia game.</li>` +
 				`<li><code>/trivia rank [username]</code> - View the rank of the specified user. If none is given, view your own.</li>` +
 				`<li><code>/trivia history</code> - View a list of the 10 most recently played trivia games.</li>` +
+				`<li><code>/trivia lastofficialscore</code> - View the scores from the last Trivia game. Intended for bots.</li>` +
 			`</ul></details>` +
 			`<details><summary><strong>Leaderboard commands</strong></summary><ul>` +
 				`<li><code>/trivia ladder</code> - View information about the top 15 users on the Trivia leaderboard.</li>` +
