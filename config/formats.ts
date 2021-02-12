@@ -139,7 +139,7 @@ export const Formats: FormatList = [
 
 		mod: 'pic',
 		gameType: 'doubles',
-		ruleset: ['[Gen 8] Doubles OU', 'Sleep Clause Mod'],
+		ruleset: ['[Gen 8] Doubles OU'],
 		banlist: ['Arctovish', 'Arctozolt', 'Dracovish', 'Dracozolt', 'Huge Power', 'Imposter', 'Normalize', 'Wonder Guard', 'Mimic', 'Sketch', 'Transform'],
 		restricted: ['Receiver', 'Trace'],
 		onSwitchInPriority: 2,
