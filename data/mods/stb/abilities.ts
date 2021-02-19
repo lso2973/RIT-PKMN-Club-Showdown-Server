@@ -429,7 +429,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			const noModifyType = [
 				'judgment', 'multiattack', 'naturalgift', 'revelationdance', 'technoblast', 'terrainpulse', 'weatherball',
 			];
-			if (target.runEffectiveness(move) < 0 && !noModifyType.includes(move.id) && !(move.isZ && move.category !== 'Status')) {
+			if ((!target.runImmunity(move.type, false) || target.runEffectiveness(move) < 0) && !noModifyType.includes(move.id) && !(move.isZ && move.category !== 'Status')) {
 				move.type = 'Fairy';
 				move.pixilateBoosted = true;
 			}
