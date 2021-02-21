@@ -287,13 +287,25 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		gen: 8,
 	},
 	// MightySharkVGC
-	beasterboost: {
-		desc: "This Pokémon's Attack and Defense are raised by +1 stage and its speed is lowered by -1 stage if it attacks and knocks out another Pokémon.",
-		shortDesc: "Moxie but curse rather than attack boost",
-		name: "Beaster Boost",
-		onSourceAfterFaint(length, target, source, effect) {
-			if (effect && effect.effectType === 'Move') {
-				this.boost({atk: length, def: length, spe: length * -1}, source);
+	coolsword: {
+		desc: "Each of this Pokémon's attacks have a 10% chance of inflicting Infatuation. Pokémon making contact with this Pokémon lose 1/8 of their maximum HP, rounded down.",
+		shortDesc: "10% chance of Infatuation per hit + Rough Skin",
+		name: "Cool Sword",
+		onModifyMove(move) {
+			if (!move || move.target === 'self') return;
+			if (!move.secondaries) {
+				move.secondaries = [];
+			}
+			move.secondaries.push({
+				chance: 10,
+				volatileStatus: 'attract',
+				ability: this.dex.getAbility('coolsword'),
+			});
+		},
+		onDamagingHitOrder: 1,
+		onDamagingHit(damage, target, source, move) {
+			if (move.flags['contact']) {
+				this.damage(source.baseMaxhp / 8, source, target);
 			}
 		},
 		isNonstandard: "Custom",

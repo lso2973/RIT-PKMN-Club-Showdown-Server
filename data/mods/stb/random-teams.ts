@@ -72,7 +72,7 @@ export const stbSets: STBSets = {
 		evs: {hp: 4, spa: 252, spe: 252}, ivs: {atk: 0}, nature: 'Timid',
 	},
 	crimsonKangaroo: {
-		species: 'Solgaleo', ability: 'Solar Wind', item: 'Weakness Policy', gender: '',
+		species: 'Solgaleo', ability: 'Solar Wind', item: 'Weakness Policy', gender: 'M',
 		moves: ['Cosmic Power', 'Psychic Fangs', 'Body Press'],
 		signatureMove: 'Star Eater',
 		evs: {hp: 252, atk: 4, spe: 252}, nature: 'Jolly',
@@ -96,10 +96,10 @@ export const stbSets: STBSets = {
 		evs: {spa: 252, spd: 4, spe: 252}, nature: 'Modest',
 	},
 	MightySharkVGC: {
-		species: 'Stakataka', ability: 'Beaster Boost', item: 'Focus Sash', gender: '',
-		moves: ['Gyro Ball', 'Rock Blast', 'Earthquake'],
-		signatureMove: 'Better Trick Room',
-		evs: {hp: 252, atk: 252, spd: 4}, ivs: {def: 14, spe: 0}, nature: 'Lonely',
+		species: 'Garchomp', ability: 'Cool Sword', item: 'Life Orb', gender: 'F',
+		moves: ['Behemoth Blade', 'Thousand Arrows', 'Sacred Sword'],
+		signatureMove: 'Too Many Swords',
+		evs: {hp: 4, atk: 252, spe: 252}, nature: 'Jolly',
 	},
 	njjoltiks: {
 		species: 'Ho-Oh', ability: 'From the Ashes', item: 'Choice Band', gender: '',
@@ -191,7 +191,7 @@ export const stbSets: STBSets = {
 export class RandomStaffBrosTeams extends RandomTeams {
 	randomStaffBrosTeam(options: {inBattle?: boolean} = {}) {
 		const team: PokemonSet[] = [];
-		const debug: string[] = []; // Set this to a list of SSB sets to override the normal pool for debugging.
+		const debug: string[] = ['MightySharkVGC', 'TacocaT_2595', 'crimsonKangaroo']; // Set this to a list of SSB sets to override the normal pool for debugging.
 		const pool = debug.length ? debug : Object.keys(stbSets);
 		const typePool: {[k: string]: number} = {};
 		let depth = 0;
