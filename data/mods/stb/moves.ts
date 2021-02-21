@@ -833,6 +833,29 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "normal",
 		type: "Rock",
 	},
+	// SteelOsprei
+	stoneedgebutitdoesntmiss: {
+		accuracy: true,
+		basePower: 100,
+		category: "Physical",
+		name: 'Stone edge but it doesn\'t miss',
+		gen: 8,
+		pp: 5,
+		priority: 0,
+		desc: "Has a higher chance for a critical hit. Doesn't miss.",
+		shortDesc: "Stone Edge but it doesn't miss.",
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Stone Edge', target);
+		},
+		flags: {protect: 1, mirror: 1},
+		secondary: null,
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Rock",
+	},
 	// TacocaT_2595
 	kaboom: {
 		accuracy: 100,

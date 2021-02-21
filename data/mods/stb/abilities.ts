@@ -516,6 +516,21 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		gen: 8,
 		rating: 3,
 	},
+	// SteelOsprei
+	verywelltrained: {
+		desc: "This Pokémon's moves and their effects ignore the Abilities and held items of other Pokémon.",
+		shortDesc: "Mold Breaker but also with items",
+		name: "Very Well Trained",
+		onStart(pokemon) {
+			this.add('-ability', pokemon, 'Very Well Trained');
+		},
+		// ability-ignoring portion is (probably) done by changing the code of the items themselves
+		onModifyMove(move) {
+			move.ignoreAbility = true;
+		},
+		isNonstandard: "Custom",
+		gen: 8,
+	},
 	// TacocaT_2595
 	stainlesssteel: {
 		desc: "This Pokémon takes 2/3rds damage from supereffective attacks, and raises its defense and special defense when it gets hit by a supereffective move",
