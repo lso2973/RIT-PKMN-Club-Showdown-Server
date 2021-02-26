@@ -478,7 +478,7 @@ export const Formats: FormatList = [
 
 		mod: 'gen8',
 		ruleset: ['Standard', 'Dynamax Clause'],
-		banlist: ['Uber', 'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'Baton Pass'],
+		banlist: ['Uber', 'AG', 'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'Baton Pass'],
 	},
 	{
 		name: "[Gen 8] OU (Blitz)",
@@ -622,7 +622,7 @@ export const Formats: FormatList = [
 
 		mod: 'gen8',
 		ruleset: ['[Gen 8] PU'],
-		banlist: ['PU', 'Exeggutor-Alola', 'Gallade', 'Haunter', 'Scrafty', 'Toxicroak', 'Turtonator', 'Vikavolt'],
+		banlist: ['PU', 'Exeggutor-Alola', 'Gallade', 'Haunter', 'Scrafty', 'Toxicroak', 'Turtonator', 'Vikavolt', 'Sneasel'],
 	},
 	{
 		name: "[Gen 8] LC UU",
@@ -786,10 +786,10 @@ export const Formats: FormatList = [
 		},
 		ruleset: ['Standard Doubles', 'Accuracy Moves Clause', 'Dynamax Clause', 'Sleep Clause Mod'],
 		banlist: [
-			'Calyrex-Ice', 'Calyrex-Shadow', 'Dialga', 'Eternatus', 'Giratina', 'Giratina-Origin', 'Groudon', 'Ho-Oh', 'Jirachi',
-			'Kyogre', 'Kyurem-White', 'Lugia', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings',
-			'Necrozma-Dusk-Mane', 'Palkia', 'Rayquaza', 'Reshiram', 'Solgaleo', 'Xerneas', 'Yveltal', 'Zacian', 'Zamazenta', 'Zekrom',
-			'Power Construct', 'Focus Sash', 'Final Gambit', 'Perish Song', 'Swagger',
+			'Calyrex-Ice', 'Calyrex-Shadow', 'Dialga', 'Eternatus', 'Giratina', 'Giratina-Origin', 'Groudon', 'Ho-Oh', 'Jirachi', 'Kyogre',
+			'Kyurem-White', 'Lugia', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Palkia',
+			'Rayquaza', 'Reshiram', 'Solgaleo', 'Xerneas', 'Yveltal', 'Zacian', 'Zacian-Crowned', 'Zamazenta', 'Zamazenta-Crowned', 'Zekrom',
+			'Power Construct', 'Focus Sash', 'Ally Switch', 'Final Gambit', 'Perish Song', 'Swagger',
 		],
 	},
 	{
@@ -923,10 +923,10 @@ export const Formats: FormatList = [
 		mod: 'gen8',
 		ruleset: ['Standard NatDex', 'Same Type Clause', 'Species Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Dynamax Clause', 'Sleep Clause Mod'],
 		banlist: [
-			'Arceus', 'Blastoise-Mega', 'Blaziken', 'Calyrex-Ice', 'Calyrex-Shadow', 'Darkrai', 'Deoxys-Base', 'Deoxys-Attack', 'Dialga', 'Dragapult', 'Eternatus', 'Genesect', 'Gengar-Mega',
-			'Giratina', 'Giratina-Origin', 'Groudon', 'Ho-Oh', 'Hoopa-Unbound', 'Kangaskhan-Mega', 'Kartana', 'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Lucario-Mega', 'Lugia', 'Lunala',
-			'Magearna', 'Marshadow', 'Mawile-Mega', 'Medicham-Mega', 'Metagross-Mega', 'Mewtwo', 'Naganadel', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Palkia', 'Pheromosa', 'Rayquaza',
-			'Reshiram', 'Salamence-Mega', 'Shaymin-Sky', 'Solgaleo', 'Xerneas', 'Yveltal', 'Zacian', 'Zacian-Crowned', 'Zamazenta', 'Zamazenta-Crowned', 'Zekrom', 'Zygarde-Base',
+			'Arceus', 'Blastoise-Mega', 'Blaziken', 'Calyrex-Ice', 'Calyrex-Shadow', 'Darkrai', 'Deoxys-Base', 'Deoxys-Attack', 'Dialga', 'Dracovish', 'Dragapult', 'Eternatus', 'Genesect',
+			'Gengar-Mega', 'Giratina', 'Giratina-Origin', 'Groudon', 'Ho-Oh', 'Hoopa-Unbound', 'Kangaskhan-Mega', 'Kartana', 'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Lucario-Mega', 'Lugia',
+			'Lunala', 'Magearna', 'Marshadow', 'Mawile-Mega', 'Medicham-Mega', 'Metagross-Mega', 'Mewtwo', 'Naganadel', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Palkia', 'Pheromosa',
+			'Rayquaza', 'Reshiram', 'Salamence-Mega', 'Shaymin-Sky', 'Solgaleo', 'Xerneas', 'Yveltal', 'Zacian', 'Zacian-Crowned', 'Zamazenta', 'Zamazenta-Crowned', 'Zekrom', 'Zygarde-Base',
 			'Battle Bond', 'Moody', 'Power Construct', 'Shadow Tag', 'Damp Rock', 'Smooth Rock', 'Terrain Extender', 'Baton Pass',
 		],
 	},
@@ -961,6 +961,7 @@ export const Formats: FormatList = [
 			'Necrozma-Dusk-Mane', 'Necrozma-Ultra', 'Palkia', 'Pheromosa', 'Rayquaza', 'Reshiram', 'Salamence-Mega', 'Shaymin-Sky', 'Solgaleo', 'Spectrier',
 			'Tornadus-Therian', 'Urshifu-Base', 'Xerneas', 'Yveltal', 'Zacian', 'Zamazenta', 'Zekrom', 'Zygarde-Base', 'Zygarde-Complete', 'Calyrex-Ice', 'Calyrex-Shadow',
 			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'Baton Pass',
+			'Dragonitite', // this is temporary (it's being nerfed)
 		],
 	},
 	{
@@ -1023,12 +1024,13 @@ export const Formats: FormatList = [
 		// searchShow: false,
 		ruleset: ['Standard', '2 Ability Clause', 'Dynamax Clause'],
 		banlist: [
-			'Blacephalon', 'Blaziken', 'Butterfree', 'Calyrex-Ice', 'Calyrex-Shadow', 'Chansey', 'Combusken', 'Cresselia', 'Darmanitan-Galar', 'Dialga', 'Dracovish', 'Eternatus',
-			'Giratina', 'Giratina-Origin', 'Groudon', 'Ho-Oh', 'Kartana', 'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Landorus-Base', 'Lugia', 'Lunala', 'Marshadow', 'Melmetal',
-			'Mewtwo', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Palkia', 'Pheromosa', 'Rayquaza', 'Regieleki', 'Regigigas', 'Reshiram', 'Sableye', 'Shedinja', 'Solgaleo',
-			'Spectrier', 'Toxtricity', 'Torkoal', 'Urshifu-Base', 'Xerneas', 'Yveltal', 'Zacian', 'Zacian-Crowned', 'Zamazenta', 'Zamazenta-Crowned', 'Zekrom',
-			'Arena Trap', 'Huge Power', 'Imposter', 'Innards Out', 'Libero', 'Moody', 'Power Construct', 'Pure Power', 'Shadow Tag', 'Simple', 'Unburden', 'Water Bubble',
-			'Baton Pass', 'Bolt Beak', 'Fishious Rend', 'Shell Smash',
+			'Blacephalon', 'Blaziken', 'Butterfree', 'Calyrex-Ice', 'Calyrex-Shadow', 'Chansey', 'Combusken', 'Cresselia', 'Darmanitan-Galar', 'Dialga', 'Dracovish',
+			'Eternatus', 'Giratina', 'Giratina-Origin', 'Groudon', 'Ho-Oh', 'Kartana', 'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Landorus-Base', 'Lugia', 'Lunala',
+			'Marshadow', 'Melmetal', 'Mewtwo', 'Natu', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Palkia', 'Pheromosa', 'Rayquaza', 'Regieleki', 'Regigigas',
+			'Reshiram', 'Sableye', 'Shedinja', 'Solgaleo', 'Spectrier', 'Tapu Koko', 'Toxtricity', 'Torkoal', 'Urshifu-Base', 'Xatu', 'Xerneas', 'Yveltal', 'Zacian',
+			'Zacian-Crowned', 'Zamazenta', 'Zamazenta-Crowned', 'Zeraora', 'Zekrom', 'Arena Trap', 'Contrary', 'Drizzle', 'Huge Power', 'Imposter', 'Innards Out',
+			'Libero', 'Moody', 'Power Construct', 'Pure Power', 'Shadow Tag', 'Simple', 'Unaware', 'Unburden', 'Water Bubble', 'Baton Pass', 'Bolt Beak', 'Fishious Rend',
+			'Shell Smash',
 		],
 		getEvoFamily(speciesid) {
 			let species = Dex.getSpecies(speciesid);
@@ -1305,7 +1307,7 @@ export const Formats: FormatList = [
 			const itemTable = new Set<ID>();
 			for (const set of team) {
 				const item = this.dex.getItem(set.item);
-				if (!item || !item.megaStone) continue;
+				if (!item?.megaStone) continue;
 				const species = this.dex.getSpecies(set.species);
 				if (species.isNonstandard) return [`${species.baseSpecies} does not exist in gen 8.`];
 				if (this.ruleTable.isRestrictedSpecies(species) || this.toID(set.ability) === 'powerconstruct') {
@@ -1352,10 +1354,10 @@ export const Formats: FormatList = [
 		mod: 'gen8',
 		ruleset: ['Obtainable', '!Obtainable Abilities', 'Species Clause', 'Nickname Clause', '2 Ability Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Dynamax Clause', 'Sleep Clause Mod', 'Endless Battle Clause'],
 		banlist: [
-			'Buzzwole', 'Calyrex-Ice', 'Calyrex-Shadow', 'Dialga', 'Dracovish', 'Dragapult', 'Dragonite', 'Eternatus', 'Giratina', 'Giratina-Origin', 'Groudon',
-			'Ho-Oh', 'Kartana', 'Keldeo', 'Kyogre', 'Kyurem', 'Kyurem-Black', 'Kyurem-White', 'Lugia', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo',
-			'Naganadel', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Palkia', 'Pheromosa', 'Rayquaza', 'Regigigas', 'Reshiram', 'Shedinja', 'Solgaleo', 'Spectrier',
-			'Urshifu-Base', 'Urshifu-Rapid-Strike', 'Xerneas', 'Yveltal', 'Zacian', 'Zacian-Crowned', 'Zamazenta', 'Zamazenta-Crowned', 'Zekrom', 'Zeraora', 'Zygarde-Base',
+			'Buzzwole', 'Calyrex-Ice', 'Calyrex-Shadow', 'Dialga', 'Dracovish', 'Dragapult', 'Dragonite', 'Eternatus', 'Giratina', 'Giratina-Origin', 'Groudon', 'Ho-Oh',
+			'Kartana', 'Keldeo', 'Kyogre', 'Kyurem', 'Kyurem-Black', 'Kyurem-White', 'Lugia', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Naganadel',
+			'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Palkia', 'Pheromosa', 'Rayquaza', 'Regigigas', 'Reshiram', 'Shedinja', 'Solgaleo', 'Spectrier', 'Urshifu-Base',
+			'Urshifu-Rapid-Strike', 'Victini', 'Xerneas', 'Yveltal', 'Zacian', 'Zacian-Crowned', 'Zamazenta', 'Zamazenta-Crowned', 'Zekrom', 'Zeraora', 'Zygarde-Base',
 			'Arena Trap', 'Comatose', 'Contrary', 'Fluffy', 'Fur Coat', 'Gorilla Tactics', 'Huge Power', 'Ice Scales', 'Illusion', 'Imposter', 'Innards Out', 'Intrepid Sword', 'Libero',
 			'Moody', 'Neutralizing Gas', 'Parental Bond', 'Power Construct', 'Protean', 'Pure Power', 'Shadow Tag', 'Simple', 'Stakeout', 'Speed Boost', 'Water Bubble', 'Wonder Guard',
 			'Baton Pass',
@@ -1371,9 +1373,10 @@ export const Formats: FormatList = [
 		mod: 'gen8',
 		ruleset: ['Standard', 'STABmons Move Legality', 'Dynamax Clause'],
 		banlist: [
-			'Calyrex-Ice', 'Calyrex-Shadow', 'Darmanitan-Galar', 'Dialga', 'Dracovish', 'Dragapult', 'Eternatus', 'Genesect', 'Giratina', 'Giratina-Origin', 'Groudon', 'Ho-Oh', 'Kartana', 'Kyogre',
-			'Kyurem-Black', 'Kyurem-White', 'Landorus-Base', 'Lugia', 'Lunala', 'Mamoswine', 'Marshadow', 'Mewtwo', 'Naganadel', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Palkia', 'Pheromosa',
-			'Porygon-Z', 'Rayquaza', 'Reshiram', 'Silvally', 'Solgaleo', 'Thundurus-Base', 'Xerneas', 'Yveltal', 'Zacian', 'Zacian-Crowned', 'Zamazenta', 'Zamazenta-Crowned', 'Zekrom', 'Zygarde-Base',
+			'Calyrex-Ice', 'Calyrex-Shadow', 'Darmanitan-Galar', 'Dialga', 'Dracovish', 'Dragapult', 'Eternatus', 'Genesect', 'Giratina', 'Giratina-Origin',
+			'Groudon', 'Ho-Oh', 'Kartana', 'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Landorus-Base', 'Lugia', 'Lunala', 'Mamoswine', 'Marshadow', 'Mewtwo',
+			'Naganadel', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Palkia', 'Pheromosa', 'Porygon-Z', 'Rayquaza', 'Reshiram', 'Silvally', 'Solgaleo',
+			'Thundurus-Base', 'Urshifu-Base', 'Xerneas', 'Yveltal', 'Zacian', 'Zacian-Crowned', 'Zamazenta', 'Zamazenta-Crowned', 'Zekrom', 'Zygarde-Base',
 			'Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'King\'s Rock', 'Baton Pass',
 		],
 		restricted: [
@@ -1457,7 +1460,7 @@ export const Formats: FormatList = [
 		},
 		checkCanLearn(move, species, lsetData, set) {
 			// @ts-ignore
-			if (!set.sp || !set.sp.exists || !set.crossSpecies || !set.crossSpecies.exists) {
+			if (!set.sp?.exists || !set.crossSpecies?.exists) {
 				return this.checkCanLearn(move, species, lsetData, set);
 			}
 			// @ts-ignore
@@ -1562,11 +1565,11 @@ export const Formats: FormatList = [
 		ruleset: ['Standard', 'Dynamax Clause'],
 		banlist: ['Blissey', 'Chansey', 'Toxapex', 'Uber > 1', 'AG ++ Uber > 1', 'Arena Trap', 'Huge Power', 'Moody', 'Pure Power', 'Shadow Tag', 'Baton Pass'],
 		onModifySpecies(species, target, source) {
-			if (source || !target || !target.side) return;
+			if (source || !target?.side) return;
 			const god = target.side.team.find(set => {
 				let godSpecies = this.dex.getSpecies(set.species);
 				const validator = this.dex.getRuleTable(this.dex.getFormat(`gen${this.gen}ou`));
-				if (this.toID(set.ability) === 'powerconstruct' && this.gen === 7) {
+				if (this.toID(set.ability) === 'powerconstruct') {
 					return true;
 				}
 				if (set.item) {
@@ -1706,7 +1709,7 @@ export const Formats: FormatList = [
 				if (target.set.moves.includes('auroraveil')) tier = 'nubl';
 			}
 			const pokemon = this.dex.deepClone(species);
-			pokemon.bst = 0;
+			pokemon.bst = pokemon.baseStats['hp'];
 			const boost = boosts[tier];
 			let statName: StatName;
 			for (statName in pokemon.baseStats as StatsTable) {
@@ -1799,21 +1802,6 @@ export const Formats: FormatList = [
 			},
 		},
 	},
-	{
-		name: "[Gen 7] Balanced Hackmons",
-		desc: `Anything that can be hacked in-game and is usable in local battles is allowed.`,
-		threads: [
-			`&bullet; <a href="https://www.smogon.com/forums/posts/8407209/">USM Balanced Hackmons</a>`,
-		],
-
-		mod: 'gen7',
-		searchShow: false,
-		ruleset: ['-Nonexistent', '2 Ability Clause', 'OHKO Clause', 'Evasion Moves Clause', 'CFZ Clause', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod', 'Endless Battle Clause'],
-		banlist: [
-			'Groudon-Primal', 'Rayquaza-Mega', 'Gengarite', 'Comatose + Sleep Talk', 'Chatter',
-			'Arena Trap', 'Contrary', 'Huge Power', 'Illusion', 'Innards Out', 'Magnet Pull', 'Moody', 'Parental Bond', 'Protean', 'Psychic Surge', 'Pure Power', 'Shadow Tag', 'Stakeout', 'Water Bubble', 'Wonder Guard',
-		],
-	},
 
 	// Randomized Metas
 	///////////////////////////////////////////////////////////////////
@@ -1892,6 +1880,13 @@ export const Formats: FormatList = [
 		},
 	},
 	{
+		name: "[Gen 8] Challenge Cup",
+
+		mod: 'gen8',
+		team: 'randomCC',
+		ruleset: ['Obtainable', 'HP Percentage Mod', 'Cancel Mod'],
+	},
+	{
 		name: "[Gen 8] Challenge Cup 1v1",
 
 		mod: 'gen8',
@@ -1899,7 +1894,7 @@ export const Formats: FormatList = [
 		teamLength: {
 			battle: 1,
 		},
-		ruleset: ['Obtainable', 'HP Percentage Mod', 'Cancel Mod', 'Team Preview', 'Dynamax Clause'],
+		ruleset: ['[Gen 8] Challenge Cup', 'Team Preview', 'Dynamax Clause'],
 	},
 	{
 		name: "[Gen 8] Challenge Cup 2v2",
@@ -1911,7 +1906,7 @@ export const Formats: FormatList = [
 			battle: 2,
 		},
 		searchShow: false,
-		ruleset: ['Obtainable', 'HP Percentage Mod', 'Cancel Mod', 'Team Preview', 'Dynamax Clause'],
+		ruleset: ['[Gen 8] Challenge Cup 1v1'],
 	},
 	{
 		name: "[Gen 8] Hackmons Cup",
@@ -2064,7 +2059,6 @@ export const Formats: FormatList = [
 		mod: 'gen1',
 		team: 'randomCC',
 		searchShow: false,
-		challengeShow: false,
 		ruleset: ['Obtainable', 'HP Percentage Mod', 'Cancel Mod', 'Desync Clause Mod'],
 	},
 
@@ -2085,7 +2079,7 @@ export const Formats: FormatList = [
 		mod: 'gen3',
 		// searchShow: false,
 		ruleset: ['Standard', 'NFE Clause'],
-		banlist: ['Uber', 'OU', 'UUBL', 'Smeargle + Ingrain'],
+		banlist: ['Uber', 'OU', 'UUBL', 'Smeargle + Ingrain', 'Baton Pass'],
 		unbanlist: ['Scyther', 'Sand Veil'],
 	},
 	{
@@ -2098,6 +2092,7 @@ export const Formats: FormatList = [
 		// searchShow: false,
 		ruleset: ['[Gen 3] UU', '!NFE Clause'],
 		banlist: ['UU'],
+		unbanlist: ['Baton Pass'],
 	},
 	{
 		name: "[Gen 6] Almost Any Ability",
@@ -2211,6 +2206,37 @@ export const Formats: FormatList = [
 		mod: 'gen1',
 		ruleset: ['Standard'],
 		banlist: ['Uber'],
+	},
+
+	// Retro Other Metagames
+	///////////////////////////////////////////////////////////////////
+	{
+		section: "Retro Other Metagames",
+		column: 3,
+	},
+	{
+		name: "[Gen 7] Balanced Hackmons",
+		desc: `Anything that can be hacked in-game and is usable in local battles is allowed.`,
+		threads: [
+			`&bullet; <a href="https://www.smogon.com/forums/posts/8407209/">USM Balanced Hackmons</a>`,
+		],
+
+		mod: 'gen7',
+		ruleset: ['-Nonexistent', '2 Ability Clause', 'OHKO Clause', 'Evasion Moves Clause', 'CFZ Clause', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod', 'Endless Battle Clause'],
+		banlist: [
+			'Groudon-Primal', 'Rayquaza-Mega', 'Gengarite', 'Comatose + Sleep Talk', 'Chatter',
+			'Arena Trap', 'Contrary', 'Huge Power', 'Illusion', 'Innards Out', 'Magnet Pull', 'Moody', 'Parental Bond', 'Protean', 'Psychic Surge', 'Pure Power', 'Shadow Tag', 'Stakeout', 'Water Bubble', 'Wonder Guard',
+		],
+	},
+	{
+		name: "[Gen 6] Pure Hackmons",
+		desc: `Anything that can be hacked in-game and is usable in local battles is allowed.`,
+		threads: [
+			`&bullet; <a href="https://www.smogon.com/forums/posts/8111004/">ORAS Pure Hackmons</a>`,
+		],
+
+		mod: 'gen6',
+		ruleset: ['-Nonexistent', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Endless Battle Clause'],
 	},
 
 	// US/UM Singles
@@ -2368,9 +2394,9 @@ export const Formats: FormatList = [
 	{
 		name: "[Gen 7] CAP",
 		threads: [
-			`&bullet; <a href="https://www.smogon.com/forums/threads/3621207/">CAP Metagame Discussion</a>`,
-			`&bullet; <a href="https://www.smogon.com/forums/threads/3626018/">CAP Viability Rankings</a>`,
-			`&bullet; <a href="https://www.smogon.com/forums/threads/3648521/">CAP Sample Teams</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3621207/">USUM CAP Metagame Discussion</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/posts/8691482/">USUM CAP Viability Rankings</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/posts/8691484/">USUM CAP Sample Teams</a>`,
 		],
 
 		mod: 'gen7',
@@ -2708,8 +2734,8 @@ export const Formats: FormatList = [
 		name: "[Gen 6] CAP",
 		threads: [
 			`&bullet; <a href="https://www.smogon.com/forums/threads/3537407/">ORAS CAP Metagame Discussion</a>`,
-			`&bullet; <a href="https://www.smogon.com/forums/posts/5594694/">ORAS CAP Sample Teams</a>`,
-			`&bullet; <a href="https://www.smogon.com/forums/threads/3545628/">ORAS CAP Viability Rankings</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/posts/8752281/">ORAS CAP Sample Teams</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/posts/8752280/">ORAS CAP Viability Rankings</a>`,
 		],
 
 		mod: 'gen6',
@@ -2979,7 +3005,7 @@ export const Formats: FormatList = [
 			battle: 1,
 		},
 		ruleset: ['Standard', 'Baton Pass Clause', 'Swagger Clause'],
-		banlist: ['Uber', 'Cottonee', 'Kyurem-Black', 'Whimsicott', 'Focus Sash', 'Soul Dew', 'Perish Song'],
+		banlist: ['Uber', 'Cottonee', 'Dragonite', 'Kyurem-Black', 'Whimsicott', 'Focus Sash', 'Soul Dew', 'Perish Song'],
 		unbanlist: ['Genesect', 'Landorus', 'Manaphy', 'Thundurus', 'Tornadus-Therian'],
 	},
 	{
@@ -3246,7 +3272,7 @@ export const Formats: FormatList = [
 
 		mod: 'gen3',
 		searchShow: false,
-		ruleset: ['Standard'],
+		ruleset: ['Standard', 'Deoxys Camouflage Clause'],
 		banlist: ['Wobbuffet + Leftovers'],
 	},
 	{
@@ -3376,7 +3402,7 @@ export const Formats: FormatList = [
 	{
 		name: "[Gen 1] Stadium OU",
 
-		mod: 'stadium',
+		mod: 'gen1stadium',
 		searchShow: false,
 		ruleset: ['Standard', 'Team Preview'],
 		banlist: ['Uber',

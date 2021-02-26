@@ -14,6 +14,12 @@ import * as path from 'path';
 import * as child_process from 'child_process';
 import {FS, Utils, ProcessManager} from '../../lib';
 
+interface ProcessData {
+	cmd: string;
+	cpu?: string;
+	time?: string;
+}
+
 function bash(command: string, context: CommandContext, cwd?: string): Promise<[number, string, string]> {
 	context.stafflog(`$ ${command}`);
 	return new Promise(resolve => {
@@ -275,7 +281,7 @@ export const commands: ChatCommands = {
 		pageid = `${user.id}-${toID(pageid)}`;
 
 		const targetUser = Users.get(targetID)!;
-		if (!targetUser || !targetUser.connected) {
+		if (!targetUser?.connected) {
 			this.errorReply(`User ${this.targetUsername} is not currently online.`);
 			return false;
 		}
@@ -319,7 +325,7 @@ export const commands: ChatCommands = {
 		pageid = `${user.id}-${toID(pageid)}`;
 		if (!userid || !pageid || !target) return this.parse(`/help highlighthtmlpage`);
 		const targetUser = Users.get(userid);
-		if (!targetUser || !targetUser.connected) {
+		if (!targetUser?.connected) {
 			throw new Chat.ErrorMessage(`User ${this.targetUsername} is not currently online.`);
 		}
 		if (targetUser.locked && !this.user.can('lock')) {
@@ -602,16 +608,58 @@ export const commands: ChatCommands = {
 			this.checkCan('lockdown');
 		}
 
-		let buf = `<strong>${process.pid}</strong> - Main<br />`;
-		for (const manager of ProcessManager.processManagers) {
-			for (const [i, process] of manager.processes.entries()) {
-				buf += `<strong>${process.getProcess().pid}</strong> - ${manager.basename} ${i} (load ${process.load})<br />`;
-			}
-			for (const [i, process] of manager.releasingProcesses.entries()) {
-				buf += `<strong>${process.getProcess().pid}</strong> - PENDING RELEASE ${manager.basename} ${i} (load ${process.load})<br />`;
-			}
+		const processes = new Map<string, ProcessData>();
+
+		const psOutput = child_process.execSync('ps -o pid,%cpu,time,command', {cwd: `${__dirname}/../..`}).toString();
+		const rows = psOutput.split('\n').slice(1); // first line is the table header
+		for (const row of rows) {
+			if (!row.trim()) continue;
+			const [pid, cpu, time, ...rest] = row.split(' ').filter(Boolean);
+			const entry: ProcessData = {cmd: rest.join(' ')};
+			if (time && time !== '00:00:00') entry.time = time;
+			if (cpu && cpu !== '0.0') entry.cpu = `${cpu}%`;
+			processes.set(pid, entry);
 		}
 
+		let buf = `<strong>${process.pid}</strong> - Main `;
+		const mainProcess = processes.get(`${process.pid}`)!;
+		if (mainProcess.cpu) buf += `(CPU ${mainProcess.cpu}`;
+		if (mainProcess.time) buf += mainProcess.cpu ? `, time: ${mainProcess.time})` : `(time: ${mainProcess.time})`;
+		buf += `<br /><br /><strong>Process managers:</strong><br />`;
+		processes.delete(`${process.pid}`);
+
+		for (const manager of ProcessManager.processManagers) {
+			for (const [i, process] of manager.processes.entries()) {
+				const pid = process.getProcess().pid;
+				buf += `<strong>${pid}</strong> - ${manager.basename} ${i} (load ${process.load}`;
+				const info = processes.get(`${pid}`)!;
+				if (info.cpu) buf += `, CPU: ${info.cpu}`;
+				if (info.time) buf += `, time: ${info.time}`;
+				buf += `)<br />`;
+				processes.delete(`${pid}`);
+			}
+			for (const [i, process] of manager.releasingProcesses.entries()) {
+				const pid = process.getProcess().pid;
+				buf += `<strong>${pid}</strong> - PENDING RELEASE ${manager.basename} ${i} (load ${process.load}`;
+				const info = processes.get(`${pid}`)!;
+				if (info.cpu) buf += `, CPU: ${info.cpu}`;
+				if (info.time) buf += `, time: ${info.time}`;
+				buf += `)<br />`;
+				processes.delete(`${pid}`);
+			}
+		}
+		buf += `<br />`;
+		buf += `<details class="readmore"><summary><strong>Other processes:</strong></summary>`;
+
+		for (const [pid, process] of processes) {
+			buf += `<strong>${pid}</strong> - <code>${process.cmd}</code>`;
+			if (process.cpu) buf += ` (CPU: ${process.cpu}`;
+			if (process.time) {
+				buf += `${process.cpu ? `, ` : ' ('}time: ${process.time})`;
+			}
+			buf += `<br />`;
+		}
+		buf += `</details>`;
 		this.sendReplyBox(buf);
 	},
 
@@ -642,7 +690,7 @@ export const commands: ChatCommands = {
 		if (!parsed) {
 			return this.errorReply(`Command "/${target}" is in an invalid format.`);
 		}
-		const {handler, cmd} = parsed;
+		const {handler, fullCmd} = parsed;
 		if (!handler) {
 			return this.errorReply(`Command "/${target}" not found.`);
 		}
@@ -650,7 +698,7 @@ export const commands: ChatCommands = {
 			return this.errorReply(`Command "/${target}" is already disabled`);
 		}
 		handler.disabled = true;
-		this.addGlobalModAction(`${user.name} disabled the command /${cmd}.`);
+		this.addGlobalModAction(`${user.name} disabled the command /${fullCmd}.`);
 		this.globalModlog(`DISABLECOMMAND`, null, target);
 	},
 	disablecommandhelp: [`/disablecommand [command] - Disables the given [command]. Requires: &`],

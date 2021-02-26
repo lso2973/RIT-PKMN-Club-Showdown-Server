@@ -223,9 +223,11 @@ export class Hangman extends Rooms.RoomGame {
 		if (!hangmanData[room]) {
 			hangmanData[room] = {};
 			this.save();
-			throw new Chat.ErrorMessage(`The room ${room} has no saved hangman words.`);
 		}
-		const shuffled = Utils.randomElement(Object.keys(hangmanData[room]));
+		const phrases = Object.keys(hangmanData[room]);
+		if (!phrases.length) throw new Chat.ErrorMessage(`The room ${room} has no saved hangman words.`);
+
+		const shuffled = Utils.randomElement(phrases);
 		const hints = hangmanData[room][shuffled];
 		return {
 			question: shuffled,
@@ -257,6 +259,7 @@ export const commands: ChatCommands = {
 		create: 'new',
 		new(target, room, user, connection) {
 			room = this.requireRoom();
+			target = target.trim();
 			const text = this.filter(target);
 			if (target !== text) return this.errorReply("You are not allowed to use filtered words in hangmans.");
 			const params = text.split(',');
@@ -408,6 +411,7 @@ export const commands: ChatCommands = {
 			}
 			Hangman.save();
 		},
+		view: 'terms',
 		terms(target, room, user) {
 			room = this.requireRoom();
 			return this.parse(`/j view-hangman-${target || room.roomid}`);
@@ -427,24 +431,30 @@ export const commands: ChatCommands = {
 		`/hangman addrandom [word], [...hints] - Adds an entry for [word] with the [hints] provided to the room's hangman pool. Requires: % @ # &`,
 		`/hangman removerandom [word][, hints] - Removes data from the hangman entry for [word]. If hints are given, removes only those hints.` +
 		` Otherwise it removes the entire entry. Requires: % @ # &`,
+		`/hangman terms - Displays all random hangman in a room. Requires: % @ # &`,
 	],
 };
 
 export const pages: PageTable = {
 	hangman(args, user) {
 		const room = this.requireRoom();
+		this.title = `[Hangman]`;
 		this.checkCan('mute', null, room);
-		let buf = `<div class="pad"><h2>Hangman entries on ${room.title}</h2>`;
+		let buf = `<div class="pad"><button style="float:right;" class="button" name="send" value="/join view-hangman-${room.roomid}"><i class="fa fa-refresh"></i> Refresh</button>`;
+		buf += `<div class="pad"><h2>Hangman entries on ${room.title}</h2>`;
 		const roomTerms = hangmanData[room.roomid];
 		if (!roomTerms) {
 			return this.errorReply(`No hangman terms found for ${room.title}.`);
 		}
 		for (const t in roomTerms) {
 			buf += `<div class="infobox">`;
-			buf += `<strong>${t}</strong>:<br />`;
-			buf += roomTerms[t].map(
-				hint => `<button class="button" name="send" value="/hangman rr ${t},${hint},room:${room.roomid}">${hint}</button>`
-			);
+			buf += `<h3>${t}</h3><hr />`;
+			if (user.can('mute', null, room, 'hangman addrandom')) {
+				buf += roomTerms[t].map(
+					hint => `${hint} <button class="button" name="send" value="/msgroom ${room.roomid}, /hangman rr ${t},${hint}" aria-label="Delete"><i class="fa fa-trash"></i></button>`
+				).join(', ');
+				buf += `<button style="float:right;" class="button" name="send" value="/msgroom ${room.roomid}, /hangman rr ${t}"><i class="fa fa-trash"></i> Delete all terms</button>`;
+			}
 			buf += `</div><br />`;
 		}
 		buf += `</div>`;

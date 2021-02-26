@@ -557,11 +557,12 @@ export class CommandContext extends MessageContext {
 			});
 		} else if (message && message !== true) {
 			this.sendChatMessage(message as string);
+			message = true;
 		}
 
 		this.update();
 
-		return message as boolean;
+		return message;
 	}
 
 	sendChatMessage(message: string) {
@@ -630,7 +631,7 @@ export class CommandContext extends MessageContext {
 	}
 
 	checkSlowchat(room: Room | null | undefined, user: User) {
-		if (!room || !room.settings.slowchat) return true;
+		if (!room?.settings.slowchat) return true;
 		if (user.can('show', null, room)) return true;
 		const lastActiveSeconds = (Date.now() - user.lastMessageTime) / 1000;
 		if (lastActiveSeconds < room.settings.slowchat) {
@@ -655,7 +656,7 @@ export class CommandContext extends MessageContext {
 		return this.checkBanwords(room.parent as ChatRoom, message);
 	}
 	checkGameFilter() {
-		if (!this.room || !this.room.game || !this.room.game.onChatMessage) return;
+		if (!this.room?.game || !this.room.game.onChatMessage) return;
 		return this.room.game.onChatMessage(this.message, this.user);
 	}
 	pmTransform(originalMessage: string) {
@@ -811,6 +812,20 @@ export class CommandContext extends MessageContext {
 			}
 		}
 		(this.room || Rooms.global).modlog(entry);
+	}
+	parseSpoiler(str: string) {
+		let privateReason = "";
+		if (!str) return {publicReason: "", privateReason};
+
+		let publicReason = str;
+		const targetLowercase = str.toLowerCase();
+		if (targetLowercase.includes('spoiler:') || targetLowercase.includes('spoilers:')) {
+			const proofIndex = targetLowercase.indexOf(targetLowercase.includes('spoilers:') ? 'spoilers:' : 'spoiler:');
+			const bump = (targetLowercase.includes('spoilers:') ? 9 : 8);
+			privateReason = `(PROOF: ${str.substr(proofIndex + bump, str.length).trim()}) `;
+			publicReason = str.substr(0, proofIndex).trim();
+		}
+		return {publicReason, privateReason};
 	}
 	roomlog(data: string) {
 		if (this.room) this.room.roomlog(data);
@@ -1088,7 +1103,7 @@ export class CommandContext extends MessageContext {
 		return message;
 	}
 	checkPMHTML(targetUser: User | null) {
-		if (!targetUser || !targetUser.connected) {
+		if (!targetUser?.connected) {
 			throw new Chat.ErrorMessage(`User ${this.targetUsername} is not currently online.`);
 		}
 		if (!(this.room && (targetUser.id in this.room.users)) && !this.user.can('addhtml')) {
@@ -2095,10 +2110,10 @@ export const Chat = new class {
 	 */
 	getReadmoreBlock(str: string, isCode?: boolean, cutoff = 3) {
 		const params = str.slice(+str.startsWith('\n')).split('\n');
-		const output = [];
+		const output: string[] = [];
 		for (const param of params) {
 			if (output.length < cutoff && param.length > 80 && cutoff > 2) cutoff--;
-			output.push(Utils.escapeHTML(isCode ? Utils.forceWrap(param) : param));
+			output.push(Utils[isCode ? 'escapeHTMLForceWrap' : 'escapeHTML'](param));
 		}
 
 		if (output.length > cutoff) {

@@ -547,7 +547,7 @@ function checkIp(ip: string) {
 for (const room of Rooms.rooms.values()) {
 	if (!room.settings.isHelp || !room.game) continue;
 	const game = room.getGame(HelpTicket)!;
-	if (game.ticket) game.ticket = tickets[game.ticket.userid];
+	if (game.ticket && tickets[game.ticket.userid]) game.ticket = tickets[game.ticket.userid];
 }
 
 const delayWarningPreamble = `Hi! All global staff members are busy right now and we apologize for the delay. `;
@@ -1290,7 +1290,7 @@ export const commands: ChatCommands = {
 			if (!target) return this.parse(`/help helpticket close`);
 			let result = !(this.splitTarget(target) === 'false');
 			const ticket = tickets[toID(this.inputUsername)];
-			if (!ticket || !ticket.open || (ticket.userid !== user.id && !user.can('lock'))) {
+			if (!ticket?.open || (ticket.userid !== user.id && !user.can('lock'))) {
 				return this.errorReply(this.tr`${this.inputUsername} does not have an open ticket.`);
 			}
 			const helpRoom = Rooms.get(`help-${ticket.userid}`) as ChatRoom | null;

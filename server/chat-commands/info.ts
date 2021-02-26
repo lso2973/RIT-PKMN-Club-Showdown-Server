@@ -313,7 +313,7 @@ export const commands: ChatCommands = {
 		if (!userid) return this.errorReply("Please enter a valid username.");
 		const targetUser = Users.get(userid);
 		let buf = Utils.html`<strong class="username">${target}</strong>`;
-		if (!targetUser || !targetUser.connected) buf += ` <em style="color:gray">(offline)</em>`;
+		if (!targetUser?.connected) buf += ` <em style="color:gray">(offline)</em>`;
 
 		const roomauth = room?.auth.getDirect(userid);
 		if (roomauth && Config.groups[roomauth]?.name) {
@@ -436,19 +436,22 @@ export const commands: ChatCommands = {
 		const results: string[] = [];
 		const isAll = (cmd === 'ipsearchall');
 
+		// If the IP is a range ending with *, we remove the *, so we have to keep track of that now
+		// so that we can properly determine if a lack of users is caused by invalid input or if it's just an empty range.
+		const isValidRange = ip.endsWith('*') && IPTools.ipRangeRegex.test(ip);
 		if (/[a-z]/.test(ip)) {
 			// host
 			this.sendReply(`Users with host ${ip}${targetRoom ? ` in the room ${targetRoom.title}` : ``}:`);
 			for (const curUser of Users.users.values()) {
 				if (results.length > 100 && !isAll) continue;
-				if (!curUser.latestHost || !curUser.latestHost.endsWith(ip)) continue;
+				if (!curUser.latestHost?.endsWith(ip)) continue;
 				if (targetRoom && !curUser.inRooms.has(targetRoom.roomid)) continue;
 				results.push(`${curUser.connected ? ONLINE_SYMBOL : OFFLINE_SYMBOL} ${curUser.name}`);
 			}
 			if (results.length > 100 && !isAll) {
 				return this.sendReply(`More than 100 users match the specified IP range. Use /ipsearchall to retrieve the full list.`);
 			}
-		} else if (ip.endsWith('*')) {
+		} else if (isValidRange) {
 			// IP range
 			this.sendReply(`Users in IP range ${ip}${targetRoom ? ` in the room ${targetRoom.title}` : ``}:`);
 			ip = ip.slice(0, -1);
@@ -470,52 +473,12 @@ export const commands: ChatCommands = {
 			}
 		}
 		if (!results.length) {
-			if (!IPTools.ipRangeRegex.test(ip)) return this.errorReply(`${ip} is not a valid IP or host.`);
-			return this.sendReply(`No results found.`);
+			if (!isValidRange && !IPTools.ipRegex.test(ip)) return this.errorReply(`${ip} is not a valid IP or host.`);
+			return this.sendReply(`No users found.`);
 		}
 		return this.sendReply(results.join('; '));
 	},
 	ipsearchhelp: [`/ipsearch [ip|range|host], (room) - Find all users with specified IP, IP range, or host. If a room is provided only users in the room will be shown. Requires: &`],
-
-	us: 'usersearch',
-	usersearch(target) {
-		this.checkCan('lock');
-		target = toID(target);
-		if (!target) {
-			return this.parse(`/help usersearch`);
-		}
-		if (target.length < 3) {
-			return this.errorReply(`That's too short of a term to search for.`);
-		}
-		const results: {offline: string[], online: string[]} = {
-			offline: [],
-			online: [],
-		};
-
-		for (const curUser of Users.users.values()) {
-			if (!curUser.id.includes(target) || curUser.id.startsWith('guest')) continue;
-			if (curUser.connected) {
-				results.online.push(Utils.html`${ONLINE_SYMBOL} ${curUser.name}`);
-			} else {
-				results.offline.push(Utils.html`${OFFLINE_SYMBOL} ${curUser.name}`);
-			}
-		}
-		for (const k in results) {
-			Utils.sortBy(results[k as keyof typeof results], result => toID(result));
-		}
-		let resultString = `Users with a name matching '${target}':<br />`;
-		if (!results.offline.length && !results.online.length) {
-			resultString += `No users found.`;
-		} else {
-			resultString += results.online.join('; ');
-			if (results.offline.length) {
-				resultString += `<br /><br />`;
-				resultString += results.offline.join('; ');
-			}
-		}
-		return this.sendReplyBox(resultString);
-	},
-	usersearchhelp: [`/usersearch [pattern]: Looks for all names matching the [pattern]. Requires: % @ &`],
 
 	checkchallenges(target, room, user) {
 		room = this.requireRoom();
@@ -1650,7 +1613,6 @@ export const commands: ChatCommands = {
 			`<strong>lock</strong> - Locks a user (makes them unable to talk in any rooms or PM non-staff) for 2 days.`,
 			`<strong>weeklock</strong> - Locks a user for a week.`,
 			`<strong>namelock</strong> - Locks a user and prevents them from having a username for 2 days.`,
-			`<strong>groupchatban</strong> — Bans a user from creating or joining groupchats for a week or a month.`,
 			`<strong>globalban</strong> - Globally bans (makes them unable to connect and play games) for a week.`,
 		];
 
@@ -1756,7 +1718,8 @@ export const commands: ChatCommands = {
 			`- <a href="https://www.smogon.com/dp/articles/intro_comp_pokemon">An introduction to competitive Pok&eacute;mon</a><br />` +
 			`- <a href="https://www.smogon.com/sm/articles/sm_tiers">What do 'OU', 'UU', etc mean?</a><br />` +
 			`- <a href="https://www.smogon.com/dex/ss/formats/">What are the rules for each format?</a><br />` +
-			`- <a href="https://www.smogon.com/ss/articles/clauses">What is 'Sleep Clause' and other clauses?</a>`
+			`- <a href="https://www.smogon.com/ss/articles/clauses">What is 'Sleep Clause' and other clauses?</a><br />` +
+			`- <a href="https://www.smogon.com/articles/getting-started">Next Steps for Competitive Battling</a>`
 		);
 	},
 	introhelp: [
@@ -2514,7 +2477,7 @@ export const commands: ChatCommands = {
 	pickrandomhelp: [`/pick [option], [option], ... - Randomly selects an item from a list containing 2 or more elements.`],
 
 	shuffle(target, room, user) {
-		if (!target || !target.includes(',')) return this.parse('/help shuffle');
+		if (!target?.includes(',')) return this.parse('/help shuffle');
 		const args = target.split(',');
 		if (!this.runBroadcast(true)) return false;
 		const results = Utils.shuffle(args.map(arg => arg.trim()));
