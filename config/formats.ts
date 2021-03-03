@@ -131,75 +131,6 @@ export const Formats: FormatList = [
 		},
 	},
 	{
-		name: "[Gen 8] Partners in Crime",
-		desc: "Doubles-based metagame where both active ally Pok&eacute;mon share abilities and moves.",
-		threads: [
-			`&bullet; <a href="https://www.smogon.com/forums/threads/3664378/">Partners in Crime</a>`,
-		],
-
-		mod: 'pic',
-		gameType: 'doubles',
-		ruleset: ['[Gen 8] Doubles OU'],
-		banlist: ['Arctovish', 'Arctozolt', 'Dracovish', 'Dracozolt', 'Huge Power', 'Imposter', 'Normalize', 'Wonder Guard', 'Mimic', 'Sketch', 'Transform'],
-		restricted: ['Receiver', 'Trace'],
-		onSwitchInPriority: 2,
-		onSwitchIn(pokemon) {
-			if (this.p1.active.every(ally => ally && !ally.fainted)) {
-				const p1a = this.p1.active[0], p1b = this.p1.active[1];
-				if (p1a.ability !== p1b.ability) {
-					const p1a_innate = 'ability:' + p1b.ability;
-					p1a.volatiles[p1a_innate] = {id: p1a_innate, target: p1a};
-					const p1b_innate = 'ability:' + p1a.ability;
-					p1b.volatiles[p1b_innate] = {id: p1b_innate, target: p1b};
-				}
-			}
-			if (this.p2.active.every(ally => ally && !ally.fainted)) {
-				const p2a = this.p2.active[0], p2b = this.p2.active[1];
-				if (p2a.ability !== p2b.ability) {
-					const p2a_innate = 'ability:' + p2b.ability;
-					p2a.volatiles[p2a_innate] = {id: p2a_innate, target: p2a};
-					const p2b_innate = 'ability:' + p2a.ability;
-					p2b.volatiles[p2b_innate] = {id: p2b_innate, target: p2b};
-				}
-			}
-			const ally = pokemon.side.active.find(active => active && active !== pokemon && !active.fainted);
-			if (ally && ally.ability !== pokemon.ability) {
-				if (!pokemon.m.innate) {
-					pokemon.m.innate = 'ability:' + ally.ability;
-					delete pokemon.volatiles[pokemon.m.innate];
-					pokemon.addVolatile(pokemon.m.innate);
-				}
-				if (!ally.m.innate) {
-					ally.m.innate = 'ability:' + pokemon.ability;
-					delete ally.volatiles[ally.m.innate];
-					ally.addVolatile(ally.m.innate);
-				}
-			}
-		},
-		onSwitchOut(pokemon) {
-			if (pokemon.m.innate) {
-				pokemon.removeVolatile(pokemon.m.innate);
-				delete pokemon.m.innate;
-			}
-			const ally = pokemon.side.active.find(active => active && active !== pokemon && !active.fainted);
-			if (ally?.m.innate) {
-				ally.removeVolatile(ally.m.innate);
-				delete ally.m.innate;
-			}
-		},
-		onFaint(pokemon) {
-			if (pokemon.m.innate) {
-				pokemon.removeVolatile(pokemon.m.innate);
-				delete pokemon.m.innate;
-			}
-			const ally = pokemon.side.active.find(active => active && active !== pokemon && !active.fainted);
-			if (ally?.m.innate) {
-				ally.removeVolatile(ally.m.innate);
-				delete ally.m.innate;
-			}
-		},
-	},
-	{
 		name: "[Gen 8] National Dex Gen Wars",
 		desc: `Trainers select a generation, and battle with only Pokémon originating in that generation!`,
 		threads: [
@@ -220,6 +151,20 @@ export const Formats: FormatList = [
 		unbanlist: [
 			'Zygarde-10%', 'Urshifu-Rapid-Strike',
 		],
+	},
+	{
+		name: "[Gen 8] VGC No Restricted",
+		desc: "[Gen 8] VGC 2021 without the Restricted rule.",
+
+		mod: 'gen8',
+		gameType: 'doubles',
+		forcedLevel: 50,
+		teamLength: {
+			validate: [4, 6],
+			battle: 4,
+		},
+		ruleset: ['Standard GBU', 'VGC Timer'],
+		minSourceGen: 8,
 	},
 	{
 		section: "RIT Archive",
@@ -463,6 +408,75 @@ export const Formats: FormatList = [
 
 			'Body Press', 'Night Shade', 'Seismic Toss',
 		],
+	},
+	{
+		name: "[Gen 8] Partners in Crime",
+		desc: "Doubles-based metagame where both active ally Pok&eacute;mon share abilities and moves.",
+		threads: [
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3664378/">Partners in Crime</a>`,
+		],
+
+		mod: 'pic',
+		gameType: 'doubles',
+		ruleset: ['[Gen 8] Doubles OU'],
+		banlist: ['Arctovish', 'Arctozolt', 'Dracovish', 'Dracozolt', 'Huge Power', 'Imposter', 'Normalize', 'Wonder Guard', 'Mimic', 'Sketch', 'Transform'],
+		restricted: ['Receiver', 'Trace'],
+		onSwitchInPriority: 2,
+		onSwitchIn(pokemon) {
+			if (this.p1.active.every(ally => ally && !ally.fainted)) {
+				const p1a = this.p1.active[0], p1b = this.p1.active[1];
+				if (p1a.ability !== p1b.ability) {
+					const p1a_innate = 'ability:' + p1b.ability;
+					p1a.volatiles[p1a_innate] = {id: p1a_innate, target: p1a};
+					const p1b_innate = 'ability:' + p1a.ability;
+					p1b.volatiles[p1b_innate] = {id: p1b_innate, target: p1b};
+				}
+			}
+			if (this.p2.active.every(ally => ally && !ally.fainted)) {
+				const p2a = this.p2.active[0], p2b = this.p2.active[1];
+				if (p2a.ability !== p2b.ability) {
+					const p2a_innate = 'ability:' + p2b.ability;
+					p2a.volatiles[p2a_innate] = {id: p2a_innate, target: p2a};
+					const p2b_innate = 'ability:' + p2a.ability;
+					p2b.volatiles[p2b_innate] = {id: p2b_innate, target: p2b};
+				}
+			}
+			const ally = pokemon.side.active.find(active => active && active !== pokemon && !active.fainted);
+			if (ally && ally.ability !== pokemon.ability) {
+				if (!pokemon.m.innate) {
+					pokemon.m.innate = 'ability:' + ally.ability;
+					delete pokemon.volatiles[pokemon.m.innate];
+					pokemon.addVolatile(pokemon.m.innate);
+				}
+				if (!ally.m.innate) {
+					ally.m.innate = 'ability:' + pokemon.ability;
+					delete ally.volatiles[ally.m.innate];
+					ally.addVolatile(ally.m.innate);
+				}
+			}
+		},
+		onSwitchOut(pokemon) {
+			if (pokemon.m.innate) {
+				pokemon.removeVolatile(pokemon.m.innate);
+				delete pokemon.m.innate;
+			}
+			const ally = pokemon.side.active.find(active => active && active !== pokemon && !active.fainted);
+			if (ally?.m.innate) {
+				ally.removeVolatile(ally.m.innate);
+				delete ally.m.innate;
+			}
+		},
+		onFaint(pokemon) {
+			if (pokemon.m.innate) {
+				pokemon.removeVolatile(pokemon.m.innate);
+				delete pokemon.m.innate;
+			}
+			const ally = pokemon.side.active.find(active => active && active !== pokemon && !active.fainted);
+			if (ally?.m.innate) {
+				ally.removeVolatile(ally.m.innate);
+				delete ally.m.innate;
+			}
+		},
 	},
 	// Sw/Sh Singles
 	///////////////////////////////////////////////////////////////////
