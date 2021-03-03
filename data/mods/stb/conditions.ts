@@ -309,6 +309,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('Steeevo34')}|A wizard takes his secrets to the grave`);
 		},
 	},
+	steelosprei: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('SteelOsprei')}|My Mamoswine is just very well trained`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('SteelOsprei')}|You'll still be useful later`);
+		},
+		onFaint() {
+			this.add(`c|${getName('SteelOsprei')}|Sac and move on`);
+		},
+	},
 	tacocat2595: {
 		noCopy: true,
 		onStart() {

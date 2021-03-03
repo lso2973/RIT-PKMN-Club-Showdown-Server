@@ -72,7 +72,7 @@ export const stbSets: STBSets = {
 		evs: {hp: 4, spa: 252, spe: 252}, ivs: {atk: 0}, nature: 'Timid',
 	},
 	crimsonKangaroo: {
-		species: 'Solgaleo', ability: 'Solar Wind', item: 'Weakness Policy', gender: '',
+		species: 'Solgaleo', ability: 'Solar Wind', item: 'Weakness Policy', gender: 'M',
 		moves: ['Cosmic Power', 'Psychic Fangs', 'Body Press'],
 		signatureMove: 'Star Eater',
 		evs: {hp: 252, atk: 4, spe: 252}, nature: 'Jolly',
@@ -96,10 +96,10 @@ export const stbSets: STBSets = {
 		evs: {spa: 252, spd: 4, spe: 252}, nature: 'Modest',
 	},
 	MightySharkVGC: {
-		species: 'Stakataka', ability: 'Beaster Boost', item: 'Focus Sash', gender: '',
-		moves: ['Gyro Ball', 'Rock Blast', 'Earthquake'],
-		signatureMove: 'Better Trick Room',
-		evs: {hp: 252, atk: 252, spd: 4}, ivs: {def: 14, spe: 0}, nature: 'Lonely',
+		species: 'Garchomp', ability: 'Cool Sword', item: 'Life Orb', gender: 'F',
+		moves: ['Behemoth Blade', 'Thousand Arrows', 'Sacred Sword'],
+		signatureMove: 'Too Many Swords',
+		evs: {hp: 4, atk: 252, spe: 252}, nature: 'Jolly',
 	},
 	njjoltiks: {
 		species: 'Ho-Oh', ability: 'From the Ashes', item: 'Choice Band', gender: '',
@@ -143,17 +143,23 @@ export const stbSets: STBSets = {
 		signatureMove: 'Dragonforce',
 		evs: {hp: 252, atk: 252, spd: 4}, nature: 'Adamant',
 	},
+	ScarTheColossus: {
+		species: 'Snorlax', ability: 'Pancake', item: 'Figy Berry', gender: 'M',
+		moves: ['Facade', 'Earthquake', 'Crunch'],
+		signatureMove: 'Balance',
+		evs: {hp: 188, atk: 124, def: 148, spd: 44, spe: 4}, ivs: {spe: 2}, nature: 'Brave',
+	},
 	Steeevo34: {
 		species: 'Shuckle', ability: "A Wizard's Secret", item: 'Lum Berry', gender: 'M',
 		moves: ['Trick Room', 'Earthquake', 'Swords Dance'],
 		signatureMove: 'Retroincabulate',
 		evs: {hp: 252, def: 252, spd: 4}, ivs: {spe: 0}, nature: 'Relaxed',
 	},
-	ScarTheColossus: {
-		species: 'Snorlax', ability: 'Pancake', item: 'Figy Berry', gender: 'M',
-		moves: ['Facade', 'Earthquake', 'Crunch'],
-		signatureMove: 'Balance',
-		evs: {hp: 188, atk: 124, def: 148, spd: 44, spe: 4}, ivs: {spe: 2}, nature: 'Brave',
+	SteelOsprei: {
+		species: 'Mamoswine', ability: 'Very Well Trained', item: 'Choice Scarf', gender: 'M',
+		moves: ['Earthquake', 'Icicle Crash', 'Superpower'],
+		signatureMove: 'Stone edge but it doesn\'t miss',
+		evs: {atk: 252, def: 4, spe: 252}, nature: 'Jolly',
 	},
 	'TacocaT_2595': {
 		species: 'Bronzong', ability: 'Stainless Steel', item: 'Leftovers', gender: 'F',
@@ -191,7 +197,7 @@ export const stbSets: STBSets = {
 export class RandomStaffBrosTeams extends RandomTeams {
 	randomStaffBrosTeam(options: {inBattle?: boolean} = {}) {
 		const team: PokemonSet[] = [];
-		const debug: string[] = []; // Set this to a list of SSB sets to override the normal pool for debugging.
+		const debug: string[] = ['SteelOsprei', 'gigigecko26', 'Planetaeus', 'RubyDragonQueen', 'ScarTheColossus']; // Set this to a list of SSB sets to override the normal pool for debugging.
 		const pool = debug.length ? debug : Object.keys(stbSets);
 		const typePool: {[k: string]: number} = {};
 		let depth = 0;
