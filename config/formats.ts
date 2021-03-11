@@ -131,42 +131,6 @@ export const Formats: FormatList = [
 		},
 	},
 	{
-		name: "[Gen 8] National Dex Gen Wars",
-		desc: `Trainers select a generation, and battle with only Pokémon originating in that generation!`,
-		threads: [
-			`&bullet; <a href="https://docs.google.com/document/d/17UNbI55vocVv3hZOBGPhtsdzI0vywZoMB7GNwIFjoZE/edit">Rules Document</a>`,
-		],
-
-		mod: 'gen8',
-		forcedLevel: 50,
-		ruleset: ['Standard NatDex', 'Dynamax Clause', 'Evasion Moves Clause', 'OHKO Clause', 'Sleep Clause Mod', 'Species Clause'],
-		banlist: [
-			'Mewtwo', 'Lugia', 'Ho-Oh', 'Blaziken + Speed Boost', 'Kyogre', 'Groudon', 'Rayquaza', 'Deoxys', 'Dialga', 'Palkia',
-			'Giratina', 'Darkrai', 'Arceus', 'Shaymin-Sky', 'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag',
-			'Landorus + Sheer Force', 'Zekrom', 'Reshiram', 'Kyurem-Black', 'Kyurem-White', 'Genesect', 'Greninja', 'Xerneas', 'Yveltal',
-			'Zygarde', 'Zygarde-10% + Power Construct', 'Solgaleo', 'Lunala', 'Pheromosa', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane',
-			'Magearna', 'Marshadow', 'Naganadel', 'Cinderace + Libero', 'Darmanitan-Galar + Gorilla Tactics', 'Dracovish', 'Zacian',
-			'Zamazenta', 'Eternatus', 'Urshifu', 'Spectrier', 'Calyrex-Ice', 'Calyrex-Shadow', 'Swagger', 'Moody',
-		],
-		unbanlist: [
-			'Zygarde-10%', 'Urshifu-Rapid-Strike',
-		],
-	},
-	{
-		name: "[Gen 8] VGC No Restricted",
-		desc: "[Gen 8] VGC 2021 without the Restricted rule.",
-
-		mod: 'gen8',
-		gameType: 'doubles',
-		forcedLevel: 50,
-		teamLength: {
-			validate: [4, 6],
-			battle: 4,
-		},
-		ruleset: ['Standard GBU', 'VGC Timer'],
-		minSourceGen: 8,
-	},
-	{
 		section: "RIT Archive",
 	},
 	{
@@ -477,6 +441,42 @@ export const Formats: FormatList = [
 				delete ally.m.innate;
 			}
 		},
+	},
+	{
+		name: "[Gen 8] National Dex Gen Wars",
+		desc: `Trainers select a generation, and battle with only Pokémon originating in that generation!`,
+		threads: [
+			`&bullet; <a href="https://docs.google.com/document/d/17UNbI55vocVv3hZOBGPhtsdzI0vywZoMB7GNwIFjoZE/edit">Rules Document</a>`,
+		],
+
+		mod: 'gen8',
+		forcedLevel: 50,
+		ruleset: ['Standard NatDex', 'Dynamax Clause', 'Evasion Moves Clause', 'OHKO Clause', 'Sleep Clause Mod', 'Species Clause'],
+		banlist: [
+			'Mewtwo', 'Lugia', 'Ho-Oh', 'Blaziken + Speed Boost', 'Kyogre', 'Groudon', 'Rayquaza', 'Deoxys', 'Dialga', 'Palkia',
+			'Giratina', 'Darkrai', 'Arceus', 'Shaymin-Sky', 'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag',
+			'Landorus + Sheer Force', 'Zekrom', 'Reshiram', 'Kyurem-Black', 'Kyurem-White', 'Genesect', 'Greninja', 'Xerneas', 'Yveltal',
+			'Zygarde', 'Zygarde-10% + Power Construct', 'Solgaleo', 'Lunala', 'Pheromosa', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane',
+			'Magearna', 'Marshadow', 'Naganadel', 'Cinderace + Libero', 'Darmanitan-Galar + Gorilla Tactics', 'Dracovish', 'Zacian',
+			'Zamazenta', 'Eternatus', 'Urshifu', 'Spectrier', 'Calyrex-Ice', 'Calyrex-Shadow', 'Swagger', 'Moody',
+		],
+		unbanlist: [
+			'Zygarde-10%', 'Urshifu-Rapid-Strike',
+		],
+	},
+	{
+		name: "[Gen 8] VGC No Restricted",
+		desc: "[Gen 8] VGC 2021 without the Restricted rule.",
+
+		mod: 'gen8',
+		gameType: 'doubles',
+		forcedLevel: 50,
+		teamLength: {
+			validate: [4, 6],
+			battle: 4,
+		},
+		ruleset: ['Standard GBU', 'VGC Timer'],
+		minSourceGen: 8,
 	},
 	// Sw/Sh Singles
 	///////////////////////////////////////////////////////////////////
