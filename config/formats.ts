@@ -131,6 +131,20 @@ export const Formats: FormatList = [
 		},
 	},
 	{
+		name: "[Gen 8] Baby Brawlers",
+		threads: [
+			`&bullet; <a href="https://docs.google.com/document/d/14kyBwW_oCh-UuZf7nBb78V_sc3vdeuex_jIXIWEVnsQ/edit?usp=sharing">Baby Brawlers</a>`,
+		],
+
+		mod: 'gen8',
+		maxLevel: 5,
+		gameType: 'doubles',
+		ruleset: ['Little Cup', 'Standard', 'Dynamax Clause', 'Gravity Sleep Clause'],
+		banlist: [
+			'Corsola-Galar', 'Rufflet', 'Scyther', 'Sneasel', 'Tangela', 'Type: Null', 'Vulpix', 'Vulpix-Alola', 'Baton Pass', 'Moody',
+		],
+	},
+	{
 		section: "RIT Archive",
 	},
 	{
