@@ -139,9 +139,9 @@ export const Formats: FormatList = [
 		mod: 'gen8',
 		maxLevel: 5,
 		gameType: 'doubles',
-		ruleset: ['Little Cup', 'Standard', 'Dynamax Clause', 'Gravity Sleep Clause'],
+		ruleset: ['Little Cup', 'Standard Doubles', 'Dynamax Clause'],
 		banlist: [
-			'Corsola-Galar', 'Rufflet', 'Scyther', 'Sneasel', 'Tangela', 'Type: Null', 'Vulpix', 'Vulpix-Alola', 'Baton Pass', 'Moody',
+			'Corsola-Galar', 'Cutiefly', 'Scyther', 'Sneasel', 'Swirlix', 'Tangela', 'Type: Null', 'Vulpix-Alola', 'Drought', 'Swagger',
 		],
 	},
 	{
