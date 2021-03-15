@@ -23,28 +23,6 @@ export const Formats: FormatList = [
 		section: "RIT-specific Formats",
 	},
 	{
-		name: "[Gen 8] Gym Leader Tournament 20-21",
-		desc: `RIT's official Gym Leader Tournament!`,
-		threads: [
-			`&bullet; <a href="https://docs.google.com/document/d/1r3SW874AdfP00_-lRAysTRa_4SQZJhn1Ejwc4cA_zsw/edit?usp=sharing">Gym Leader Tournament Rules</a>`,
-		],
-
-		mod: 'gen8',
-		forcedLevel: 50,
-		ruleset: ['Gym Leader Clause', 'Standard', 'Dynamax Clause'],
-		banlist: [
-			'Blaziken + Speed Boost', 'Cinderace + Libero', 'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag',
-			'Calyrex-Ice', 'Calyrex-Shadow', 'Dialga', 'Eternatus', 'Genesect', 'Giratina', 'Groudon', 'Ho-oh', 'Kartana',
-			'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Landorus', 'Lugia', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo',
-			'Naganadel', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Palkia', 'Pheromosa', 'Rayquaza', 'Reshiram', 'Solgaleo', 'Tapu Lele',
-			'Xerneas', 'Yveltal', 'Zacian', 'Zamazenta', 'Zekrom', 'Zygarde',
-			'Damp Rock', 'Moody', 'Power Construct', 'Baton Pass', 'Swagger',
-		],
-		unbanlist: [
-			'Landorus-Therian', 'Zygarde-10%',
-		],
-	},
-	{
 		name: "[Gen 8] Gym Challenge",
 		desc: `Use this format to challenge our 8 Gym Leaders!`,
 		threads: [
@@ -143,6 +121,20 @@ export const Formats: FormatList = [
 		banlist: [
 			'Corsola-Galar', 'Cutiefly', 'Scyther', 'Sneasel', 'Swirlix', 'Tangela', 'Type: Null', 'Vulpix-Alola', 'Drought', 'Swagger',
 		],
+	},
+	{
+		name: "[Gen 8] VGC No Restricted",
+		desc: "[Gen 8] VGC 2021 without the Restricted rule.",
+
+		mod: 'gen8',
+		gameType: 'doubles',
+		forcedLevel: 50,
+		teamLength: {
+			validate: [4, 6],
+			battle: 4,
+		},
+		ruleset: ['Standard GBU', 'VGC Timer'],
+		minSourceGen: 8,
 	},
 	{
 		section: "RIT Archive",
@@ -479,18 +471,26 @@ export const Formats: FormatList = [
 		],
 	},
 	{
-		name: "[Gen 8] VGC No Restricted",
-		desc: "[Gen 8] VGC 2021 without the Restricted rule.",
+		name: "[Gen 8] Gym Leader Tournament 20-21",
+		desc: `RIT's official Gym Leader Tournament!`,
+		threads: [
+			`&bullet; <a href="https://docs.google.com/document/d/1r3SW874AdfP00_-lRAysTRa_4SQZJhn1Ejwc4cA_zsw/edit?usp=sharing">Gym Leader Tournament Rules</a>`,
+		],
 
 		mod: 'gen8',
-		gameType: 'doubles',
 		forcedLevel: 50,
-		teamLength: {
-			validate: [4, 6],
-			battle: 4,
-		},
-		ruleset: ['Standard GBU', 'VGC Timer'],
-		minSourceGen: 8,
+		ruleset: ['Gym Leader Clause', 'Standard', 'Dynamax Clause'],
+		banlist: [
+			'Blaziken + Speed Boost', 'Cinderace + Libero', 'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag',
+			'Calyrex-Ice', 'Calyrex-Shadow', 'Dialga', 'Eternatus', 'Genesect', 'Giratina', 'Groudon', 'Ho-oh', 'Kartana',
+			'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Landorus', 'Lugia', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo',
+			'Naganadel', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Palkia', 'Pheromosa', 'Rayquaza', 'Reshiram', 'Solgaleo', 'Tapu Lele',
+			'Xerneas', 'Yveltal', 'Zacian', 'Zamazenta', 'Zekrom', 'Zygarde',
+			'Damp Rock', 'Moody', 'Power Construct', 'Baton Pass', 'Swagger',
+		],
+		unbanlist: [
+			'Landorus-Therian', 'Zygarde-10%',
+		],
 	},
 	// Sw/Sh Singles
 	///////////////////////////////////////////////////////////////////
