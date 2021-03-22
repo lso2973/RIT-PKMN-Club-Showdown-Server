@@ -333,6 +333,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('TacocaT_2595')}|/html <img src="https://cdn.discordapp.com/emojis/680288953068421130.gif?v=1" />`);
 		},
 	},
+	thinkingsceptile: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('ThinkingSceptile')}|Top agent zone is here as a substitute for the sceptile`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('ThinkingSceptile')}|Did you get read like a book there?`);
+		},
+		onFaint() {
+			this.add(`c|${getName('ThinkingSceptile')}|Stand....and deliver!`);
+		},
+	},
 	torwildheart: {
 		noCopy: true,
 		onStart() {

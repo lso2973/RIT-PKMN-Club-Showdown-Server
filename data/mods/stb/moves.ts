@@ -891,6 +891,38 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "normal",
 		type: "Steel",
 	},
+	// ThinkingSceptile
+	haread: {
+		accuracy: 100,
+		basePower: 75,
+		category: "Special",
+		name: 'Ha! Read!',
+		gen: 8,
+		pp: 20,
+		priority: 0,
+		desc: "Power doubles if the user hits an opponent switching in. If this move is successful and the user has not fainted, the user switches out even if it is trapped and is replaced immediately by a selected party member. The user does not switch out if there are no unfainted party members, or if the target switched out using an Eject Button or through the effect of the Emergency Exit or Wimp Out Abilities.",
+		shortdesc: "Volt Switch + Stakeout",
+		flags: {protect: 1, mirror: 1,},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Volt Switch', target);
+			this.add('-anim', source, 'Taunt', target);
+		},
+		basePowerCallback(pokemon, target, move) {
+			if (!target.activeTurns) {
+				this.debug('Ha! Read! boost');
+				return move.basePower * 2;
+			}
+			return move.basePower;
+		},
+		selfSwitch: true,
+		secondary: null,
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Electric",
+	},
 	// torwildheart
 	psionicslice: {
 		accuracy: 100,
