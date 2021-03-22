@@ -89,6 +89,12 @@ export const stbSets: STBSets = {
 		signatureMove: 'Spectral Terrain',
 		evs: {spa: 252, spd: 4, spe: 252}, ivs: {atk: 0}, nature: 'Timid',
 	},
+	Jerrytkrot: {
+		species: 'Seismitoad', ability: 'Wonder Guard', item: 'Sticky Barb', gender: 'M',
+		moves: [['Heal Pulse', 'Telekinesis', 'Wonder Room'], ['Explosion', 'Self-Destruct', 'Substitute', 'Healing Wish', 'Memento'], ['Refresh', 'Taunt', 'Protect', 'Endure']],
+		signatureMove: 'Froge Blessings',
+		evs: {hp: 1, atk: 2, def: 3, spa: 4, spd: 5, spe: 6}, ivs: {hp: 7, def: 9, spa: 10, spd: 11, spe: 12}, nature: 'Modest',
+	},
 	MeepingtonThe3rd: {
 		species: 'Raichu-Alola', ability: 'Storm Surfing', item: 'Life Orb', gender: 'M',
 		moves: ['Nasty Plot', 'Thunder', 'Splishy Splash'],
@@ -203,7 +209,7 @@ export const stbSets: STBSets = {
 export class RandomStaffBrosTeams extends RandomTeams {
 	randomStaffBrosTeam(options: {inBattle?: boolean} = {}) {
 		const team: PokemonSet[] = [];
-		const debug: string[] = ["ThinkingSceptile", "crimsonKangaroo", "RibbonNymph"]; // Set this to a list of SSB sets to override the normal pool for debugging.
+		const debug: string[] = []; // Set this to a list of SSB sets to override the normal pool for debugging.
 		const pool = debug.length ? debug : Object.keys(stbSets);
 		const typePool: {[k: string]: number} = {};
 		let depth = 0;

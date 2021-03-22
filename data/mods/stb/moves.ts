@@ -448,6 +448,46 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		zMove: {boost: {spd: 1}},
 		contestType: "Beautiful",
 	},
+	// Jerrytkrot
+	frogeblessings: {
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		name: "Froge Blessings",
+		desc: "The target is forced to switch out and be replaced with a random unfainted ally. Then boosts the new ally’s stats by +1 stage and replaces its ability with Normalize. Fails if the target is the last unfainted Pokemon in its party, or if the target used Ingrain previously or has the Suction Cups Ability.",
+		shortDesc: "Whirlwind + omniboosts & Normalizes target",
+		gen: 8,
+		pp: 5,
+		priority: -6,
+		flags: {reflectable: 1, mirror: 1, authentic: 1, mystery: 1},
+		forceSwitch: true,
+		sideCondition: 'frogeblessings',
+		condition: {
+			onSwitchIn(pokemon) {
+				this.boost({atk: 1, def: 1, spa: 1, spd: 1, spe: 1}, pokemon);
+				if (!(pokemon.getAbility().isPermanent || pokemon.ability === 'simple' || pokemon.ability === 'truant')) {
+					const oldAbility = pokemon.setAbility('normalize');
+					if (oldAbility) {
+						this.add('-ability', pokemon, 'Normalize', '[from] move: Froge Blessings');
+					}
+				}
+				pokemon.side.removeSideCondition('frogeblessings');
+			},
+		},
+		/*onAfterHit(target) {
+			this.boost({atk: 1, def: 1, spa: 1, spd: 1, spe: 1}, target);
+			if (!(target.getAbility().isPermanent || target.ability === 'simple' || target.ability === 'truant')) {
+				const oldAbility = target.setAbility('normalize');
+				if (oldAbility) {
+					this.add('-ability', target, 'Normalize', '[from] move: Froge Blessings');
+				}
+			}
+		},*/
+		secondary: null,
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Water",
+	},
 	// MeepingtonThe3rd
 	mentalbrick: {
 		accuracy: true,
