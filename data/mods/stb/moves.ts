@@ -474,15 +474,12 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				pokemon.side.removeSideCondition('frogeblessings');
 			},
 		},
-		/*onAfterHit(target) {
-			this.boost({atk: 1, def: 1, spa: 1, spd: 1, spe: 1}, target);
-			if (!(target.getAbility().isPermanent || target.ability === 'simple' || target.ability === 'truant')) {
-				const oldAbility = target.setAbility('normalize');
-				if (oldAbility) {
-					this.add('-ability', target, 'Normalize', '[from] move: Froge Blessings');
-				}
-			}
-		},*/
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onHit(target, source) {
+			this.add('-anim', source, 'Celebrate', target);
+		},
 		secondary: null,
 		isNonstandard: "Custom",
 		target: "normal",

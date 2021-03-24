@@ -177,6 +177,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('Ignoritus')}|Welp, back to Temtem.`);
 		},
 	},
+	jerrytkrot: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('Jerrytkrot')}|AHHAHAHH oog HHHHHHH oooHHHHHOO`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('Jerrytkrot')}|mmm... AAAAAAAAAAAAAA OOoooOO`);
+		},
+		onFaint() {
+			this.add(`c|${getName('Jerrytkrot')}|OOOO AAAA uuuuuuuuuuuuhh... hhh`);
+		},
+	},
 	meepingtonthe3rd: {
 		noCopy: true,
 		onStart() {
