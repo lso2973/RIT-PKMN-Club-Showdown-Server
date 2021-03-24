@@ -1463,7 +1463,7 @@ export const Formats: {[k: string]: FormatData} = {
 			if (species.baseStats.atk > 75 || species.baseStats.spa > 75) {
 				return [`${species.name} is banned.`, `(Pokémon with an offensive stat greater than 75 are banned.)`];
 			}
-		}
+		},
 	},
 	teamtypepreview: {
 		effectType: 'Rule',
