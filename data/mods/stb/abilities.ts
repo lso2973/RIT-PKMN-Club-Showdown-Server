@@ -550,6 +550,29 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		isNonstandard: "Custom",
 		gen: 8,
 	},
+	// ThinkingSceptile
+	calcing: {
+		desc: "The power of this Pokemon's move is multiplied by 1.5 if it is the last to move in a turn. Does not affect Doom Desire and Future Sight.",
+		shortDesc: "Analytic but x1.5",
+		onBasePowerPriority: 21,
+		onBasePower(basePower, pokemon) {
+			let boosted = true;
+			for (const target of this.getAllActive()) {
+				if (target === pokemon) continue;
+				if (this.queue.willMove(target)) {
+					boosted = false;
+					break;
+				}
+			}
+			if (boosted) {
+				this.debug('Calcing... boost');
+				return this.chainModify(1.5);
+			}
+		},
+		name: "Calcing...",
+		isNonstandard: "Custom",
+		gen: 8,
+	},
 	// torwildheart
 	toolong: {
 		desc: "At the start of each turn, this Pokémon raises its attack, defense, special attack, special defense and speed by +1 stage if the turn count is greater than 25.",
