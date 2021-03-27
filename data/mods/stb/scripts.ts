@@ -1020,8 +1020,23 @@ export const Scripts: ModdedBattleScriptsData = {
 			}
 			return true;
 		},
+            // Modifying for Very Well trained
+        ignoringItem() {
+            //a bit eh, but it hopefully works
+            if(!this.hasAbility('verywelltrained')){
+                for(const side of this.battle.sides){
+                    for(const mon of side.active){
+                        if(mon.hasAbility('verywelltrained')){
+                            return true;
+                        }
+                    }
+                }
+            }
+            return !!((this.battle.gen >= 5 && !this.isActive) ||
+                (this.hasAbility('klutz') && !this.getItem().ignoreKlutz) ||
+                this.volatiles['embargo'] || this.battle.field.pseudoWeather['magicroom']);
+        },
 	},
-
 	// Modded to add a property to work with Struchni's move
 	nextTurn() {
 		this.turn++;
