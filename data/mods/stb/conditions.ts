@@ -177,6 +177,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('Ignoritus')}|Welp, back to Temtem.`);
 		},
 	},
+	jerrytkrot: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('Jerrytkrot')}|AHHAHAHH oog HHHHHHH oooHHHHHOO`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('Jerrytkrot')}|mmm... AAAAAAAAAAAAAA OOoooOO`);
+		},
+		onFaint() {
+			this.add(`c|${getName('Jerrytkrot')}|OOOO AAAA uuuuuuuuuuuuhh... hhh`);
+		},
+	},
 	meepingtonthe3rd: {
 		noCopy: true,
 		onStart() {
@@ -309,6 +321,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('Steeevo34')}|A wizard takes his secrets to the grave`);
 		},
 	},
+	steelosprei: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('SteelOsprei')}|My Mamoswine is just very well trained`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('SteelOsprei')}|You'll still be useful later`);
+		},
+		onFaint() {
+			this.add(`c|${getName('SteelOsprei')}|Sac and move on`);
+		},
+	},
 	tacocat2595: {
 		noCopy: true,
 		onStart() {
@@ -319,6 +343,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 		onFaint() {
 			this.add(`c|${getName('TacocaT_2595')}|/html <img src="https://cdn.discordapp.com/emojis/680288953068421130.gif?v=1" />`);
+		},
+	},
+	thinkingsceptile: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('ThinkingSceptile')}|Top agent zone is here as a substitute for the sceptile`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('ThinkingSceptile')}|Did you get read like a book there?`);
+		},
+		onFaint() {
+			this.add(`c|${getName('ThinkingSceptile')}|Stand....and deliver!`);
 		},
 	},
 	torwildheart: {

@@ -72,7 +72,7 @@ export const stbSets: STBSets = {
 		evs: {hp: 4, spa: 252, spe: 252}, ivs: {atk: 0}, nature: 'Timid',
 	},
 	crimsonKangaroo: {
-		species: 'Solgaleo', ability: 'Solar Wind', item: 'Weakness Policy', gender: '',
+		species: 'Solgaleo', ability: 'Solar Wind', item: 'Weakness Policy', gender: 'M',
 		moves: ['Cosmic Power', 'Psychic Fangs', 'Body Press'],
 		signatureMove: 'Star Eater',
 		evs: {hp: 252, atk: 4, spe: 252}, nature: 'Jolly',
@@ -89,6 +89,12 @@ export const stbSets: STBSets = {
 		signatureMove: 'Spectral Terrain',
 		evs: {spa: 252, spd: 4, spe: 252}, ivs: {atk: 0}, nature: 'Timid',
 	},
+	Jerrytkrot: {
+		species: 'Seismitoad', ability: 'Wonder Guard', item: 'Sticky Barb', gender: 'M',
+		moves: [['Heal Pulse', 'Telekinesis', 'Wonder Room'], ['Explosion', 'Self-Destruct', 'Substitute', 'Healing Wish', 'Memento'], ['Refresh', 'Taunt', 'Protect', 'Endure']],
+		signatureMove: 'Froge Blessings',
+		evs: {hp: 1, atk: 2, def: 3, spa: 4, spd: 5, spe: 6}, ivs: {hp: 7, def: 9, spa: 10, spd: 11, spe: 12}, nature: 'Modest',
+	},
 	MeepingtonThe3rd: {
 		species: 'Raichu-Alola', ability: 'Storm Surfing', item: 'Life Orb', gender: 'M',
 		moves: ['Nasty Plot', 'Thunder', 'Splishy Splash'],
@@ -96,10 +102,10 @@ export const stbSets: STBSets = {
 		evs: {spa: 252, spd: 4, spe: 252}, nature: 'Modest',
 	},
 	MightySharkVGC: {
-		species: 'Stakataka', ability: 'Beaster Boost', item: 'Focus Sash', gender: '',
-		moves: ['Gyro Ball', 'Rock Blast', 'Earthquake'],
-		signatureMove: 'Better Trick Room',
-		evs: {hp: 252, atk: 252, spd: 4}, ivs: {def: 14, spe: 0}, nature: 'Lonely',
+		species: 'Garchomp', ability: 'Cool Sword', item: 'Life Orb', gender: 'F',
+		moves: ['Behemoth Blade', 'Thousand Arrows', 'Sacred Sword'],
+		signatureMove: 'Too Many Swords',
+		evs: {hp: 4, atk: 252, spe: 252}, nature: 'Jolly',
 	},
 	njjoltiks: {
 		species: 'Ho-Oh', ability: 'From the Ashes', item: 'Choice Band', gender: '',
@@ -143,23 +149,35 @@ export const stbSets: STBSets = {
 		signatureMove: 'Dragonforce',
 		evs: {hp: 252, atk: 252, spd: 4}, nature: 'Adamant',
 	},
-	Steeevo34: {
-		species: 'Shuckle', ability: "A Wizard's Secret", item: 'Lum Berry', gender: 'M',
-		moves: ['Trick Room', 'Earthquake', 'Swords Dance'],
-		signatureMove: 'Retroincabulate',
-		evs: {hp: 252, def: 252, spd: 4}, ivs: {spe: 0}, nature: 'Relaxed',
-	},
 	ScarTheColossus: {
 		species: 'Snorlax', ability: 'Pancake', item: 'Figy Berry', gender: 'M',
 		moves: ['Facade', 'Earthquake', 'Crunch'],
 		signatureMove: 'Balance',
 		evs: {hp: 188, atk: 124, def: 148, spd: 44, spe: 4}, ivs: {spe: 2}, nature: 'Brave',
 	},
+	Steeevo34: {
+		species: 'Shuckle', ability: "A Wizard's Secret", item: 'Lum Berry', gender: 'M',
+		moves: ['Trick Room', 'Earthquake', 'Swords Dance'],
+		signatureMove: 'Retroincabulate',
+		evs: {hp: 252, def: 252, spd: 4}, ivs: {spe: 0}, nature: 'Relaxed',
+	},
+	SteelOsprei: {
+		species: 'Mamoswine', ability: 'Very Well Trained', item: 'Choice Scarf', gender: 'M',
+		moves: ['Earthquake', 'Icicle Crash', 'Superpower'],
+		signatureMove: 'Stone edge but it doesn\'t miss',
+		evs: {atk: 252, def: 4, spe: 252}, nature: 'Jolly',
+	},
 	'TacocaT_2595': {
 		species: 'Bronzong', ability: 'Stainless Steel', item: 'Leftovers', gender: 'F',
 		moves: ['Recover', 'Bulk Up', ['Heavy Slam', 'Gyro Ball']],
 		signatureMove: 'Kaboom!',
 		evs: {hp: 244, atk: 252, def: 12}, ivs: {spe: 0}, nature: 'Brave', shiny: true,
+	},
+	ThinkingSceptile: {
+		species: 'Magnezone', ability: 'Calcing...', item: 'Choice Specs', gender: 'M',
+		moves: ['Thunderbolt', 'Flash Cannon', 'Ice Beam'],
+		signatureMove: 'Ha! Read!',
+		evs: {hp: 252, atk: 252, def: 4}, ivs: {atk: 0}, nature: 'Quiet',
 	},
 	torwildheart: {
 		species: 'mewtwomegax', ability: 'Too Long', item: 'Expert Belt', gender: '',

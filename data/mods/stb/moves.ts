@@ -448,6 +448,43 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		zMove: {boost: {spd: 1}},
 		contestType: "Beautiful",
 	},
+	// Jerrytkrot
+	frogeblessings: {
+		accuracy: 100,
+		basePower: 0,
+		category: "Status",
+		name: "Froge Blessings",
+		desc: "The target is forced to switch out and be replaced with a random unfainted ally. Then boosts the new ally’s stats by +1 stage and replaces its ability with Normalize. Fails if the target is the last unfainted Pokemon in its party, or if the target used Ingrain previously or has the Suction Cups Ability.",
+		shortDesc: "Whirlwind + omniboosts & Normalizes target",
+		gen: 8,
+		pp: 5,
+		priority: -6,
+		flags: {reflectable: 1, mirror: 1, authentic: 1, mystery: 1},
+		forceSwitch: true,
+		sideCondition: 'frogeblessings',
+		condition: {
+			onSwitchIn(pokemon) {
+				this.boost({atk: 1, def: 1, spa: 1, spd: 1, spe: 1}, pokemon);
+				if (!(pokemon.getAbility().isPermanent || pokemon.ability === 'simple' || pokemon.ability === 'truant')) {
+					const oldAbility = pokemon.setAbility('normalize');
+					if (oldAbility) {
+						this.add('-ability', pokemon, 'Normalize', '[from] move: Froge Blessings');
+					}
+				}
+				pokemon.side.removeSideCondition('frogeblessings');
+			},
+		},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onHit(target, source) {
+			this.add('-anim', source, 'Celebrate', target);
+		},
+		secondary: null,
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Water",
+	},
 	// MeepingtonThe3rd
 	mentalbrick: {
 		accuracy: true,
@@ -475,29 +512,35 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		type: "Psychic",
 	},
 	// MightySharkVGC
-	bettertrickroom: {
-		accuracy: true,
-		basePower: 0,
-		category: "Status",
-		name: "Better Trick Room",
-		desc: "For 5 turns, the Speed of every Pokémon is recalculated for the purposes of determining turn order. During the effect, each Pokémon's Speed is considered to be (10000 - its normal Speed), and if this value is greater than 8191, 8192 is subtracted from it. If this move is used during the effect, the effect ends. Additionally, if this move is successful and the user has not fainted, the user switches out even if it is trapped and is replaced immediately by a selected party member. The user does not switch out if there are no unfainted party members.",
-		shortDesc: "TR + Teleport",
+	toomanyswords: {
+		accuracy: 90,
+		basePower: 25,
+		category: "Physical",
+		name: "Too Many Swords",
+		desc: "Hits two to five times. Raises the user's Attack and Speed by 1 stage after the last hit. Has a 35% chance to hit two or three times and a 15% chance to hit four or five times. If one of the hits breaks the target's substitute, it will take damage for the remaining hits. If the user has the Skill Link Ability, this move will always hit five times. Applies the Steelspike effect to the opponent’s side of the field.",
+		shortDesc: "Scale Shot w/ dd boosts + Steelspike",
 		gen: 8,
-		pp: 5,
-		priority: -7,
-		flags: {mirror: 1},
+		pp: 15,
+		priority: 0,
+		flags: {protect: 1, mirror: 1},
 		onTryMove() {
 			this.attrLastMove('[still]');
 		},
 		onPrepareHit(target, source) {
-			this.add('-anim', source, 'Trick Room', source);
-			this.add('-anim', source, 'Teleport', source);
+			this.add('-anim', source, 'Scale Shot', target);
+			this.add('-anim', source, 'Sacred Sword', target);
 		},
-		selfSwitch: true,
-		pseudoWeather: 'trickroom',
+		multihit: [2, 5],
+		sideCondition: 'gmaxsteelsurge',
+		selfBoost: {
+			boosts: {
+				atk: 1,
+				spe: 1,
+			},
+		},
 		isNonstandard: "Custom",
-		target: "self",
-		type: "Psychic",
+		target: "normal",
+		type: "Dragon",
 		zMove: {boost: {accuracy: 1}},
 		contestType: "Clever",
 	},
@@ -827,6 +870,29 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "normal",
 		type: "Rock",
 	},
+	// SteelOsprei
+	stoneedgebutitdoesntmiss: {
+		accuracy: true,
+		basePower: 100,
+		category: "Physical",
+		name: 'Stone edge but it doesn\'t miss',
+		gen: 8,
+		pp: 5,
+		priority: 0,
+		desc: "Has a higher chance for a critical hit. Doesn't miss.",
+		shortDesc: "Stone Edge but it doesn't miss.",
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Stone Edge', target);
+		},
+		flags: {protect: 1, mirror: 1},
+		secondary: null,
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Rock",
+	},
 	// TacocaT_2595
 	kaboom: {
 		accuracy: 100,
@@ -861,6 +927,38 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		isNonstandard: "Custom",
 		target: "normal",
 		type: "Steel",
+	},
+	// ThinkingSceptile
+	haread: {
+		accuracy: 100,
+		basePower: 75,
+		category: "Special",
+		name: 'Ha! Read!',
+		gen: 8,
+		pp: 20,
+		priority: 0,
+		desc: "Power doubles if the user hits an opponent switching in. If this move is successful and the user has not fainted, the user switches out even if it is trapped and is replaced immediately by a selected party member. The user does not switch out if there are no unfainted party members, or if the target switched out using an Eject Button or through the effect of the Emergency Exit or Wimp Out Abilities.",
+		shortdesc: "Volt Switch + Stakeout",
+		flags: {protect: 1, mirror: 1,},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Volt Switch', target);
+			this.add('-anim', source, 'Taunt', target);
+		},
+		basePowerCallback(pokemon, target, move) {
+			if (!target.activeTurns) {
+				this.debug('Ha! Read! boost');
+				return move.basePower * 2;
+			}
+			return move.basePower;
+		},
+		selfSwitch: true,
+		secondary: null,
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Electric",
 	},
 	// torwildheart
 	psionicslice: {
@@ -1149,6 +1247,48 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			} else if (move.volatileStatus && (target.volatiles['curse'] || target.volatiles['pharaohscurse'] || target.volatiles['haunting'])) {
 				return false;
 			}
+		},
+	},
+	// Modified Attract condition to affect pokemon regardless of gender when afflicted by MightySharkVGC's Cool Sword
+	attract: {
+		inherit: true,
+		condition: {
+			noCopy: true, // doesn't get copied by Baton Pass
+			onStart(pokemon, source, effect) {
+				if (!source.hasAbility('coolsword') && !(pokemon.gender === 'M' && source.gender === 'F') && !(pokemon.gender === 'F' && source.gender === 'M')) {
+					this.debug('incompatible gender');
+					return false;
+				}
+				if (!this.runEvent('Attract', pokemon, source)) {
+					this.debug('Attract event failed');
+					return false;
+				}
+
+				if (effect.id === 'cutecharm') {
+					this.add('-start', pokemon, 'Attract', '[from] ability: Cute Charm', '[of] ' + source);
+				} else if (effect.id === 'destinyknot') {
+					this.add('-start', pokemon, 'Attract', '[from] item: Destiny Knot', '[of] ' + source);
+				} else {
+					this.add('-start', pokemon, 'Attract');
+				}
+			},
+			onUpdate(pokemon) {
+				if (this.effectData.source && !this.effectData.source.isActive && pokemon.volatiles['attract']) {
+					this.debug('Removing Attract volatile on ' + pokemon);
+					pokemon.removeVolatile('attract');
+				}
+			},
+			onBeforeMovePriority: 2,
+			onBeforeMove(pokemon, target, move) {
+				this.add('-activate', pokemon, 'move: Attract', '[of] ' + this.effectData.source);
+				if (this.randomChance(1, 2)) {
+					this.add('cant', pokemon, 'Attract');
+					return false;
+				}
+			},
+			onEnd(pokemon) {
+				this.add('-end', pokemon, 'Attract', '[silent]');
+			},
 		},
 	},
 	// used for RibbonNymph's move

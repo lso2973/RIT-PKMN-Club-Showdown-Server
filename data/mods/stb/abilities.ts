@@ -287,13 +287,25 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		gen: 8,
 	},
 	// MightySharkVGC
-	beasterboost: {
-		desc: "This Pokémon's Attack and Defense are raised by +1 stage and its speed is lowered by -1 stage if it attacks and knocks out another Pokémon.",
-		shortDesc: "Moxie but curse rather than attack boost",
-		name: "Beaster Boost",
-		onSourceAfterFaint(length, target, source, effect) {
-			if (effect && effect.effectType === 'Move') {
-				this.boost({atk: length, def: length, spe: length * -1}, source);
+	coolsword: {
+		desc: "Each of this Pokémon's attacks have a 10% chance of inflicting Infatuation. Pokémon making contact with this Pokémon lose 1/8 of their maximum HP, rounded down.",
+		shortDesc: "10% chance of Infatuation per hit + Rough Skin",
+		name: "Cool Sword",
+		onModifyMove(move) {
+			if (!move || move.target === 'self') return;
+			if (!move.secondaries) {
+				move.secondaries = [];
+			}
+			move.secondaries.push({
+				chance: 10,
+				volatileStatus: 'attract',
+				ability: this.dex.getAbility('coolsword'),
+			});
+		},
+		onDamagingHitOrder: 1,
+		onDamagingHit(damage, target, source, move) {
+			if (move.flags['contact']) {
+				this.damage(source.baseMaxhp / 8, source, target);
 			}
 		},
 		isNonstandard: "Custom",
@@ -429,7 +441,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			const noModifyType = [
 				'judgment', 'multiattack', 'naturalgift', 'revelationdance', 'technoblast', 'terrainpulse', 'weatherball',
 			];
-			if (target.runEffectiveness(move) < 0 && !noModifyType.includes(move.id) && !(move.isZ && move.category !== 'Status')) {
+			if ((!target.runImmunity(move.type, false) || target.runEffectiveness(move) < 0) && !noModifyType.includes(move.id) && !(move.isZ && move.category !== 'Status')) {
 				move.type = 'Fairy';
 				move.pixilateBoosted = true;
 			}
@@ -504,6 +516,21 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		gen: 8,
 		rating: 3,
 	},
+	// SteelOsprei
+	verywelltrained: {
+		desc: "This Pokémon's moves and their effects ignore the Abilities and held items of other Pokémon.",
+		shortDesc: "Mold Breaker but also with items",
+		name: "Very Well Trained",
+		onStart(pokemon) {
+			this.add('-ability', pokemon, 'Very Well Trained');
+		},
+		// ability-ignoring portion is (probably) done by changing the code of the items themselves
+		onModifyMove(move) {
+			move.ignoreAbility = true;
+		},
+		isNonstandard: "Custom",
+		gen: 8,
+	},
 	// TacocaT_2595
 	stainlesssteel: {
 		desc: "This Pokémon takes 2/3rds damage from supereffective attacks, and raises its defense and special defense when it gets hit by a supereffective move",
@@ -520,6 +547,29 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 				this.boost({def: 1, spd: 1});
 			}
 		},
+		isNonstandard: "Custom",
+		gen: 8,
+	},
+	// ThinkingSceptile
+	calcing: {
+		desc: "The power of this Pokemon's move is multiplied by 1.5 if it is the last to move in a turn. Does not affect Doom Desire and Future Sight.",
+		shortDesc: "Analytic but x1.5",
+		onBasePowerPriority: 21,
+		onBasePower(basePower, pokemon) {
+			let boosted = true;
+			for (const target of this.getAllActive()) {
+				if (target === pokemon) continue;
+				if (this.queue.willMove(target)) {
+					boosted = false;
+					break;
+				}
+			}
+			if (boosted) {
+				this.debug('Calcing... boost');
+				return this.chainModify(1.5);
+			}
+		},
+		name: "Calcing...",
 		isNonstandard: "Custom",
 		gen: 8,
 	},
