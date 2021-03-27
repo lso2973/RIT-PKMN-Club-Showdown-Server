@@ -133,11 +133,11 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// Banded Bonks
 	rngtraining: {
-		desc: "Raises this Pokémon's accuracy and evasion by +1 stage on entry and this Pokémon's moves have their secondary effect chance doubled.",
-		shortDesc: "+1 accuracy and evasion on entry + serene grace",
+		desc: "Raises this Pokémon's accuracy by +1 stage on entry and this Pokémon's moves have their secondary effect chance doubled.",
+		shortDesc: "+1 accuracy on entry + serene grace",
 		name: "RNG Training",
 		onStart(pokemon) {
-			this.boost({accuracy: 1, evasion: 1});
+			this.boost({accuracy: 1});
 		},
 		onModifyMovePriority: -2,
 		onModifyMove(move) {
@@ -349,6 +349,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		onAfterMoveSecondarySelf(target, source, move) {
 			if (source.getMoveHitData(move).crit) {
+                this.add(`c|${getName('Peekz1025')}|IT’S A CRIT!`);
 				this.boost({atk: 1});
 			}
 		},
