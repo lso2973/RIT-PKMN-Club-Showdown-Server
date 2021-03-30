@@ -213,6 +213,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('MightySharkVGC')}|dang, i lost AND i missed queue? Sad`);
 		},
 	},
+	nivelmaster: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('Nivelmaster')}|It’s weather time!`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('Nivelmaster')}|I'll be back for more weather!`);
+		},
+		onFaint() {
+			this.add(`c|${getName('Nivelmaster')}|Weather related casualty`);
+		},
+	},
 	njjoltiks: {
 		noCopy: true,
 		onStart() {

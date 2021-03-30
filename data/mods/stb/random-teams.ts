@@ -107,6 +107,12 @@ export const stbSets: STBSets = {
 		signatureMove: 'Too Many Swords',
 		evs: {hp: 4, atk: 252, spe: 252}, nature: 'Jolly',
 	},
+	Nivelmaster: {
+		species: 'Castform', ability: 'Weatherman', item: 'Choice Specs', gender: 'M',
+		moves: [],
+		signatureMove: 'Weathermanball',
+		evs: {hp: 4, spa: 252, spe: 252}, nature: 'Timid',
+	},
 	njjoltiks: {
 		species: 'Ho-Oh', ability: 'From the Ashes', item: 'Choice Band', gender: '',
 		moves: ['Sacred Fire', 'Brave Bird', 'Leech Life'],

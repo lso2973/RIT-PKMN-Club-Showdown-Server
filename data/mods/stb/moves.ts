@@ -544,6 +544,67 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		zMove: {boost: {accuracy: 1}},
 		contestType: "Clever",
 	},
+	// Nivelmaster
+	weathermanball: {
+		accuracy: 100,
+		basePower: 100,
+		category: "Special",
+		name: "Weatherman Ball",
+		desc: "Power doubles if a weather condition other than Delta Stream is active, and this move's type changes to match. Ice type during Hail and Arctic Gales, Water type during Primordial Sea or Rain Dance, Rock type during Sandstorm, and Fire type during Desolate Land or Sunny Day. If the user is holding Utility Umbrella and uses Weather Ball during Primordial Sea, Rain Dance, Desolate Land, or Sunny Day, the move is still Normal-type and does not have a base power boost.",
+		shortDesc: "100 BP Weather Ball",
+		gen: 8,
+		pp: 10,
+		priority: 0,
+		flags: {bullet: 1, protect: 1, mirror: 1},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Weather Ball', target);
+		},
+		onModifyType(move, pokemon) {
+			switch (pokemon.effectiveWeather()) {
+			case 'sunnyday':
+			case 'desolateland':
+				move.type = 'Fire';
+				break;
+			case 'raindance':
+			case 'primordialsea':
+				move.type = 'Water';
+				break;
+			case 'sandstorm':
+				move.type = 'Rock';
+				break;
+			case 'hail':
+			case 'arcticgales':
+				move.type = 'Ice';
+				break;
+			}
+		},
+		onModifyMove(move, pokemon) {
+			switch (pokemon.effectiveWeather()) {
+			case 'sunnyday':
+			case 'desolateland':
+				move.basePower *= 2;
+				break;
+			case 'raindance':
+			case 'primordialsea':
+				move.basePower *= 2;
+				break;
+			case 'sandstorm':
+				move.basePower *= 2;
+				break;
+			case 'hail':
+			case 'arcticgales':
+				move.basePower *= 2;
+				break;
+			}
+		},
+		secondary: null,
+		target: "normal",
+		type: "Normal",
+		isNonstandard: "Custom",
+	},
 	// njjoltiks
 	burnout: {
 		accuracy: 100,
@@ -938,7 +999,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		pp: 20,
 		priority: 0,
 		desc: "Power doubles if the user hits an opponent switching in. If this move is successful and the user has not fainted, the user switches out even if it is trapped and is replaced immediately by a selected party member. The user does not switch out if there are no unfainted party members, or if the target switched out using an Eject Button or through the effect of the Emergency Exit or Wimp Out Abilities.",
-		shortdesc: "Volt Switch + Stakeout",
+		shortDesc: "Volt Switch + Stakeout",
 		flags: {protect: 1, mirror: 1,},
 		onTryMove() {
 			this.attrLastMove('[still]');

@@ -311,6 +311,54 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		isNonstandard: "Custom",
 		rating: 4,
 	},
+	// Nivelmaster
+	weatherman: {
+		desc: "If this Pokemon is a Castform, its type changes to the current weather condition's type, except Sandstorm. Every turn a random weather is generated, with equal chance of each occurring.",
+		shortDesc: "Forecast + new weather each turn",
+		onUpdate(pokemon) {
+			if (pokemon.baseSpecies.baseSpecies !== 'Castform' || pokemon.transformed) return;
+			let forme = null;
+			switch (pokemon.effectiveWeather()) {
+			case 'sunnyday':
+			case 'desolateland':
+				if (pokemon.species.id !== 'castformsunny') forme = 'Castform-Sunny';
+				break;
+			case 'raindance':
+			case 'primordialsea':
+				if (pokemon.species.id !== 'castformrainy') forme = 'Castform-Rainy';
+				break;
+			case 'arcticgales':
+			case 'hail':
+				if (pokemon.species.id !== 'castformsnowy') forme = 'Castform-Snowy';
+				break;
+			default:
+				if (pokemon.species.id !== 'castform') forme = 'Castform';
+				break;
+			}
+			if (pokemon.isActive && forme) {
+				pokemon.formeChange(forme, this.effect, false, '[msg]');
+			}
+		},
+		onResidualOrder: 26,
+		onResidualSubOrder: 1,
+		onResidual(pokemon, target) {
+			const r = this.random(3);
+			switch (r) {
+			case 0:
+				this.field.setWeather('raindance');
+				break;
+			case 1:
+				this.field.setWeather('sunnyday');
+				break;
+			case 2:
+				this.field.setWeather('hail');
+				break;
+			}
+		},
+		name: "Weatherman",
+		isNonstandard: "Custom",
+		gen: 8,
+	},
 	// njjoltiks
 	fromtheashes: {
 		desc: "If this Pokémon were to faint, fully heal it and then remove this ability permanently.",
