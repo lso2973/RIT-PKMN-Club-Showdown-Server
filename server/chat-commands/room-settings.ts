@@ -6,7 +6,7 @@
  *
  * @license MIT
  */
-import {Utils} from '../../lib/utils';
+import {Utils} from '../../lib';
 import type {EffectiveGroupSymbol, RoomPermission} from '../user-groups';
 
 const RANKS = Config.groupsranking;
@@ -65,7 +65,9 @@ export const commands: ChatCommands = {
 
 		if (
 			room.settings.modchat && room.settings.modchat.length <= 1 &&
-			!Users.Auth.hasPermission(user, 'modchat', room.settings.modchat as GroupSymbol, room)
+			!room.auth.atLeast(user, room.settings.modchat) &&
+			// Upper Staff should probably be able to set /modchat & in secret rooms
+			!user.can('bypassall')
 		) {
 			return this.errorReply(`/modchat - Access denied for changing a setting currently at ${room.settings.modchat}.`);
 		}
@@ -98,7 +100,9 @@ export const commands: ChatCommands = {
 				this.errorReply(`The rank '${target}' was unrecognized as a modchat level.`);
 				return this.parse('/help modchat');
 			}
-			if (!Users.Auth.hasPermission(user, 'modchat', target as GroupSymbol, room)) {
+			// Users shouldn't be able to set modchat above their own rank (except for ROs who are also Upper Staff)
+			const modchatLevelHigherThanUserRank = !room.auth.atLeast(user, target) && !user.can('bypassall');
+			if (modchatLevelHigherThanUserRank || !Users.Auth.hasPermission(user, 'modchat', target as GroupSymbol, room)) {
 				return this.errorReply(`/modchat - Access denied for setting to ${target}.`);
 			}
 			room.settings.modchat = target;
@@ -165,9 +169,21 @@ export const commands: ChatCommands = {
 		this.modlog(`AUTOMODCHAT`, null, `${rank}: ${time} minutes`);
 		room.saveSettings();
 	},
+	automodchathelp: [
+		`/automodchat [number], [rank] - Sets modchat [rank] to automatically turn on after [number] minutes. [number] must be between 5 and 480. Requires: # &`,
+		`/automodchat off - Turns off automodchat.`,
+	],
 
-	inviteonlynext: 'ionext',
-	ionext(target, room, user) {
+	ionext() {
+		this.errorReply(`"ionext" is an outdated feature. Hidden battles now have password-protected URLs, making them fully secure against eavesdroppers.`);
+		this.errorReply(`You probably want to switch from /ionext to /hidenext, and from /ioo to /hideroom`);
+	},
+	ioo() {
+		this.errorReply(`"ioo" is an outdated feature. Hidden battles now have password-protected URLs, making them fully secure against eavesdroppers.`);
+		this.errorReply(`You probably want to switch from /ioo to /hideroom`);
+	},
+
+	inviteonlynext(target, room, user) {
 		const groupConfig = Config.groups[Users.PLAYER_SYMBOL];
 		if (!groupConfig?.editprivacy) return this.errorReply(`/ionext - Access denied.`);
 		if (this.meansNo(target)) {
@@ -180,15 +196,13 @@ export const commands: ChatCommands = {
 			this.sendReply(`Your next battle will be invite-only${user.battlesForcedPublic() ? `, unless it is rated` : ``}.`);
 		}
 	},
-	ionexthelp: [
-		`/ionext - Sets your next battle to be invite-only.`,
-		`/ionext off - Sets your next battle to be publicly visible.`,
+	inviteonlynexthelp: [
+		`/inviteonlynext - Sets your next battle to be invite-only.`,
+		`/inviteonlynext off - Sets your next battle to be publicly visible.`,
 	],
 
-	ioo: 'inviteonly',
 	inviteonly(target, room, user, connection, cmd) {
 		room = this.requireRoom();
-		if (cmd === 'ioo') target = 'on';
 		if (!target) return this.parse('/help inviteonly');
 		if (this.meansYes(target)) {
 			return this.parse("/modjoin %");
@@ -336,13 +350,7 @@ export const commands: ChatCommands = {
 	permissions: {
 		clear: 'set',
 		set(target, room, user) {
-			let [perm, rank, roomid] = target.split(',').map(item => item.trim().toLowerCase());
-			if (roomid) {
-				const tarRoom = Rooms.search(roomid);
-				if (!tarRoom) return this.errorReply(`Room not found.`);
-				room = tarRoom;
-				this.room = room;
-			}
+			let [perm, rank] = this.splitOne(target);
 			room = this.requireRoom();
 			if (rank === 'default') rank = '';
 			if (!room.persist) return this.errorReply(`This room does not allow customizing permissions.`);
@@ -618,7 +626,7 @@ export const commands: ChatCommands = {
 			room = this.requireRoom();
 			this.checkCan('mute', null, room);
 
-			if (!room.settings.banwords || !room.settings.banwords.length) {
+			if (!room.settings.banwords?.length) {
 				return this.sendReply("This room has no banned phrases.");
 			}
 			return this.sendReply(`Banned phrases in room ${room.roomid}: ${room.settings.banwords.join(', ')}`);
@@ -1576,7 +1584,7 @@ export const pages: PageTable = {
 				buf += roomGroups.map(group => (
 					requiredRank === group ?
 						Utils.html`<button class="button disabled" style="font-weight:bold;color:#575757;background:#d3d3d3">${group}</button>` :
-						Utils.html`<button class="button" name="send" value="/permissions set ${permission}, ${group}, ${room.roomid}">${group}</button>`
+						Utils.html`<button class="button" name="send" value="/msgroom ${room.roomid},/permissions set ${permission}, ${group}">${group}</button>`
 				)).join(' ');
 			} else {
 				buf += Utils.html`<button class="button disabled" style="font-weight:bold;color:#575757;background:#d3d3d3">${requiredRank}</button>`;

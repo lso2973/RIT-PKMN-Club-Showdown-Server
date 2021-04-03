@@ -323,6 +323,7 @@ interface ModdedBattlePokemon {
 	getStat?: (
 		this: Pokemon, statName: StatNameExceptHP, unboosted?: boolean, unmodified?: boolean, fastReturn?: boolean
 	) => number;
+	getVolatile?: (this: Pokemon, status: string | Effect) => Effect | null;
 	getWeight?: (this: Pokemon) => number;
 	hasAbility?: (this: Pokemon, ability: string | string[]) => boolean;
 	isGrounded?: (this: Pokemon, negateImmunity: boolean | undefined) => boolean | null;
@@ -393,6 +394,9 @@ interface ModdedBattleScriptsData extends Partial<BattleScriptsData> {
 	getZMove?: (this: Battle, move: Move, pokemon: Pokemon, skipChecks?: boolean) => string | undefined;
 	getActiveZMove?: (this: Battle, move: Move, pokemon: Pokemon) => ActiveMove;
 	canZMove?: (this: Battle, pokemon: Pokemon) => ZMoveOptions | void;
+	win?: (this: Battle, side?: SideID | '' | Side | null) => boolean;
+	faintMessages?: (this: Battle, lastFirst?: boolean) => boolean | undefined;
+	tiebreak?: (this: Battle) => boolean;
 }
 
 interface TypeData {

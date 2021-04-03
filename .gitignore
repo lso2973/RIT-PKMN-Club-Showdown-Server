@@ -67,3 +67,4 @@ local_settings.py
 pip-log.txt
 config/chat-plugins/mafia-logs.json
 config/chatrooms.json
+config/chat-plugins/mafia-logs.json

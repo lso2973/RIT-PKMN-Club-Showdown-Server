@@ -28,9 +28,7 @@ const LAST_BATTLE_WRITE_THROTTLE = 10;
 
 const RETRY_AFTER_LOGIN = null;
 
-import {FS} from '../lib/fs';
-import {Utils} from '../lib/utils';
-import {WriteStream} from '../lib/streams';
+import {FS, Utils, Streams} from '../lib';
 import {GTSGiveaway, LotteryGiveaway, QuestionGiveaway} from './chat-plugins/wifi';
 import {QueuedHunt} from './chat-plugins/scavengers';
 import {ScavengerGameTemplate} from './chat-plugins/scavenger-games';
@@ -512,7 +510,7 @@ export abstract class BasicRoom {
 	}
 	clearMinorActivityQueue(slot?: number, depth = 1) {
 		if (!this.minorActivityQueue) return;
-		if (!slot) {
+		if (slot === undefined) {
 			this.minorActivityQueue = null;
 			delete this.settings.minorActivityQueue;
 			this.saveSettings();
@@ -523,12 +521,12 @@ export abstract class BasicRoom {
 			if (!this.minorActivityQueue.length) this.clearMinorActivityQueue();
 		}
 	}
-	setMinorActivity(activity: MinorActivity | null): void {
+	setMinorActivity(activity: MinorActivity | null, noDisplay = false): void {
 		this.minorActivity?.endTimer();
 		this.minorActivity = activity;
 		if (this.minorActivity) {
 			this.minorActivity.save();
-			this.minorActivity.display();
+			if (!noDisplay) this.minorActivity.display();
 		} else {
 			delete this.settings.minorActivity;
 			this.saveSettings();
@@ -542,7 +540,7 @@ export abstract class BasicRoom {
 		Rooms.global.writeChatRoomData();
 	}
 	checkModjoin(user: User) {
-		if (user.inRoom(this)) return true;
+		if (user.id in this.users) return true;
 		if (!this.settings.modjoin) return true;
 		// users with a room rank can always join
 		if (this.auth.has(user.id)) return true;
@@ -617,7 +615,7 @@ export abstract class BasicRoom {
 			}
 		}
 
-		if (user && successUserid && user.inRoom(this)) {
+		if (user && successUserid && userid in this.users) {
 			user.updateIdentity();
 			if (notifyText) user.popup(notifyText);
 		}
@@ -958,6 +956,7 @@ export abstract class BasicRoom {
 			this.reportJoin('n', user.getIdentityWithStatus(this.roomid) + '|' + oldid, user);
 		}
 		this.minorActivity?.onRename?.(user, oldid, joining);
+		this.checkAutoModchat(user);
 		return true;
 	}
 	/**
@@ -975,7 +974,7 @@ export abstract class BasicRoom {
 	onLeave(user: User) {
 		if (!user) return false; // ...
 
-		if (!user.inRoom(this)) {
+		if (!(user.id in this.users)) {
 			Monitor.crashlog(new Error(`user ${user.id} already left`));
 			return false;
 		}
@@ -986,7 +985,7 @@ export abstract class BasicRoom {
 			this.reportJoin('l', user.getIdentity(this.roomid), user);
 		}
 		if (this.game && this.game.onLeave) this.game.onLeave(user);
-
+		this.runAutoModchat();
 
 		return true;
 	}
@@ -1100,7 +1099,7 @@ export class GlobalRoomState {
 	 * Rooms that users autojoin upon logging in
 	 */
 	readonly modjoinedAutojoinList: RoomID[];
-	readonly ladderIpLog: WriteStream;
+	readonly ladderIpLog: Streams.WriteStream;
 	readonly reportUserStatsInterval: NodeJS.Timeout;
 	lockdown: boolean | 'pre' | 'ddos';
 	battleCount: number;
@@ -1140,7 +1139,7 @@ export class GlobalRoomState {
 		this.autojoinList = [];
 		this.modjoinedAutojoinList = [];
 		for (const [i, settings] of this.settingsList.entries()) {
-			if (!settings || !settings.title) {
+			if (!settings?.title) {
 				Monitor.warn(`ERROR: Room number ${i} has no data and could not be loaded.`);
 				continue;
 			}
@@ -1182,7 +1181,7 @@ export class GlobalRoomState {
 		} else {
 			// Prevent there from being two possible hidden classes an instance
 			// of GlobalRoom can have.
-			this.ladderIpLog = new WriteStream({write() { return undefined; }});
+			this.ladderIpLog = new Streams.WriteStream({write() { return undefined; }});
 		}
 		// Create writestream for modlog
 		Rooms.Modlog.initialize('global');
@@ -1323,7 +1322,7 @@ export class GlobalRoomState {
 		const [formatFilter, eloFilterString, usernameFilter] = filter.split(',');
 		const eloFilter = +eloFilterString;
 		for (const room of Rooms.rooms.values()) {
-			if (!room || !room.active || room.settings.isPrivate) continue;
+			if (!room?.active || room.settings.isPrivate) continue;
 			if (room.type !== 'battle') continue;
 			if (formatFilter && formatFilter !== room.format) continue;
 			if (eloFilter && (!room.rated || room.rated < eloFilter)) continue;
@@ -1727,7 +1726,7 @@ export class GameRoom extends BasicRoom {
 		return this.log.getScrollback(channel);
 	}
 	getLogForUser(user: User) {
-		if (!user.inGame(this)) return this.getLog();
+		if (!(user.id in this.game.playerTable)) return this.getLog();
 		// @ts-ignore
 		return this.getLog(this.game.playerTable[user.id].num);
 	}
