@@ -79,7 +79,7 @@ export const stbSets: STBSets = {
 	},
 	gigigecko26: {
 		species: 'Zigzagoon', ability: 'Rabies', item: 'Eviolite', gender: 'M',
-		moves: ['Zippy Zap', 'Earthquake', 'Psyshock'],
+		moves: ['Zing Zap', 'Earthquake', 'Psyshock'],
 		signatureMove: 'Internet Troll',
 		evs: {hp: 252, def: 4, spe: 252}, nature: 'Jolly',
 	},
