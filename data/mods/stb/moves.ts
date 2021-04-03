@@ -132,6 +132,54 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "allAdjacent",
 		type: "Normal",
 	},
+	// Azrules
+	blj: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "BLJ",
+		desc: "If this move is successful and the user has not fainted, the user switches out even if it is trapped and is replaced immediately by a selected party member. The user does not switch out if there are no unfainted party members. The user also gains an additional wahoo stack even if the move fails.",
+		shortDesc: "Switches out, +1 Wahoo",
+		gen: 8,
+		pp: 20,
+		priority: 5,
+		flags: {},
+		selfSwitch: true,
+		sideCondition: 'blj',
+		condition: {
+			// this is a side condition
+			onStart(side) {
+				this.add('-message', `${getName('Azrules')} stacked 1 Wahoo`);
+				this.effectData.layers = 1;
+			},
+			onRestart(side) {
+				this.add('-message', `${getName('Azrules')} stacked ${this.effectData.layers+1} Wahoos`);
+				this.effectData.layers++;
+			},
+			onSwitchIn(pokemon) {
+				if (!pokemon.hasAbility('speeeeeeeee')) return;
+				let universePlural = "universes";
+				if (this.effectData.layers == 1) {
+					universePlural = "universe";
+				}
+				if (this.effectData.layers < 7) {
+					this.add(`c|${getName('Azrules')}|I’m ${this.effectData.layers} parallel ${universePlural} ahead of you`);
+				} else {
+					this.add(`c|${getName('Azrules')}|Your speed is only temporary. Mine builds for eternity`);
+				}
+				this.boost({spe: this.effectData.layers}, pokemon);
+			},
+			onModifyPriority(priority, pokemon, target, move) {
+				if (pokemon.hasAbility('speeeeeeeee') && this.effectData.layers > 6) {
+					return priority + this.effectData.layers - 6;
+				}
+			},
+		},
+		secondary: null,
+		isNonstandard: "Custom",
+		target: "allySide",
+		type: "Electric",
+	},
 	// bad_wolf42
 	rollaround: {
 		accuracy: 100,

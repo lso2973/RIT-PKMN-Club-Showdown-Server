@@ -1,4 +1,5 @@
 import {STBSet} from "./random-teams";
+import {getName} from './conditions';
 
 /**
  * Assigns a new set to a Pokémon
@@ -109,6 +110,14 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onStart(source) {
 			this.field.setWeather('arcticgales');
 		},
+		isNonstandard: "Custom",
+		gen: 8,
+	},
+	// Azrules
+	speeeeeeeee: {
+		desc: "When this pokemon switches in, its speed is raised by +n stages where n is the number of wahoo stacks (max 6). If this pokemon has more than 6 wahoo stacks, this pokemon’s moves also gain an additional +(n-6) priority. Additionally, this pokemon uses its speed stat as its special attack stat.",
+		shortDesc: "+1 spe/priority per wahoo stack, uses spe instead of spa",
+		name: 'speeeeeeeee',
 		isNonstandard: "Custom",
 		gen: 8,
 	},

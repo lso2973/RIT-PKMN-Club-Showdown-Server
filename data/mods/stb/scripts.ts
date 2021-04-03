@@ -659,7 +659,7 @@ export const Scripts: ModdedBattleScriptsData = {
 		return damage;
 	},
 
-	// For Spandan's and AWood's custom move and Brandon's ability
+	// For Spandan's and AWood's custom move and Brandon's ability, and AZrules's ability
 	getDamage(pokemon, target, move, suppressMessages = false) {
 		if (typeof move === 'string') move = this.dex.getActiveMove(move);
 
@@ -758,6 +758,9 @@ export const Scripts: ModdedBattleScriptsData = {
 					this.hint("Body Press uses Sp. Def boosts when Wonder Room is active.");
 				}
 			}
+		}
+		if (pokemon.hasAbility('speeeeeeeee') && attackStat == 'spa') {
+			attackStat = 'spe';
 		}
 
 		const statTable = {atk: 'Atk', def: 'Def', spa: 'SpA', spd: 'SpD', spe: 'Spe'};
