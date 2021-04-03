@@ -396,7 +396,7 @@ export const Scripts: ModdedBattleScriptsData = {
 					}
 					if (!target.volatiles['dynamax'] && pokemon.level >= target.level &&
 						  (move.ohko === true || !target.hasType(move.ohko))) {
-						accuracy += (pokemon.level - (pokemon.side.sideConditions['busteraura'] ? 3 * target.level / 4 : target.level));
+						accuracy += (pokemon.level - (pokemon.side.sideConditions['busteraura'] ? 7 * target.level / 8 : target.level));
 					} else {
 						this.add('-immune', target, '[ohko]');
 						hitResults[i] = false;
