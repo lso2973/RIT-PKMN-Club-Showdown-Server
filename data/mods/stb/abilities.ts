@@ -434,13 +434,13 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		shortDesc: "Shadow Tag + Magic Coat on entry",
 		onFoeTrapPokemon(pokemon) {
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha')) &&
-					this.actions.isAdjacent(pokemon, this.effectData.target)) {
+					pokemon.isAdjacent(this.effectData.target)) {
 				pokemon.tryTrap(true);
 			}
 		},
 		onFoeMaybeTrapPokemon(pokemon, source) {
 			if (!source) source = this.effectData.target;
-			if (!source || !this.actions.isAdjacent(pokemon, source)) return;
+			if (!source || !pokemon.isAdjacent(this.effectData.target)) return;
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha'))) {
 				pokemon.maybeTrapped = true;
 			}
@@ -717,13 +717,13 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		desc: "Prevents adjacent opposing Pokémon from choosing to switch out unless they are immune to trapping or also have this Ability or gonna getcha.",
 		onFoeTrapPokemon(pokemon) {
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha')) &&
-					this.actions.isAdjacent(pokemon, this.effectData.target)) {
+					pokemon.isAdjacent(this.effectData.target)) {
 				pokemon.tryTrap(true);
 			}
 		},
 		onFoeMaybeTrapPokemon(pokemon, source) {
 			if (!source) source = this.effectData.target;
-			if (!source || !this.actions.isAdjacent(pokemon, source)) return;
+			if (!source || !pokemon.isAdjacent(this.effectData.target)) return;
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha'))) {
 				pokemon.maybeTrapped = true;
 			}
