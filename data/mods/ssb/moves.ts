@@ -2214,7 +2214,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 						this.add('-activate', pokemon, 'move: The Hunt is On!');
 						alreadyAdded = true;
 					}
-					this.actions.runMove('thehuntison', source, this.getTargetLoc(pokemon, source));
+					this.actions.runMove('thehuntison', source, source.getLocOf(pokemon));
 				}
 			},
 		},
@@ -2384,8 +2384,8 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				}
 				pokemon.side.removeSideCondition('gaelstrom');
 			},
-			onStart(side) {
-				side.addSideCondition(['spikes', 'toxicspikes', 'stealthrock', 'stickyweb'][this.random(4)]);
+			onStart(side, source) {
+				side.addSideCondition(['spikes', 'toxicspikes', 'stealthrock', 'stickyweb'][this.random(4)], source);
 			},
 		},
 		forceSwitch: true,
@@ -2491,7 +2491,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			onSwitchInPriority: 1,
 			onSwitchIn(target) {
 				const positions: boolean[] = this.effectData.positions;
-				if (target.position !== this.effectData.sourcePosition) {
+				if (target.getSlot() !== this.effectData.sourceSlot) {
 					return;
 				}
 				if (!target.fainted) {
@@ -2579,7 +2579,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			onHit(pokemon, source, move) {
 				if (!pokemon.hp) return;
 				if (this.effectData.gotHit) return;
-				if (pokemon.side !== source.side && move.category !== 'Status') {
+				if (!pokemon.isAlly(source) && move.category !== 'Status') {
 					this.effectData.gotHit = true;
 					this.add('-message', 'Gossifleur was prepared for the impact!');
 					const boosts: {[k: string]: number} = {def: 2, spd: 2};
@@ -3406,7 +3406,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 
 	// Perish Song
 	trickery: {
-		accuracy: 85,
+		accuracy: 95,
 		basePower: 100,
 		category: "Physical",
 		desc: "Changes the target's item to something random.",
@@ -3423,6 +3423,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.add('-anim', source, "Trick", target);
 		},
 		onHit(target, source, effect) {
+			this.add(`c|${getName('Perish Song')}|/html <img src="https://i.imgflip.com/3rt1d8.png" />`);
 			const item = target.takeItem(source);
 			if (!target.item) {
 				if (item) this.add('-enditem', target, item.name, '[from] move: Trickery', '[of] ' + source);
@@ -3454,7 +3455,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		pp: 1,
 		noPPBoosts: true,
 		priority: 0,
-		flags: {protect: 1, reflectable: 1},
+		flags: {protect: 1},
 		onTryMove() {
 			this.attrLastMove('[still]');
 		},
@@ -5397,4 +5398,52 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			},
 		},
 	},
+
+	// :^)
+	// Remnant of an AFD past. Thank u for the memes.
+	/*
+	supermetronome: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		desc: "Uses 2-5 random moves. Does not include 1-Base Power Z-Moves, Super Metronome, Metronome, or 10-Base Power Max moves.",
+		shortDesc: "Uses 2-5 random moves.",
+		name: "Super Metronome",
+		isNonstandard: "Custom",
+		pp: 100,
+		noPPBoosts: true,
+		priority: 0,
+		flags: {},
+		onTryMove(pokemon) {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, "Metronome", source);
+		},
+		onHit(target, source, effect) {
+			const moves = [];
+			for (const id in this.dex.data.Moves) {
+				const move = this.dex.getMove(id);
+				if (move.realMove || move.id.includes('metronome')) continue;
+				// Calling 1 BP move is somewhat lame and disappointing. However,
+				// signature Z moves are fine, as they actually have a base power.
+				if (move.isZ && move.basePower === 1) continue;
+				if (move.gen > this.gen) continue;
+				if (move.isMax === true && move.basePower === 10) continue;
+				moves.push(move.name);
+			}
+			let randomMove: string;
+			if (moves.length) {
+				randomMove = this.sample(moves);
+			} else {
+				return false;
+			}
+			this.actions.useMove(randomMove, target);
+		},
+		multihit: [2, 5],
+		secondary: null,
+		target: "self",
+		type: "???",
+	},
+	*/
 };

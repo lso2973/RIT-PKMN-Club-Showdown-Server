@@ -62,6 +62,7 @@ export class RandomTeams {
 	factoryTier: string;
 	format: Format;
 	prng: PRNG;
+	maxLength?: number;
 
 	/**
 	 * Checkers for move enforcement based on a Pokémon's types or other factors
@@ -74,7 +75,13 @@ export class RandomTeams {
 		format = Dex.getFormat(format);
 		this.dex = Dex.forFormat(format);
 		this.gen = this.dex.gen;
-
+		if (format.teamLength) {
+			if (format.teamLength.validate && format.teamLength.validate[1]) {
+				this.maxLength = format.teamLength.validate[1];
+			} else {
+				this.maxLength = format.teamLength.battle;
+			}
+		}
 		this.factoryTier = '';
 		this.format = format;
 		this.prng = prng && !Array.isArray(prng) ? prng : new PRNG(prng);
@@ -785,7 +792,8 @@ export class RandomTeams {
 			return {cull: !counter.Status || hasRestTalk};
 		case 'rest':
 			const bulkySetup = !hasMove['sleeptalk'] && ['bulkup', 'calmmind', 'coil', 'curse'].some(m => movePool.includes(m));
-			return {cull: movePool.includes('sleeptalk') || bulkySetup};
+			// Registeel would otherwise get Curse sets without Rest, which are very bad generally
+			return {cull: species.id !== 'registeel' && (movePool.includes('sleeptalk') || bulkySetup)};
 		case 'sleeptalk':
 			if (!hasMove['rest']) return {cull: true};
 			if (movePool.length > 1 && !hasAbility['Contrary']) {
@@ -864,7 +872,7 @@ export class RandomTeams {
 		case 'partingshot':
 			return {cull: counter.speedsetup || hasMove['bulkup'] || hasMove['uturn']};
 		case 'protect':
-			if ((counter.setupType && !hasMove['wish'] && !isDoubles) || hasRestTalk) return {cull: true};
+			if (!isDoubles && ((counter.setupType && !hasMove['wish']) || hasMove['rest'])) return {cull: true};
 			if (
 				!isDoubles &&
 				counter.Status < 2 &&
@@ -1619,6 +1627,19 @@ export class RandomTeams {
 			(isNoDynamax && species.randomBattleNoDynamaxMoves) ||
 			species.randomBattleMoves;
 		const movePool = (randMoves || Object.keys(this.dex.data.Learnsets[species.id]!.learnset!)).slice();
+		if (this.format.gameType === 'multi' || this.format.gameType === 'freeforall') {
+			// Random Multi Battle uses doubles move pools, but Ally Switch fails in multi battles
+			// Random Free-For-All also uses doubles move pools, for now
+			const allySwitch = movePool.indexOf('allyswitch');
+			if (allySwitch !== undefined) {
+				if (movePool.length > 4) {
+					this.fastPop(movePool, allySwitch);
+				} else {
+					// Ideally, we'll never get here, but better to have a move that usually does nothing than one that always does
+					movePool[allySwitch] = 'sleeptalk';
+				}
+			}
+		}
 		const rejectedPool = [];
 		const moves: ID[] = [];
 		let ability = '';
@@ -1875,8 +1896,9 @@ export class RandomTeams {
 			const customScale: {[k: string]: number} = {
 				// These Pokemon are too strong and need a lower level
 				zaciancrowned: 66, calyrexshadow: 68, xerneas: 70, necrozmaduskmane: 72, glalie: 78, octillery: 84, wobbuffet: 86,
+				jolteon: 84, swoobat: 84, haxorus: 80, kyogre: 73, inteleon: 80, slurpuff: 84, polteageist: 84,
 				// These Pokemon are too weak and need a higher level
-				delibird: 100, vespiquen: 96, pikachu: 92,
+				delibird: 100, vespiquen: 96, pikachu: 92, shedinja: 92, reuniclus: 87, arctozolt: 88,
 			};
 			level = customScale[species.id] || tierScale[tier];
 		} else if (species.randomBattleLevel) {

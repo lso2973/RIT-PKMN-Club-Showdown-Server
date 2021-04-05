@@ -174,7 +174,7 @@ export const Scripts: ModdedBattleScriptsData = {
 
 			// Limit one mega evolution
 			const wasMega = pokemon.canMegaEvo;
-			for (const ally of pokemon.alliesAndSelf()) {
+			for (const ally of pokemon.side.pokemon) {
 				if (wasMega) {
 					ally.canMegaEvo = null;
 				} else {
@@ -355,7 +355,7 @@ export const Scripts: ModdedBattleScriptsData = {
 			] as ID[]);
 			if (RESTORATIVE_BERRIES.has('leppaberry' as ID)) {
 				const inflicted = ['trick', 'switcheroo'].includes(effectid);
-				const external = inflicted && source && source.side.id !== this.side.id;
+				const external = inflicted && source && !source.isAlly(this);
 				this.pendingStaleness = external ? 'external' : 'internal';
 			} else {
 				this.pendingStaleness = undefined;
