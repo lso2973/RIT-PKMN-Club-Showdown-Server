@@ -56,20 +56,18 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 					const damage = this.effectData.totalDamage;
 					this.effectData.totalDamage += damage;
 					this.effectData.lastDamage = damage;
-					this.effectData.sourcePosition = source.position;
-					this.effectData.sourceSide = source.side;
+					this.effectData.sourceSlot = source.getSlot();
 				}
 			},
 			onDamage(damage, target, source, move) {
-				if (!source || source.side === target.side) return;
+				if (!source || source.isAlly(target)) return;
 				if (!move || move.effectType !== 'Move') return;
 				if (!damage && this.effectData.lastDamage > 0) {
 					damage = this.effectData.totalDamage;
 				}
 				this.effectData.totalDamage += damage;
 				this.effectData.lastDamage = damage;
-				this.effectData.sourcePosition = source.position;
-				this.effectData.sourceSide = source.side;
+				this.effectData.sourceSlot = source.getSlot();
 			},
 			onAfterSetStatus(status, pokemon) {
 				// Sleep, freeze, and partial trap will just pause duration.
@@ -94,8 +92,8 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 						return false;
 					}
 					this.add('-end', pokemon, 'Bide');
-					const target = this.effectData.sourceSide.active[this.effectData.sourcePosition];
-					this.moveHit(target, pokemon, move, {damage: this.effectData.totalDamage * 2} as ActiveMove);
+					const target = this.getAtSlot(this.effectData.sourceSlot);
+					this.actions.moveHit(target, pokemon, move, {damage: this.effectData.totalDamage * 2} as ActiveMove);
 					return false;
 				}
 				this.add('-activate', pokemon, 'Bide');
@@ -396,7 +394,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			},
 			onDamage(damage, target, source, move) {
 				if (!move || move.effectType !== 'Move') return;
-				if (!source || source.side === target.side) return;
+				if (!source || source.isAlly(target)) return;
 				if (move.id === 'gust' || move.id === 'thunder') {
 					this.add('-message', 'The foe ' + target.name + ' can\'t be hit while flying!');
 					return null;
@@ -500,7 +498,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			},
 			onAfterMoveSelfPriority: 1,
 			onAfterMoveSelf(pokemon) {
-				const leecher = pokemon.side.foe.active[pokemon.volatiles['leechseed'].sourcePosition];
+				const leecher = this.getAtSlot(pokemon.volatiles['leechseed'].sourceSlot);
 				if (!leecher || leecher.fainted || leecher.hp <= 0) {
 					this.debug('Nothing to leech into');
 					return;
@@ -584,7 +582,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			if (!foe?.lastMove || foe.lastMove.id === 'mirrormove') {
 				return false;
 			}
-			this.useMove(foe.lastMove.id, pokemon);
+			this.actions.useMove(foe.lastMove.id, pokemon);
 		},
 	},
 	mist: {
@@ -861,7 +859,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				// NOTE: In future generations the damage is capped to the remaining HP of the
 				// Substitute, here we deliberately use the uncapped damage when tracking lastDamage etc.
 				// Also, multi-hit moves must always deal the same damage as the first hit for any subsequent hits
-				let uncappedDamage = move.hit > 1 ? source.lastDamage : this.getDamage(source, target, move);
+				let uncappedDamage = move.hit > 1 ? source.lastDamage : this.actions.getDamage(source, target, move);
 				if (!uncappedDamage) return null;
 				uncappedDamage = this.runEvent('SubDamage', target, source, move, uncappedDamage);
 				if (!uncappedDamage) return uncappedDamage;
@@ -887,7 +885,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				// Add here counter damage
 				const lastAttackedBy = target.getLastAttackedBy();
 				if (!lastAttackedBy) {
-					target.attackedBy.push({source: source, move: move.id, damage: uncappedDamage, thisTurn: true});
+					target.attackedBy.push({source: source, move: move.id, damage: uncappedDamage, slot: source.getSlot(), thisTurn: true});
 				} else {
 					lastAttackedBy.move = move.id;
 					lastAttackedBy.damage = uncappedDamage;

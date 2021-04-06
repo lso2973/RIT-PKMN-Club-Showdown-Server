@@ -83,7 +83,7 @@ export const Moves: {[moveid: string]: ModdedMoveData} = {
 				if (effect && (effect.priority <= 0.1 || effect.target === 'self')) {
 					return;
 				}
-				if (target.isSemiInvulnerable() || target.side === source.side) return;
+				if (target.isSemiInvulnerable() || target.isAlly(source)) return;
 				if (!target.isGrounded()) {
 					const baseMove = this.dex.getMove(effect.id);
 					if (baseMove.priority > 0) {
@@ -277,7 +277,7 @@ export const Moves: {[moveid: string]: ModdedMoveData} = {
 			onSwitchIn(pokemon) {
 				if (pokemon.hasAbility('trashcompactor') && !this.field.getPseudoWeather('stickyresidues')) {
 					if (!pokemon.volatiles['stockpile']) {
-						this.useMove('stockpile', pokemon);
+						this.actions.useMove('stockpile', pokemon);
 					}
 					this.add('-sideend', pokemon.side, 'move: G-Max Steelsurge', '[of] ' + pokemon);
 					pokemon.side.removeSideCondition('gmaxsteelsurge');
@@ -323,7 +323,7 @@ export const Moves: {[moveid: string]: ModdedMoveData} = {
 				if (!pokemon.isGrounded()) return;
 				if (pokemon.hasAbility('trashcompactor') && !this.field.getPseudoWeather('stickyresidues')) {
 					if (!pokemon.volatiles['stockpile']) {
-						this.useMove('stockpile', pokemon);
+						this.actions.useMove('stockpile', pokemon);
 					}
 					this.add('-sideend', pokemon.side, 'move: Spikes', '[of] ' + pokemon);
 					pokemon.side.removeSideCondition('spikes');
@@ -356,7 +356,7 @@ export const Moves: {[moveid: string]: ModdedMoveData} = {
 			onSwitchIn(pokemon) {
 				if (pokemon.hasAbility('trashcompactor') && !this.field.getPseudoWeather('stickyresidues')) {
 					if (!pokemon.volatiles['stockpile']) {
-						this.useMove('stockpile', pokemon);
+						this.actions.useMove('stockpile', pokemon);
 					}
 					this.add('-sideend', pokemon.side, 'move: Stealth Rock', '[of] ' + pokemon);
 					pokemon.side.removeSideCondition('stealthrock');
@@ -389,7 +389,7 @@ export const Moves: {[moveid: string]: ModdedMoveData} = {
 				if (!pokemon.isGrounded()) return;
 				if (pokemon.hasAbility('trashcompactor') && !this.field.getPseudoWeather('stickyresidues')) {
 					if (!pokemon.volatiles['stockpile']) {
-						this.useMove('stockpile', pokemon);
+						this.actions.useMove('stockpile', pokemon);
 					}
 					this.add('-sideend', pokemon.side, 'move: Sticky Web', '[of] ' + pokemon);
 					pokemon.side.removeSideCondition('stickyweb');
@@ -429,7 +429,7 @@ export const Moves: {[moveid: string]: ModdedMoveData} = {
 				if (!pokemon.isGrounded()) return;
 				if (pokemon.hasAbility('trashcompactor') && !this.field.getPseudoWeather('stickyresidues')) {
 					if (!pokemon.volatiles['stockpile']) {
-						this.useMove('stockpile', pokemon);
+						this.actions.useMove('stockpile', pokemon);
 					}
 					this.add('-sideend', pokemon.side, 'move: Toxic Spikes', '[of] ' + pokemon);
 					pokemon.side.removeSideCondition('toxicspikes');
@@ -606,7 +606,7 @@ export const Moves: {[moveid: string]: ModdedMoveData} = {
 			} else {
 				success = !!this.heal(Math.ceil(target.baseMaxhp * 0.5));
 			}
-			if (success && target.side !== source.side) {
+			if (success && !target.isAlly(source)) {
 				target.staleness = 'external';
 			}
 			return success;
@@ -652,7 +652,7 @@ export const Moves: {[moveid: string]: ModdedMoveData} = {
 					move = 'triattack';
 				}
 			}
-			this.useMove(move, pokemon, target);
+			this.actions.useMove(move, pokemon, target);
 			return null;
 		},
 	},
@@ -1246,7 +1246,7 @@ export const Moves: {[moveid: string]: ModdedMoveData} = {
 				return 5;
 			},
 			onAnyModifyDamage(damage, source, target, move) {
-				if (target !== source && target.side === this.effectData.target) {
+				if (target !== source && this.effectData.target.hasAlly(target)) {
 					if ((target.side.getSideCondition('reflect') && this.getCategory(move) === 'Physical') ||
 							(target.side.getSideCondition('lightscreen') && this.getCategory(move) === 'Special')) {
 						return;

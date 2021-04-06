@@ -61,8 +61,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		},
 		onHit(target, source, move) {
 			if (this.randomChance(1, 10)) {
-				for (const foe of source.side.foe.active) {
-					if (!foe || foe.fainted) continue;
+				for (const foe of source.foes()) {
 					foe.trySetStatus('brn', source);
 				}
 			}
@@ -287,13 +286,13 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	// Aethernum
 	lilypadoverflow: {
 		accuracy: 100,
-		basePower: 61,
+		basePower: 62,
 		basePowerCallback(source, target, move) {
 			if (!source.volatiles['raindrop']?.layers) return move.basePower;
 			return move.basePower + (source.volatiles['raindrop'].layers * 20);
 		},
 		category: "Special",
-		desc: "Power is equal to 61 + (Number of Raindrops collected * 20). Whether or not this move is successful, the user's Defense and Special Defense decrease by as many stages as Raindrop had increased them, and the user's Raindrop count resets to 0.",
+		desc: "Power is equal to 62 + (Number of Raindrops collected * 20). Whether or not this move is successful, the user's Defense and Special Defense decrease by as many stages as Raindrop had increased them, and the user's Raindrop count resets to 0.",
 		shortDesc: "More power per Raindrop. Lose Raindrops.",
 		name: "Lilypad Overflow",
 		gen: 8,
@@ -2215,7 +2214,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 						this.add('-activate', pokemon, 'move: The Hunt is On!');
 						alreadyAdded = true;
 					}
-					this.runMove('thehuntison', source, this.getTargetLoc(pokemon, source));
+					this.actions.runMove('thehuntison', source, source.getLocOf(pokemon));
 				}
 			},
 		},
@@ -2385,8 +2384,8 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				}
 				pokemon.side.removeSideCondition('gaelstrom');
 			},
-			onStart(side) {
-				side.addSideCondition(['spikes', 'toxicspikes', 'stealthrock', 'stickyweb'][this.random(4)]);
+			onStart(side, source) {
+				side.addSideCondition(['spikes', 'toxicspikes', 'stealthrock', 'stickyweb'][this.random(4)], source);
 			},
 		},
 		forceSwitch: true,
@@ -2492,7 +2491,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			onSwitchInPriority: 1,
 			onSwitchIn(target) {
 				const positions: boolean[] = this.effectData.positions;
-				if (target.position !== this.effectData.sourcePosition) {
+				if (target.getSlot() !== this.effectData.sourceSlot) {
 					return;
 				}
 				if (!target.fainted) {
@@ -2580,7 +2579,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			onHit(pokemon, source, move) {
 				if (!pokemon.hp) return;
 				if (this.effectData.gotHit) return;
-				if (pokemon.side !== source.side && move.category !== 'Status') {
+				if (!pokemon.isAlly(source) && move.category !== 'Status') {
 					this.effectData.gotHit = true;
 					this.add('-message', 'Gossifleur was prepared for the impact!');
 					const boosts: {[k: string]: number} = {def: 2, spd: 2};
@@ -2967,12 +2966,12 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		// fruit this move.
 		onHit(target, source) {
 			for (const move of ['Haze', 'Worry Seed', 'Poison Powder', 'Stun Spore', 'Leech Seed']) {
-				this.useMove(move, source);
+				this.actions.useMove(move, source);
 				this.add(`c|${getName('Meicoo')}|That is not the answer - try again!`);
 			}
 			const strgl = this.dex.getActiveMove('Struggle');
 			strgl.basePower = 150;
-			this.useMove(strgl, source);
+			this.actions.useMove(strgl, source);
 			this.add(`c|${getName('Meicoo')}|That is not the answer - try again!`);
 		},
 		secondary: null,
@@ -3170,13 +3169,13 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			const hax = this.sample(['slp', 'brn', 'par', 'tox']);
 			target.trySetStatus(hax, source);
 			if (hax === 'slp') {
-				this.useMove('Dream Eater', source);
+				this.actions.useMove('Dream Eater', source);
 			} else if (hax === 'par') {
-				this.useMove('Iron Head', source);
+				this.actions.useMove('Iron Head', source);
 			} else if (hax === 'brn') {
-				this.useMove('Fire Blast', source);
+				this.actions.useMove('Fire Blast', source);
 			} else if (hax === 'tox') {
-				this.useMove('Venoshock', source);
+				this.actions.useMove('Venoshock', source);
 			}
 		},
 		secondary: null,
@@ -3393,7 +3392,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.add('-anim', source, "Celebrate", target);
 		},
 		onTryHit(target, source) {
-			this.useMove('Substitute', source);
+			this.actions.useMove('Substitute', source);
 		},
 		onHit(target, source) {
 			target.trySetStatus('brn', source);
@@ -3407,7 +3406,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 
 	// Perish Song
 	trickery: {
-		accuracy: 85,
+		accuracy: 95,
 		basePower: 100,
 		category: "Physical",
 		desc: "Changes the target's item to something random.",
@@ -3424,6 +3423,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.add('-anim', source, "Trick", target);
 		},
 		onHit(target, source, effect) {
+			this.add(`c|${getName('Perish Song')}|/html <img src="https://i.imgflip.com/3rt1d8.png" />`);
 			const item = target.takeItem(source);
 			if (!target.item) {
 				if (item) this.add('-enditem', target, item.name, '[from] move: Trickery', '[of] ' + source);
@@ -3455,7 +3455,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		pp: 1,
 		noPPBoosts: true,
 		priority: 0,
-		flags: {protect: 1, reflectable: 1},
+		flags: {protect: 1},
 		onTryMove() {
 			this.attrLastMove('[still]');
 		},
@@ -3958,7 +3958,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		},
 		onHit(target, source) {
 			if (source.species.id === 'charizard') {
-				this.runMegaEvo(source);
+				this.actions.runMegaEvo(source);
 			}
 		},
 		secondary: null,
@@ -4207,8 +4207,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			onHit(source) {
 				let totalatk = 0;
 				let totalspa = 0;
-				for (const target of source.side.foe.active) {
-					if (!target || target.fainted) continue;
+				for (const target of source.foes()) {
 					totalatk += target.getStat('atk', false, true);
 					totalspa += target.getStat('spa', false, true);
 					if (totalatk && totalatk >= totalspa) {
@@ -4687,7 +4686,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			for (let x = 1; x <= randomTurns; x++) {
 				const randomMove = this.sample(supportMoves);
 				supportMoves.splice(supportMoves.indexOf(randomMove), 1);
-				this.useMove(randomMove, target);
+				this.actions.useMove(randomMove, target);
 				successes++;
 			}
 			if (successes === 1) {
@@ -4940,19 +4939,19 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			source.m.yukiCosplayForme = this.sample(formes);
 			switch (source.m.yukiCosplayForme) {
 			case 'Cleric':
-				this.useMove("Strength Sap", source);
+				this.actions.useMove("Strength Sap", source);
 				break;
 			case 'Ninja':
-				this.useMove("Confuse Ray", source);
+				this.actions.useMove("Confuse Ray", source);
 				break;
 			case 'Dancer':
-				this.useMove("Feather Dance", source);
+				this.actions.useMove("Feather Dance", source);
 				break;
 			case 'Songstress':
-				this.useMove("Sing", source);
+				this.actions.useMove("Sing", source);
 				break;
 			case 'Jester':
-				this.useMove("Charm", source);
+				this.actions.useMove("Charm", source);
 				break;
 			}
 		},
@@ -5073,10 +5072,10 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		},
 		onTry(pokemon, target) {
 			pokemon.addVolatile('bigstormcomingmod');
-			this.useMove("Hurricane", pokemon);
-			this.useMove("Thunder", pokemon);
-			this.useMove("Blizzard", pokemon);
-			this.useMove("Weather Ball", pokemon);
+			this.actions.useMove("Hurricane", pokemon);
+			this.actions.useMove("Thunder", pokemon);
+			this.actions.useMove("Blizzard", pokemon);
+			this.actions.useMove("Weather Ball", pokemon);
 		},
 		secondary: null,
 		target: "normal",
@@ -5399,4 +5398,52 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			},
 		},
 	},
+
+	// :^)
+	// Remnant of an AFD past. Thank u for the memes.
+	/*
+	supermetronome: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		desc: "Uses 2-5 random moves. Does not include 1-Base Power Z-Moves, Super Metronome, Metronome, or 10-Base Power Max moves.",
+		shortDesc: "Uses 2-5 random moves.",
+		name: "Super Metronome",
+		isNonstandard: "Custom",
+		pp: 100,
+		noPPBoosts: true,
+		priority: 0,
+		flags: {},
+		onTryMove(pokemon) {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, "Metronome", source);
+		},
+		onHit(target, source, effect) {
+			const moves = [];
+			for (const id in this.dex.data.Moves) {
+				const move = this.dex.getMove(id);
+				if (move.realMove || move.id.includes('metronome')) continue;
+				// Calling 1 BP move is somewhat lame and disappointing. However,
+				// signature Z moves are fine, as they actually have a base power.
+				if (move.isZ && move.basePower === 1) continue;
+				if (move.gen > this.gen) continue;
+				if (move.isMax === true && move.basePower === 10) continue;
+				moves.push(move.name);
+			}
+			let randomMove: string;
+			if (moves.length) {
+				randomMove = this.sample(moves);
+			} else {
+				return false;
+			}
+			this.actions.useMove(randomMove, target);
+		},
+		multihit: [2, 5],
+		secondary: null,
+		target: "self",
+		type: "???",
+	},
+	*/
 };

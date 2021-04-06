@@ -3,7 +3,7 @@ const longwhip: ConditionData = {
 	onResidualOrder: 3,
 	onResidual(target) {
 		// unlike a future move, Long Whip activates each turn
-		this.effectData.target = this.effectData.side.active[this.effectData.position];
+		this.effectData.target = this.getAtSlot(this.effectData.slot);
 		const data = this.effectData;
 		const move = this.dex.getMove(data.move);
 		if (data.target.fainted || data.target === data.source) {
@@ -35,11 +35,11 @@ const longwhip: ConditionData = {
 		if (data.source.isActive) {
 			this.add('-anim', data.source, hitMove, data.target);
 		}
-		this.trySpreadMoveHit([data.target], data.source, hitMove);
+		this.actions.trySpreadMoveHit([data.target], data.source, hitMove);
 	},
 	onEnd(target) {
 		// unlike a future move, Long Whip activates each turn
-		this.effectData.target = this.effectData.side.active[this.effectData.position];
+		this.effectData.target = this.getAtSlot(this.effectData.slot);
 		const data = this.effectData;
 		const move = this.dex.getMove(data.move);
 		if (data.target.fainted || data.target === data.source) {
@@ -71,7 +71,7 @@ const longwhip: ConditionData = {
 		if (data.source.isActive) {
 			this.add('-anim', data.source, hitMove, data.target);
 		}
-		this.trySpreadMoveHit([data.target], data.source, hitMove);
+		this.actions.trySpreadMoveHit([data.target], data.source, hitMove);
 	},
 };
 export const Conditions: {[k: string]: ConditionData} = {
