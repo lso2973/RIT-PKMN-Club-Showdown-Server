@@ -115,7 +115,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// Azrules
 	speeeeeeeee: {
-		desc: "When this pokemon switches in, its speed is raised by +n stages where n is the number of wahoo stacks (max 6). If this pokemon has more than 6 wahoo stacks, this pokemon’s moves also gain an additional +(n-6) priority. Additionally, this pokemon uses its speed stat as its special attack stat.",
+		desc: "When this Pokémon switches in, its speed is raised by +n stages where n is the number of wahoo stacks (max 6). If this Pokémon has more than 6 wahoo stacks, this Pokémon’s moves also gain an additional +(n-6) priority. Additionally, this Pokémon uses its speed stat as its special attack stat.",
 		shortDesc: "+1 spe/priority per wahoo stack, uses spe instead of spa",
 		name: 'speeeeeeeee',
 		isNonstandard: "Custom",
