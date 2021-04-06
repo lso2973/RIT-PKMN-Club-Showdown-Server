@@ -1029,7 +1029,7 @@ export const Scripts: ModdedBattleScriptsData = {
             if(!this.hasAbility('verywelltrained')){
                 for(const side of this.battle.sides){
                     for(const mon of side.active){
-                        if(mon.hasAbility('verywelltrained')){
+                        if(mon?.hasAbility('verywelltrained')){
                             return true;
                         }
                     }
