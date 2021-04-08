@@ -490,7 +490,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			const newMoves = [];
 			for (const moveSlot of pokemon.moveSlots) {
 				const moveid = moveSlot.id;
-				const move = this.dex.getMove(moveid);
+				const move = this.dex.moves.get(moveid);
 				if (move.ohko) {
 					return null;
 				}

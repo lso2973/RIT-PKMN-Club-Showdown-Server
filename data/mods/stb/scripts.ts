@@ -181,7 +181,7 @@ export const Scripts: ModdedBattleScriptsData = {
 
 		if (zMove) {
 			if (pokemon.illusion) {
-				this.singleEvent('End', this.dex.getAbility('Illusion'), pokemon.abilityData, pokemon);
+				this.singleEvent('End', this.dex.abilities.get('Illusion'), pokemon.abilityData, pokemon);
 			}
 			this.add('-zpower', pokemon);
 			// In SSB Z-Moves are limited to 1 per pokemon.
@@ -215,7 +215,7 @@ export const Scripts: ModdedBattleScriptsData = {
 				// @ts-ignore - the Dancer ability can't trigger on a move where target is null because it does not copy failed moves.
 				const dancersTarget = target.side !== dancer.side && pokemon.side === dancer.side ? target : pokemon;
 				// @ts-ignore
-				this.runMove(move.id, dancer, this.getTargetLoc(dancersTarget, dancer), this.dex.getAbility('dancer'), undefined, true);
+				this.runMove(move.id, dancer, this.getTargetLoc(dancersTarget, dancer), this.dex.abilities.get('dancer'), undefined, true);
 			}
 		}
 		if (noLock && pokemon.volatiles['lockedmove']) delete pokemon.volatiles['lockedmove'];
@@ -407,7 +407,7 @@ export const Scripts: ModdedBattleScriptsData = {
 						// level up
 						const species = pokemon.species;
 						const level = pokemon.level + 5;
-						(pokemon as any).level = level;
+						pokemon.level = level;
 						pokemon.set.level = level;
 						pokemon.formeChange(species);
 
@@ -1111,7 +1111,7 @@ export const Scripts: ModdedBattleScriptsData = {
 								// unreleased hidden ability
 								continue;
 							}
-							const ability = this.dex.getAbility(abilityName);
+							const ability = this.dex.abilities.get(abilityName);
 							if (ruleTable.has('-ability:' + ability.id)) continue;
 							if (pokemon.knownType && !this.dex.getImmunity('trapped', pokemon)) continue;
 							this.singleEvent('FoeMaybeTrapPokemon', ability, {}, pokemon, source);
@@ -1137,7 +1137,7 @@ export const Scripts: ModdedBattleScriptsData = {
 		if (this.gameType === 'triples' && !this.sides.filter(side => side.pokemonLeft > 1).length) {
 			// If both sides have one Pokemon left in triples and they are not adjacent, they are both moved to the center.
 			const actives = this.getAllActive();
-			if (actives.length > 1 && !this.isAdjacent(actives[0], actives[1])) {
+			if (actives.length > 1 && !actives[0].isAdjacent(actives[1])) {
 				this.swapPosition(actives[0], 1, '[silent]');
 				this.swapPosition(actives[1], 1, '[silent]');
 				this.add('-center');

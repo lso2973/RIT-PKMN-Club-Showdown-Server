@@ -163,7 +163,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			const sideConditions = ['spikes', 'toxicspikes', 'stealthrock', 'stickyweb', 'gmaxsteelsurge'];
 			for (const condition of sideConditions) {
 				if (pokemon.hp && pokemon.side.removeSideCondition(condition)) {
-					this.add('-sideend', pokemon.side, this.dex.getEffect(condition).name, '[from] move: Rapid Spin', '[of] ' + pokemon);
+					this.add('-sideend', pokemon.side, this.dex.conditions.get(condition).name, '[from] move: Rapid Spin', '[of] ' + pokemon);
 				}
 			}
 			if (pokemon.hp && pokemon.volatiles['partiallytrapped']) {
@@ -177,7 +177,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			const sideConditions = ['spikes', 'toxicspikes', 'stealthrock', 'stickyweb', 'gmaxsteelsurge'];
 			for (const condition of sideConditions) {
 				if (pokemon.hp && pokemon.side.removeSideCondition(condition)) {
-					this.add('-sideend', pokemon.side, this.dex.getEffect(condition).name, '[from] move: Rapid Spin', '[of] ' + pokemon);
+					this.add('-sideend', pokemon.side, this.dex.conditions.get(condition).name, '[from] move: Rapid Spin', '[of] ' + pokemon);
 				}
 			}
 			if (pokemon.hp && pokemon.volatiles['partiallytrapped']) {
@@ -832,7 +832,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			if (pokemon.item || !pokemon.lastItem) return false;
 			const item = pokemon.lastItem;
 			pokemon.lastItem = '';
-			this.add('-item', pokemon, this.dex.getItem(item), '[from] move: Balance');
+			this.add('-item', pokemon, this.dex.items.get(item), '[from] move: Balance');
 			pokemon.setItem(item);
 		},
 		secondary: {
@@ -981,7 +981,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		},
 		basePowerCallback(pokemon, target, move) {
 			let boosts = 0;
-			let boost: BoostName;
+			let boost: BoostID;
 			for (boost in pokemon.boosts) {
 				boosts += Math.abs(pokemon.boosts[boost]);
 			}

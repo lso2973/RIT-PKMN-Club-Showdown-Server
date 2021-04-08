@@ -1241,7 +1241,7 @@ export const Rulesets: {[k: string]: FormatData} = {
 			let entryCount = 0;
 			for (const [i, set] of team.entries()) {
 				entryCount++;
-				const species = this.dex.getSpecies(set.species);
+				const species = this.dex.species.get(set.species);
 				if (!species.types) return [`Invalid pokemon ${set.name || set.species}`];
 				for (const type of species.types) {
 					if (typeKey.includes(type)) {
@@ -1361,7 +1361,7 @@ export const Rulesets: {[k: string]: FormatData} = {
 			for (const [i, set] of team.entries()) {
 				entryCount++;
 				for (const move of set.moves.slice(0, 2)) {
-					const type = this.dex.getMove(move).type;
+					const type = this.dex.moves.get(move).type;
 					if (typeKey.includes(type)) {
 						typeValue[typeKey.indexOf(type)] += 1;
 					} else {
@@ -1435,7 +1435,7 @@ export const Rulesets: {[k: string]: FormatData} = {
 		],
 
 		onValidateSet(set) {
-			const species = this.dex.getSpecies(set.species);
+			const species = this.dex.species.get(set.species);
 			if (set.moves.includes('curse') && !species.types.includes('Ghost')) {
 				return [`Curse is banned on non-ghost types.`];
 			}
@@ -1449,7 +1449,7 @@ export const Rulesets: {[k: string]: FormatData} = {
 		banlist: ['Aegislash'],
 
 		onValidateSet(set) {
-			const species = this.dex.getSpecies(set.species);
+			const species = this.dex.species.get(set.species);
 
 			if (species.baseStats.atk > 75 || species.baseStats.spa > 75) {
 				return [`${species.name} is banned.`, `(Pokémon with an offensive stat greater than 75 are banned.)`];

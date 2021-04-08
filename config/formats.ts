@@ -63,7 +63,7 @@ export const Formats: FormatList = [
 			'Urshifu-Rapid-Strike',
 		],
 		onValidateSet(set) {
-			const item = this.dex.getItem(set.item);
+			const item = this.dex.items.get(set.item);
 			if (item?.megaStone) {
 				return [`Mega evolution is not allowed.`];
 			} else if (item?.zMove) {
@@ -93,7 +93,7 @@ export const Formats: FormatList = [
 		onSwitchInPriority: 100,
 		onSwitchIn(pokemon) {
 			let name: string = this.toID(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
-			if (this.dex.getSpecies(name).exists || this.dex.getMove(name).exists || this.dex.getAbility(name).exists) {
+			if (this.dex.species.get(name).exists || this.dex.moves.get(name).exists || this.dex.abilities.get(name).exists) {
 				// Certain pokemon have volatiles named after their id
 				// To prevent overwriting those, and to prevent accidentaly leaking
 				// that a pokemon is on a team through the onStart even triggering
@@ -102,7 +102,7 @@ export const Formats: FormatList = [
 				name = name + 'user';
 			}
 			// Add the mon's status effect to it as a volatile.
-			const status = this.dex.getEffect(name);
+			const status = this.dex.conditions.get(name);
 			if (status?.exists) {
 				pokemon.addVolatile(name, pokemon);
 			}
@@ -176,7 +176,7 @@ export const Formats: FormatList = [
 			'Reshiram', 'Solgaleo', 'Urshifu', 'Volcarona', 'Xerneas', 'Yveltal', 'Zacian', 'Zamazenta', 'Zekrom', 'Power Construct',
 		],
 		onValidateSet(set) {
-			const item = this.dex.getItem(set.item);
+			const item = this.dex.items.get(set.item);
 			if (item?.megaStone) {
 				return [`Mega evolution is not allowed.`];
 			} else if (item?.zMove) {
@@ -217,7 +217,7 @@ export const Formats: FormatList = [
 		onModifySpecies(species, target, source, effect) {
 			if (!target) return; // Chat command
 			if (effect && ['imposter', 'transform'].includes(effect.id)) return;
-			const types = [...new Set(target.baseMoveSlots.slice(0, 2).map(move => this.dex.getMove(move.id).type))];
+			const types = [...new Set(target.baseMoveSlots.slice(0, 2).map(move => this.dex.moves.get(move.id).type))];
 			return {...species, types: types};
 		},
 		onSwitchIn(pokemon) {
@@ -300,7 +300,7 @@ export const Formats: FormatList = [
 			'Blacephalon + Expanding Force',
 		],
 		onValidateSet(set) {
-			const item = this.dex.getItem(set.item);
+			const item = this.dex.items.get(set.item);
 			if (item?.megaStone) {
 				return [`Mega evolution is not allowed.`];
 			} else if (item?.zMove) {
@@ -326,7 +326,7 @@ export const Formats: FormatList = [
 		onValidateTeam(team) {
 			const tiers: string[] = [];
 			for (const set of team) {
-				const species = this.dex.getSpecies(set.species);
+				const species = this.dex.species.get(set.species);
 				if (species.tier === 'OU') {
 					if (!tiers.includes('OU')) {
 						tiers.push('OU');

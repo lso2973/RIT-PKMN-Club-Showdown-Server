@@ -621,12 +621,12 @@ function generateSTBSet(set: STBSet, dex: ModdedDex, baseDex: ModdedDex) {
 	}
 	let buf = ``;
 	buf += `<details><summary>Set</summary>`;
-	buf += `<ul style="list-style-type:none;"><li>${set.species}${set.gender !== '' ? ` (${set.gender})` : ``} @ ${Array.isArray(set.item) ? set.item.map(x => dex.getItem(x).name).join(' / ') : dex.getItem(set.item).name}</li>`;
-	buf += `<li>Ability: ${Array.isArray(set.ability) ? set.ability.map(x => dex.getAbility(x).name).join(' / ') : dex.getAbility(set.ability).name}</li>`;
+	buf += `<ul style="list-style-type:none;"><li>${set.species}${set.gender !== '' ? ` (${set.gender})` : ``} @ ${Array.isArray(set.item) ? set.item.map(x => dex.items.get(x).name).join(' / ') : dex.items.get(set.item).name}</li>`;
+	buf += `<li>Ability: ${Array.isArray(set.ability) ? set.ability.map(x => dex.abilities.get(x).name).join(' / ') : dex.abilities.get(set.ability).name}</li>`;
 	if (set.shiny) buf += `<li>Shiny: ${typeof set.shiny === 'number' ? `Sometimes` : `Yes`}</li>`;
 	if (set.evs) {
 		const evs: string[] = [];
-		let ev: StatName;
+		let ev: StatID;
 		for (ev in set.evs) {
 			if (set.evs[ev] === 0) continue;
 			evs.push(`${set.evs[ev]} ${STAT_NAMES[ev]}`);
@@ -638,7 +638,7 @@ function generateSTBSet(set: STBSet, dex: ModdedDex, baseDex: ModdedDex) {
 	}
 	if (set.ivs) {
 		const ivs: string[] = [];
-		let iv: StatName;
+		let iv: StatID;
 		for (iv in set.ivs) {
 			if (set.ivs[iv] === 31) continue;
 			ivs.push(`${set.ivs[iv]} ${STAT_NAMES[iv]}`);
@@ -646,10 +646,10 @@ function generateSTBSet(set: STBSet, dex: ModdedDex, baseDex: ModdedDex) {
 		buf += `<li>IVs: ${ivs.join(" / ")}</li>`;
 	}
 	for (const moveid of set.moves) {
-		buf += `<li>- ${Array.isArray(moveid) ? moveid.map(x => dex.getMove(x).name).join(" / ") : dex.getMove(moveid).name}</li>`;
+		buf += `<li>- ${Array.isArray(moveid) ? moveid.map(x => dex.moves.get(x).name).join(" / ") : dex.moves.get(moveid).name}</li>`;
 	}
-	const italicize = !baseDex.getMove(set.signatureMove).exists;
-	buf += `<li>- ${italicize ? `<i>` : ``}${dex.getMove(set.signatureMove).name}${italicize ? `</i>` : ``}</li>`;
+	const italicize = !baseDex.moves.get(set.signatureMove).exists;
+	buf += `<li>- ${italicize ? `<i>` : ``}${dex.moves.get(set.signatureMove).name}${italicize ? `</i>` : ``}</li>`;
 	buf += `</ul>`;
 	buf += `</details>`;
 	return buf;
@@ -658,8 +658,8 @@ function generateSTBSet(set: STBSet, dex: ModdedDex, baseDex: ModdedDex) {
 function generateSTBItemInfo(set: STBSet, dex: ModdedDex, baseDex: ModdedDex) {
 	let buf = ``;
 	if (!Array.isArray(set.item)) {
-		const baseItem = baseDex.getItem(set.item);
-		const sigItem = dex.getItem(set.item);
+		const baseItem = baseDex.items.get(set.item);
+		const sigItem = dex.items.get(set.item);
 		if (!baseItem.exists || (baseItem.desc || baseItem.shortDesc) !== (sigItem.desc || sigItem.shortDesc)) {
 			buf += `<hr />`;
 			buf += Chat.getDataItemHTML(sigItem);
@@ -700,8 +700,8 @@ function generateSTBItemInfo(set: STBSet, dex: ModdedDex, baseDex: ModdedDex) {
 
 function generateSTBAbilityInfo(set: STBSet, dex: ModdedDex, baseDex: ModdedDex) {
 	let buf = ``;
-	if (!Array.isArray(set.ability) && !baseDex.getAbility(set.ability).exists) {
-		const sigAbil = Dex.deepClone(dex.getAbility(set.ability));
+	if (!Array.isArray(set.ability) && !baseDex.abilities.get(set.ability).exists) {
+		const sigAbil = Dex.deepClone(dex.abilities.get(set.ability));
 		if (!sigAbil.desc && !sigAbil.shortDesc) {
 			sigAbil.desc = `This ability doesn't have a description. Try contacting the STB dev team.`;
 		}
@@ -723,8 +723,8 @@ function generateSTBAbilityInfo(set: STBSet, dex: ModdedDex, baseDex: ModdedDex)
 
 function generateSTBPokemonInfo(species: string, dex: ModdedDex, baseDex: ModdedDex) {
 	let buf = ``;
-	const origSpecies = baseDex.getSpecies(species);
-	const newSpecies = dex.getSpecies(species);
+	const origSpecies = baseDex.species.get(species);
+	const newSpecies = dex.species.get(species);
 	if (
 		newSpecies.types.join('/') !== origSpecies.types.join('/') ||
 		Object.values(newSpecies.abilities).join('/') !== Object.values(origSpecies.abilities).join('/') ||
@@ -754,7 +754,7 @@ function generateSTBPokemonInfo(species: string, dex: ModdedDex, baseDex: Modded
 		if (newSpecies.eggGroups && dex.gen >= 2) details["Egg Group(s)"] = newSpecies.eggGroups.join(", ");
 		const evos: string[] = [];
 		for (const evoName of newSpecies.evos) {
-			const evo = dex.getSpecies(evoName);
+			const evo = dex.species.get(evoName);
 			if (evo.gen <= dex.gen) {
 				const condition = evo.evoCondition ? ` ${evo.evoCondition}` : ``;
 				switch (evo.evoType) {
@@ -813,20 +813,20 @@ function STBSets(target: string) {
 	for (const name of names) {
 		if (buf) buf += `<hr>`;
 		const set = stbSets[name];
-		const mutatedSpecies = dex.getSpecies(set.species);
+		const mutatedSpecies = dex.species.get(set.species);
 		if (!set.skip) {
 			buf += Utils.html`<h1><psicon pokemon="${mutatedSpecies.id}">${displayName === 'yuki' ? name : displayName}</h1>`;
 		} else {
 			buf += `<details><summary><psicon pokemon="${set.species}"><strong>${name.split('-').slice(1).join('-') + ' forme'}</strong></summary>`;
 		}
 		buf += generateSTBSet(set, dex, baseDex);
-		const item = dex.getItem(set.item as string);
+		const item = dex.items.get(set.item as string);
 		if (!set.skip || set.signatureMove !== stbSets[set.skip].signatureMove) {
-			const sigMove = baseDex.getMove(set.signatureMove).exists && !Array.isArray(set.item) &&
+			const sigMove = baseDex.moves.get(set.signatureMove).exists && !Array.isArray(set.item) &&
 				typeof item.zMove === 'string' ?
-				dex.getMove(item.zMove) : dex.getMove(set.signatureMove);
+				dex.moves.get(item.zMove) : dex.moves.get(set.signatureMove);
 			buf += generateSSBMoveInfo(sigMove, dex);
-			if (sigMove.id === 'blackbird') buf += generateSSBMoveInfo(dex.getMove('gaelstrom'), dex);
+			if (sigMove.id === 'blackbird') buf += generateSSBMoveInfo(dex.moves.get('gaelstrom'), dex);
 		}
 		buf += generateSTBItemInfo(set, dex, baseDex);
 		buf += generateSTBAbilityInfo(set, dex, baseDex);
