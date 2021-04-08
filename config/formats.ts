@@ -116,7 +116,6 @@ export const Formats: FormatList = [
 		],
 
 		mod: 'gen8',
-		searchShow: false,
 		ruleset: ['[Gen 8] OU', 'Overflow Stat Mod'],
 		banlist: ['Damp Rock', 'Eviolite', 'Heat Rock'],
 		unbanlist: ['Zamazenta-Crowned'],
