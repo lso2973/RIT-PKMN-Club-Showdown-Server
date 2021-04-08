@@ -2,13 +2,14 @@
 
 const assert = require('assert').strict;
 const TeamValidator = require('../../.sim-dist/team-validator').TeamValidator;
+const Teams = require('../../.sim-dist/teams').Teams;
 
 describe('Team Validator', function () {
 	it('should have valid formats to work with', function () {
 		Dex.includeFormats();
 		for (const format in Dex.formatsCache) {
 			try {
-				Dex.getRuleTable(Dex.getFormat(format));
+				Dex.formats.getRuleTable(Dex.formats.get(format));
 			} catch (e) {
 				e.message = `${format}: ${e.message}`;
 				throw e;
@@ -48,29 +49,29 @@ describe('Team Validator', function () {
 	});
 
 	it('should validate Gen 2 IVs', function () {
-		let team = Dex.fastUnpackTeam('|raikou|||hiddenpowerwater||||14,28,26,,,|||');
+		let team = Teams.unpack('|raikou|||hiddenpowerwater||||14,28,26,,,|||');
 		let illegal = TeamValidator.get('gen2ou').validateTeam(team);
 		assert.equal(illegal, null);
 
-		team = Dex.fastUnpackTeam('|raikou|||hiddenpowerfire||||14,28,26,,,|||');
+		team = Teams.unpack('|raikou|||hiddenpowerfire||||14,28,26,,,|||');
 		illegal = TeamValidator.get('gen2ou').validateTeam(team);
 		assert(illegal);
 
-		team = Dex.fastUnpackTeam('|raikou|||hiddenpowerwater||||16,28,26,,,|||');
+		team = Teams.unpack('|raikou|||hiddenpowerwater||||16,28,26,,,|||');
 		illegal = TeamValidator.get('gen2ou').validateTeam(team);
 		assert(illegal);
 
-		team = Dex.fastUnpackTeam('|raikou|||thunderbolt||||,,,28,30,|||');
+		team = Teams.unpack('|raikou|||thunderbolt||||,,,28,30,|||');
 		illegal = TeamValidator.get('gen2ou').validateTeam(team);
 		assert(illegal);
 	});
 
 	it('should validate Gen 2 EVs', function () {
-		let team = Dex.fastUnpackTeam('|gengar|||thunderbolt||,,,200,200,|||||');
+		let team = Teams.unpack('|gengar|||thunderbolt||,,,200,200,|||||');
 		let illegal = TeamValidator.get('gen2ou').validateTeam(team);
 		assert.equal(illegal, null);
 
-		team = Dex.fastUnpackTeam('|gengar|||thunderbolt||,,,248,252,|||||');
+		team = Teams.unpack('|gengar|||thunderbolt||,,,248,252,|||||');
 		illegal = TeamValidator.get('gen2ou').validateTeam(team);
 		assert(illegal);
 	});
@@ -323,7 +324,7 @@ describe('Team Validator', function () {
 		];
 		illegal = TeamValidator.get('gen2ou').validateTeam(team);
 		assert.equal(illegal, null);
-		illegal = TeamValidator.get('gen1outradeback').validateTeam(team);
+		illegal = TeamValidator.get('gen1tradebacksou').validateTeam(team);
 		assert.equal(illegal, null);
 		illegal = TeamValidator.get('gen1ou').validateTeam(team);
 		assert(illegal);
@@ -332,7 +333,7 @@ describe('Team Validator', function () {
 		team = [
 			{species: 'charizard', moves: ['crunch']},
 		];
-		illegal = TeamValidator.get('gen1outradeback').validateTeam(team);
+		illegal = TeamValidator.get('gen1tradebacksou').validateTeam(team);
 		assert(illegal);
 
 		// tradeback: gen 2 event move from prevo with gen 1 tutor or TM moves
