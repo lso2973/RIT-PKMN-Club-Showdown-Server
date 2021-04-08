@@ -381,8 +381,7 @@ export const Scripts: ModdedBattleScriptsData = {
 
 			return true;
 		},
-
-	// Modded for QuantumTangler's Meta Buster
+		// Modded for QuantumTangler's Meta Buster
 		hitStepAccuracy(targets, pokemon, move) {
 			const hitResults = [];
 			for (const [i, target] of targets.entries()) {
@@ -394,133 +393,106 @@ export const Scripts: ModdedBattleScriptsData = {
 						accuracy = 30;
 						if (move.ohko === 'Ice' && this.battle.gen >= 7 && !pokemon.hasType('Ice') && !pokemon.hasAbility('metabuster')) {
 							accuracy = 20;
-					  }
-					  if (!target.volatiles['dynamax'] && pokemon.level >= target.level &&
-						    (move.ohko === true || !target.hasType(move.ohko))) {
-						  accuracy += (pokemon.level - (pokemon.side.sideConditions['busteraura'] ? 7 * target.level / 8 : target.level));
-					  } else {
-						  this.add('-immune', target, '[ohko]');
-						  hitResults[i] = false;
-						  continue;
-					  }
-					  // boosts from when used while in Buster Aura
-					  if (pokemon.side.sideConditions['busteraura']) {
-						  // level up
-						  const species = pokemon.species;
-						  const level = pokemon.level + 5;
-						  (pokemon as any).level = level;
-						  pokemon.set.level = level;
-						  pokemon.formeChange(species);
+						}
+					}
+					if (!target.volatiles['dynamax'] && pokemon.level >= target.level &&
+							(move.ohko === true || !target.hasType(move.ohko))) {
+						(accuracy as number) += (pokemon.level - (pokemon.side.sideConditions['busteraura'] ? 7 * target.level / 8 : target.level));
+					} else {
+						this.battle.add('-immune', target, '[ohko]');
+						hitResults[i] = false;
+						continue;
+					}
+					// boosts from when used while in Buster Aura
+					if (pokemon.side.sideConditions['busteraura']) {
+						// level up
+						const species = pokemon.species;
+						const level = pokemon.level + 5;
+						(pokemon as any).level = level;
+						pokemon.set.level = level;
+						pokemon.formeChange(species);
 
-						  pokemon.details = species.name + (level === 100 ? '' : ', L' + level) +
-							  (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
-						  this.add('detailschange', pokemon, (pokemon.illusion || pokemon).details);
+						pokemon.details = species.name + (level === 100 ? '' : ', L' + level) +
+							(pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
+						this.battle.add('detailschange', pokemon, (pokemon.illusion || pokemon).details);
 
-						  const newHP = Math.floor(Math.floor(
-							  2 * species.baseStats['hp'] + pokemon.set.ivs['hp'] + Math.floor(pokemon.set.evs['hp'] / 4) + 100
-						  ) * level / 100 + 10);
-						  pokemon.hp = newHP - (pokemon.maxhp - pokemon.hp);
-						  pokemon.maxhp = newHP;
-						  this.add('-heal', pokemon, pokemon.getHealth, '[silent]');
+						const newHP = Math.floor(Math.floor(
+							2 * species.baseStats['hp'] + pokemon.set.ivs['hp'] + Math.floor(pokemon.set.evs['hp'] / 4) + 100
+						) * level / 100 + 10);
+						pokemon.hp = newHP - (pokemon.maxhp - pokemon.hp);
+						pokemon.maxhp = newHP;
+						this.battle.add('-heal', pokemon, pokemon.getHealth, '[silent]');
 
-						  // stat boost
-						  const stats: BoostName[] = [];
-						  let stat: BoostName;
-						  for (stat in pokemon.boosts) {
-							  if (pokemon.boosts[stat] < 6) {
-								  stats.push(stat);
-							  }
-						  }
-						  if (!target.volatiles['dynamax'] && pokemon.level >= target.level &&
-							    (move.ohko === true || !target.hasType(move.ohko))) {
-							  accuracy += (pokemon.level - (pokemon.side.sideConditions['busteraura'] ? 3 * target.level / 4 : target.level));
-						  } else {
-							  this.battle.add('-immune', target, '[ohko]');
-							  hitResults[i] = false;
-							  continue;
-						  }
-						  // boosts from when used while in Buster Aura
-						  if (pokemon.side.sideConditions['busteraura']) {
-							  // level up
-							  const species = pokemon.species;
-							  const level = pokemon.level + 5;
-							  (pokemon as any).level = level;
-							  pokemon.set.level = level;
-							  pokemon.formeChange(species);
+						// stat boost
+						const stats: BoostID[] = [];
+						let stat: BoostID;
+						for (stat in pokemon.boosts) {
+							if (pokemon.boosts[stat] < 6) {
+								stats.push(stat);
+							}
+						}
+						if (!target.volatiles['dynamax'] && pokemon.level >= target.level &&
+								(move.ohko === true || !target.hasType(move.ohko))) {
+							(accuracy as number) += (pokemon.level - (pokemon.side.sideConditions['busteraura'] ? 3 * target.level / 4 : target.level));
+						} else {
+							this.battle.add('-immune', target, '[ohko]');
+							hitResults[i] = false;
+							continue;
+						}
+						if (stats.length) {
+							const randomStat = this.battle.sample(stats);
+							const boost: SparseBoostsTable = {};
+							boost[randomStat] = 1;
+							this.battle.boost(boost, pokemon);
+						} else {
+							return [false];
+						}
 
-							  pokemon.details = species.name + (level === 100 ? '' : ', L' + level) +
-								  (pokemon.gender === '' ? '' : ', ' + pokemon.gender) + (pokemon.set.shiny ? ', shiny' : '');
-							  this.battle.add('detailschange', pokemon, (pokemon.illusion || pokemon).details);
+						// cooltrainer type addition
+						target.setType([target.getTypes(true)[0], "CoolTrainer"]);
+					}
+				} else {
+					accuracy = this.battle.runEvent('ModifyAccuracy', target, pokemon, move, accuracy);
+					if (accuracy !== true) {
+						let boost = 0;
+						if (!move.ignoreAccuracy) {
+							const boosts = this.battle.runEvent('ModifyBoost', pokemon, null, null, {...pokemon.boosts});
+							boost = this.battle.clampIntRange(boosts['accuracy'], -6, 6);
+						}
+						if (!move.ignoreEvasion) {
+							const boosts = this.battle.runEvent('ModifyBoost', target, null, null, {...target.boosts});
+							boost = this.battle.clampIntRange(boost - boosts['evasion'], -6, 6);
+						}
+						if (boost > 0) {
+							accuracy = this.battle.trunc(accuracy * (3 + boost) / 3);
+						} else if (boost < 0) {
+							accuracy = this.battle.trunc(accuracy * 3 / (3 - boost));
+						}
+					}
+				}
+				if (move.alwaysHit || (move.id === 'toxic' && this.battle.gen >= 8 && pokemon.hasType('Poison'))) {
+					accuracy = true; // bypasses ohko accuracy modifiers
+				} else {
+					accuracy = this.battle.runEvent('Accuracy', target, pokemon, move, accuracy);
+				}
+				if (accuracy !== true && !this.battle.randomChance(accuracy, 100)) {
+					if (move.smartTarget) {
+						move.smartTarget = false;
+					} else {
+						if (!move.spreadHit) this.battle.attrLastMove('[miss]');
+						this.battle.add('-miss', pokemon, target);
+					}
+					if (!move.ohko && pokemon.hasItem('blunderpolicy') && pokemon.useItem()) {
+						this.battle.boost({spe: 2}, pokemon);
+					}
+					hitResults[i] = false;
+					continue;
+				}
+				hitResults[i] = true;
+			}
+			return hitResults;
+		},
 
-							  const newHP = Math.floor(Math.floor(
-								  2 * species.baseStats['hp'] + pokemon.set.ivs['hp'] + Math.floor(pokemon.set.evs['hp'] / 4) + 100
-							  ) * level / 100 + 10);
-							  pokemon.hp = newHP - (pokemon.maxhp - pokemon.hp);
-							  pokemon.maxhp = newHP;
-							  this.battle.add('-heal', pokemon, pokemon.getHealth, '[silent]');
-
-							  // stat boost
-							  const stats: BoostID[] = [];
-							  let stat: BoostID;
-							  for (stat in pokemon.boosts) {
-								  if (pokemon.boosts[stat] < 6) {
-									  stats.push(stat);
-								  }
-							  }
-							  if (stats.length) {
-								  const randomStat = this.battle.sample(stats);
-								  const boost: SparseBoostsTable = {};
-								  boost[randomStat] = 1;
-								  this.battle.boost(boost, pokemon);
-							  } else {
-								  return [false];
-							  }
-
-							  // cooltrainer type addition
-							  target.setType([target.getTypes(true)[0], "CoolTrainer"]);
-						  }
-					  }
-				  } else {
-					  accuracy = this.battle.runEvent('ModifyAccuracy', target, pokemon, move, accuracy);
-					  if (accuracy !== true) {
-						  let boost = 0;
-						  if (!move.ignoreAccuracy) {
-  							const boosts = this.battle.runEvent('ModifyBoost', pokemon, null, null, {...pokemon.boosts});
-	  						boost = this.battle.clampIntRange(boosts['accuracy'], -6, 6);
-		  				}
-			  			if (!move.ignoreEvasion) {
-				  			const boosts = this.battle.runEvent('ModifyBoost', target, null, null, {...target.boosts});
-					  		boost = this.battle.clampIntRange(boost - boosts['evasion'], -6, 6);
-						  }
-						  if (boost > 0) {
-						  	accuracy = this.battle.trunc(accuracy * (3 + boost) / 3);
-						  } else if (boost < 0) {
-						  	accuracy = this.battle.trunc(accuracy * 3 / (3 - boost));
-						  }
-					  }
-				  }
-				  if (move.alwaysHit || (move.id === 'toxic' && this.battle.gen >= 8 && pokemon.hasType('Poison'))) {
-				  	accuracy = true; // bypasses ohko accuracy modifiers
-				  } else {
-				  	accuracy = this.battle.runEvent('Accuracy', target, pokemon, move, accuracy);
-				  }
-				  if (accuracy !== true && !this.battle.randomChance(accuracy, 100)) {
-				  	if (move.smartTarget) {
-					  	move.smartTarget = false;
-					  } else {
-					  	if (!move.spreadHit) this.battle.attrLastMove('[miss]');
-					  	this.battle.add('-miss', pokemon, target);
-					  }
-					  if (!move.ohko && pokemon.hasItem('blunderpolicy') && pokemon.useItem()) {
-					  	this.battle.boost({spe: 2}, pokemon);
-					  }
-					  hitResults[i] = false;
-					  continue;
-				  }
-				  hitResults[i] = true;
-			  }
-			  return hitResults;
-		  },
 		afterMoveSecondaryEvent(targets, pokemon, move) {
 			// console.log(`${targets}, ${pokemon}, ${move}`)
 			if (
@@ -796,10 +768,9 @@ export const Scripts: ModdedBattleScriptsData = {
 					}
 				}
 			}
-		}
-		if (pokemon.hasAbility('speeeeeeeee') && attackStat == 'spa') {
-			attackStat = 'spe';
-		}
+			if (pokemon.hasAbility('speeeeeeeee') && attackStat === 'spa') {
+				attackStat = 'spe';
+			}
 
 			const statTable = {atk: 'Atk', def: 'Def', spa: 'SpA', spd: 'SpD', spe: 'Spe'};
 			let attack;
@@ -1062,22 +1033,22 @@ export const Scripts: ModdedBattleScriptsData = {
 			}
 			return true;
 		},
-            // Modifying for Very Well trained
-        ignoringItem() {
-            //a bit eh, but it hopefully works
-            if(!this.hasAbility('verywelltrained')){
-                for(const side of this.battle.sides){
-                    for(const mon of side.active){
-                        if(mon?.hasAbility('verywelltrained')){
-                            return true;
-                        }
-                    }
-                }
-            }
-            return !!((this.battle.gen >= 5 && !this.isActive) ||
+		// Modifying for Very Well trained
+		ignoringItem() {
+			// a bit eh, but it hopefully works
+			if (!this.hasAbility('verywelltrained')) {
+				for (const side of this.battle.sides) {
+					for (const mon of side.active) {
+						if (mon?.hasAbility('verywelltrained')) {
+							return true;
+						}
+					}
+				}
+			}
+			return !!((this.battle.gen >= 5 && !this.isActive) ||
                 (this.hasAbility('klutz') && !this.getItem().ignoreKlutz) ||
                 this.volatiles['embargo'] || this.battle.field.pseudoWeather['magicroom']);
-        },
+		},
 	},
 	// Modded to add a property to work with Struchni's move
 	nextTurn() {

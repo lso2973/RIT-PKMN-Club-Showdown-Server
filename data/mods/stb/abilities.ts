@@ -406,7 +406,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		onAfterMoveSecondarySelf(target, source, move) {
 			if (source.getMoveHitData(move).crit) {
-                this.add(`c|${getName('Peekz1025')}|IT’S A CRIT!`);
+				this.add(`c|${getName('Peekz1025')}|IT’S A CRIT!`);
 				this.boost({atk: 1});
 			}
 		},
@@ -440,7 +440,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		onFoeMaybeTrapPokemon(pokemon, source) {
 			if (!source) source = this.effectData.target;
-			if (!source || !pokemon.isAdjacent(source)) return;
+			if (!source) return;
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha'))) {
 				pokemon.maybeTrapped = true;
 			}
@@ -723,7 +723,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		onFoeMaybeTrapPokemon(pokemon, source) {
 			if (!source) source = this.effectData.target;
-			if (!source || !pokemon.isAdjacent(this.effectData.target)) return;
+			if (!source || !pokemon.isAdjacent(source)) return;
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha'))) {
 				pokemon.maybeTrapped = true;
 			}

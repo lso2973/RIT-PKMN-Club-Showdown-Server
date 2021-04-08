@@ -153,13 +153,13 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				this.effectData.layers = 1;
 			},
 			onRestart(side) {
-				this.add('-message', `${getName('Azrules')} stacked ${this.effectData.layers+1} Wahoos`);
+				this.add('-message', `${getName('Azrules')} stacked ${this.effectData.layers + 1} Wahoos`);
 				this.effectData.layers++;
 			},
 			onSwitchIn(pokemon) {
 				if (!pokemon.hasAbility('speeeeeeeee')) return;
 				let universePlural = "universes";
-				if (this.effectData.layers == 1) {
+				if (this.effectData.layers === 1) {
 					universePlural = "universe";
 				}
 				if (this.effectData.layers < 7) {
@@ -1048,7 +1048,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		priority: 0,
 		desc: "Power doubles if the user hits an opponent switching in. If this move is successful and the user has not fainted, the user switches out even if it is trapped and is replaced immediately by a selected party member. The user does not switch out if there are no unfainted party members, or if the target switched out using an Eject Button or through the effect of the Emergency Exit or Wimp Out Abilities.",
 		shortDesc: "Volt Switch + Stakeout",
-		flags: {protect: 1, mirror: 1,},
+		flags: {protect: 1, mirror: 1},
 		onTryMove() {
 			this.attrLastMove('[still]');
 		},
