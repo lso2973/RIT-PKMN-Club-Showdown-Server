@@ -440,7 +440,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		onFoeMaybeTrapPokemon(pokemon, source) {
 			if (!source) source = this.effectData.target;
-			if (!source) return;
+			if (!source || !pokemon.isAdjacent(source)) return;
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha'))) {
 				pokemon.maybeTrapped = true;
 			}
