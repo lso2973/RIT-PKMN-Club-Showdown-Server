@@ -109,32 +109,49 @@ export const Formats: FormatList = [
 		},
 	},
 	{
-		name: "[Gen 8] Baby Brawlers",
+		name: "[Gen 8] Tier Shift",
+		desc: `Pok&eacute;mon below OU get their stats, excluding HP, boosted. UU/RUBL get +10, RU/NUBL get +20, NU/PUBL get +30, and PU or lower get +40.`,
 		threads: [
-			`&bullet; <a href="https://docs.google.com/document/d/14kyBwW_oCh-UuZf7nBb78V_sc3vdeuex_jIXIWEVnsQ/edit?usp=sharing">Baby Brawlers</a>`,
+			`&bullet; <a href="https://www.smogon.com/forums/threads/3662165/">Tier Shift</a>`,
 		],
 
 		mod: 'gen8',
-		maxLevel: 5,
-		gameType: 'doubles',
-		ruleset: ['Little Cup', 'Standard Doubles', 'Dynamax Clause'],
-		banlist: [
-			'Corsola-Galar', 'Cutiefly', 'Scyther', 'Sneasel', 'Swirlix', 'Tangela', 'Type: Null', 'Vulpix-Alola', 'Drought', 'Swagger',
-		],
-	},
-	{
-		name: "[Gen 8] VGC No Restricted",
-		desc: "[Gen 8] VGC 2021 without the Restricted rule.",
-
-		mod: 'gen8',
-		gameType: 'doubles',
-		forcedLevel: 50,
-		teamLength: {
-			validate: [4, 6],
-			battle: 4,
+		searchShow: false,
+		ruleset: ['[Gen 8] OU', 'Overflow Stat Mod'],
+		banlist: ['Damp Rock', 'Eviolite', 'Heat Rock'],
+		unbanlist: ['Zamazenta-Crowned'],
+		onModifySpecies(species, target, source, effect) {
+			if (!species.baseStats) return;
+			const boosts: {[tier: string]: number} = {
+				uu: 10,
+				rubl: 10,
+				ru: 20,
+				nubl: 20,
+				nu: 30,
+				publ: 30,
+				pu: 40,
+				nfe: 40,
+				lc: 40,
+			};
+			let tier = this.toID(species.tier) || 'ou';
+			if (!(tier in boosts)) return;
+			// Non-Pokemon bans in lower tiers
+			if (target && boosts[tier] > 20) {
+				if (target.set.ability === 'drizzle') tier = 'nubl';
+				if (target.set.ability === 'drought') tier = 'nubl';
+				if (target.set.ability === 'snowwarning') tier = 'nubl';
+			}
+			const pokemon = this.dex.deepClone(species);
+			pokemon.bst = pokemon.baseStats['hp'];
+			const boost = boosts[tier];
+			let statName: StatName;
+			for (statName in pokemon.baseStats as StatsTable) {
+				if (statName === 'hp') continue;
+				pokemon.baseStats[statName] = this.clampIntRange(pokemon.baseStats[statName] + boost, 1, 255);
+				pokemon.bst += pokemon.baseStats[statName];
+			}
+			return pokemon;
 		},
-		ruleset: ['Standard GBU', 'VGC Timer'],
-		minSourceGen: 8,
 	},
 	{
 		section: "RIT Archive",
@@ -491,6 +508,34 @@ export const Formats: FormatList = [
 		unbanlist: [
 			'Landorus-Therian', 'Zygarde-10%',
 		],
+	},
+	{
+		name: "[Gen 8] Baby Brawlers",
+		threads: [
+			`&bullet; <a href="https://docs.google.com/document/d/14kyBwW_oCh-UuZf7nBb78V_sc3vdeuex_jIXIWEVnsQ/edit?usp=sharing">Baby Brawlers</a>`,
+		],
+
+		mod: 'gen8',
+		maxLevel: 5,
+		gameType: 'doubles',
+		ruleset: ['Little Cup', 'Standard Doubles', 'Dynamax Clause'],
+		banlist: [
+			'Corsola-Galar', 'Cutiefly', 'Scyther', 'Sneasel', 'Swirlix', 'Tangela', 'Type: Null', 'Vulpix-Alola', 'Drought', 'Swagger',
+		],
+	},
+	{
+		name: "[Gen 8] VGC No Restricted",
+		desc: "[Gen 8] VGC 2021 without the Restricted rule.",
+
+		mod: 'gen8',
+		gameType: 'doubles',
+		forcedLevel: 50,
+		teamLength: {
+			validate: [4, 6],
+			battle: 4,
+		},
+		ruleset: ['Standard GBU', 'VGC Timer'],
+		minSourceGen: 8,
 	},
 	// Sw/Sh Singles
 	///////////////////////////////////////////////////////////////////
@@ -1925,51 +1970,6 @@ export const Formats: FormatList = [
 				}
 				return false;
 			},
-		},
-	},
-	{
-		name: "[Gen 8] Tier Shift",
-		desc: `Pok&eacute;mon below OU get their stats, excluding HP, boosted. UU/RUBL get +10, RU/NUBL get +20, NU/PUBL get +30, and PU or lower get +40.`,
-		threads: [
-			`&bullet; <a href="https://www.smogon.com/forums/threads/3662165/">Tier Shift</a>`,
-		],
-
-		mod: 'gen8',
-		searchShow: false,
-		ruleset: ['[Gen 8] OU', 'Overflow Stat Mod'],
-		banlist: ['Damp Rock', 'Eviolite', 'Heat Rock'],
-		unbanlist: ['Zamazenta-Crowned'],
-		onModifySpecies(species, target, source, effect) {
-			if (!species.baseStats) return;
-			const boosts: {[tier: string]: number} = {
-				uu: 10,
-				rubl: 10,
-				ru: 20,
-				nubl: 20,
-				nu: 30,
-				publ: 30,
-				pu: 40,
-				nfe: 40,
-				lc: 40,
-			};
-			let tier = this.toID(species.tier) || 'ou';
-			if (!(tier in boosts)) return;
-			// Non-Pokemon bans in lower tiers
-			if (target && boosts[tier] > 20) {
-				if (target.set.ability === 'drizzle') tier = 'nubl';
-				if (target.set.ability === 'drought') tier = 'nubl';
-				if (target.set.ability === 'snowwarning') tier = 'nubl';
-			}
-			const pokemon = this.dex.deepClone(species);
-			pokemon.bst = pokemon.baseStats['hp'];
-			const boost = boosts[tier];
-			let statName: StatName;
-			for (statName in pokemon.baseStats as StatsTable) {
-				if (statName === 'hp') continue;
-				pokemon.baseStats[statName] = this.clampIntRange(pokemon.baseStats[statName] + boost, 1, 255);
-				pokemon.bst += pokemon.baseStats[statName];
-			}
-			return pokemon;
 		},
 	},
 	{
