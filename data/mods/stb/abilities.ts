@@ -69,7 +69,7 @@ export function changeMoves(context: Battle, pokemon: Pokemon, newMoves: (string
 	let slot = 0;
 	for (const newMove of newMoves) {
 		const moveName = Array.isArray(newMove) ? newMove[context.random(newMove.length)] : newMove;
-		const move = context.dex.getMove(context.toID(moveName));
+		const move = context.dex.moves.get(context.toID(moveName));
 		if (!move.id) continue;
 		const moveSlot = {
 			move: move.name,
@@ -175,7 +175,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onResidualSubOrder: 1,
 		onResidual(pokemon) {
 			if (this.field.isWeather(['sunnyday', 'desolateland']) || this.randomChance(1, 2)) {
-				if (pokemon.hp && !pokemon.item && this.dex.getItem(pokemon.lastItem).isBerry) {
+				if (pokemon.hp && !pokemon.item && this.dex.items.get(pokemon.lastItem).isBerry) {
 					pokemon.setItem(pokemon.lastItem);
 					pokemon.lastItem = '';
 					this.add('-item', pokemon, pokemon.getItem(), '[from] ability: Harvest');
@@ -211,7 +211,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onBoost(boost, target, source, effect) {
 			// Don't bounce self stat changes, or boosts that have already bounced
 			if (target === source || !boost || effect.id === 'solarwind' || effect.id === 'mirrorarmor') return;
-			let b: BoostName;
+			let b: BoostID;
 			for (b in boost) {
 				if (boost[b]! < 0) {
 					if (target.boosts[b] === -6) continue;
@@ -308,7 +308,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			move.secondaries.push({
 				chance: 10,
 				volatileStatus: 'attract',
-				ability: this.dex.getAbility('coolsword'),
+				ability: this.dex.abilities.get('coolsword'),
 			});
 		},
 		onDamagingHitOrder: 1,
@@ -440,7 +440,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		onFoeMaybeTrapPokemon(pokemon, source) {
 			if (!source) source = this.effectData.target;
-			if (!source || !pokemon.isAdjacent(this.effectData.target)) return;
+			if (!source || !pokemon.isAdjacent(source)) return;
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha'))) {
 				pokemon.maybeTrapped = true;
 			}
@@ -468,7 +468,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			const newMoves = [];
 			for (const moveSlot of source.moveSlots) {
 				const moveid = moveSlot.id;
-				const move = this.dex.getMove(moveid);
+				const move = this.dex.moves.get(moveid);
 				if (move.ohko) {
 					return null;
 				}
@@ -809,7 +809,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onBoost(boost, target, source, effect) {
 			// Don't bounce self stat changes, or boosts that have already bounced
 			if (target === source || !boost || effect.id === 'solarwind' || effect.id === 'mirrorarmor') return;
-			let b: BoostName;
+			let b: BoostID;
 			for (b in boost) {
 				if (boost[b]! < 0) {
 					if (target.boosts[b] === -6) continue;
@@ -870,16 +870,16 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 				this.add('replace', pokemon, details);
 				this.add('-end', pokemon, 'Illusion');
 				// Handle scenarios where the name of a user is the same as a mon
-				if (this.dex.getSpecies(disguisedAs).exists) disguisedAs += 'user';
+				if (this.dex.species.get(disguisedAs).exists) disguisedAs += 'user';
 				if (pokemon.volatiles[disguisedAs]) {
 					pokemon.removeVolatile(disguisedAs);
 				}
 				if (!pokemon.volatiles[this.toID(pokemon.name) + 'break'] && !pokemon.volatiles[this.toID(pokemon.name)]) {
-					const status = this.dex.getEffect(this.toID(pokemon.name) + 'break'); // first try adding the status with break
+					const status = this.dex.conditions.get(this.toID(pokemon.name) + 'break'); // first try adding the status with break
 					if (status?.exists) {
 						pokemon.addVolatile(this.toID(pokemon.name) + 'break', pokemon);
 					} else { // Then just add the basic status
-						const statusEffect = this.dex.getEffect(this.toID(pokemon.name));
+						const statusEffect = this.dex.conditions.get(this.toID(pokemon.name));
 						if (statusEffect?.exists) {
 							pokemon.addVolatile(this.toID(pokemon.name), pokemon);
 						}

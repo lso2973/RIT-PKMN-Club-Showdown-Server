@@ -234,7 +234,7 @@ export class RandomStaffBrosTeams extends RandomTeams {
 
 			// Enforce typing limits
 			if (!debug.length) { // Type limits are ignored when debugging
-				const types = this.dex.getSpecies(stbSet.species).types;
+				const types = this.dex.species.get(stbSet.species).types;
 				let rejected = false;
 				for (const type of types) {
 					if (typePool[type] === undefined) typePool[type] = 0;
