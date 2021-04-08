@@ -1,4 +1,5 @@
 import {STBSet} from "./random-teams";
+import {getName} from './conditions';
 
 /**
  * Assigns a new set to a Pokémon
@@ -112,6 +113,14 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		isNonstandard: "Custom",
 		gen: 8,
 	},
+	// Azrules
+	speeeeeeeee: {
+		desc: "When this Pokémon switches in, its speed is raised by +n stages where n is the number of wahoo stacks (max 6). If this Pokémon has more than 6 wahoo stacks, this Pokémon’s moves also gain an additional +(n-6) priority. Additionally, this Pokémon uses its speed stat as its special attack stat.",
+		shortDesc: "+1 spe/priority per wahoo stack, uses spe instead of spa",
+		name: 'speeeeeeeee',
+		isNonstandard: "Custom",
+		gen: 8,
+	},
 	// bad_wolf42
 	friendshaped: {
 		desc: "At the end of each turn, the opposing Pokémon's Atk and Sp.Atk are lowered by -1 stage.",
@@ -133,11 +142,11 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// Banded Bonks
 	rngtraining: {
-		desc: "Raises this Pokémon's accuracy and evasion by +1 stage on entry and this Pokémon's moves have their secondary effect chance doubled.",
-		shortDesc: "+1 accuracy and evasion on entry + serene grace",
+		desc: "Raises this Pokémon's accuracy by +1 stage on entry and this Pokémon's moves have their secondary effect chance doubled.",
+		shortDesc: "+1 accuracy on entry + serene grace",
 		name: "RNG Training",
 		onStart(pokemon) {
-			this.boost({accuracy: 1, evasion: 1});
+			this.boost({accuracy: 1});
 		},
 		onModifyMovePriority: -2,
 		onModifyMove(move) {
@@ -311,6 +320,54 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		isNonstandard: "Custom",
 		rating: 4,
 	},
+	// Nivelmaster
+	weatherman: {
+		desc: "If this Pokemon is a Castform, its type changes to the current weather condition's type, except Sandstorm. Every turn a random weather is generated, with equal chance of each occurring.",
+		shortDesc: "Forecast + new weather each turn",
+		onUpdate(pokemon) {
+			if (pokemon.baseSpecies.baseSpecies !== 'Castform' || pokemon.transformed) return;
+			let forme = null;
+			switch (pokemon.effectiveWeather()) {
+			case 'sunnyday':
+			case 'desolateland':
+				if (pokemon.species.id !== 'castformsunny') forme = 'Castform-Sunny';
+				break;
+			case 'raindance':
+			case 'primordialsea':
+				if (pokemon.species.id !== 'castformrainy') forme = 'Castform-Rainy';
+				break;
+			case 'arcticgales':
+			case 'hail':
+				if (pokemon.species.id !== 'castformsnowy') forme = 'Castform-Snowy';
+				break;
+			default:
+				if (pokemon.species.id !== 'castform') forme = 'Castform';
+				break;
+			}
+			if (pokemon.isActive && forme) {
+				pokemon.formeChange(forme, this.effect, false, '[msg]');
+			}
+		},
+		onResidualOrder: 26,
+		onResidualSubOrder: 1,
+		onResidual(pokemon, target) {
+			const r = this.random(3);
+			switch (r) {
+			case 0:
+				this.field.setWeather('raindance');
+				break;
+			case 1:
+				this.field.setWeather('sunnyday');
+				break;
+			case 2:
+				this.field.setWeather('hail');
+				break;
+			}
+		},
+		name: "Weatherman",
+		isNonstandard: "Custom",
+		gen: 8,
+	},
 	// njjoltiks
 	fromtheashes: {
 		desc: "If this Pokémon were to faint, fully heal it and then remove this ability permanently.",
@@ -349,6 +406,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		onAfterMoveSecondarySelf(target, source, move) {
 			if (source.getMoveHitData(move).crit) {
+                this.add(`c|${getName('Peekz1025')}|IT’S A CRIT!`);
 				this.boost({atk: 1});
 			}
 		},
@@ -665,7 +723,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		onFoeMaybeTrapPokemon(pokemon, source) {
 			if (!source) source = this.effectData.target;
-			if (!source || !pokemon.isAdjacent(source)) return;
+			if (!source || !pokemon.isAdjacent(this.effectData.target)) return;
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha'))) {
 				pokemon.maybeTrapped = true;
 			}

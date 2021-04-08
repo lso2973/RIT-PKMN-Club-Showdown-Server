@@ -132,6 +132,54 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "allAdjacent",
 		type: "Normal",
 	},
+	// Azrules
+	blj: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "BLJ",
+		desc: "If this move is successful and the user has not fainted, the user switches out even if it is trapped and is replaced immediately by a selected party member. The user does not switch out if there are no unfainted party members. The user also gains an additional wahoo stack even if the move fails.",
+		shortDesc: "Switches out, +1 Wahoo",
+		gen: 8,
+		pp: 20,
+		priority: 5,
+		flags: {},
+		selfSwitch: true,
+		sideCondition: 'blj',
+		condition: {
+			// this is a side condition
+			onStart(side) {
+				this.add('-message', `${getName('Azrules')} stacked 1 Wahoo`);
+				this.effectData.layers = 1;
+			},
+			onRestart(side) {
+				this.add('-message', `${getName('Azrules')} stacked ${this.effectData.layers+1} Wahoos`);
+				this.effectData.layers++;
+			},
+			onSwitchIn(pokemon) {
+				if (!pokemon.hasAbility('speeeeeeeee')) return;
+				let universePlural = "universes";
+				if (this.effectData.layers == 1) {
+					universePlural = "universe";
+				}
+				if (this.effectData.layers < 7) {
+					this.add(`c|${getName('Azrules')}|I’m ${this.effectData.layers} parallel ${universePlural} ahead of you`);
+				} else {
+					this.add(`c|${getName('Azrules')}|Your speed is only temporary. Mine builds for eternity`);
+				}
+				this.boost({spe: this.effectData.layers}, pokemon);
+			},
+			onModifyPriority(priority, pokemon, target, move) {
+				if (pokemon.hasAbility('speeeeeeeee') && this.effectData.layers > 6) {
+					return priority + this.effectData.layers - 6;
+				}
+			},
+		},
+		secondary: null,
+		isNonstandard: "Custom",
+		target: "allySide",
+		type: "Electric",
+	},
 	// bad_wolf42
 	rollaround: {
 		accuracy: 100,
@@ -544,6 +592,67 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		zMove: {boost: {accuracy: 1}},
 		contestType: "Clever",
 	},
+	// Nivelmaster
+	weathermanball: {
+		accuracy: 100,
+		basePower: 100,
+		category: "Special",
+		name: "Weatherman Ball",
+		desc: "Power doubles if a weather condition other than Delta Stream is active, and this move's type changes to match. Ice type during Hail and Arctic Gales, Water type during Primordial Sea or Rain Dance, Rock type during Sandstorm, and Fire type during Desolate Land or Sunny Day. If the user is holding Utility Umbrella and uses Weather Ball during Primordial Sea, Rain Dance, Desolate Land, or Sunny Day, the move is still Normal-type and does not have a base power boost.",
+		shortDesc: "100 BP Weather Ball",
+		gen: 8,
+		pp: 15,
+		priority: 0,
+		flags: {bullet: 1, protect: 1, mirror: 1},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Weather Ball', target);
+		},
+		onModifyType(move, pokemon) {
+			switch (pokemon.effectiveWeather()) {
+			case 'sunnyday':
+			case 'desolateland':
+				move.type = 'Fire';
+				break;
+			case 'raindance':
+			case 'primordialsea':
+				move.type = 'Water';
+				break;
+			case 'sandstorm':
+				move.type = 'Rock';
+				break;
+			case 'hail':
+			case 'arcticgales':
+				move.type = 'Ice';
+				break;
+			}
+		},
+		onModifyMove(move, pokemon) {
+			switch (pokemon.effectiveWeather()) {
+			case 'sunnyday':
+			case 'desolateland':
+				move.basePower *= 2;
+				break;
+			case 'raindance':
+			case 'primordialsea':
+				move.basePower *= 2;
+				break;
+			case 'sandstorm':
+				move.basePower *= 2;
+				break;
+			case 'hail':
+			case 'arcticgales':
+				move.basePower *= 2;
+				break;
+			}
+		},
+		secondary: null,
+		target: "normal",
+		type: "Normal",
+		isNonstandard: "Custom",
+	},
 	// njjoltiks
 	burnout: {
 		accuracy: 100,
@@ -939,7 +1048,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		priority: 0,
 		desc: "Power doubles if the user hits an opponent switching in. If this move is successful and the user has not fainted, the user switches out even if it is trapped and is replaced immediately by a selected party member. The user does not switch out if there are no unfainted party members, or if the target switched out using an Eject Button or through the effect of the Emergency Exit or Wimp Out Abilities.",
 		shortDesc: "Volt Switch + Stakeout",
-		flags: {protect: 1, mirror: 1},
+		flags: {protect: 1, mirror: 1,},
 		onTryMove() {
 			this.attrLastMove('[still]');
 		},

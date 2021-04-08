@@ -65,6 +65,25 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('AWood')}|Boom.`);
 		},
 	},
+	azrules: {
+		noCopy: true,
+		onStart(pokemon) {
+			if (!pokemon.side.getSideCondition('blj')) {
+				this.add(`c|${getName('Azrules')}|Let’s a go`);
+			}
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('Azrules')}|Wahoo`);
+		},
+		onFaint() {
+			this.add(`c|${getName('Azrules')}|NOOOO YOU’VE MISALIGNED MY QPUs`);
+		},
+		onDamagingHit(damage, target, source, move) {
+			if (target.hp) {
+				this.add(`c|${getName('Azrules')}|That's a spicy meatball`);
+			}
+		},
+	},
 	badwolf42: {
 		noCopy: true,
 		onStart() {
@@ -211,6 +230,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 		onFaint() {
 			this.add(`c|${getName('MightySharkVGC')}|dang, i lost AND i missed queue? Sad`);
+		},
+	},
+	nivelmaster: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('Nivelmaster')}|It’s weather time!`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('Nivelmaster')}|I'll be back for more weather!`);
+		},
+		onFaint() {
+			this.add(`c|${getName('Nivelmaster')}|Weather related casualty`);
 		},
 	},
 	njjoltiks: {

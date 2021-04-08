@@ -47,6 +47,12 @@ export const stbSets: STBSets = {
 		signatureMove: 'Headshot',
 		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly',
 	},
+	Azrules: {
+		species: 'plusle', ability: 'speeeeeeeee', item: 'Heavy Duty Boots', gender: 'M',
+		moves: ['Electro Ball', 'Spacial Rend', 'Doom Desire'],
+		signatureMove: 'BLJ',
+		evs: {hp: 252, def: 4, spe: 252}, nature: 'Timid', shiny: true,
+	},
 	'bad_wolf42': {
 		species: 'Phanpy', ability: "Friend Shaped", item: 'Eviolite', gender: 'M',
 		moves: ['Protect', 'Stealth Rock', 'Slack Off'],
@@ -79,7 +85,7 @@ export const stbSets: STBSets = {
 	},
 	gigigecko26: {
 		species: 'Zigzagoon', ability: 'Rabies', item: 'Eviolite', gender: 'M',
-		moves: ['Zippy Zap', 'Earthquake', 'Psyshock'],
+		moves: ['Zing Zap', 'Earthquake', 'Psyshock'],
 		signatureMove: 'Internet Troll',
 		evs: {hp: 252, def: 4, spe: 252}, nature: 'Jolly',
 	},
@@ -106,6 +112,12 @@ export const stbSets: STBSets = {
 		moves: ['Behemoth Blade', 'Thousand Arrows', 'Sacred Sword'],
 		signatureMove: 'Too Many Swords',
 		evs: {hp: 4, atk: 252, spe: 252}, nature: 'Jolly',
+	},
+	Nivelmaster: {
+		species: 'Castform', ability: 'Weatherman', item: 'Choice Specs', gender: 'M',
+		moves: [],
+		signatureMove: 'Weathermanball',
+		evs: {hp: 4, spa: 252, spe: 252}, nature: 'Timid',
 	},
 	njjoltiks: {
 		species: 'Ho-Oh', ability: 'From the Ashes', item: 'Choice Band', gender: '',
@@ -177,7 +189,7 @@ export const stbSets: STBSets = {
 		species: 'Magnezone', ability: 'Calcing...', item: 'Choice Specs', gender: 'M',
 		moves: ['Thunderbolt', 'Flash Cannon', 'Ice Beam'],
 		signatureMove: 'Ha! Read!',
-		evs: {hp: 252, atk: 252, def: 4}, ivs: {atk: 0}, nature: 'Quiet',
+		evs: {hp: 252, spa: 252, def: 4}, ivs: {atk: 0}, nature: 'Quiet',
 	},
 	torwildheart: {
 		species: 'mewtwomegax', ability: 'Too Long', item: 'Expert Belt', gender: '',
