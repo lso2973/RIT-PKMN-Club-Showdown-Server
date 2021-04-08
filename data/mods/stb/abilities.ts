@@ -222,7 +222,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			const newMove = this.dex.getActiveMove(move.id);
 			newMove.hasBounced = true;
 			newMove.pranksterBoosted = false;
-			this.useMove(newMove, target, source);
+			this.actions.useMove(newMove, target, source);
 			return null;
 		},
 		onAllyTryHitSide(target, source, move) {
@@ -232,7 +232,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			const newMove = this.dex.getActiveMove(move.id);
 			newMove.hasBounced = true;
 			newMove.pranksterBoosted = false;
-			this.useMove(newMove, this.effectData.target, source);
+			this.actions.useMove(newMove, this.effectData.target, source);
 			return null;
 		},
 		condition: {
@@ -376,19 +376,19 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		shortDesc: "Shadow Tag + Magic Coat on entry",
 		onFoeTrapPokemon(pokemon) {
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha')) &&
-					this.isAdjacent(pokemon, this.effectData.target)) {
+					pokemon.isAdjacent(this.effectData.target)) {
 				pokemon.tryTrap(true);
 			}
 		},
 		onFoeMaybeTrapPokemon(pokemon, source) {
 			if (!source) source = this.effectData.target;
-			if (!source || !this.isAdjacent(pokemon, source)) return;
+			if (!source || !pokemon.isAdjacent(source)) return;
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha'))) {
 				pokemon.maybeTrapped = true;
 			}
 		},
 		onStart(pokemon) {
-			this.useMove("Magic Coat", pokemon);
+			this.actions.useMove("Magic Coat", pokemon);
 		},
 		name: "gonna getcha",
 		isNonstandard: "Custom",
@@ -659,13 +659,13 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		desc: "Prevents adjacent opposing Pokémon from choosing to switch out unless they are immune to trapping or also have this Ability or gonna getcha.",
 		onFoeTrapPokemon(pokemon) {
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha')) &&
-					this.isAdjacent(pokemon, this.effectData.target)) {
+					pokemon.isAdjacent(this.effectData.target)) {
 				pokemon.tryTrap(true);
 			}
 		},
 		onFoeMaybeTrapPokemon(pokemon, source) {
 			if (!source) source = this.effectData.target;
-			if (!source || !this.isAdjacent(pokemon, source)) return;
+			if (!source || !pokemon.isAdjacent(source)) return;
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha'))) {
 				pokemon.maybeTrapped = true;
 			}

@@ -671,12 +671,12 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.add('-anim', source, 'Extreme Evoboost', source);
 		},
 		onHit(target) {
-			this.useMove("Charm", target);
-			this.useMove("Amnesia", target);
-			this.useMove("Safeguard", target);
-			this.useMove("Splash", target);
-			this.useMove("Tickle", target);
-			this.useMove("Destiny Bond", target);
+			this.actions.useMove("Charm", target);
+			this.actions.useMove("Amnesia", target);
+			this.actions.useMove("Safeguard", target);
+			this.actions.useMove("Splash", target);
+			this.actions.useMove("Tickle", target);
+			this.actions.useMove("Destiny Bond", target);
 		},
 		secondary: null,
 		target: "self",
@@ -1404,7 +1404,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			} else if (this.field.isTerrain('psychicterrain')) {
 				move = 'psychic';
 			}
-			this.useMove(move, pokemon, target);
+			this.actions.useMove(move, pokemon, target);
 			return null;
 		},
 	},
