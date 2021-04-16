@@ -139,4 +139,14 @@ export const Items: {[k: string]: ModdedItemData} = {
 			}
 		},
 	},
+	// Modifying Thick Club for Bone Removal Without Approval (TacocaT_2595)
+	thickclub: {
+		inherit: true,
+		onModifyAtk(atk, pokemon) {
+			if (pokemon.baseSpecies.baseSpecies === 'Cubone' || pokemon.baseSpecies.baseSpecies === 'Marowak' || pokemon.hasAbility('boneremovalwithoutapproval')) {
+				return this.chainModify(2);
+			}
+		},
+		itemUser: ["Marowak", "Cubone", "Mandibuzz"],
+	},
 };
