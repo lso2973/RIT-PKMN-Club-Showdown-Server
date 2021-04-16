@@ -1002,6 +1002,36 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "normal",
 		type: "Rock",
 	},
+	// SubparSniper
+	clapback: {
+		accuracy: 100,
+		basePower: 90,
+		category: "Physical",
+		name: "Clapback",
+		gen: 8,
+		pp: 5,
+		priority: 0,
+		desc: "Power doubles if one of the user's party members fainted last turn.",
+		shortDesc: "Retaliate",
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Supersonic Skystrike', target);
+			this.add('-anim', source, 'Spectral Thief', target);
+		},
+		flags: {contact: 1, protect: 1, mirror: 1},
+		onBasePower(basePower, pokemon) {
+			if (pokemon.side.faintedLastTurn) {
+				this.debug('Boosted for a faint last turn');
+				return this.chainModify(2);
+			}
+		},
+		secondary: null,
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Normal",
+	},
 	// TacocaT_2595
 	boneappetit: {
 		accuracy: true,
@@ -1022,6 +1052,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			const item = source.getItem();
 			if (!this.singleEvent('TakeItem', item, source.itemData, source, source, move, item)) return false;
 			if (!item.fling) return false;
+			this.add('-anim', source, 'Bite', source);
 			this.add('-anim', source, 'Bite', source);
 		},
 		onHit(pokemon, move) {

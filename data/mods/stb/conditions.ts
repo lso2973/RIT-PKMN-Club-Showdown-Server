@@ -364,6 +364,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('SteelOsprei')}|Sac and move on`);
 		},
 	},
+	subparsniper: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('SubparSniper')}|Go! My favorite Puppy!`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('SubparSniper')}|Good Boy!`);
+		},
+		onFaint() {
+			this.add(`c|${getName('SubparSniper')}|HE'S GONE! NOOOOOOOOO`);
+		},
+	},
 	tacocat2595: {
 		noCopy: true,
 		onStart(target) {
