@@ -33,10 +33,10 @@ export const Formats: FormatList = [
 		forcedLevel: 50,
 		ruleset: ['Standard', 'Dynamax Clause'],
 		banlist: [
-			'Uber', 'Genesect', 'Landorus', 'Naganadel', 'Moody', 'Swagger', 'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag',
+			'Uber', 'Moody', 'Swagger', 'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag',
 		],
 		unbanlist: [
-			'Darmanitan-Galar', 'Landorus-Therian',
+			'Darmanitan-Galar',
 		],
 	},
 	{
