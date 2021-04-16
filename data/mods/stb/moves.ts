@@ -1003,39 +1003,52 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		type: "Rock",
 	},
 	// TacocaT_2595
-	kaboom: {
-		accuracy: 100,
-		basePower: 250,
-		category: "Physical",
-		name: 'Kaboom!',
+	boneappetit: {
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: 'Bone Appetit',
 		gen: 8,
-		pp: 5,
+		pp: 10,
 		priority: 0,
-		desc: "The user faints after using this move, even if this move fails for having no target. This move is prevented from executing if any active Pokémon has the Damp Ability. Sets 1 layer of Spikes and Stealth Rocks on the opponent's side if the move succeeds.",
-		shortDesc: "Explosion + Spikes + Stealth Rocks",
-		flags: {protect: 1, mirror: 1},
+		desc: "The user consumes its held item and restores 2/3 of its maximum HP, rounded half up, and has its status condition cured. Does nothing if the user's HP is full, or if the user is not holding a held item.",
+		shortDesc: "Eats item to heal hp and status",
+		flags: {snatch: 1, heal: 1},
 		onTryMove() {
 			this.attrLastMove('[still]');
 		},
-		onPrepareHit(target, source) {
-			this.add('-anim', source, 'Explosion', target);
-			this.add('-anim', source, 'Stealth Rock', target);
-			this.add('-anim', source, 'Spikes', target);
+		onPrepareHit(target, source, move) {
+			if (source.ignoringItem()) return false;
+			const item = source.getItem();
+			if (!this.singleEvent('TakeItem', item, source.itemData, source, source, move, item)) return false;
+			if (!item.fling) return false;
+			this.add('-anim', source, 'Bite', source);
 		},
-		onHit() {
-			this.add(`c|${getName('TacocaT_2595')}|Oh. Well at least I went out with a bang.`);
+		onHit(pokemon, move) {
+			if (pokemon.ignoringItem()) return false;
+			const item = pokemon.getItem();
+			if (!this.singleEvent('TakeItem', item, pokemon.itemData, pokemon, pokemon, move, item)) return false;
+			if (!item.fling) return false;
+			const success = !!this.heal(this.modify(pokemon.maxhp, 0.66));
+			if (!(pokemon.cureStatus() || success)) return false;
+			pokemon.addVolatile('boneappetit');
 		},
-		self: {
-			onHit(source) {
-				source.side.foe.addSideCondition('stealthrock');
-				source.side.foe.addSideCondition('spikes');
+		condition: {
+			onUpdate(pokemon) {
+				const item = pokemon.getItem();
+				pokemon.setItem('');
+				pokemon.lastItem = 'thickclub';
+				pokemon.usedItemThisTurn = true;
+				this.add('-enditem', pokemon, item.name, '[from] move: Bone Appetit', '[silent]');
+				this.add('-message', `TacocaT_2595 ate its ${item.name}`);
+				this.runEvent('AfterUseItem', pokemon, null, null, item);
+				pokemon.removeVolatile('boneappetit');
 			},
 		},
-		selfdestruct: "always",
 		secondary: null,
 		isNonstandard: "Custom",
-		target: "normal",
-		type: "Steel",
+		target: "self",
+		type: "Dark",
 	},
 	// ThinkingSceptile
 	haread: {

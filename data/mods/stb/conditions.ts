@@ -366,14 +366,22 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	},
 	tacocat2595: {
 		noCopy: true,
-		onStart() {
-			this.add(`c|${getName('TacocaT_2595')}|I hope I’m not steeling the spotlight.`);
+		onStart(target) {
+			var totalPP = 0;
+			for (const moveSlot of target.moveSlots) {
+				totalPP += moveSlot.pp;
+			}
+			if (target.hp >= target.maxhp && !target.status && totalPP >= 80) {
+				this.add(`c|${getName('TacocaT_2595')}|Looks like I have a bone to pick with you`);
+			} else {
+				this.add(`c|${getName('TacocaT_2595')}|Oh shit I forgot "bonjour" is supposed to be a greeting!`);
+			}
 		},
 		onSwitchOut() {
-			this.add(`c|${getName('TacocaT_2595')}|I’m having a hard time here, let’s have someone else weigh in.`);
+			this.add(`c|${getName('TacocaT_2595')}|Bone-jour I guess?`);
 		},
 		onFaint() {
-			this.add(`c|${getName('TacocaT_2595')}|/html <img src="https://cdn.discordapp.com/emojis/680288953068421130.gif?v=1" />`);
+			this.add(`c|${getName('TacocaT_2595')}|Death is quite bonely, isn't it?`);
 		},
 	},
 	thinkingsceptile: {

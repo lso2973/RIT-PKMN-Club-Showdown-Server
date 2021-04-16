@@ -590,20 +590,80 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		gen: 8,
 	},
 	// TacocaT_2595
-	stainlesssteel: {
-		desc: "This Pokémon takes 2/3rds damage from supereffective attacks, and raises its defense and special defense when it gets hit by a supereffective move",
-		shortDesc: "When hit by supereffective move: dmg x2/3 and +1 to def and spd",
-		name: "Stainless Steel",
-		onSourceModifyDamage(damage, source, target, move) {
-			if (target.getMoveHitData(move).typeMod > 0) {
-				this.debug('Stainless Steel neutralize');
-				return this.chainModify(0.67);
+	boneremovalwithoutapproval: {
+		desc: "Whenever this Pokémon uses a bone move (Bone Club, Bonemerang, Bone Rush, or Shadow Bone), the type of the move is randomized, and if the user has consumed their held item, their held item is restored. This Pokémon benefits from Thick Club.",
+		shortDesc: "on bone: rand. type, recyc. item, use thick club",
+		name: 'Bone Removal Without Approval',
+		onModifyMove(move) {
+			if (!(move.id == 'boneclub' || move.id == 'bonerush' || move.id == 'bonemerang' || move.id == 'shadowbone')) return;
+			let newType = this.random(18);
+			switch (newType) {
+			case 0:
+				move.type = 'Bug';
+				break;
+			case 1:
+				move.type = 'Dark';
+				break;
+			case 2:
+				move.type = 'Dragon';
+				break;
+			case 3:
+				move.type = 'Electric';
+				break;
+			case 4:
+				move.type = 'Fairy';
+				break;
+			case 5:
+				move.type = 'Fighting';
+				break;
+			case 6:
+				move.type = 'Fire';
+				break;
+			case 7:
+				move.type = 'Flying';
+				break;
+			case 8:
+				move.type = 'Ghost';
+				break;
+			case 9:
+				move.type = 'Grass';
+				break;
+			case 10:
+				move.type = 'Ground';
+				break;
+			case 11:
+				move.type = 'Ice';
+				break;
+			case 12:
+				move.type = 'Normal';
+				break;
+			case 13:
+				move.type = 'Poison';
+				break;
+			case 14:
+				move.type = 'Psychic';
+				break;
+			case 15:
+				move.type = 'Rock';
+				break;
+			case 16:
+				move.type = 'Steel';
+				break;
+			case 17:
+				move.type = 'Water';
+				break;
+			}
+			if (this.random(2) == 1) {
+				move.category = 'Special';
 			}
 		},
-		onHit(target, source, move) {
-			if (move?.effectType === 'Move' && target.getMoveHitData(move).typeMod > 0) {
-				this.boost({def: 1, spd: 1});
-			}
+		onSourceHit(target, source, move) {
+			if (!(move.id == 'boneclub' || move.id == 'bonerush' || move.id == 'bonemerang' || move.id == 'shadowbone')) return;
+			if (source.item) return false;
+			const item = 'thickclub';
+			source.lastItem = '';
+			this.add('-item', source, this.dex.items.get(item), '[from] ability: Bone Removal Without Approval');
+			source.setItem(item);
 		},
 		isNonstandard: "Custom",
 		gen: 8,
