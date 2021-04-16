@@ -595,8 +595,8 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		shortDesc: "on bone: rand. type, recyc. item, use thick club",
 		name: 'Bone Removal Without Approval',
 		onModifyMove(move) {
-			if (!(move.id == 'boneclub' || move.id == 'bonerush' || move.id == 'bonemerang' || move.id == 'shadowbone')) return;
-			let newType = this.random(18);
+			if (!(move.id === 'boneclub' || move.id === 'bonerush' || move.id === 'bonemerang' || move.id === 'shadowbone')) return;
+			const newType = this.random(18);
 			switch (newType) {
 			case 0:
 				move.type = 'Bug';
@@ -653,12 +653,12 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 				move.type = 'Water';
 				break;
 			}
-			if (this.random(2) == 1) {
+			if (this.random(2) === 1) {
 				move.category = 'Special';
 			}
 		},
 		onSourceHit(target, source, move) {
-			if (!(move.id == 'boneclub' || move.id == 'bonerush' || move.id == 'bonemerang' || move.id == 'shadowbone')) return;
+			if (!(move.id === 'boneclub' || move.id === 'bonerush' || move.id === 'bonemerang' || move.id === 'shadowbone')) return;
 			if (source.item) return false;
 			const item = 'thickclub';
 			source.lastItem = '';

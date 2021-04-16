@@ -1027,7 +1027,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		onHit(pokemon, move) {
 			if (pokemon.ignoringItem()) return false;
 			const item = pokemon.getItem();
-			if (!this.singleEvent('TakeItem', item, pokemon.itemData, pokemon, pokemon, move, item)) return false;
+			if (!this.singleEvent('TakeItem', item, pokemon.itemData, pokemon, move, item)) return false;
 			if (!item.fling) return false;
 			const success = !!this.heal(this.modify(pokemon.maxhp, 0.66));
 			if (!(pokemon.cureStatus() || success)) return false;
@@ -1037,7 +1037,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			onUpdate(pokemon) {
 				const item = pokemon.getItem();
 				pokemon.setItem('');
-				pokemon.lastItem = 'thickclub';
+				pokemon.lastItem = Dex.items.get('thickclub').id;
 				pokemon.usedItemThisTurn = true;
 				this.add('-enditem', pokemon, item.name, '[from] move: Bone Appetit', '[silent]');
 				this.add('-message', `TacocaT_2595 ate its ${item.name}`);

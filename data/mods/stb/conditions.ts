@@ -367,7 +367,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	tacocat2595: {
 		noCopy: true,
 		onStart(target) {
-			var totalPP = 0;
+			let totalPP = 0;
 			for (const moveSlot of target.moveSlots) {
 				totalPP += moveSlot.pp;
 			}
