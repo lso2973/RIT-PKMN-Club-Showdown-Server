@@ -66,14 +66,11 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		basePower: 90,
 		category: "Special",
 		name: "Upload",
-		desc: "Resets all of the target's positive stat boosts and applies Taunt before dealing damage",
+		desc: "Resets all of the target's positive stat boostsbefore dealing damage and applies Taunt.",
 		shortDesc: "resets positive stat boosts + adds taunt",
-		isNonstandard: "Custom",
 		gen: 8,
 		pp: 10,
 		priority: 0,
-		target: "normal",
-		inherit: true,
 		flags: {protect: 1, mirror: 1},
 		beforeTurnCallback(pokemon) {
 			pokemon.addVolatile('upload');
@@ -124,6 +121,9 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			chance: 100,
 			volatileStatus: 'taunt',
 		},
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Steel",
 	},
 	// ATcheron
 	buffice: {
