@@ -41,6 +41,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	IMPORTANT: Obtain the username from getName
 	*/
 	// Please keep statuses organized alphabetically based on staff member name!
+	anonymouspulsar: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('Anonymous Pulsar')}|Beginning download...`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('Anonymous Pulsar')}|Download Suspended.`);
+		},
+		onFaint() {
+			this.add(`c|${getName('Anonymous Pulsar')}|Download failed.`);
+		},
+	},
 	atcheron: {
 		noCopy: true,
 		onStart() {
@@ -158,6 +170,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 		onFaint() {
 			this.add(`c|${getName('crimsonKangaroo')}|Looks like this star's gone out...`);
+		},
+	},
+	enpassant: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('En Passant')}|Let's have a match!`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('En Passant')}|Alright, we're positioning for the long game.`);
+		},
+		onFaint() {
+			this.add(`c|${getName('En Passant')}|I expect this was sacrificing material for a strategic advantage...`);
 		},
 	},
 	gigigecko26: {
@@ -483,6 +507,42 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		onEnd() {
 			this.add('-weather', 'none', '[silent]');
 			this.add('-message', "The Arctic gales subsided.");
+		},
+	},
+	// Support for En Passant's Tactical Stance
+	defensestance: {
+		name: 'defense stance',
+		onModifyDefPriority: 6,
+		onModifyDef(def) {
+			return this.chainModify(1.3);
+		},
+		onModifySpDPriority: 6,
+		onModifySpD(spd) {
+			return this.chainModify(1.3);
+		},
+		onBeforeMovePriority: 3,
+		onBeforeMove(pokemon) {
+			this.add('-message', `${pokemon.name} changed to an offensive stance`);
+			pokemon.removeVolatile('defensestance');
+			pokemon.addVolatile('offensestance');
+			this.add('-start', pokemon, 'Offense Stance', '[silent]');
+		},
+		onEnd(pokemon) {
+			this.add('-end', pokemon, 'Defense Stance', '[silent]');
+		},
+	},
+	offensestance: {
+		name: 'offense stance',
+		onModifyAtkPriority: 2,
+		onModifyAtk(atk) {
+			return this.chainModify(1.3);
+		},
+		onModifySpAPriority: 2,
+		onModifySpA(spa) {
+			return this.chainModify(1.3);
+		},
+		onEnd(pokemon) {
+			this.add('-end', pokemon, 'Offense Stance', '[silent]');
 		},
 	},
 	// Support for gigigecko26's Rabies

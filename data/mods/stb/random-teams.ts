@@ -35,6 +35,12 @@ export const stbSets: STBSets = {
 	// Nature needs to be a valid nature with the first letter capitalized ex: Modest
 	*/
 	// Please keep sets organized alphabetically based on staff member name!
+	'Anonymous Pulsar': {
+		species: 'Genesect', ability: 'Analysis', item: 'Life Orb', gender: 'M',
+		moves: ['Thunderbolt', 'Ice Beam', 'Flamethrower',],
+		signatureMove: 'Upload',
+		evs: {spa: 252, spd: 4, spe: 252}, nature: 'Timid',
+	},
 	ATcheron: {
 		species: 'Glaceon', ability: 'Snowier Warning', item: 'Choice Specs', gender: 'F',
 		moves: ['Steam Eruption', 'Searing Shot', 'Earth Power'],
@@ -48,7 +54,7 @@ export const stbSets: STBSets = {
 		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly',
 	},
 	Azrules: {
-		species: 'plusle', ability: 'speeeeeeeee', item: 'Heavy Duty Boots', gender: 'M',
+		species: 'Plusle', ability: 'speeeeeeeee', item: 'Heavy Duty Boots', gender: 'M',
 		moves: ['Electro Ball', 'Spacial Rend', 'Doom Desire'],
 		signatureMove: 'BLJ',
 		evs: {hp: 252, def: 4, spe: 252}, nature: 'Timid', shiny: true,
@@ -82,6 +88,12 @@ export const stbSets: STBSets = {
 		moves: ['Cosmic Power', 'Psychic Fangs', 'Body Press'],
 		signatureMove: 'Star Eater',
 		evs: {hp: 252, atk: 4, spe: 252}, nature: 'Jolly',
+	},
+	'En Passant': {
+		species: 'Duraludon', ability: 'Tactical Stance', item: 'Assault Vest', gender: 'M',
+		moves: [['Dragon Pulse', 'Flash Cannon'], ['Iron Head', 'Dragon Hammer'], ['Earthquake', 'Fire Punch'], ['Earth Power', 'Flamethrower'], ['Steel Beam', 'Draco Meteor']],
+		signatureMove: 'Capture',
+		evs: {hp: 252, atk: 200, spd: 36, spe: 20}, nature: 'Gentle',
 	},
 	gigigecko26: {
 		species: 'Zigzagoon', ability: 'Rabies', item: 'Eviolite', gender: 'M',
