@@ -66,7 +66,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		basePower: 90,
 		category: "Special",
 		name: "Upload",
-		desc: "Resets all of the target's positive stat boosts and applies Taunt before dealing damage",
+		desc: "Resets all of the target's positive stat boosts before dealing damage and applies Taunt.",
 		shortDesc: "resets positive stat boosts + adds taunt",
 		gen: 8,
 		pp: 10,
@@ -121,6 +121,9 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			chance: 100,
 			volatileStatus: 'taunt',
 		},
+		isNonstandard: "Custom",
+		target: "Normal",
+		type: "Steel",
 	},
 	// ATcheron
 	buffice: {
