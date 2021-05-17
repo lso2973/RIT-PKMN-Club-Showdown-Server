@@ -481,7 +481,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 		onStart(battle, source, effect) {
 			if (effect?.effectType === 'Ability') {
-				if (this.gen <= 5) this.effectData.duration = 0;
+				if (this.gen <= 5) this.effectState.duration = 0;
 				this.add('-weather', 'Arctic Gales', '[from] ability: ' + effect, '[of] ' + source);
 				this.add('-message', "Arctic gales blow through the arena!");
 			} else {
@@ -550,7 +550,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		name: 'rabies',
 		effectType: 'Status',
 		onStart(target, source, sourceEffect) {
-			this.effectData.stage = 4;
+			this.effectState.stage = 4;
 			if (sourceEffect && sourceEffect.effectType === 'Ability') {
 				this.add('-status', target, 'rabies', '[from] ability: ' + sourceEffect.name, '[of] ' + source);
 			} else {
@@ -559,13 +559,13 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add('-start', target, 'rabies');
 		},
 		onSwitchIn() {
-			this.effectData.stage = 4;
+			this.effectState.stage = 4;
 		},
 		onResidualOrder: 9,
 		onResidual(pokemon) {
-			this.effectData.stage--;
+			this.effectState.stage--;
 			this.damage(this.clampIntRange(pokemon.baseMaxhp / 16, 1));
-			if (this.effectData.stage <= 0) {
+			if (this.effectState.stage <= 0) {
 				pokemon.faint();
 			}
 		},

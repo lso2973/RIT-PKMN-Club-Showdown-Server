@@ -215,28 +215,28 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			// this is a side condition
 			onStart(side) {
 				this.add('-message', `${getName('Azrules')} stacked 1 Wahoo`);
-				this.effectData.layers = 1;
+				this.effectState.layers = 1;
 			},
 			onRestart(side) {
-				this.add('-message', `${getName('Azrules')} stacked ${this.effectData.layers + 1} Wahoos`);
-				this.effectData.layers++;
+				this.add('-message', `${getName('Azrules')} stacked ${this.effectState.layers + 1} Wahoos`);
+				this.effectState.layers++;
 			},
 			onSwitchIn(pokemon) {
 				if (!pokemon.hasAbility('speeeeeeeee')) return;
 				let universePlural = "universes";
-				if (this.effectData.layers === 1) {
+				if (this.effectState.layers === 1) {
 					universePlural = "universe";
 				}
-				if (this.effectData.layers < 7) {
-					this.add(`c|${getName('Azrules')}|I’m ${this.effectData.layers} parallel ${universePlural} ahead of you`);
+				if (this.effectState.layers < 7) {
+					this.add(`c|${getName('Azrules')}|I’m ${this.effectState.layers} parallel ${universePlural} ahead of you`);
 				} else {
 					this.add(`c|${getName('Azrules')}|Your speed is only temporary. Mine builds for eternity`);
 				}
-				this.boost({spe: this.effectData.layers}, pokemon);
+				this.boost({spe: this.effectState.layers}, pokemon);
 			},
 			onModifyPriority(priority, pokemon, target, move) {
-				if (pokemon.hasAbility('speeeeeeeee') && this.effectData.layers > 6) {
-					return priority + this.effectData.layers - 6;
+				if (pokemon.hasAbility('speeeeeeeee') && this.effectState.layers > 6) {
+					return priority + this.effectState.layers - 6;
 				}
 			},
 		},
@@ -493,7 +493,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				this.debug('Capture start');
 				let alreadyAdded = false;
 				pokemon.removeVolatile('destinybond');
-				for (const source of this.effectData.sources) {
+				for (const source of this.effectState.sources) {
 					if (!this.queue.cancelMove(source) || !source.hp) continue;
 					if (!alreadyAdded) {
 						this.add('-activate', pokemon, 'move: Capture');
@@ -602,9 +602,9 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			onBeforeMove(source, target, move) {
 				this.eachEvent('Terrain');
 			},
-			onTerrain(pokemon) {
-				if (pokemon.hasType('Ghost') || !pokemon.isGrounded()) return;
-				if (!pokemon.addType('Ghost')) return;
+			onSideResidual(pokemon) {
+				if (pokemon.pokemon[0].hasType('Ghost') || !pokemon.pokemon[0].isGrounded()) return;
+				if (!pokemon.pokemon[0].addType('Ghost')) return;
 				this.add('-start', pokemon, 'typeadd', 'Ghost', '[from] terrain: Spectral Terrain');
 			},
 			onSwitchIn(pokemon) {
@@ -876,8 +876,8 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				return false;
 			}
 			if (
-				(myItem && !this.singleEvent('TakeItem', myItem, source.itemData, target, source, move, myItem)) ||
-				(yourItem && !this.singleEvent('TakeItem', yourItem, target.itemData, source, target, move, yourItem))
+				(myItem && !this.singleEvent('TakeItem', myItem, source.itemState, target, source, move, myItem)) ||
+				(yourItem && !this.singleEvent('TakeItem', yourItem, target.itemState, source, target, move, yourItem))
 			) {
 				if (yourItem) target.item = yourItem.id;
 				if (myItem) source.item = myItem.id;
@@ -1192,7 +1192,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		onPrepareHit(target, source, move) {
 			if (source.ignoringItem()) return false;
 			const item = source.getItem();
-			if (!this.singleEvent('TakeItem', item, source.itemData, source, source, move, item)) return false;
+			if (!this.singleEvent('TakeItem', item, source.itemState, source, source, move, item)) return false;
 			if (!item.fling) return false;
 			this.add('-anim', source, 'Bite', source);
 			this.add('-anim', source, 'Bite', source);
@@ -1200,7 +1200,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		onHit(pokemon, move) {
 			if (pokemon.ignoringItem()) return false;
 			const item = pokemon.getItem();
-			if (!this.singleEvent('TakeItem', item, pokemon.itemData, pokemon, move, item)) return false;
+			if (!this.singleEvent('TakeItem', item, pokemon.itemState, pokemon, move, item)) return false;
 			if (!item.fling) return false;
 			const success = !!this.heal(this.modify(pokemon.maxhp, 0.66));
 			if (!(pokemon.cureStatus() || success)) return false;
@@ -1568,14 +1568,14 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				}
 			},
 			onUpdate(pokemon) {
-				if (this.effectData.source && !this.effectData.source.isActive && pokemon.volatiles['attract']) {
+				if (this.effectState.source && !this.effectState.source.isActive && pokemon.volatiles['attract']) {
 					this.debug('Removing Attract volatile on ' + pokemon);
 					pokemon.removeVolatile('attract');
 				}
 			},
 			onBeforeMovePriority: 2,
 			onBeforeMove(pokemon, target, move) {
-				this.add('-activate', pokemon, 'move: Attract', '[of] ' + this.effectData.source);
+				this.add('-activate', pokemon, 'move: Attract', '[of] ' + this.effectState.source);
 				if (this.randomChance(1, 2)) {
 					this.add('cant', pokemon, 'Attract');
 					return false;
@@ -1796,7 +1796,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			},
 			onResidualOrder: 25,
 			onEnd() {
-				this.add('-fieldend', 'move: Doubles Spread Reduction', '[of] ' + this.effectData.source);
+				this.add('-fieldend', 'move: Doubles Spread Reduction', '[of] ' + this.effectState.source);
 			},
 		},
 		target: "all",

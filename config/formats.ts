@@ -32,8 +32,7 @@ export const Formats: FormatList = [
 		],
 
 		mod: 'gen8',
-		forcedLevel: 50,
-		ruleset: ['Standard', 'Dynamax Clause'],
+		ruleset: ['Standard', 'Dynamax Clause', 'Adjust Level = 50'],
 		banlist: [
 			'Uber', 'Moody', 'Swagger', 'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag',
 		],
@@ -50,10 +49,9 @@ export const Formats: FormatList = [
 		],
 
 		mod: 'gen8',
-		forcedLevel: 50,
 		gameType: 'singles',
 		ruleset: ['Obtainable', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod',
-			'Sleep Clause Mod', 'Evasion Moves Clause', 'Dynamax Clause'],
+			'Sleep Clause Mod', 'Evasion Moves Clause', 'Dynamax Clause', 'Adjust Level = 50'],
 		banlist: [
 			'Dialga', 'Dracovish', 'Eternatus', 'Genesect', 'Giratina', 'Groudon', 'Ho-Oh', 'Calyrex-Ice', 'Kyogre', 'Kyurem-Black',
 			'Kyurem-White', 'Lugia', 'Lunala', 'Magearna', 'Marshadow', 'Mewtwo', 'Naganadel', 'Necrozma-Dusk-Mane', 'Necrozma-Dawn-Wings',
@@ -121,11 +119,10 @@ export const Formats: FormatList = [
 		],
 
 		mod: 'gen8',
-		forcedLevel: 50,
 		gameType: 'doubles',
 		ruleset: [
 			'Terrain Weather Clause', 'Obtainable', '+Unobtainable', '+Past', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause',
-			'Evasion Moves Clause', 'Cancel Mod', 'HP Percentage Mod', 'Endless Battle Clause',
+			'Evasion Moves Clause', 'Cancel Mod', 'HP Percentage Mod', 'Endless Battle Clause', 'Adjust Level = 50',
 		],
 		banlist: [
 			'Arceus', 'Dialga', 'Eternatus', 'Giratina', 'Groudon', 'Ho-Oh', 'Jirachi', 'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Lugia', 'Lunala',
@@ -149,9 +146,8 @@ export const Formats: FormatList = [
 		],
 
 		mod: 'gen8',
-		forcedLevel: 50,
 		gameType: 'doubles',
-		ruleset: ['Obtainable', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod'],
+		ruleset: ['Obtainable', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod', 'Adjust Level = 50'],
 		banlist: [
 			'Eternatus', 'Jirachi', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal', 'Mewtwo', 'Necrozma-Dawn-Wings',
 			'Necrozma-Dusk-Mane', 'Reshiram', 'Solgaleo', 'Zacian', 'Zamazenta', 'Zekrom', 'Moody', 'Double Team', 'Minimize',
@@ -165,8 +161,7 @@ export const Formats: FormatList = [
 		],
 
 		mod: 'gen8',
-		forcedLevel: 50,
-		ruleset: ['Camomons Monotype Clause', 'Obtainable', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Dynamax Clause', 'Sleep Clause Mod', 'Endless Battle Clause'],
+		ruleset: ['Camomons Monotype Clause', 'Obtainable', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Dynamax Clause', 'Sleep Clause Mod', 'Endless Battle Clause', 'Adjust Level = 50'],
 		banlist: [
 			'Darmanitan-Galar', 'Dracovish', 'Eternatus', 'Hydreigon', 'Jirachi', 'Kyurem', 'Kyurem-Black', 'Kyurem-White', 'Lunala', 'Magearna', 'Marshadow', 'Melmetal',
 			'Mew', 'Mewtwo', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Reshiram', 'Shedinja', 'Solgaleo', 'Urshifu', 'Zacian', 'Zamazenta', 'Zekrom', 'Zeraora',
@@ -273,12 +268,8 @@ export const Formats: FormatList = [
 		],
 
 		mod: 'gen8',
-		ruleset: ['Standard', 'Dynamax Clause'],
+		ruleset: ['Standard', 'Dynamax Clause', 'Max Team Size = 8'],
 		banlist: ['Arena Trap', 'Moody', 'Power Construct', 'Shadow Tag', 'Baton Pass'],
-		teamLength: {
-			validate: [1, 8],
-			battle: 8,
-		},
 
 		onValidateTeam(team) {
 			const tiers: string[] = [];
@@ -430,8 +421,7 @@ export const Formats: FormatList = [
 		],
 
 		mod: 'gen8',
-		forcedLevel: 50,
-		ruleset: ['Standard NatDex', 'Dynamax Clause', 'Evasion Moves Clause', 'OHKO Clause', 'Sleep Clause Mod', 'Species Clause'],
+		ruleset: ['Standard NatDex', 'Dynamax Clause', 'Evasion Moves Clause', 'OHKO Clause', 'Sleep Clause Mod', 'Species Clause', 'Adjust Level = 50'],
 		banlist: [
 			'Mewtwo', 'Lugia', 'Ho-Oh', 'Blaziken + Speed Boost', 'Kyogre', 'Groudon', 'Rayquaza', 'Deoxys', 'Dialga', 'Palkia',
 			'Giratina', 'Darkrai', 'Arceus', 'Shaymin-Sky', 'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag',
@@ -452,8 +442,7 @@ export const Formats: FormatList = [
 		],
 
 		mod: 'gen8',
-		forcedLevel: 50,
-		ruleset: ['Gym Leader Clause', 'Standard', 'Dynamax Clause'],
+		ruleset: ['Gym Leader Clause', 'Standard', 'Dynamax Clause', 'Adjust Level = 50'],
 		banlist: [
 			'Blaziken + Speed Boost', 'Cinderace + Libero', 'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag',
 			'Calyrex-Ice', 'Calyrex-Shadow', 'Dialga', 'Eternatus', 'Genesect', 'Giratina', 'Groudon', 'Ho-oh', 'Kartana',
@@ -473,26 +462,11 @@ export const Formats: FormatList = [
 		],
 
 		mod: 'gen8',
-		maxLevel: 5,
 		gameType: 'doubles',
 		ruleset: ['Little Cup', 'Standard Doubles', 'Dynamax Clause'],
 		banlist: [
 			'Corsola-Galar', 'Cutiefly', 'Scyther', 'Sneasel', 'Swirlix', 'Tangela', 'Type: Null', 'Vulpix-Alola', 'Drought', 'Swagger',
 		],
-	},
-	{
-		name: "[Gen 8] VGC No Restricted",
-		desc: "[Gen 8] VGC 2021 without the Restricted rule.",
-
-		mod: 'gen8',
-		gameType: 'doubles',
-		forcedLevel: 50,
-		teamLength: {
-			validate: [4, 6],
-			battle: 4,
-		},
-		ruleset: ['Standard GBU', 'VGC Timer'],
-		minSourceGen: 8,
 	},
 	// Sw/Sh Singles
 	///////////////////////////////////////////////////////////////////

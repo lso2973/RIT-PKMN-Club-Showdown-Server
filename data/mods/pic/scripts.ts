@@ -2,29 +2,29 @@ export const Scripts: ModdedBattleScriptsData = {
 	inherit: 'gen8',
 	pokemon: {
 		getVolatile(status) {
-			status = this.battle.dex.getEffect(status);
+			status = this.battle.dex.conditions.get(status);
 			if (!this.volatiles[status.id]) return null;
 			if (this.battle.ruleTable.isRestricted(status.id)) return null;
 			return status;
 		},
 		setAbility(ability, source, isFromFormechange) {
 			if (!this.hp) return false;
-			ability = this.battle.dex.getAbility(ability);
+			ability = this.battle.dex.abilities.get(ability);
 			const oldAbility = this.ability;
 			if (!isFromFormechange) {
 				if (['illusion', 'battlebond', 'comatose', 'disguise', 'gulpmissile', 'hungerswitch', 'iceface', 'multitype', 'powerconstruct', 'rkssystem', 'schooling', 'shieldsdown', 'stancechange'].includes(ability.id)) return false;
 				if (['battlebond', 'comatose', 'disguise', 'gulpmissile', 'hungerswitch', 'iceface', 'multitype', 'powerconstruct', 'rkssystem', 'schooling', 'shieldsdown', 'stancechange'].includes(oldAbility)) return false;
 			}
-			this.battle.singleEvent('End', this.battle.dex.getAbility(oldAbility), this.abilityData, this, source);
+			this.battle.singleEvent('End', this.battle.dex.abilities.get(oldAbility), this.abilityState, this, source);
 			const ally = this.side.active.find(active => active && active !== this && !active.fainted);
 			if (ally?.m.innate) {
 				ally.removeVolatile(ally.m.innate);
 				delete ally.m.innate;
 			}
 			this.ability = ability.id;
-			this.abilityData = {id: ability.id, target: this};
+			this.abilityState = {id: ability.id, target: this};
 			if (ability.id) {
-				this.battle.singleEvent('Start', ability, this.abilityData, this, source);
+				this.battle.singleEvent('Start', ability, this.abilityState, this, source);
 				if (ally && ally.ability !== this.ability) {
 					ally.m.innate = 'ability:' + ability.id;
 					ally.addVolatile(ally.m.innate);
