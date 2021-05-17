@@ -72,9 +72,9 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		pp: 10,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
-		//beforeTurnCallback(pokemon) {
-		//	pokemon.addVolatile('upload');
-		//},
+		beforeTurnCallback(pokemon) {
+			pokemon.addVolatile('upload');
+		},
 		onTryMove() {
 			this.attrLastMove('[still]');
 		},
@@ -82,7 +82,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.add('-anim', source, 'Techno Blast', target);
 			this.add('-anim', target, 'Hyper Beam', target);
 		},
-		/*condition: {
+		condition: {
 			duration: 1,
 			noCopy: true,
 			onBeforeMovePriority: 7,
@@ -90,40 +90,32 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				let boostName: BoostID;
 				for (boostName in target.boosts) {
 					if (target.boosts[boostName] > 0) {
-						this.boost({boostName: -1 * target.boosts[boostName]}, target);
+						switch (boostName) {
+						case 'atk':
+							this.boost({atk: -1 * target.boosts[boostName]}, target);
+							break;
+						case 'def':
+							this.boost({def: -1 * target.boosts[boostName]}, target);
+							break;
+						case 'spa':
+							this.boost({spa: -1 * target.boosts[boostName]}, target);
+							break;
+						case 'spd':
+							this.boost({spd: -1 * target.boosts[boostName]}, target);
+							break;
+						case 'spe':
+							this.boost({spe: -1 * target.boosts[boostName]}, target);
+							break;
+						case 'accuracy':
+							this.boost({accuracy: -1 * target.boosts[boostName]}, target);
+							break;
+						case 'evasion':
+							this.boost({evasion: -1 * target.boosts[boostName]}, target);
+							break;
+						}
 					}
 				}
 			},
-		},*/
-		onHit(target) {
-			let boostName: BoostID;
-			for (boostName in target.boosts) {
-				if (target.boosts[boostName] > 0) {
-					switch (boostName) {
-					case 'atk':
-						this.boost({atk: -1 * target.boosts[boostName]}, target);
-						break;
-					case 'def':
-						this.boost({def: -1 * target.boosts[boostName]}, target);
-						break;
-					case 'spa':
-						this.boost({spa: -1 * target.boosts[boostName]}, target);
-						break;
-					case 'spd':
-						this.boost({spd: -1 * target.boosts[boostName]}, target);
-						break;
-					case 'spe':
-						this.boost({spe: -1 * target.boosts[boostName]}, target);
-						break;
-					case 'accuracy':
-						this.boost({accuracy: -1 * target.boosts[boostName]}, target);
-						break;
-					case 'evasion':
-						this.boost({evasion: -1 * target.boosts[boostName]}, target);
-						break;
-					}
-				}
-			}
 		},
 		secondary: {
 			chance: 100,
@@ -706,7 +698,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		basePower: 25,
 		category: "Physical",
 		name: "Too Many Swords",
-		desc: "Hits two to five times. Raises the user's Attack and Speed by 1 stage after the last hit. Has a 35% chance to hit two or three times and a 15% chance to hit four or five times. If one of the hits breaks the target's substitute, it will take damage for the remaining hits. If the user has the Skill Link Ability, this move will always hit five times. Applies the Steelspike effect to the opponent’s side of the field.",
+		desc: "Hits two to five times. Raises the user's Attack and Speed by 1 stage before the first hit. Has a 35% chance to hit two or three times and a 15% chance to hit four or five times. If one of the hits breaks the target's substitute, it will take damage for the remaining hits. If the user has the Skill Link Ability, this move will always hit five times. Applies the Steelspike effect to the opponent’s side of the field.",
 		shortDesc: "Scale Shot w/ dd boosts + Steelspike",
 		gen: 8,
 		pp: 15,
@@ -719,14 +711,20 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.add('-anim', source, 'Scale Shot', target);
 			this.add('-anim', source, 'Sacred Sword', target);
 		},
-		multihit: [2, 5],
-		sideCondition: 'gmaxsteelsurge',
-		selfBoost: {
-			boosts: {
-				atk: 1,
-				spe: 1,
+		beforeTurnCallback(pokemon) {
+			pokemon.addVolatile('toomanyswords');
+		},
+		condition: {
+			duration: 1,
+			noCopy: true,
+			onBeforeMovePriority: 7,
+			onBeforeMove(pokemon) {
+				this.boost({atk: 1}, pokemon);
+				this.boost({spe: 1}, pokemon);
 			},
 		},
+		multihit: [2, 5],
+		sideCondition: 'gmaxsteelsurge',
 		isNonstandard: "Custom",
 		target: "normal",
 		type: "Dragon",
