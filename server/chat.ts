@@ -78,6 +78,9 @@ export type SettingsHandler = (
 	options: [string, string | true][],
 };
 
+export type CRQHandler = (this: CommandContext, target: string, user: User, trustable?: boolean) => any;
+export type RoomCloseHandler = (id: string, user: User, connection: Connection, page: boolean) => any;
+
 /**
  * Chat filters can choose to:
  * 1. return false OR null - to not send a user's message
@@ -232,7 +235,7 @@ export abstract class MessageContext {
 	}
 	meansYes(text: string) {
 		switch (text.toLowerCase().trim()) {
-		case 'on': case 'enable': case 'yes': case 'true': case 'allow':
+		case 'on': case 'enable': case 'yes': case 'true': case 'allow': case '1':
 			return true;
 		}
 		return false;
@@ -243,6 +246,84 @@ export abstract class MessageContext {
 			return true;
 		}
 		return false;
+	}
+	/**
+	 * Given an array of strings (or a comma-delimited string), check the
+	 * first and last string for a format/mod/gen. If it exists, remove
+	 * it from the array.
+	 *
+	 * @returns `format` (null if no format was found), `dex` (the dex
+	 * for the format/mod, or the default dex if none was found), and
+	 * `targets` (the rest of the array).
+	 */
+	splitFormat(target: string | string[], atLeastOneTarget?: boolean) {
+		const targets = typeof target === 'string' ? target.split(',') : target;
+		if (!targets[0].trim()) targets.pop();
+
+		if (targets.length > (atLeastOneTarget ? 1 : 0)) {
+			const {dex, format, isMatch} = this.extractFormat(targets[0].trim());
+			if (isMatch) {
+				targets.shift();
+				return {dex, format, targets};
+			}
+		}
+		if (targets.length > 1) {
+			const {dex, format, isMatch} = this.extractFormat(targets[targets.length - 1].trim());
+			if (isMatch) {
+				targets.pop();
+				return {dex, format, targets};
+			}
+		}
+
+		const room = (this as any as CommandContext).room;
+		const {dex, format} = this.extractFormat(room?.settings.defaultFormat || room?.battle?.format);
+		return {dex, format, targets};
+	}
+	extractFormat(formatOrMod?: string): {dex: ModdedDex, format: Format | null, isMatch: boolean} {
+		if (!formatOrMod) {
+			return {dex: Dex.includeData(), format: null, isMatch: false};
+		}
+
+		const format = Dex.formats.get(formatOrMod);
+		if (format.exists) {
+			return {dex: Dex.forFormat(format), format: format, isMatch: true};
+		}
+
+		if (toID(formatOrMod) in Dex.dexes) {
+			return {dex: Dex.mod(toID(formatOrMod)).includeData(), format: null, isMatch: true};
+		}
+
+		return this.extractFormat();
+	}
+	splitUser(target: string, {exactName}: {exactName?: boolean} = {}) {
+		const [inputUsername, rest] = this.splitOne(target).map(str => str.trim());
+		const targetUser = Users.get(inputUsername, exactName);
+
+		return {
+			targetUser,
+			inputUsername,
+			targetUsername: targetUser ? targetUser.name : inputUsername,
+			rest,
+		};
+	}
+	requireUser(target: string, options: {allowOffline?: boolean, exactName?: boolean} = {}) {
+		const {targetUser, targetUsername, rest} = this.splitUser(target, options);
+
+		if (!targetUser) {
+			throw new Chat.ErrorMessage(`The user "${targetUsername}" is offline or misspelled.`);
+		}
+		if (!options.allowOffline && !targetUser.connected) {
+			throw new Chat.ErrorMessage(`The user "${targetUsername}" is offline.`);
+		}
+
+		// `inputUsername` and `targetUsername` are never needed because we already handle the "user not found" error messages
+		// just use `targetUser.name` where previously necessary
+		return {targetUser, rest};
+	}
+	getUserOrSelf(target: string, {exactName}: {exactName?: boolean} = {}) {
+		if (!target.trim()) return this.user;
+
+		return Users.get(target, exactName);
 	}
 	tr(strings: TemplateStringsArray | string, ...keys: any[]) {
 		return Chat.tr(this.language, strings, ...keys);
@@ -310,22 +391,22 @@ export class PageContext extends MessageContext {
 		return room;
 	}
 
-	send(content: string) {
-		if (!content.startsWith('|deinit')) {
-			const roomid = this.room ? `[${this.room.roomid}] ` : '';
-			if (!this.initialized) {
-				content = `|init|html\n|title|${roomid}${this.title}\n|pagehtml|${content}`;
-				this.initialized = true;
-			} else {
-				content = `|title|${roomid}${this.title}\n|pagehtml|${content}`;
-			}
+	setHTML(html: string) {
+		const roomid = this.room ? `[${this.room.roomid}] ` : '';
+		let content = `|title|${roomid}${this.title}\n|pagehtml|${html}`;
+		if (!this.initialized) {
+			content = `|init|html\n${content}`;
+			this.initialized = true;
 		}
-		this.connection.send(`>${this.pageid}\n${content}`);
+		this.send(content);
 	}
 	errorReply(message: string) {
-		this.send(`<div class="pad"><p class="message-error">${message}</p></div>`);
+		this.setHTML(`<div class="pad"><p class="message-error">${message}</p></div>`);
 	}
 
+	send(content: string) {
+		this.connection.send(`>${this.pageid}\n${content}`);
+	}
 	close() {
 		this.send('|deinit');
 	}
@@ -366,14 +447,14 @@ export class PageContext extends MessageContext {
 				room: this.room && this.room.roomid,
 				pageid: this.pageid,
 			});
-			this.send(
+			this.setHTML(
 				`<div class="pad"><div class="broadcast-red">` +
 				`<strong>Pokemon Showdown crashed!</strong><br />Don't worry, we're working on fixing it.` +
 				`</div></div>`
 			);
 		}
 		if (typeof res === 'string') {
-			this.send(res);
+			this.setHTML(res);
 			res = undefined;
 		}
 		return res;
@@ -404,9 +485,6 @@ export class CommandContext extends MessageContext {
 	broadcasting: boolean;
 	broadcastToRoom: boolean;
 	broadcastMessage: string;
-	targetUser: User | null;
-	targetUsername: string;
-	inputUsername: string;
 	constructor(
 		options:
 		{message: string, user: User, connection: Connection} &
@@ -436,11 +514,6 @@ export class CommandContext extends MessageContext {
 		this.broadcasting = false;
 		this.broadcastToRoom = true;
 		this.broadcastMessage = '';
-
-		// target user
-		this.targetUser = null;
-		this.targetUsername = "";
-		this.inputUsername = "";
 	}
 
 	// TODO: return should be void | boolean | Promise<void | boolean>
@@ -472,11 +545,7 @@ export class CommandContext extends MessageContext {
 		}
 
 		if (this.room && !(this.user.id in this.room.users)) {
-			if (this.room.roomid === 'lobby') {
-				this.room = null;
-			} else {
-				return this.popupReply(`You tried to send "${message}" to the room "${this.room.roomid}" but it failed because you were not in that room.`);
-			}
+			return this.popupReply(`You tried to send "${message}" to the room "${this.room.roomid}" but it failed because you were not in that room.`);
 		}
 
 		if (this.user.statusType === 'idle' && !['unaway', 'unafk', 'back'].includes(this.cmd)) {
@@ -659,15 +728,25 @@ export class CommandContext extends MessageContext {
 		if (!this.room?.game || !this.room.game.onChatMessage) return;
 		return this.room.game.onChatMessage(this.message, this.user);
 	}
-	pmTransform(originalMessage: string) {
-		if (this.room) throw new Error(`Not a PM`);
-		const targetIdentity = this.pmTarget ? this.pmTarget.getIdentity() : '~';
-		const prefix = `|pm|${this.user.getIdentity()}|${targetIdentity}|`;
+	pmTransform(originalMessage: string, sender?: User, receiver?: User | null | string) {
+		if (!sender) {
+			if (this.room) throw new Error(`Not a PM`);
+			sender = this.user;
+			receiver = this.pmTarget;
+		}
+		const targetIdentity = typeof receiver === 'string' ? ` ${receiver}` : receiver ? receiver.getIdentity() : '~';
+		const prefix = `|pm|${sender.getIdentity()}|${targetIdentity}|`;
 		return originalMessage.split('\n').map(message => {
 			if (message.startsWith('||')) {
 				return prefix + `/text ` + message.slice(2);
 			} else if (message.startsWith(`|html|`)) {
 				return prefix + `/raw ` + message.slice(6);
+			} else if (message.startsWith(`|uhtml|`)) {
+				const [uhtmlid, html] = Utils.splitFirst(message.slice(7), '|');
+				return prefix + `/uhtml ${uhtmlid},${html}`;
+			} else if (message.startsWith(`|uhtmlchange|`)) {
+				const [uhtmlid, html] = Utils.splitFirst(message.slice(13), '|');
+				return prefix + `/uhtmlchange ${uhtmlid},${html}`;
 			} else if (message.startsWith(`|modaction|`)) {
 				return prefix + `/log ` + message.slice(11);
 			} else if (message.startsWith(`|raw|`)) {
@@ -760,7 +839,7 @@ export class CommandContext extends MessageContext {
 		}
 		this.roomlog(`(${msg})`);
 	}
-	globalModlog(action: string, user: string | User | null, note?: string | null, ip?: string) {
+	globalModlog(action: string, user: string | User | null = null, note: string | null = null, ip?: string) {
 		const entry: PartialModlogEntry = {
 			action,
 			isGlobal: true,
@@ -813,17 +892,18 @@ export class CommandContext extends MessageContext {
 		}
 		(this.room || Rooms.global).modlog(entry);
 	}
-	parseSpoiler(str: string) {
-		let privateReason = "";
-		if (!str) return {publicReason: "", privateReason};
+	parseSpoiler(reason: string) {
+		if (!reason) return {publicReason: "", privateReason: ""};
 
-		let publicReason = str;
-		const targetLowercase = str.toLowerCase();
+		let publicReason = reason;
+		let privateReason = reason;
+		const targetLowercase = reason.toLowerCase();
 		if (targetLowercase.includes('spoiler:') || targetLowercase.includes('spoilers:')) {
 			const proofIndex = targetLowercase.indexOf(targetLowercase.includes('spoilers:') ? 'spoilers:' : 'spoiler:');
-			const bump = (targetLowercase.includes('spoilers:') ? 9 : 8);
-			privateReason = `(PROOF: ${str.substr(proofIndex + bump, str.length).trim()}) `;
-			publicReason = str.substr(0, proofIndex).trim();
+			const proofOffset = (targetLowercase.includes('spoilers:') ? 9 : 8);
+			const proof = reason.slice(proofIndex + proofOffset).trim();
+			publicReason = reason.slice(0, proofIndex).trim();
+			privateReason = `${publicReason}${proof ? ` (PROOF: ${proof})` : ''}`;
 		}
 		return {publicReason, privateReason};
 	}
@@ -1102,10 +1182,7 @@ export class CommandContext extends MessageContext {
 
 		return message;
 	}
-	checkPMHTML(targetUser: User | null) {
-		if (!targetUser?.connected) {
-			throw new Chat.ErrorMessage(`User ${this.targetUsername} is not currently online.`);
-		}
+	checkPMHTML(targetUser: User) {
 		if (!(this.room && (targetUser.id in this.room.users)) && !this.user.can('addhtml')) {
 			throw new Chat.ErrorMessage("You do not have permission to use PM HTML to users who are not in this room.");
 		}
@@ -1242,7 +1319,8 @@ export class CommandContext extends MessageContext {
 					if ((!this.room || this.room.settings.isPersonal || this.room.settings.isPrivate === true) && !this.user.can('lock')) {
 						const buttonName = / name ?= ?"([^"]*)"/i.exec(tagContent)?.[1];
 						const buttonValue = / value ?= ?"([^"]*)"/i.exec(tagContent)?.[1];
-						const msgCommandRegex = /^\/(?:msg|pm|w|whisper) /i;
+						const msgCommandRegex = /^\/(?:msg|pm|w|whisper|botmsg) /;
+						const botmsgCommandRegex = /^\/msgroom (?:[a-z0-9-]+), ?\/botmsg /;
 						if (buttonName === 'send' && buttonValue && msgCommandRegex.test(buttonValue)) {
 							const [pmTarget] = buttonValue.replace(msgCommandRegex, '').split(',');
 							const auth = this.room ? this.room.auth : Users.globalAuth;
@@ -1250,11 +1328,13 @@ export class CommandContext extends MessageContext {
 								this.errorReply(`This button is not allowed: <${tagContent}>`);
 								throw new Chat.ErrorMessage(`Your scripted button can't send PMs to ${pmTarget}, because that user is not a Room Bot.`);
 							}
+						} else if (buttonName === 'send' && buttonValue && botmsgCommandRegex.test(buttonValue)) {
+							// no need to validate the bot being an actual bot; `/botmsg` will do it for us and is not abusable
 						} else if (buttonName) {
 							this.errorReply(`This button is not allowed: <${tagContent}>`);
 							this.errorReply(`You do not have permission to use most buttons. Here are the two types you're allowed to use:`);
 							this.errorReply(`1. Linking to a room: <a href="/roomid"><button>go to a place</button></a>`);
-							throw new Chat.ErrorMessage(`2. Sending a message to a Bot: <button name="send" value="/msg BOT_USERNAME, MESSAGE">send the thing</button>`);
+							throw new Chat.ErrorMessage(`2. Sending a message to a Bot: <button name="send" value="/msgroom BOT_ROOMID, /botmsg BOT_USERNAME, MESSAGE">send the thing</button>`);
 						}
 					}
 				}
@@ -1265,40 +1345,6 @@ export class CommandContext extends MessageContext {
 		}
 
 		return htmlContent;
-	}
-	targetUserOrSelf(target: string, exactName: boolean) {
-		if (!target) {
-			this.targetUsername = this.user.name;
-			this.inputUsername = this.user.name;
-			return this.user;
-		}
-		this.splitTarget(target, exactName);
-		return this.targetUser;
-	}
-
-	/**
-	 * Given a message in the form "USERNAME" or "USERNAME, MORE", splits
-	 * it apart:
-	 *
-	 * - `this.targetUser` will be the User corresponding to USERNAME
-	 *   (or null, if not found)
-	 *
-	 * - `this.inputUsername` will be the text of USERNAME, unmodified
-	 *
-	 * - `this.targetUsername` will be the username, if found, or
-	 *   this.inputUsername otherwise
-	 *
-	 * - and the text of MORE will be returned (empty string, if the
-	 *   message has no comma)
-	 *
-	 */
-	splitTarget(target: string, exactName = false) {
-		const [name, rest] = this.splitOne(target);
-
-		this.targetUser = Users.get(name, exactName);
-		this.inputUsername = name.trim();
-		this.targetUsername = this.targetUser ? this.targetUser.name : this.inputUsername;
-		return rest;
 	}
 
 	requireRoom(id?: RoomID) {
@@ -1378,7 +1424,9 @@ export const Chat = new class {
 	basePages!: PageTable;
 	pages!: PageTable;
 	readonly destroyHandlers: (() => void)[] = [];
+	readonly crqHandlers: {[k: string]: CRQHandler} = {};
 	readonly renameHandlers: Rooms.RenameHandler[] = [];
+	readonly closeRoomHandlers: RoomCloseHandler[] = [];
 	/** The key is the name of the plugin. */
 	readonly plugins: {[k: string]: ChatPlugin} = {};
 	/** Will be empty except during hotpatch */
@@ -1708,7 +1756,7 @@ export const Chat = new class {
 				const base = commandTable[entry];
 				if (!base) continue;
 				if (!base.aliases) base.aliases = [];
-				base.aliases.push(cmd);
+				if (!base.aliases.includes(cmd)) base.aliases.push(cmd);
 				continue;
 			}
 			if (typeof entry !== 'function') continue;
@@ -1746,6 +1794,9 @@ export const Chat = new class {
 		if (plugin.pages) Object.assign(Chat.pages, plugin.pages);
 
 		if (plugin.destroy) Chat.destroyHandlers.push(plugin.destroy);
+		if (plugin.crqHandlers) {
+			Object.assign(Chat.crqHandlers, plugin.crqHandlers);
+		}
 		if (plugin.roomSettings) {
 			if (!Array.isArray(plugin.roomSettings)) plugin.roomSettings = [plugin.roomSettings];
 			Chat.roomSettings = Chat.roomSettings.concat(plugin.roomSettings);
@@ -1758,6 +1809,7 @@ export const Chat = new class {
 		if (plugin.nicknamefilter) Chat.nicknamefilters.push(plugin.nicknamefilter);
 		if (plugin.statusfilter) Chat.statusfilters.push(plugin.statusfilter);
 		if (plugin.onRenameRoom) Chat.renameHandlers.push(plugin.onRenameRoom);
+		if (plugin.onCloseRoom) Chat.closeRoomHandlers.push(plugin.onCloseRoom);
 		Chat.plugins[name] = plugin;
 	}
 	loadPlugins(oldPlugins?: {[k: string]: ChatPlugin}) {
@@ -1826,6 +1878,12 @@ export const Chat = new class {
 	handleRoomRename(oldID: RoomID, newID: RoomID, room: Room) {
 		for (const handler of Chat.renameHandlers) {
 			handler(oldID, newID, room);
+		}
+	}
+
+	handleRoomClose(roomid: RoomID, user: User, connection: Connection) {
+		for (const handler of Chat.closeRoomHandlers) {
+			handler(roomid, user, connection, roomid.startsWith('view-'));
 		}
 	}
 
@@ -1927,14 +1985,17 @@ export const Chat = new class {
 		const results: AnnotatedChatHandler[] = [];
 		for (const cmd in table) {
 			const handler = table[cmd];
-			if (Array.isArray(handler) || !handler || typeof handler === 'string') continue;
+			if (Array.isArray(handler) || !handler || ['string', 'boolean'].includes(typeof handler)) {
+				continue;
+			}
 			if (typeof handler === 'object') {
 				results.push(...this.allCommands(handler));
 				continue;
 			}
 			results.push(handler as AnnotatedChatHandler);
 		}
-		return results;
+		if (table !== Chat.commands) return results;
+		return results.filter((handler, i) => results.indexOf(handler) === i);
 	}
 
 	/**
@@ -2304,22 +2365,27 @@ export const Chat = new class {
 (Chat as any).escapeHTML = Utils.escapeHTML;
 (Chat as any).html = Utils.html;
 (Chat as any).splitFirst = Utils.splitFirst;
-// @ts-ignore
-CommandContext.prototype.can = CommandContext.prototype.checkCan;
-// @ts-ignore
-CommandContext.prototype.canTalk = CommandContext.prototype.checkChat;
-// @ts-ignore
-CommandContext.prototype.canBroadcast = CommandContext.prototype.checkBroadcast;
-// @ts-ignore
-CommandContext.prototype.canHTML = CommandContext.prototype.checkHTML;
-// @ts-ignore
-CommandContext.prototype.canEmbedURI = CommandContext.prototype.checkEmbedURI;
-// @ts-ignore
-CommandContext.prototype.canPMHTML = CommandContext.prototype.checkPMHTML;
-// @ts-ignore
-CommandContext.prototype.privatelyCan = CommandContext.prototype.privatelyCheckCan;
-// @ts-ignore
-CommandContext.prototype.requiresRoom = CommandContext.prototype.requireRoom;
+(CommandContext.prototype as any).can = CommandContext.prototype.checkCan;
+(CommandContext.prototype as any).canTalk = CommandContext.prototype.checkChat;
+(CommandContext.prototype as any).canBroadcast = CommandContext.prototype.checkBroadcast;
+(CommandContext.prototype as any).canHTML = CommandContext.prototype.checkHTML;
+(CommandContext.prototype as any).canEmbedURI = CommandContext.prototype.checkEmbedURI;
+(CommandContext.prototype as any).privatelyCan = CommandContext.prototype.privatelyCheckCan;
+(CommandContext.prototype as any).requiresRoom = CommandContext.prototype.requireRoom;
+(CommandContext.prototype as any).targetUserOrSelf = function (this: any, target: string, exactName: boolean) {
+	const user = this.getUserOrSelf(target, exactName);
+	this.targetUser = user;
+	this.inputUsername = target;
+	this.targetUsername = user?.name || target;
+	return user;
+};
+(CommandContext.prototype as any).splitTarget = function (this: any, target: string, exactName: boolean) {
+	const {targetUser, inputUsername, targetUsername, rest} = this.splitUser(target, exactName);
+	this.targetUser = targetUser;
+	this.inputUsername = inputUsername;
+	this.targetUsername = targetUsername;
+	return rest;
+};
 
 /**
  * Used by ChatMonitor.
