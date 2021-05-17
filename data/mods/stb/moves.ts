@@ -60,6 +60,76 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	},
 	*/
 	// Please keep sets organized alphabetically based on staff member name!
+	// Anonymous Pulsar
+	upload: {
+		accuracy: 100,
+		basePower: 90,
+		category: "Special",
+		name: "Upload",
+		desc: "Resets all of the target's positive stat boosts and applies Taunt before dealing damage",
+		shortDesc: "resets positive stat boosts + adds taunt",
+		gen: 8,
+		pp: 10,
+		priority: 0,
+		flags: {protect: 1, mirror: 1},
+		//beforeTurnCallback(pokemon) {
+		//	pokemon.addVolatile('upload');
+		//},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Techno Blast', target);
+			this.add('-anim', target, 'Hyper Beam', target);
+		},
+		/*condition: {
+			duration: 1,
+			noCopy: true,
+			onBeforeMovePriority: 7,
+			onBeforeMove(pokemon, target, move) {
+				let boostName: BoostID;
+				for (boostName in target.boosts) {
+					if (target.boosts[boostName] > 0) {
+						this.boost({boostName: -1 * target.boosts[boostName]}, target);
+					}
+				}
+			},
+		},*/
+		onHit(target) {
+			let boostName: BoostID;
+			for (boostName in target.boosts) {
+				if (target.boosts[boostName] > 0) {
+					switch (boostName) {
+					case 'atk':
+						this.boost({atk: -1 * target.boosts[boostName]}, target);
+						break;
+					case 'def':
+						this.boost({def: -1 * target.boosts[boostName]}, target);
+						break;
+					case 'spa':
+						this.boost({spa: -1 * target.boosts[boostName]}, target);
+						break;
+					case 'spd':
+						this.boost({spd: -1 * target.boosts[boostName]}, target);
+						break;
+					case 'spe':
+						this.boost({spe: -1 * target.boosts[boostName]}, target);
+						break;
+					case 'accuracy':
+						this.boost({accuracy: -1 * target.boosts[boostName]}, target);
+						break;
+					case 'evasion':
+						this.boost({evasion: -1 * target.boosts[boostName]}, target);
+						break;
+					}
+				}
+			}
+		},
+		secondary: {
+			chance: 100,
+			volatileStatus: 'taunt',
+		},
+	},
 	// ATcheron
 	buffice: {
 		accuracy: 100,

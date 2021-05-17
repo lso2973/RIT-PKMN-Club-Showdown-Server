@@ -35,6 +35,12 @@ export const stbSets: STBSets = {
 	// Nature needs to be a valid nature with the first letter capitalized ex: Modest
 	*/
 	// Please keep sets organized alphabetically based on staff member name!
+	'Anonymous Pulsar': {
+		species: 'Genesect', ability: 'Analysis', item: 'Life Orb', gender: 'M',
+		moves: ['Thunderbolt', 'Ice Beam', 'Flamethrower',],
+		signatureMove: 'Upload',
+		evs: {spa: 252, spd: 4, spe: 252}, nature: 'Timid',
+	},
 	ATcheron: {
 		species: 'Glaceon', ability: 'Snowier Warning', item: 'Choice Specs', gender: 'F',
 		moves: ['Steam Eruption', 'Searing Shot', 'Earth Power'],
@@ -48,7 +54,7 @@ export const stbSets: STBSets = {
 		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly',
 	},
 	Azrules: {
-		species: 'plusle', ability: 'speeeeeeeee', item: 'Heavy Duty Boots', gender: 'M',
+		species: 'Plusle', ability: 'speeeeeeeee', item: 'Heavy Duty Boots', gender: 'M',
 		moves: ['Electro Ball', 'Spacial Rend', 'Doom Desire'],
 		signatureMove: 'BLJ',
 		evs: {hp: 252, def: 4, spe: 252}, nature: 'Timid', shiny: true,
@@ -227,7 +233,7 @@ export const stbSets: STBSets = {
 export class RandomStaffBrosTeams extends RandomTeams {
 	randomStaffBrosTeam(options: {inBattle?: boolean} = {}) {
 		const team: PokemonSet[] = [];
-		const debug: string[] = []; // Set this to a list of SSB sets to override the normal pool for debugging.
+		const debug: string[] = ['ScarTheColossus', 'Banded Bonks', 'Anonymous Pulsar']; // Set this to a list of SSB sets to override the normal pool for debugging.
 		const pool = debug.length ? debug : Object.keys(stbSets);
 		const typePool: {[k: string]: number} = {};
 		let depth = 0;

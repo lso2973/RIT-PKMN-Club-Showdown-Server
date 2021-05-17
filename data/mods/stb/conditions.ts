@@ -41,6 +41,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	IMPORTANT: Obtain the username from getName
 	*/
 	// Please keep statuses organized alphabetically based on staff member name!
+	anonymouspulsar: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('Anonymous Pulsar')}|Beginning download...`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('Anonymous Pulsar')}|Download Suspended.`);
+		},
+		onFaint() {
+			this.add(`c|${getName('Anonymous Pulsar')}|Download failed.`);
+		},
+	},
 	atcheron: {
 		noCopy: true,
 		onStart() {

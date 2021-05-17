@@ -102,6 +102,26 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	*/
 	// Please keep abilites organized alphabetically based on staff member name!
+	// Anonymous Pulsar
+	analysis: {
+		desc: "On switch-in, this Pokémon’s speed is raised by 1 stage if it is outsped by the opponent, otherwise this Pokémon's special attack is raised by 1 stage",
+		shortDesc: "+1 to spe or spa on switch-in",
+		name: "Analysis",
+		onStart(pokemon) {
+			let topspe = 0;
+			for (const target of pokemon.foes()) {
+				if (target.getStat('spe', false, true) > topspe) {
+					topspe = target.getStat('spe', false, true)
+				}
+			if (topspe && topspe >= pokemon.getStat('spe', false, true)) {
+				this.boost({spe: 1});
+			} else {
+				this.boost({spa: 1});
+			}
+		},
+		isNonstandard: "Custom",
+		gen: 8,
+	},
 	// ATcheron
 	snowierwarning: {
 		desc: "Summons Arctic Gales to the battlefield, lowering the speed of non Ice-types by 50% rounded up and damaging non Ice-types by 1/16th of their health rounded down at the end of each turn.",
