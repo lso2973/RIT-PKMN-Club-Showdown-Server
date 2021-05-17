@@ -111,7 +111,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			let topspe = 0;
 			for (const target of pokemon.foes()) {
 				if (target.getStat('spe', false, true) > topspe) {
-					topspe = target.getStat('spe', false, true)
+					topspe = target.getStat('spe', false, true);
 				}
 			}
 			if (topspe && topspe >= pokemon.getStat('spe', false, true)) {
@@ -275,6 +275,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	tacticalstance: {
 		desc: "This Pokémon’s Defense and Sp. Defense are increased by 30% before it moves, and Attack and Sp. Attack are increased by 30% for the rest of the turn while and after it uses a move.",
 		shortDesc: "1.3x def/spd before move, 1.3x atk/spa during/after move",
+		name: "Tactical Stance",
 		onStart(pokemon) {
 			this.add('-message', `${pokemon.name} changed to a defensive stance!`);
 			pokemon.addVolatile('defensestance');
