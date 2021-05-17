@@ -179,7 +179,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		basePower: 250,
 		category: "Physical",
 		name: "Headshot",
-		desc: "The user faints after using this move, unless this move has no target. The target's Defense is halved during damage calculation. This move is prevented from executing if any active Pokemon has the Damp Ability. Summons Hail.",
+		desc: "The user faints after using this move, unless this move has no target. The target's Defense is halved during damage calculation. This move is prevented from executing if any active Pokémon has the Damp Ability. Summons Hail.",
 		shortDesc: "Gen IV Explosion + Hail",
 		gen: 8,
 		pp: 5,
@@ -452,6 +452,77 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "normal",
 		type: "Steel",
 	},
+	// En Passant
+	capture: {
+		accuracy: true,
+		basePower: 100,
+		category: "Physical",
+		desc: "If an adjacent opposing Pokémon switches out this turn, this move hits that Pokémon before it leaves the field, even if it was not the original target. If the user moves after an opponent using Parting Shot, U-turn, or Volt Switch, but not Baton Pass, it will hit that opponent before it leaves the field. If an opponent faints from this, the replacement Pokémon does not become active until the end of the turn. This move will fail otherwise.",
+		shortDesc: "Pursuit + fails if effect doesn't trigger",
+		isNonstandard: "Custom",
+		name: "Capture",
+		pp: 10,
+		priority: 0,
+		gen: 8,
+		flags: {contact: 1, protect: 1, mirror: 1},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Brave Bird', target);
+			this.add('-anim', source, 'X-Scissor', target);
+		},
+		beforeTurnCallback(pokemon) {
+			for (const side of this.sides) {
+				if (side.hasAlly(pokemon)) continue;
+				side.addSideCondition('capture', pokemon);
+				const data = side.getSideConditionData('capture');
+				if (!data.sources) {
+					data.sources = [];
+				}
+				data.sources.push(pokemon);
+			}
+		},
+		onModifyMove(move, source, target) {
+			if (target?.beingCalledBack || target?.switchFlag) move.accuracy = true;
+		},
+		onTryHit(target, pokemon) {
+			if (!target.beingCalledBack && !target.switchFlag) {
+				return false;
+			}
+			target.side.removeSideCondition('pursuit');
+		},
+		condition: {
+			duration: 1,
+			onBeforeSwitchOut(pokemon) {
+				this.debug('Capture start');
+				let alreadyAdded = false;
+				pokemon.removeVolatile('destinybond');
+				for (const source of this.effectData.sources) {
+					if (!this.queue.cancelMove(source) || !source.hp) continue;
+					if (!alreadyAdded) {
+						this.add('-activate', pokemon, 'move: Capture');
+						alreadyAdded = true;
+					}
+					// Run through each action in queue to check if the Capture user is supposed to Mega Evolve this turn.
+					// If it is, then Mega Evolve before moving.
+					if (source.canMegaEvo || source.canUltraBurst) {
+						for (const [actionIndex, action] of this.queue.entries()) {
+							if (action.pokemon === source && action.choice === 'megaEvo') {
+								this.actions.runMegaEvo(source);
+								this.queue.list.splice(actionIndex, 1);
+								break;
+							}
+						}
+					}
+					this.actions.runMove('capture', source, source.getLocOf(pokemon));
+				}
+			},
+		},
+		secondary: null,
+		target: "normal",
+		type: "Steel",
+	},
 	// gigigecko26
 	internettroll: {
 		accuracy: 100,
@@ -572,7 +643,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		basePower: 0,
 		category: "Status",
 		name: "Froge Blessings",
-		desc: "The target is forced to switch out and be replaced with a random unfainted ally. Then boosts the new ally’s stats by +1 stage and replaces its ability with Normalize. Fails if the target is the last unfainted Pokemon in its party, or if the target used Ingrain previously or has the Suction Cups Ability.",
+		desc: "The target is forced to switch out and be replaced with a random unfainted ally. Then boosts the new ally’s stats by +1 stage and replaces its ability with Normalize. Fails if the target is the last unfainted Pokémon in its party, or if the target used Ingrain previously or has the Suction Cups Ability.",
 		shortDesc: "Whirlwind + omniboosts & Normalizes target",
 		gen: 8,
 		pp: 5,
@@ -1224,7 +1295,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		desc: "The user takes 1/4 of its maximum HP, rounded down, and puts it into a substitute to take its place in battle. The substitute is removed once enough damage is inflicted on it, or if the user switches out or faints. Baton Pass can be used to transfer the substitute to an ally, and the substitute will keep its remaining HP. Until the substitute is broken, it receives damage from all attacks made by other Pokemon and shields the user from status effects and stat stage changes caused by other Pokemon. Sound-based moves and Pokemon with the Infiltrator Ability ignore substitutes. The user still takes normal damage from weather and status effects while behind its substitute. If the substitute breaks during a multi-hit attack, the user will take damage from any remaining hits. If a substitute is created while the user is trapped by a binding move, the binding effect ends immediately. Fails if the user does not have enough HP remaining to create a substitute without fainting, or if it already has a substitute. Also raises the user's Attack and Speed by 1 stage. Nearly always goes first.",
+		desc: "The user takes 1/4 of its maximum HP, rounded down, and puts it into a substitute to take its place in battle. The substitute is removed once enough damage is inflicted on it, or if the user switches out or faints. Baton Pass can be used to transfer the substitute to an ally, and the substitute will keep its remaining HP. Until the substitute is broken, it receives damage from all attacks made by other Pokémon and shields the user from status effects and stat stage changes caused by other Pokémon. Sound-based moves and Pokémon with the Infiltrator Ability ignore substitutes. The user still takes normal damage from weather and status effects while behind its substitute. If the substitute breaks during a multi-hit attack, the user will take damage from any remaining hits. If a substitute is created while the user is trapped by a binding move, the binding effect ends immediately. Fails if the user does not have enough HP remaining to create a substitute without fainting, or if it already has a substitute. Also raises the user's Attack and Speed by 1 stage. Nearly always goes first.",
 		shortDesc: "+2 priority DD & Sub",
 		name: "Hax Dance",
 		gen: 8,

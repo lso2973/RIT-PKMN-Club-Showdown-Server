@@ -113,6 +113,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 				if (target.getStat('spe', false, true) > topspe) {
 					topspe = target.getStat('spe', false, true)
 				}
+			}
 			if (topspe && topspe >= pokemon.getStat('spe', false, true)) {
 				this.boost({spe: 1});
 			} else {
@@ -270,9 +271,28 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		isNonstandard: "Custom",
 		gen: 8,
 	},
+	// En Passant
+	tacticalstance: {
+		desc: "This Pokémon’s Defense and Sp. Defense are increased by 30% before it moves, and Attack and Sp. Attack are increased by 30% for the rest of the turn while and after it uses a move.",
+		shortDesc: "1.3x def/spd before move, 1.3x atk/spa during/after move",
+		onStart(pokemon) {
+			this.add('-message', `${pokemon.name} changed to a defensive stance!`);
+			pokemon.addVolatile('defensestance');
+			this.add('-start', pokemon, 'Defense Stance', '[silent]');
+		},
+		onResidualOrder: 9,
+		onResidual(pokemon) {
+			if (!pokemon.volatiles['defensestance']) {
+				this.add('-message', `${pokemon.name} changed to a defensive stance!`);
+				pokemon.removeVolatile('offensestance');
+				pokemon.addVolatile('defensestance');
+				this.add('-start', pokemon, 'Defense Stance', '[silent]');
+			}
+		},
+	},
 	// gigigecko26
 	rabies: {
-		desc: "Making contact with this Pokemon starts the Rabies effect for the attacker. Rabies - The Pokémon will gain a Rabies Count of 4 if it doesn't already have a rabies count. At the end of each turn including the turn used, the Pokémon will take 1/16 max hp in damage, and the rabies count of all active Pokémon lowers by 1 and Pokémon faint if the number reaches 0. The rabies count is reset to 4 for all Pokémon that switch out.",
+		desc: "Making contact with this Pokémon starts the Rabies effect for the attacker. Rabies - The Pokémon will gain a Rabies Count of 4 if it doesn't already have a rabies count. At the end of each turn including the turn used, the Pokémon will take 1/16 max hp in damage, and the rabies count of all active Pokémon lowers by 1 and Pokémon faint if the number reaches 0. The rabies count is reset to 4 for all Pokémon that switch out.",
 		shortDesc: "Poison Point x Perish Body",
 		onDamagingHit(damage, target, source, move) {
 			if (move.flags['contact']) {
@@ -342,7 +362,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// Nivelmaster
 	weatherman: {
-		desc: "If this Pokemon is a Castform, its type changes to the current weather condition's type, except Sandstorm. Every turn a random weather is generated, with equal chance of each occurring.",
+		desc: "If this Pokémon is a Castform, its type changes to the current weather condition's type, except Sandstorm. Every turn a random weather is generated, with equal chance of each occurring.",
 		shortDesc: "Forecast + new weather each turn",
 		onUpdate(pokemon) {
 			if (pokemon.baseSpecies.baseSpecies !== 'Castform' || pokemon.transformed) return;
@@ -690,7 +710,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// ThinkingSceptile
 	calcing: {
-		desc: "The power of this Pokemon's move is multiplied by 1.5 if it is the last to move in a turn. Does not affect Doom Desire and Future Sight.",
+		desc: "The power of this Pokémon's move is multiplied by 1.5 if it is the last to move in a turn. Does not affect Doom Desire and Future Sight.",
 		shortDesc: "Analytic but x1.5",
 		onBasePowerPriority: 21,
 		onBasePower(basePower, pokemon) {
@@ -729,7 +749,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// touketsu_ningen
 	feybreaker: {
-		desc: "This Pokemon's moves and their effects ignore the Abilities of other Pokemon. This Pokemon can hit Fairy types with Dragon-type moves.",
+		desc: "This Pokémon’s moves and their effects ignore the Abilities of other Pokémon. This Pokémon can hit Fairy types with Dragon-type moves.",
 		shortDesc: "Mold Breaker + Dragon Scrappy",
 		onStart(pokemon) {
 			this.add('-ability', pokemon, 'Fey Breaker');
