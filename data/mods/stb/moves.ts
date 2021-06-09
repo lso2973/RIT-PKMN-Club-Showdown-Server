@@ -333,6 +333,87 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "normal",
 		type: "Steel",
 	},
+	// Braxxus5th
+	jacksjankjunk: {
+		accuracy: true,
+		basePower: 0,
+		damageCallback(pokemon) {
+			if (!pokemon.volatiles['jacksjankjunk']) return;
+			return pokemon.volatiles['jacksjankjunk'].damage || 1;
+		},
+		category: "Status",
+		desc: "Heals the user by 30% and then executes a random effect.",
+		shortDesc: "heal 30% + random effect",
+		name: "Jack's Jank Junk",
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onModifyPriority(priority, pokemon, target, move) {
+			let effect: int;
+			effect = this.random(5);
+			if (effect == 4) {
+				pokemon.addVolatile('jacksjankjunk');
+				return -5;
+			}
+		},
+		onHit(target, source) {
+			this.add('-anim', source, 'Taunt', target);
+			this.heal(this.modify(source.maxhp, 0.30), source, target)
+			if (source.volatiles['jacksjankjunk']) {
+				return true;
+			}/* else {
+				this.effectData.damage = null;
+			}*/
+			const rand = this.random(4);
+			switch (rand) {
+			case 0://status
+				this.actions.useMove("Thunder Wave", source);
+				this.actions.useMove("Confuse Ray", source);
+				break;
+			case 1://quickdraw
+				const oldAbility = source.setAbility('quickdraw');
+				if (oldAbility) {
+					this.add('-ability', source, 'Quick Draw', '[from] move: Jack\'s Jank Junk');
+					return;
+				}
+				return false;
+				break;
+			case 2://pebbles
+				this.actions.useMove("Stealth Rock", source);
+				this.actions.useMove("Rock Polish", source);
+				break;
+			case 3://debuff
+				this.actions.useMove("Topsy Turvy", source);
+				this.actions.useMove("Taunt", source);
+			}
+		},
+		condition: {
+			duration: 1,
+			noCopy: true,
+			onStart(target, source, move) {
+				this.effectData.slot = null;
+				this.effectData.damage = 0;
+			},
+			onRedirectTargetPriority: -1,
+			onRedirectTarget(target, source, source2) {
+				if (source !== this.effectData.target || !this.effectData.slot) return;
+				return this.getAtSlot(this.effectData.slot);
+			},
+			onDamagingHit(damage, target, source, move) {
+				if (!source.isAlly(target) && this.getCategory(move) === 'Physical') {
+					this.effectData.slot = source.getSlot();
+					this.effectData.damage = 2 * damage;
+				}
+			},
+		},
+		gen: 8,
+		pp: 10,
+		priority: 1,
+		flags: {protect: 1, heal: 1},
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Rock",
+	},
 	// broil
 	pharaohscurse: {
 		accuracy: 100,
@@ -1377,7 +1458,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		condition: {
 			duration: 2,
 			onImmunity(type, pokemon) {
-				if (type === 'sandstorm' || type === 'hail' || type === 'arcticgales') return false;
+				if (type === 'sandstorm' || type === 'pocketsandstorm' || type === 'hail' || type === 'arcticgales') return false;
 			},
 			onInvulnerability(target, source, move) {
 				if (['earthquake', 'magnitude'].includes(move.id)) {
@@ -1397,7 +1478,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		condition: {
 			duration: 2,
 			onImmunity(type, pokemon) {
-				if (type === 'sandstorm' || type === 'hail' || type === 'arcticgales') return false;
+				if (type === 'sandstorm' || type === 'pocketsandstorm' || type === 'hail' || type === 'arcticgales') return false;
 			},
 			onInvulnerability(target, source, move) {
 				if (['surf', 'whirlpool'].includes(move.id)) {
@@ -1424,6 +1505,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			case 'raindance':
 			case 'primordialsea':
 			case 'sandstorm':
+			case 'pocketsandstorm':
 			case 'hail':
 			case 'arcticgales':
 				factor = 0.25;
@@ -1444,6 +1526,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			case 'raindance':
 			case 'primordialsea':
 			case 'sandstorm':
+			case 'pocketsandstorm':
 			case 'hail':
 			case 'arcticgales':
 				factor = 0.25;
@@ -1455,7 +1538,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	solarbeam: {
 		inherit: true,
 		onBasePower(basePower, pokemon, target) {
-			if (['raindance', 'primordialsea', 'sandstorm', 'hail', 'arcticgales'].includes(pokemon.effectiveWeather())) {
+			if (['raindance', 'primordialsea', 'sandstorm', 'pocketsandstorm', 'hail', 'arcticgales'].includes(pokemon.effectiveWeather())) {
 				this.debug('weakened by weather');
 				return this.chainModify(0.5);
 			}
@@ -1464,7 +1547,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	solarblade: {
 		inherit: true,
 		onBasePower(basePower, pokemon, target) {
-			if (['raindance', 'primordialsea', 'sandstorm', 'hail', 'arcticgales'].includes(pokemon.effectiveWeather())) {
+			if (['raindance', 'primordialsea', 'sandstorm', 'pocketsandstorm', 'hail', 'arcticgales'].includes(pokemon.effectiveWeather())) {
 				this.debug('weakened by weather');
 				return this.chainModify(0.5);
 			}
@@ -1482,6 +1565,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			case 'raindance':
 			case 'primordialsea':
 			case 'sandstorm':
+			case 'pocketsandstorm':
 			case 'hail':
 			case 'arcticgales':
 				factor = 0.25;
@@ -1503,6 +1587,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				move.type = 'Water';
 				break;
 			case 'sandstorm':
+			case 'pocketsandstorm':
 				move.type = 'Rock';
 				break;
 			case 'hail':
@@ -1522,6 +1607,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				move.basePower *= 2;
 				break;
 			case 'sandstorm':
+			case 'pocketsandstorm':	
 				move.basePower *= 2;
 				break;
 			case 'hail':
@@ -1529,6 +1615,17 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				move.basePower *= 2;
 				break;
 			}
+		},
+	},
+	// Support for Braxxus5th's Pocket Sand Stream
+	shoreup: {
+		inherit: true,
+		onHit(pokemon) {
+			let factor = 0.5;
+			if (this.field.isWeather('sandstorm') || this.field.isWeather('pocketsandstorm')) {
+				factor = 0.667;
+			}
+			return !!this.heal(this.modify(pokemon.maxhp, factor));
 		},
 	},
 	// Modified Curse to be mutually exclusive with broil's and Creeperman129Poke's Curse-like moves

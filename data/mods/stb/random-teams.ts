@@ -37,7 +37,7 @@ export const stbSets: STBSets = {
 	// Please keep sets organized alphabetically based on staff member name!
 	'Anonymous Pulsar': {
 		species: 'Genesect', ability: 'Analysis', item: 'Life Orb', gender: 'M',
-		moves: ['Thunderbolt', 'Ice Beam', 'Flamethrower',],
+		moves: ['Thunderbolt', 'Ice Beam', 'Flamethrower'],
 		signatureMove: 'Upload',
 		evs: {spa: 252, spd: 4, spe: 252}, nature: 'Timid',
 	},
@@ -70,6 +70,12 @@ export const stbSets: STBSets = {
 		moves: ['First Impression', 'Superpower', ['Stomping Tantrum', 'Rock Slide', 'Thunder Fang', 'Crunch', 'Aerial Ace']],
 		signatureMove: 'bonk.',
 		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly',
+	},
+	Braxxus5th: {
+		species: 'Tyranitar', ability: 'Pocket Sandstream', item: 'Leftovers', gender: 'M',
+		moves: ['Rock Wrecker', 'Thousand Arrows', 'Sucker Punch'],
+		signatureMove: 'Jack\'s Jank Junk',
+		evs: {hp: 124, atk: 76, def: 68, spd: 188, spe: 52}, nature: 'Adamant',
 	},
 	broil: {
 		species: 'Furfrou-Pharaoh', ability: 'Magical Coat', item: 'Chesto Berry', gender: 'M',
@@ -168,7 +174,7 @@ export const stbSets: STBSets = {
 		evs: {hp: 252, spa: 252, spd: 4}, ivs: {atk: 0}, nature: 'Modest',
 	},
 	RubyDragonQueen: {
-		species: 'Dragonite', ability: 'Dragonscale', item: 'Dragon Fang', gender: 'F',
+		species: 'Dragonite', ability: 'Dragonscale', item: 'Dragon Fang', gender: 'N',
 		moves: ['Roost', 'Curse', 'Extreme Speed'],
 		signatureMove: 'Dragonforce',
 		evs: {hp: 252, atk: 252, spd: 4}, nature: 'Adamant',
@@ -239,7 +245,7 @@ export const stbSets: STBSets = {
 export class RandomStaffBrosTeams extends RandomTeams {
 	randomStaffBrosTeam(options: {inBattle?: boolean} = {}) {
 		const team: PokemonSet[] = [];
-		const debug: string[] = []; // Set this to a list of SSB sets to override the normal pool for debugging.
+		const debug: string[] = ['Braxxus5th']; // Set this to a list of SSB sets to override the normal pool for debugging.
 		const pool = debug.length ? debug : Object.keys(stbSets);
 		const typePool: {[k: string]: number} = {};
 		let depth = 0;
@@ -299,8 +305,13 @@ export class RandomStaffBrosTeams extends RandomTeams {
 			set.moves.push(stbSet.signatureMove);
 
 			// Any set specific tweaks occur here.
-			if (set.name === 'Marshmallon' && !set.moves.includes('Head Charge')) set.moves[this.random(3)] = 'Head Charge';
-
+			if (set.name === 'Braxxus5th' && this.random(2) == 1) {
+				set.moves[0] = 'Meteor Beam';
+				set.moves[1] = 'Earth Power';
+				set.moves[2] = 'Dark Pulse';
+				set.nature = 'Modest';
+				set.evs = {hp: 100, atk: 0, def: 80, spa: 252, spd: 24, spe: 52};
+			}
 			team.push(set);
 
 			// Team specific tweaks occur here

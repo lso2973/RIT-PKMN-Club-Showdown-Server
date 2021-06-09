@@ -3,7 +3,7 @@ export const Items: {[k: string]: ModdedItemData} = {
 	safetygoggles: {
 		inherit: true,
 		onImmunity(type, pokemon) {
-			if (type === 'sandstorm' || type === 'hail' || type === 'arcticgales' || type === 'powder') return false;
+			if (type === 'sandstorm' || type === 'pocketsandstorm' || type === 'hail' || type === 'arcticgales' || type === 'powder') return false;
 		},
 		onTryHit(pokemon, source, move) {
 			if (move.flags['powder'] && pokemon !== source && this.dex.getImmunity('powder', pokemon) && !source.hasAbility('verywelltrained')) {
