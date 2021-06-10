@@ -342,7 +342,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			return pokemon.volatiles['jacksjankjunk'].damage || 1;
 		},
 		category: "Status",
-		desc: "Heals the user by 30% and then executes a random effect.",
+		desc: "Heals the user by 30% and then executes a random effect. Possible effects include: - Using Thunderwave and then Confuse Ray on the opposing Pokémon - Changing the user's ability to Quick Draw - Using Stealth Rock against the opposing side and then Rock Polish on the user - Using Topsy Turvy and then Taunt against the opposing Pokémon - Executing the effect of the move Counter against the opposing Pokémon",
 		shortDesc: "heal 30% + random effect",
 		name: "Jack's Jank Junk",
 		onTryMove() {

@@ -564,7 +564,8 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 		onResidualOrder: 1,
 		onResidual() {
-			this.add('-weather', 'Pocket Sandstorm', '[upkeep]');
+			this.add('-weather', 'Pocket Sandstorm', '[upkeep]', '[silent]');
+			this.add('-message', `  (The pocket sandstorm is raging.)`);
 			if (this.field.isWeather('pocketsandstorm')) this.eachEvent('Weather');
 		},
 		onWeather(target) {
@@ -574,7 +575,8 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.damage(target.baseMaxhp / 16);
 		},
 		onEnd() {
-			this.add('-weather', 'none');
+			this.add('-weather', 'none', '[silent]');
+			this.add('-message', `  The pocket sandstorm subsided.`);
 		},
 	},
 	mustrecharge: {

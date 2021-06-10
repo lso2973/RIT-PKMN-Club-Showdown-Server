@@ -186,7 +186,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	// Braxxus5th
 	pocketsandstream: {
 		desc: "Upon entry, summons a sandstorm that lasts 5 turns. Under this sandstorm rock type moves no longer check accuracy and no longer suffer recharge or charge up turns. Also increases special defense of rock types by 50% and deals 1/16th damage to non rock, steel, and ground types at the end of each turn.",
-		shortDesc: "Summons Pocket Sandstorm. Rock type moves always hit and take only one turn + sandstorm",
+		shortDesc: "Summons Pocket Sandstorm. Rock moves always hit, take one turn + sandstorm",
 		name: "Pocket Sandstream",
 		onStart(source) {
 			this.field.setWeather('pocketsandstorm');
