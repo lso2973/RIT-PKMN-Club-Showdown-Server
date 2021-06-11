@@ -516,6 +516,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
             if (!moveSlot) return;
             if(moveSlot.pp === 0){
                 this.add('-message', `${pokemon.name} is going nova!`);
+                this.add('-anim', source, 'Explosion', target);
                 const damage = pokemon.hp;
                 pokemon.faint();
                 return damage;
