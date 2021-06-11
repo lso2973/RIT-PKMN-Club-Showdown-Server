@@ -313,20 +313,19 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		maxMove: {basePower: 140},
 	},
 	// Banded Bonks
-	bonk: {
+	stallbreaking: {
 		accuracy: 100,
-		basePower: 100,
+		basePower: 80,
 		category: "Physical",
-		name: "bonk.",
-		desc: "Has a 30% chance to make the target flinch.",
-		shortDesc: "30% chance to flinch",
+		name: "Stallbreaking",
+		desc: "For 5 turns, the target is prevented from restoring any HP as long as it remains active. During the effect, healing and draining moves are unusable, and Abilities and items that grant healing will not heal the user. If an affected Pokemon uses Baton Pass, the replacement will remain unable to restore its HP. Pain Split and the Regenerator Ability are unaffected. Relevant Z-Powered moves can still be selected and executed during this effect.",
+		shortDesc: "Puts on heal block",
 		gen: 8,
 		pp: 15,
 		priority: 0,
 		flags: {contact: 1, mirror: 1, protect: 1},
 		secondary: {
-			chance: 30,
-			volatileStatus: 'flinch',
+			volatileStatus: 'healblock',
 		},
 		// No move animation needed
 		isNonstandard: "Custom",

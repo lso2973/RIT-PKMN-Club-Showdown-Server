@@ -66,9 +66,9 @@ export const stbSets: STBSets = {
 		evs: {hp: 252, def: 4, spd: 252}, nature: 'Careful',
 	},
 	'Banded Bonks': {
-		species: 'Durant', ability: 'RNG Training', item: 'Choice Band', gender: 'M',
+		species: 'Durant', ability: 'Of The Many', item: 'White Herb', gender: 'M',
 		moves: ['First Impression', 'Superpower', ['Stomping Tantrum', 'Rock Slide', 'Thunder Fang', 'Crunch', 'Aerial Ace']],
-		signatureMove: 'bonk.',
+		signatureMove: 'Stallbreaking',
 		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly',
 	},
 	broil: {
@@ -239,7 +239,7 @@ export const stbSets: STBSets = {
 export class RandomStaffBrosTeams extends RandomTeams {
 	randomStaffBrosTeam(options: {inBattle?: boolean} = {}) {
 		const team: PokemonSet[] = [];
-		const debug: string[] = []; // Set this to a list of SSB sets to override the normal pool for debugging.
+		const debug: string[] = ["Banded Bonks", "TacocaT_2595"]; // Set this to a list of SSB sets to override the normal pool for debugging.
 		const pool = debug.length ? debug : Object.keys(stbSets);
 		const typePool: {[k: string]: number} = {};
 		let depth = 0;

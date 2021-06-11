@@ -162,26 +162,51 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		rating: 4,
 	},
 	// Banded Bonks
-	rngtraining: {
-		desc: "Raises this Pokémon's accuracy by +1 stage on entry and this Pokémon's moves have their secondary effect chance doubled.",
-		shortDesc: "+1 accuracy on entry + serene grace",
-		name: "RNG Training",
-		onStart(pokemon) {
-			this.boost({accuracy: 1});
-		},
-		onModifyMovePriority: -2,
-		onModifyMove(move) {
-			if (move.secondaries) {
-				this.debug('doubling secondary chance');
-				for (const secondary of move.secondaries) {
-					if (secondary.chance) secondary.chance *= 2;
-				}
+	ofthemany: {
+		desc: "This Pokemon's damaging moves are used twice, with all that entails. Does not affect moves that have multiple targets. The accuracy of this Pokemon's attacks is reduced by 20% and it can only select the first move it executes.",
+		shortDesc: "Moves go twice but locked and 80% accuracy",
+		name: "Of The Many",
+		onPrepareHit(source, target, move) {
+            if (source.abilityData.firstStrike) return;
+			if (move.category === 'Status' || move.selfdestruct || move.multihit) return;
+			if (['endeavor', 'fling', 'iceball', 'rollout'].includes(move.id)) return;
+			if (!move.flags['charge'] && !move.spreadHit && !move.isZ && !move.isMax) {
+				source.abilityData.firstStrike = true;
+                const fsMove = this.dex.getActiveMove(move.id);
+                this.actions.useMove(fsMove, source, target);
+                source.abilityData.firstStrike = undefined;
 			}
-			if (move.self?.chance) move.self.chance *= 2;
+		},
+        onBeforeMove(pokemon, target, move) {
+			if (move.isZOrMaxPowered || move.id === 'struggle') return;
+			if (pokemon.abilityData.choiceLock && pokemon.abilityData.choiceLock !== move.id) {
+				// Fails unless ability is being ignored (these events will not run), no PP lost.
+				this.addMove('move', pokemon, move.name);
+				this.attrLastMove('[still]');
+				this.debug("Disabled by Of The Many");
+				this.add('-fail', pokemon);
+				return false;
+			}
+		},
+		onModifyMove(move, pokemon) {
+			if (pokemon.abilityData.choiceLock || move.isZOrMaxPowered || move.id === 'struggle') return;
+			pokemon.abilityData.choiceLock = move.id;
+		},
+        onSourceModifySecondaries(secondaries, target, source, move) {
+			if (move.multihitType === 'ofthemany' && move.id === 'secretpower' && move.hit < 2) {
+				// hack to prevent accidentally suppressing King's Rock/Razor Fang
+				return secondaries.filter(effect => effect.volatileStatus === 'flinch');
+			}
+		},
+        onSourceModifyAccuracyPriority: -1,
+		onSourceModifyAccuracy(accuracy, target, source, move) {
+			if (typeof accuracy === 'number') {
+				return this.chainModify([3277, 4096]);
+			}
 		},
 		isNonstandard: "Custom",
 		gen: 8,
-		rating: 4,
+		rating: 3.5,
 	},
 	// broil
 	magicalcoat: {
