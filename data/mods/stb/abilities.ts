@@ -111,7 +111,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			let topspe = 0;
 			for (const target of pokemon.foes()) {
 				if (target.getStat('spe', false, true) > topspe) {
-					topspe = target.getStat('spe', false, true)
+					topspe = target.getStat('spe', false, true);
 				}
 			}
 			if (topspe && topspe >= pokemon.getStat('spe', false, true)) {
@@ -298,7 +298,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			const newMove = this.dex.getActiveMove(move.id);
 			newMove.hasBounced = true;
 			newMove.pranksterBoosted = false;
-			this.actions.useMove(newMove, this.effectData.target, source);
+			this.actions.useMove(newMove, this.effectState.target, source);
 			return null;
 		},
 		condition: {
@@ -311,6 +311,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	tacticalstance: {
 		desc: "This Pokémon’s Defense and Sp. Defense are increased by 30% before it moves, and Attack and Sp. Attack are increased by 30% for the rest of the turn while and after it uses a move.",
 		shortDesc: "1.3x def/spd before move, 1.3x atk/spa during/after move",
+		name: "Tactical Stance",
 		onStart(pokemon) {
 			this.add('-message', `${pokemon.name} changed to a defensive stance!`);
 			pokemon.addVolatile('defensestance');
@@ -353,11 +354,11 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			if (this.field.getWeather().id === 'primordialsea' && !strongWeathers.includes(weather.id)) return false;
 		},
 		onEnd(pokemon) {
-			if (this.field.weatherData.source !== pokemon) return;
+			if (this.field.weatherState.source !== pokemon) return;
 			for (const target of this.getAllActive()) {
 				if (target === pokemon) continue;
 				if (target.hasAbility('primordialsea') || target.hasAbility('stormsurfing')) {
-					this.field.weatherData.source = target;
+					this.field.weatherState.source = target;
 					return;
 				}
 			}
@@ -451,19 +452,19 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		name: "From the Ashes",
 		onDamagePriority: -100,
 		onBeforeMove(source, target, move) {
-			if ((move['selfdestruct'] === "always" || move['selfdestruct'] === "onhit") && !this.effectData.ashes) {
+			if ((move['selfdestruct'] === "always" || move['selfdestruct'] === "onhit") && !this.effectState.ashes) {
 				this.add('-ability', source, 'From the Ashes');
 				this.add('-message', `${source.name}'s rejuvenating power protects and heals itself`);
-				this.effectData.ashes = true;
+				this.effectState.ashes = true;
 				move['selfdestruct'] = undefined;
 				source.heal(source.maxhp);
 			}
 		},
 		onDamage(damage, source, target, effect) {
-			if (damage >= source.hp && effect && !this.effectData.ashes) {
+			if (damage >= source.hp && effect && !this.effectState.ashes) {
 				this.add('-ability', source, 'From the Ashes');
 				this.add('-message', `${source.name}'s rejuvenating power protects and heals itself`);
-				this.effectData.ashes = true;
+				this.effectState.ashes = true;
 				source.heal(source.maxhp);
 				return 0;
 			}
@@ -510,12 +511,12 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		shortDesc: "Shadow Tag + Magic Coat on entry",
 		onFoeTrapPokemon(pokemon) {
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha')) &&
-					pokemon.isAdjacent(this.effectData.target)) {
+					pokemon.isAdjacent(this.effectState.target)) {
 				pokemon.tryTrap(true);
 			}
 		},
 		onFoeMaybeTrapPokemon(pokemon, source) {
-			if (!source) source = this.effectData.target;
+			if (!source) source = this.effectState.target;
 			if (!source || !pokemon.isAdjacent(source)) return;
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha'))) {
 				pokemon.maybeTrapped = true;
@@ -853,12 +854,12 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		desc: "Prevents adjacent opposing Pokémon from choosing to switch out unless they are immune to trapping or also have this Ability or gonna getcha.",
 		onFoeTrapPokemon(pokemon) {
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha')) &&
-					pokemon.isAdjacent(this.effectData.target)) {
+					pokemon.isAdjacent(this.effectState.target)) {
 				pokemon.tryTrap(true);
 			}
 		},
 		onFoeMaybeTrapPokemon(pokemon, source) {
-			if (!source) source = this.effectData.target;
+			if (!source) source = this.effectState.target;
 			if (!source || !pokemon.isAdjacent(source)) return;
 			if (!(pokemon.hasAbility('shadowtag') || pokemon.hasAbility('gonnagetcha'))) {
 				pokemon.maybeTrapped = true;
@@ -910,17 +911,17 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			if ((this.field.isWeather('hail') || this.field.isWeather('arcticgales')) &&
 					pokemon.species.id === 'eiscuenoice' && !pokemon.transformed) {
 				this.add('-activate', pokemon, 'ability: Ice Face');
-				this.effectData.busted = false;
+				this.effectState.busted = false;
 				pokemon.formeChange('Eiscue', this.effect, true);
 			}
 		},
 		onAnyWeatherStart() {
-			const pokemon = this.effectData.target;
+			const pokemon = this.effectState.target;
 			if (!pokemon.hp) return;
 			if ((this.field.isWeather('hail') || this.field.isWeather('arcticgales')) &&
 					pokemon.species.id === 'eiscuenoice' && !pokemon.transformed) {
 				this.add('-activate', pokemon, 'ability: Ice Face');
-				this.effectData.busted = false;
+				this.effectState.busted = false;
 				pokemon.formeChange('Eiscue', this.effect, true);
 			}
 		},

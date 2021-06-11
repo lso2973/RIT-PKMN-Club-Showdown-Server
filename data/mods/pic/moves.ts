@@ -9,13 +9,13 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			} else {
 				this.add('-activate', source, 'move: Skill Swap', targetAbility, sourceAbility, '[of] ' + target);
 			}
-			this.singleEvent('End', sourceAbility, source.abilityData, source);
+			this.singleEvent('End', sourceAbility, source.abilityState, source);
 			const sourceAlly = source.side.active.find(ally => ally && ally !== source && !ally.fainted);
 			if (sourceAlly?.m.innate) {
 				sourceAlly.removeVolatile(sourceAlly.m.innate);
 				delete sourceAlly.m.innate;
 			}
-			this.singleEvent('End', targetAbility, target.abilityData, target);
+			this.singleEvent('End', targetAbility, target.abilityState, target);
 			const targetAlly = target.side.active.find(ally => ally && ally !== target && !ally.fainted);
 			if (targetAlly?.m.innate) {
 				targetAlly.removeVolatile(targetAlly.m.innate);
@@ -24,8 +24,8 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			if (targetAbility.id !== sourceAbility.id) {
 				source.ability = targetAbility.id;
 				target.ability = sourceAbility.id;
-				source.abilityData = {id: source.ability, target: source};
-				target.abilityData = {id: target.ability, target: target};
+				source.abilityState = {id: source.ability, target: source};
+				target.abilityState = {id: target.ability, target: target};
 			}
 			if (sourceAlly && sourceAlly.ability !== source.ability) {
 				let volatile = sourceAlly.m.innate = 'ability:' + source.ability;
@@ -55,9 +55,9 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 					target.volatiles[volatile].sourcePosition = targetAlly.position;
 				}
 			}
-			this.singleEvent('Start', targetAbility, source.abilityData, source);
+			this.singleEvent('Start', targetAbility, source.abilityState, source);
 			if (sourceAlly?.m.innate) this.singleEvent('Start', targetAbility, sourceAlly.volatiles[sourceAlly.m.innate], sourceAlly);
-			this.singleEvent('Start', sourceAbility, target.abilityData, target);
+			this.singleEvent('Start', sourceAbility, target.abilityState, target);
 			if (targetAlly?.m.innate) this.singleEvent('Start', sourceAbility, targetAlly.volatiles[targetAlly.m.innate], targetAlly);
 		},
 	},
