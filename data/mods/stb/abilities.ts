@@ -204,6 +204,15 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 				return this.chainModify([3277, 4096]);
 			}
 		},
+        onDisableMove(pokemon) {
+			if (!pokemon.abilityState.choiceLock) return;
+			if (pokemon.volatiles['dynamax']) return;
+			for (const moveSlot of pokemon.moveSlots) {
+				if (moveSlot.id !== pokemon.abilityState.choiceLock) {
+					pokemon.disableMove(moveSlot.id, false, this.effectState.sourceEffect);
+				}
+			}
+		},
 		isNonstandard: "Custom",
 		gen: 8,
 		rating: 3.5,
