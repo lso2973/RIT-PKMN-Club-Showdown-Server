@@ -121,6 +121,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`raw|<img src="https://media1.tenor.com/images/bc1b3ab8289d2e60843e9823ee90f412/tenor.gif?itemid=8019684">`);
 		},
 	},
+	braxxus5th: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('Braxxus5th')}|Hey, it's not jank if it works`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('Braxxus5th')}|Just scouting some moves, I'll be back`);
+		},
+		onFaint() {
+			this.add(`c|${getName('Braxxus5th')}|Huh, I guess it didn't work`);
+		},
+	},
 	broil: {
 		noCopy: true,
 		onStart() {
@@ -493,6 +505,83 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add('-weather', 'none', '[silent]');
 			this.add('-message', "The Arctic gales subsided.");
 		},
+	},
+	// Support for Braxxus5th's Pocket Sand Stream
+	pocketsandstorm: {
+		name: 'Pocket Sandstorm',
+		effectType: 'Weather',
+		duration: 5,
+		durationCallback(source, effect) {
+			if (source?.hasItem('smoothrock')) {
+				return 8;
+			}
+			return 5;
+		},
+		// This should be applied directly to the stat before any of the other modifiers are chained
+		// So we give it increased priority.
+		onModifySpDPriority: 10,
+		onModifySpD(spd, pokemon) {
+			if (pokemon.hasType('Rock') && this.field.isWeather('pocketsandstorm')) {
+				return this.modify(spd, 1.5);
+			}
+		},
+		onModifyAccuracy(accuracy, target, source, move) {
+			if (move && move.type === 'Rock') {
+				return true;
+			}
+			return accuracy;
+		},
+		onChargeMove(pokemon, target, move) {
+			if (move.type === 'Rock') {
+				this.debug('pocketsandstorm - remove charge turn for ' + move.id);
+				this.attrLastMove('[still]');
+				this.addMove('-anim', pokemon, move.name, target);
+				return false; // skip charge turn
+			}
+		},
+		onStart(battle, source, effect) {
+			if (effect?.effectType === 'Ability') {
+				if (this.gen <= 5) this.effectData.duration = 0;
+				this.add('-weather', 'Pocket Sandstorm', '[from] ability: ' + effect, '[of] ' + source);
+			} else {
+				this.add('-weather', 'Pocket Sandstorm');
+			}
+		},
+		onResidualOrder: 1,
+		onResidual() {
+			this.add('-weather', 'Pocket Sandstorm', '[upkeep]', '[silent]');
+			this.add('-message', `  (The pocket sandstorm is raging.)`);
+			if (this.field.isWeather('pocketsandstorm')) this.eachEvent('Weather');
+		},
+		onWeather(target) {
+			if (target.hasType('Rock') || target.hasType('Ground') || target.hasType('Steel')) {
+				return;
+			}
+			this.damage(target.baseMaxhp / 16);
+		},
+		onEnd() {
+			this.add('-weather', 'none', '[silent]');
+			this.add('-message', `  The pocket sandstorm subsided.`);
+		},
+	},
+	mustrecharge: {
+		name: 'mustrecharge',
+		duration: 2,
+		onBeforeMovePriority: 11,
+		onBeforeMove(pokemon) {
+			this.add('cant', pokemon, 'recharge');
+			pokemon.removeVolatile('mustrecharge');
+			pokemon.removeVolatile('truant');
+			return null;
+		},
+		onStart(pokemon) {
+			if (this.field.isWeather('pocketsandstorm')) {
+				pokemon.removeVolatile('mustrecharge');
+				return;
+			}
+			this.add('-mustrecharge', pokemon);
+		},
+		onLockMove: 'recharge',
 	},
 	// Support for En Passant's Tactical Stance
 	defensestance: {

@@ -208,6 +208,17 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		gen: 8,
 		rating: 3.5,
 	},
+	// Braxxus5th
+	pocketsandstream: {
+		desc: "Upon entry, summons a sandstorm that lasts 5 turns. Under this sandstorm rock type moves no longer check accuracy and no longer suffer recharge or charge up turns. Also increases special defense of rock types by 50% and deals 1/16th damage to non rock, steel, and ground types at the end of each turn.",
+		shortDesc: "Summons Pocket Sandstorm. Rock moves always hit, take one turn + sandstorm",
+		name: "Pocket Sandstream",
+		onStart(source) {
+			this.field.setWeather('pocketsandstorm');
+		},
+		isNonstandard: "Custom",
+		gen: 8,
+	},
 	// broil
 	magicalcoat: {
 		desc: "This Pokémon's Defense is doubled and if the last item this Pokémon used is a Berry, there is a 50% chance it gets restored at the end of each turn. If Sunny Day is active, this chance is 100%.",
@@ -917,7 +928,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	overcoat: {
 		inherit: true,
 		onImmunity(type, pokemon) {
-			if (type === 'sandstorm' || type === 'hail' || type === 'powder' || type === 'arcticgales') return false;
+			if (type === 'sandstorm' || type === 'pocketsandstorm' || type === 'hail' || type === 'powder' || type === 'arcticgales') return false;
 		},
 	},
 	slushrush: {
@@ -925,6 +936,45 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onModifySpe(spe, pokemon) {
 			if (this.field.isWeather('hail') || this.field.isWeather('arcticgales')) {
 				return this.chainModify(2);
+			}
+		},
+	},
+	// Support for Braxxus5th's Pocket Sand Stream
+	sandforce: {
+		inherit: true,
+		onBasePower(basePower, attacker, defender, move) {
+			if (this.field.isWeather('sandstorm') || this.field.isWeather('pocketsandstorm')) {
+				if (move.type === 'Rock' || move.type === 'Ground' || move.type === 'Steel') {
+					this.debug('Sand Force boost');
+					return this.chainModify([5325, 4096]);
+				}
+			}
+		},
+		onImmunity(type, pokemon) {
+			if (type === 'sandstorm' || type === 'pocketsandstorm') return false;
+		},
+	},
+	sandrush: {
+		inherit: true,
+		onModifySpe(spe, pokemon) {
+			if (this.field.isWeather('sandstorm') || this.field.isWeather('pocketsandstorm')) {
+				return this.chainModify(2);
+			}
+		},
+		onImmunity(type, pokemon) {
+			if (type === 'sandstorm' || type === 'pocketsandstorm') return false;
+		},
+	},
+	sandveil: {
+		inherit: true,
+		onImmunity(type, pokemon) {
+			if (type === 'sandstorm' || type === 'pocketsandstorm') return false;
+		},
+		onModifyAccuracy(accuracy) {
+			if (typeof accuracy !== 'number') return;
+			if (this.field.isWeather('sandstorm') || this.field.isWeather('pocketsandstorm')) {
+				this.debug('Sand Veil - decreasing accuracy');
+				return this.chainModify([3277, 4096]);
 			}
 		},
 	},
