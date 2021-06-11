@@ -91,7 +91,7 @@ export const stbSets: STBSets = {
 	},
 	crimsonKangaroo: {
 		species: 'Solgaleo', ability: 'Solar Wind', item: 'Weakness Policy', gender: 'M',
-		moves: ['Cosmic Power', 'Psychic Fangs', 'Body Press'],
+		moves: ['Fire Fang', 'Psychic Fangs', 'Body Press'],
 		signatureMove: 'Star Eater',
 		evs: {hp: 252, atk: 4, spe: 252}, nature: 'Jolly',
 	},
@@ -209,12 +209,14 @@ export const stbSets: STBSets = {
 		signatureMove: 'Bone Appetit',
 		evs: {hp: 252, def: 4, spd: 252}, nature: 'Impish',
 	},
+    /*
 	ThinkingSceptile: {
 		species: 'Magnezone', ability: 'Calcing...', item: 'Choice Specs', gender: 'M',
 		moves: ['Thunderbolt', 'Flash Cannon', 'Ice Beam'],
 		signatureMove: 'Ha! Read!',
 		evs: {hp: 252, spa: 252, def: 4}, ivs: {atk: 0}, nature: 'Quiet',
 	},
+    */
 	torwildheart: {
 		species: 'mewtwomegax', ability: 'Too Long', item: 'Expert Belt', gender: '',
 		moves: [['Thunderous Kick', 'High Jump Kick'], ['Ice Punch', 'Thunder Punch'], ['Trop Kick', 'Blaze Kick']],

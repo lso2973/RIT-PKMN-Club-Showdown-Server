@@ -324,6 +324,9 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		pp: 15,
 		priority: 0,
 		flags: {contact: 1, mirror: 1, protect: 1},
+        onEffectiveness(typeMod, target, type) {
+			if (type === 'Water' || type === 'Steel') return 0;
+		},
 		secondary: {
 			volatileStatus: 'healblock',
 		},
@@ -500,13 +503,24 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	// crimsonKangaroo
 	stareater: {
 		accuracy: 100,
-		basePower: 80,
+		basePower: 50,
 		category: "Physical",
 		desc: "Restores HP equal to the average of the target's Atk and SpAtk stats, and lowers whichever one is higher by one stage.",
 		shortDesc: "Heals by target's (Atk+SpA)/2, -1 to opponent's higher stat.",
 		name: "Star Eater",
 		gen: 8,
 		flags: {protect: 1, mirror: 1, heal: 1},
+        onDamage(damage, target, pokemon, move) {
+            const callerMoveId = move.sourceEffect || move.id;
+			const moveSlot = callerMoveId === 'instruct' ? pokemon.getMoveData(move.id) : pokemon.getMoveData(callerMoveId);
+            if (!moveSlot) return;
+            if(moveSlot.pp === 0){
+                this.add('-message', `${pokemon.name} is going nova!`);
+                const damage = pokemon.hp;
+                pokemon.faint();
+                return damage;
+            }
+		},
 		onHit(target, source) {
 			const stat = (target.getStat('atk', false, true) + target.getStat('spa', false, true)) / 2;
 			const success = this.boost(target.getStat('atk', false, true) > target.getStat('spa', false, true) ?
@@ -516,12 +530,13 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		onTryMove() {
 			this.attrLastMove('[still]');
 		},
-		onPrepareHit(target, source) {
+		onPrepareHit(target, source, move) {
 			this.add('-anim', source, 'Giga Drain', target);
 			this.add('-anim', source, 'Sunsteel Strike', target);
 		},
 		secondary: null,
-		pp: 10,
+		pp: 3,
+        noPPBoosts: true,
 		priority: 0,
 		isNonstandard: "Custom",
 		target: "normal",
