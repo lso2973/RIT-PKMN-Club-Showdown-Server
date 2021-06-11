@@ -173,6 +173,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			if (!move.flags['charge'] && !move.spreadHit && !move.isZ && !move.isMax) {
 				source.abilityData.firstStrike = true;
                 const fsMove = this.dex.getActiveMove(move.id);
+                this.add('-ability', source, 'Of The Many');
                 this.actions.useMove(fsMove, source, target);
                 source.abilityData.firstStrike = undefined;
 			}
