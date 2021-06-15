@@ -60,7 +60,7 @@ export const stbSets: STBSets = {
 		evs: {hp: 252, def: 4, spe: 252}, nature: 'Timid', shiny: true,
 	},
 	'bad_wolf42': {
-		species: 'Phanpy', ability: "Friend Shaped", item: 'Eviolite', gender: 'M',
+		species: 'Phanpy', ability: "Friend Shaped", item: 'Eviolite', gender: 'F',
 		moves: ['Protect', 'Stealth Rock', 'Slack Off'],
 		signatureMove: 'Roll Around',
 		evs: {hp: 252, def: 4, spd: 252}, nature: 'Careful',

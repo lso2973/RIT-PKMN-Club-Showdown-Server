@@ -105,7 +105,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('bad_wolf42')}|Be right back, I have to go plan for a draft battle.`);
 		},
 		onFaint() {
-			this.add(`c|${getName('bad_wolf42')}|How could you hurt him??? He is Friend Shaped!`);
+			this.add(`c|${getName('bad_wolf42')}|How could you hurt her??? She is Friend Shaped!`);
 		},
 	},
 	bandedbonks: {
