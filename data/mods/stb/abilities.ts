@@ -343,6 +343,41 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		isNonstandard: "Custom",
 		gen: 8,
 	},
+    // davidts
+    goblinpower{
+        desc: "Upon entry into battle, inflict a random non-volatile status on the opponent (poison, paralysis, burn). Gives all status moves a move priority of +1.",
+		shortDesc: "Random Status + Prankster",
+        onModifyPriority(priority, pokemon, target, move) {
+			if (move?.category === 'Status') {
+				move.pranksterBoosted = true;
+				return priority + 1;
+			}
+		},
+        onStart(pokemon) {
+			let activated = false;
+			for (const target of pokemon.adjacentFoes()) {
+				if (!activated) {
+					this.add('-ability', pokemon, 'Goblin Power');
+					activated = true;
+				}
+				if (target.volatiles['substitute']) {
+					this.add('-immune', target);
+				} else {
+					const r = this.random(3);
+                    if (r === 0) {
+                        source.setStatus('slp', target);
+                    } else if (r === 1) {
+                        source.setStatus('par', target);
+                    } else {
+                        source.setStatus('psn', target);
+                    }
+				}
+			}
+		},
+		name: "Goblin Power",
+        isNonstandard: "Custom",
+		gen: 8,
+    },
 	// En Passant
 	tacticalstance: {
 		desc: "This Pokémon’s Defense and Sp. Defense are increased by 30% before it moves, and Attack and Sp. Attack are increased by 30% for the rest of the turn while and after it uses a move.",
@@ -603,23 +638,12 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		rating: 5,
 	},
 	// RibbonNymph
-	pixilatex: {
-		desc: "When this Pokémon uses an attack that would be either 'not very effective' or does not affect the target due to typing, the attack will become fairy type and the power of the move will be boosted by 1.2x",
-		shortDesc: "User's not-very-effective or less moves become fairy type; 1.2x power",
-		name: "Pixilate X",
-		onModifyTypePriority: -1,
-		onModifyType(move, pokemon, target) {
-			const noModifyType = [
-				'judgment', 'multiattack', 'naturalgift', 'revelationdance', 'technoblast', 'terrainpulse', 'weatherball',
-			];
-			if ((!target.runImmunity(move.type, false) || target.runEffectiveness(move) < 0) && !noModifyType.includes(move.id) && !(move.isZ && move.category !== 'Status')) {
-				move.type = 'Fairy';
-				move.pixilateBoosted = true;
-			}
-		},
-		onBasePowerPriority: 23,
-		onBasePower(basePower, pokemon, target, move) {
-			if (move.pixilateBoosted) return this.chainModify([0x1333, 0x1000]);
+	ribbonsurge: {
+		desc: "Summons Ribbon Terrain on entry. (Ribbon terrain prevents grounded Pokémon from gaining a major status condition and boosts the power of fairy type moves by a factor of 1.3x)",
+		shortDesc: "Ribbon Terrain on entry",
+		name: "Ribbon Surge",
+		onStart(source) {
+			this.field.setTerrain('ribbonterrain');
 		},
 		isNonstandard: "Custom",
 		gen: 8,

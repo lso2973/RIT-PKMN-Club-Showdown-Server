@@ -175,6 +175,9 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('crimsonKangaroo')}|Looks like this star's gone out...`);
 		},
 	},
+    davidts:{
+        
+    },
 	enpassant: {
 		noCopy: true,
 		onStart() {
@@ -341,6 +344,25 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 		onFaint() {
 			this.add(`c|${getName('RibbonNymph')}|Well. This is underfortunate.`);
+		},
+        innateName: "Pixilate",
+		shortDesc: "This Pokemon's Normal-type moves become Fairy type and have 1.2x power.",
+		// Pixilinnate
+		onModifyTypePriority: -1,
+		onModifyType(move, pokemon) {
+            if(pokemon.illusion) return;
+			const noModifyType = [
+				'judgment', 'multiattack', 'naturalgift', 'revelationdance', 'technoblast', 'terrainpulse', 'weatherball',
+			];
+			if (move.type === 'Normal' && !noModifyType.includes(move.id) && !(move.isZ && move.category !== 'Status')) {
+				move.type = 'Fairy';
+				move.pixilateBoosted = true;
+			}
+		},
+		onBasePowerPriority: 23,
+		onBasePower(basePower, pokemon, target, move) {
+            if(pokemon.illusion) return;
+			if (move.pixilateBoosted) return this.chainModify([4915, 4096]);
 		},
 	},
 	rubydragonqueen: {

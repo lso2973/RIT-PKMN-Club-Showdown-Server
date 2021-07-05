@@ -520,6 +520,10 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		target: "normal",
 		type: "Steel",
 	},
+    // davidts
+    rubyscurse:{
+        desc: "This move inflicts physical damage or special damage, depending on which is more effective. For physical damage, the user’s Defense is used for damage calculation instead of Attack, and for special damage, the user’s Sp.Def is used for damage calculation instead of Sp.Atk. This attack also has a 10% chance to inflict a random status effect on the opponent."
+    },
 	// En Passant
 	capture: {
 		accuracy: true,
@@ -1080,32 +1084,31 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		type: "CoolTrainer",
 	},
 	// RibbonNymph
-	ribbonsurge: {
+	quickwhip: {
 		accuracy: 100,
-		basePower: 80,
+		basePower: 40,
 		category: "Special",
-		desc: "For 5 turns, the terrain becomes Ribbon Terrain. During the effect, the power of Fairy type moves is multiplied by 1.3, the power of Dragon type moves is halved, and grounded Pokémon are protected from non-volatile status afflictions.",
-		shortDesc: "Misty Terrain + Fairy 1.3x dmg",
-		name: "Ribbon Surge",
-		pp: 10,
-		isNonstandard: "Custom",
+		name: 'Quick Whip',
 		gen: 8,
-		priority: 0,
-		flags: {nonsky: 1, protect: 1, mirror: 1},
-		onHit(target, pokemon) {
-			this.field.setTerrain('ribbonterrain');
-		},
+		pp: 10,
+		priority: 1,
+		desc: "Usually goes first. When this move hits, the target gains the dragon type if it does not have it already. This condition persists until the pokemon switches out or gains another type and it is applied before damage.",
+		shortDesc: "Priority move that gives dragon type",
 		onTryMove() {
 			this.attrLastMove('[still]');
 		},
 		onPrepareHit(target, source) {
-			this.add('-anim', source, 'Extreme Evoboost', target);
+			this.add('-anim', source, 'Vine Whip', target);
+			this.add('-anim', source, 'Sparkly Swirl', target);
+            if (target.hasType('Dragon')) return;
+			if (!target.addType('Dragon')) return;
+			this.add('-start', target, 'typeadd', 'Dragon', '[from] move: Quick Whip');
 		},
+		flags: {protect: 1, mirror: 1},
 		secondary: null,
+		isNonstandard: "Custom",
 		target: "normal",
 		type: "Fairy",
-		zMove: {boost: {spd: 1}},
-		contestType: "Beautiful",
 	},
 	// RubyDragonQueen
 	dragonforce: {
