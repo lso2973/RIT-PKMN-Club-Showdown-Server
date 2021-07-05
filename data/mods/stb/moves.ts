@@ -210,39 +210,16 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		priority: 5,
 		flags: {},
 		selfSwitch: true,
-		sideCondition: 'blj',
-		condition: {
-			// this is a side condition
-			onStart(side) {
-				this.add('-message', `${getName('Azrules')} stacked 1 Wahoo`);
-				this.effectState.layers = 1;
-			},
-			onRestart(side) {
-				this.add('-message', `${getName('Azrules')} stacked ${this.effectState.layers + 1} Wahoos`);
-				this.effectState.layers++;
-			},
-			onSwitchIn(pokemon) {
-				if (!pokemon.hasAbility('speeeeeeeee')) return;
-				let universePlural = "universes";
-				if (this.effectState.layers === 1) {
-					universePlural = "universe";
-				}
-				if (this.effectState.layers < 7) {
-					this.add(`c|${getName('Azrules')}|I’m ${this.effectState.layers} parallel ${universePlural} ahead of you`);
-				} else {
-					this.add(`c|${getName('Azrules')}|Your speed is only temporary. Mine builds for eternity`);
-				}
-				this.boost({spe: this.effectState.layers}, pokemon);
-			},
-			onModifyPriority(priority, pokemon, target, move) {
-				if (pokemon.hasAbility('speeeeeeeee') && this.effectState.layers > 6) {
-					return priority + this.effectState.layers - 6;
-				}
-			},
-		},
+		onHit(target, source, move){
+            if (source.abilityState.wahoo){
+                source.abilityState.wahoo += 1;
+            }else{
+                source.abilityState.wahoo = 1;
+            }
+        },
 		secondary: null,
 		isNonstandard: "Custom",
-		target: "allySide",
+		target: "self",
 		type: "Electric",
 	},
 	// bad_wolf42

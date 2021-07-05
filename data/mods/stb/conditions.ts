@@ -80,9 +80,15 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	azrules: {
 		noCopy: true,
 		onStart(pokemon) {
-			if (!pokemon.side.getSideCondition('blj')) {
+			if (!pokemon.abilityState.wahoo || pokemon.abilityState.wahoo === 0) {
 				this.add(`c|${getName('Azrules')}|Let’s a go`);
-			}
+			}else if (pokemon.abilityState.wahoo === 1){
+                this.add(`c|${getName('Azrules')}|I'm 1 parallel universe ahead of you`);
+            }else if (pokemon.abilityState.wahoo < 7){
+                this.add(`c|${getName('Azrules')}|I'm ` + pokemon.abilityState.wahoo + ` parallel universes ahead of you`);
+            }else{
+                this.add(`c|${getName('Azrules')}|Your speed is only temporary. Mine builds for eternity`);
+            }
 		},
 		onSwitchOut() {
 			this.add(`c|${getName('Azrules')}|Wahoo`);

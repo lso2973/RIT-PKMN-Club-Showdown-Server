@@ -136,9 +136,32 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// Azrules
 	speeeeeeeee: {
-		desc: "When this Pokémon switches in, its speed is raised by +n stages where n is the number of wahoo stacks (max 6). If this Pokémon has more than 6 wahoo stacks, this Pokémon’s moves also gain an additional +(n-6) priority. Additionally, this Pokémon uses its speed stat as its special attack stat.",
-		shortDesc: "+1 spe/priority per wahoo stack, uses spe instead of spa",
-		name: 'speeeeeeeee',
+		desc: "When this Pokémon switches in, its speed is raised by +n stages where n is the number of wahoo stacks (max 6). If this Pokémon has more than 6 wahoo stacks, this Pokémon’s moves also gain an additional +(n-6) priority. Additionally, this Pokémon uses its speed stat as its special attack stat. Finally, this pokemon confuses each pokemon on the field when it switches in and at the start of every turn.",
+		shortDesc: "+1 spe/priority per wahoo stack, uses spe instead of spa, confusion for all at the start of the turn",
+        onStart(source){
+            if (!source.abilityState.wahoo){
+                source.abilityState.wahoo = 0;
+            }else if (source.abilityState.wahoo > 0){
+                this.boost({spe: source.abilityState.wahoo});
+            }
+            for(const mon of this.getAllActive()){
+                mon.addVolatile('confusion');
+            } 
+        },
+        onModifySpa(spa, pokemon){
+            return pokemon.getStat('spe', false, false);
+        },
+        onModifyPriority(priority, pokemon, target, move){
+            if(pokemon.abilityState.wahoo && pokemon.abilityState.wahoo > 6){
+                return priority + pokemon.abilityState.wahoo - 6;
+            }
+        },
+        onBeforeTurn(pokemon){
+            for(const mon of this.getAllActive()){
+                mon.addVolatile('confusion');
+            }                
+        },
+        name: 'speeeeeeeee',
 		isNonstandard: "Custom",
 		gen: 8,
 	},
@@ -167,20 +190,20 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		shortDesc: "Moves go twice but locked and 80% accuracy",
 		name: "Of The Many",
 		onPrepareHit(source, target, move) {
-            if (source.abilityData.firstStrike) return;
+            if (source.abilityState.firstStrike) return;
 			if (move.category === 'Status' || move.selfdestruct || move.multihit) return;
 			if (['endeavor', 'fling', 'iceball', 'rollout'].includes(move.id)) return;
 			if (!move.flags['charge'] && !move.spreadHit && !move.isZ && !move.isMax) {
-				source.abilityData.firstStrike = true;
+				source.abilityState.firstStrike = true;
                 const fsMove = this.dex.getActiveMove(move.id);
                 this.add('-ability', source, 'Of The Many');
                 this.actions.useMove(fsMove, source, target);
-                source.abilityData.firstStrike = undefined;
+                source.abilityState.firstStrike = undefined;
 			}
 		},
         onBeforeMove(pokemon, target, move) {
 			if (move.isZOrMaxPowered || move.id === 'struggle') return;
-			if (pokemon.abilityData.choiceLock && pokemon.abilityData.choiceLock !== move.id) {
+			if (pokemon.abilityState.choiceLock && pokemon.abilityState.choiceLock !== move.id) {
 				// Fails unless ability is being ignored (these events will not run), no PP lost.
 				this.addMove('move', pokemon, move.name);
 				this.attrLastMove('[still]');
@@ -190,8 +213,8 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			}
 		},
 		onModifyMove(move, pokemon) {
-			if (pokemon.abilityData.choiceLock || move.isZOrMaxPowered || move.id === 'struggle') return;
-			pokemon.abilityData.choiceLock = move.id;
+			if (pokemon.abilityState.choiceLock || move.isZOrMaxPowered || move.id === 'struggle') return;
+			pokemon.abilityState.choiceLock = move.id;
 		},
         onSourceModifySecondaries(secondaries, target, source, move) {
 			if (move.multihitType === 'ofthemany' && move.id === 'secretpower' && move.hit < 2) {
@@ -213,6 +236,9 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 					pokemon.disableMove(moveSlot.id, false, this.effectState.sourceEffect);
 				}
 			}
+		},
+        onEnd(pokemon) {
+			pokemon.abilityState.choiceLock = "";
 		},
 		isNonstandard: "Custom",
 		gen: 8,
