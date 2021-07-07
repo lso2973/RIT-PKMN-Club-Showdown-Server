@@ -176,7 +176,13 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 	},
     davidts:{
-        
+        noCopy: true,
+		onStart() {
+			this.add(`c|${getName('davidts')}|It's playtime, cuties!`);
+		},
+        onFaint() {
+			this.add(`c|${getName('davidts')}|In the arms of the angel...`);
+		},
     },
 	enpassant: {
 		noCopy: true,

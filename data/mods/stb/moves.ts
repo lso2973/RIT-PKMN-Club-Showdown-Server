@@ -522,7 +522,32 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	},
     // davidts
     rubyscurse:{
-        desc: "This move inflicts physical damage or special damage, depending on which is more effective. For physical damage, the user’s Defense is used for damage calculation instead of Attack, and for special damage, the user’s Sp.Def is used for damage calculation instead of Sp.Atk. This attack also has a 10% chance to inflict a random status effect on the opponent."
+        accuracy: 100,
+		basePower: 80,
+        category: "Special",
+        desc: "This move inflicts physical damage or special damage, depending on which is more effective. For physical damage, the user’s Defense is used for damage calculation instead of Attack, and for special damage, the user’s Sp.Def is used for damage calculation instead of Sp.Atk. This attack also has a 10% chance to inflict a random status effect on the opponent.",
+        shortdesc: "Body Press + SSA-esque category switch",
+        flags: {protect: 1, mirror: 1},
+        name: "Ruby's Curse",
+        onModifyMove(move, pokemon, target) {
+			if (!target) return;
+			const atk = pokemon.getStat('def', false, true);
+			const spa = pokemon.getStat('spd', false, true);
+			const def = target.getStat('def', false, true);
+			const spd = target.getStat('spd', false, true);
+			const physical = Math.floor(Math.floor(Math.floor(Math.floor(2 * pokemon.level / 5 + 2) * 90 * atk) / def) / 50);
+			const special = Math.floor(Math.floor(Math.floor(Math.floor(2 * pokemon.level / 5 + 2) * 90 * spa) / spd) / 50);
+			if (physical > special || (physical === special && this.random(2) === 0)) {
+				move.category = 'Physical';
+			}
+		},
+        pp: 10,
+		priority: 0,
+		gen: 8,
+        useSourceDefensiveAsOffensive: true,
+        secondary: null,
+		target: "normal",
+		type: "Dark",
     },
 	// En Passant
 	capture: {
@@ -1372,8 +1397,8 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		accuracy: true,
 		basePower: 0,
 		category: "Status",
-		desc: "The user takes 1/4 of its maximum HP, rounded down, and puts it into a substitute to take its place in battle. The substitute is removed once enough damage is inflicted on it, or if the user switches out or faints. Baton Pass can be used to transfer the substitute to an ally, and the substitute will keep its remaining HP. Until the substitute is broken, it receives damage from all attacks made by other Pokémon and shields the user from status effects and stat stage changes caused by other Pokémon. Sound-based moves and Pokémon with the Infiltrator Ability ignore substitutes. The user still takes normal damage from weather and status effects while behind its substitute. If the substitute breaks during a multi-hit attack, the user will take damage from any remaining hits. If a substitute is created while the user is trapped by a binding move, the binding effect ends immediately. Fails if the user does not have enough HP remaining to create a substitute without fainting, or if it already has a substitute. Also raises the user's Attack and Speed by 1 stage. Nearly always goes first.",
-		shortDesc: "+2 priority DD & Sub",
+		desc: "Raises the user's Attack, Defense, and Speed by +1 stage. Nearly always goes first.",
+		shortDesc: "DD but QD (Still +2 priority)",
 		name: "Hax Dance",
 		gen: 8,
 		pp: 15,
@@ -1383,26 +1408,13 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.attrLastMove('[still]');
 		},
 		onPrepareHit(target, source) {
-			this.add('-anim', source, 'Substitute', source);
+			this.add('-anim', source, 'Dragon Dance', source);
 		},
 		boosts: {
 			atk: 1,
+            def: 1,
 			spe: 1,
 		},
-		onTryHit(target) {
-			if (target.volatiles['substitute']) {
-				this.add('-fail', target, 'move: Hax Dance');
-				return null;
-			}
-			if (target.hp <= target.maxhp / 4 || target.maxhp === 1) { // Shedinja clause
-				this.add('-fail', target, 'move: Hax Dance', '[weak]');
-				return null;
-			}
-		},
-		onHit(target) {
-			this.directDamage(target.maxhp / 4);
-		},
-		volatileStatus: 'substitute',
 		secondary: null,
 		isNonstandard: "Custom",
 		target: "self",
