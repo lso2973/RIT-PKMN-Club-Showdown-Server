@@ -344,7 +344,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		gen: 8,
 	},
     // davidts
-    goblinpower{
+    goblinpower: {
         desc: "Upon entry into battle, inflict a random non-volatile status on the opponent (poison, paralysis, burn). Gives all status moves a move priority of +1.",
 		shortDesc: "Random Status + Prankster",
         onModifyPriority(priority, pokemon, target, move) {
@@ -365,11 +365,11 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 				} else {
 					const r = this.random(3);
                     if (r === 0) {
-                        source.setStatus('slp', target);
+                        target.setStatus('brn', pokemon);
                     } else if (r === 1) {
-                        source.setStatus('par', target);
+                        target.setStatus('par', pokemon);
                     } else {
-                        source.setStatus('psn', target);
+                        target.setStatus('psn', pokemon);
                     }
 				}
 			}
