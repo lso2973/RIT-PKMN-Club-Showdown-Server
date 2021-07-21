@@ -499,6 +499,18 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('VolticHalberd')}|You’re a real live-wire, huh?`);
 		},
 	},
+    werewolf72: {
+		noCopy: true,
+		onStart() {
+			this.add(`c|${getName('Werewolf72')}|Hello there!`);
+		},
+		onSwitchOut() {
+			this.add(`c|${getName('Werewolf72')}|Strike me down and I shall become more powerful than you can imagine`);
+		},
+		onFaint() {
+			this.add(`c|${getName('Werewolf72')}|So uncivilized`);
+		},
+	},
 	// Snowier Warning support for ATcheron
 	arcticgales: {
 		name: 'Arctic Gales',

@@ -1447,6 +1447,29 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		type: "Electric",
 		contestType: "Beautiful", // just copied this from psyshock but contest type really doesn't matter so *shrug*
 	},
+    // Werewolf72
+	theforce: {
+		accuracy: true,
+		basePower: 80,
+		category: "Special",
+		name: 'The Force',
+		gen: 8,
+		pp: 20,
+		priority: 1,
+		desc: "This move does not check accuracy and usually goes first.",
+		shortDesc: "Aura Sphere but +1 priority",
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Aura Sphere', target);
+		},
+		flags: {protect: 1, mirror: 1},
+		secondary: null,
+		isNonstandard: "Custom",
+		target: "normal",
+		type: "Fighting",
+	},
 	// Modified moves for ATcheron's Arctic Gales
 	auroraveil: {
 		inherit: true,

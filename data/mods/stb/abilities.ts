@@ -908,6 +908,28 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		gen: 8,
 		rating: 4,
 	},
+    // Werewolf72
+    thehighground: {
+        desc: "This pokemon copies any positive stat changes of the opponent on entry.",
+		shortDesc: "You can't win Anakin",
+		name: "The High Ground",
+		onStart(pokemon){
+            const target = this.sample(pokemon.adjacentFoes());
+            if (!target) return;
+            this.add('-ability', pokemon, 'The High Ground', 'boost');
+            let boosts: SparseBoostsTable;
+            boosts = {};
+            for (const boost in target.boosts) {
+                if (target.boosts[boost] > 0) {
+                    boosts[boost] = target.boosts[boost];
+                }
+            }
+            this.boost(boosts);
+        },
+		isNonstandard: "Custom",
+		gen: 8,
+		rating: 4,
+    },
 	// Modified Shadow Tag for gonna getcha
 	shadowtag: {
 		inherit: true,
