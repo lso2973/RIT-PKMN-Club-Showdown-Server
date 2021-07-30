@@ -715,7 +715,9 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			pokemon.hp = newHP - (pokemon.maxhp - pokemon.hp);
 			pokemon.maxhp = newHP;
 			this.add('-heal', pokemon, pokemon.getHealth, '[silent]');
-            this.add('-sideend', pokemon.side, 'busteraura');
+            if(pokemon.side.removeSideCondition('Buster Aura')){
+                this.add('-sideend', pokemon.side, 'Buster Aura', '[from] condition: Buster Aura', '[of] ' + pokemon);
+            }
 		},
 	},
 };
