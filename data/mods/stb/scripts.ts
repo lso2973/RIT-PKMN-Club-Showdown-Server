@@ -397,14 +397,14 @@ export const Scripts: ModdedBattleScriptsData = {
 					}
 					if (!target.volatiles['dynamax'] && pokemon.level >= target.level &&
 							(move.ohko === true || !target.hasType(move.ohko))) {
-						(accuracy as number) += (pokemon.level - (pokemon.side.sideConditions['busteraura'] ? 7 * target.level / 8 : target.level));
+						(accuracy as number) += (pokemon.level - (pokemon.hasAbility('metabuster') ? 3 * target.level / 4 : target.level));
 					} else {
 						this.battle.add('-immune', target, '[ohko]');
 						hitResults[i] = false;
 						continue;
 					}
 					// boosts from when used while in Buster Aura
-					if (pokemon.side.sideConditions['busteraura']) {
+					if (pokemon.hasAbility('metabuster')) {
 						// level up
 						const species = pokemon.species;
 						const level = pokemon.level + 5;
@@ -422,32 +422,14 @@ export const Scripts: ModdedBattleScriptsData = {
 						pokemon.hp = newHP - (pokemon.maxhp - pokemon.hp);
 						pokemon.maxhp = newHP;
 						this.battle.add('-heal', pokemon, pokemon.getHealth, '[silent]');
-
-						// stat boost
-						const stats: BoostID[] = [];
-						let stat: BoostID;
-						for (stat in pokemon.boosts) {
-							if (pokemon.boosts[stat] < 6) {
-								stats.push(stat);
-							}
-						}
 						if (!target.volatiles['dynamax'] && pokemon.level >= target.level &&
 								(move.ohko === true || !target.hasType(move.ohko))) {
-							(accuracy as number) += (pokemon.level - (pokemon.side.sideConditions['busteraura'] ? 3 * target.level / 4 : target.level));
+							(accuracy as number) += (pokemon.level - (pokemon.hasAbility('metabuster') ? 3 * target.level / 4 : target.level));
 						} else {
 							this.battle.add('-immune', target, '[ohko]');
 							hitResults[i] = false;
 							continue;
 						}
-						if (stats.length) {
-							const randomStat = this.battle.sample(stats);
-							const boost: SparseBoostsTable = {};
-							boost[randomStat] = 1;
-							this.battle.boost(boost, pokemon);
-						} else {
-							return [false];
-						}
-
 						// cooltrainer type addition
 						target.setType([target.getTypes(true)[0], "CoolTrainer"]);
 					}

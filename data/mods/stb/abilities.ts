@@ -603,8 +603,8 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// QuantumTangler
 	metabuster: {
-		desc: "This Pokémon's speed is doubled, and it is treated as Ice-type for Sheer Cold's accuracy check. Summons a Buster Aura which gives each mon an OHKO move and five levels on switch-in, treats the opponent's level as 3/4 of the actual level when calculating the accuracy of OHKO moves, increases the priority of OHKO moves by 1, and gives the user of an OHKO move +5 levels and +1 to a random stat and sets the opponent's second type to \"CoolTrainer,\" even if the move misses.",
-		shortDesc: "x2 Spe, better acc w/ Sheer Cold. Summons Buster Aura.",
+		desc: "This Pokémon's speed is doubled, and it is treated as Ice-type for Sheer Cold's accuracy check. This pokemon treats the opponent's level as 3/4 of the actual level when calculating the accuracy of OHKO moves, and gains +5 levels and sets the opponent's second type to \"CoolTrainer,\" before this pokemon uses an OHKO move. Gives the next pokemon to enter +5 levels.",
+		shortDesc: "Read the long desc.",
 		name: "Meta Buster",
 		onModifySpe(spe, pokemon) {
 			return this.chainModify(2);
@@ -622,12 +622,8 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 				}
 				newMoves.push(moveid);
 			}
-			// picks an ohko move based on the pokemon's type
-			let newOHKO = 'guillotine';
-			if (source.hasType('Psychic')) newOHKO = 'sheercold';
-			if (source.hasType('Ground')) newOHKO = 'fissure';
-			if (source.hasType('Ice')) newOHKO = 'sheercold';
-			newMoves.push(newOHKO);
+			// gives the mon sheer cold
+			newMoves.push('sheercold');
 			const newMoveSlots = changeMoves(this, source, newMoves);
 			source.moveSlots = newMoveSlots;
 			// @ts-ignore

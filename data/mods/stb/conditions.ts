@@ -715,28 +715,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			pokemon.hp = newHP - (pokemon.maxhp - pokemon.hp);
 			pokemon.maxhp = newHP;
 			this.add('-heal', pokemon, pokemon.getHealth, '[silent]');
-
-			// adds ohko move
-			// cancels early if pokemon already has an ohko move, and prepares list of already-existing moves
-			const newMoves = [];
-			for (const moveSlot of pokemon.moveSlots) {
-				const moveid = moveSlot.id;
-				const move = this.dex.moves.get(moveid);
-				if (move.ohko) {
-					return null;
-				}
-				newMoves.push(moveid);
-			}
-			// picks an ohko move based on the pokemon's type
-			let newOHKO = 'guillotine';
-			if (pokemon.hasType('Psychic')) newOHKO = 'sheercold';
-			if (pokemon.hasType('Ground')) newOHKO = 'fissure';
-			if (pokemon.hasType('Ice')) newOHKO = 'sheercold';
-			newMoves.push(newOHKO);
-			const newMoveSlots = changeMoves(this, pokemon, newMoves);
-			pokemon.moveSlots = newMoveSlots;
-			// @ts-ignore
-			pokemon.baseMoveSlots = newMoveSlots;
+            this.add('-sideend', pokemon.side, 'busteraura');
 		},
 	},
 };
