@@ -1631,6 +1631,23 @@ export const Rulesets: {[k: string]: FormatData} = {
 		},
 		// hardcoded in sim/side
 	},
+	removedmovesclause: {
+		effectType: 'ValidatorRule',
+		name: 'Removed Moves Clause',
+		desc: 'Bans moves that were removed in Gen 8.',
+
+		banlist: [
+			'Assist', 'Barrage', 'Barrier', 'Bestow', 'Bide', 'Bone Club', 'Bubble', 'Camouflage', 'Captivate', 'Chip Away',
+			'Clamp', 'Comet Punch', 'Constrict', 'Dizzy Punch', 'Double Slap', 'Dragon Rage', 'Egg Bomb', 'Embargo', 'Feint Attack',
+			'Flame Burst', 'Flash', 'Foresight', 'Frustration', 'Grass Whistle', 'Heal Block', 'Heal Order', 'Heart Stamp',
+			'Heart Swap', 'Hidden Power', 'Ice Ball', 'Ion Deluge', 'Jump Kick', 'Karate Chop', 'Lucky Chant', 'Magnet Bomb',
+			'Magnitude', 'Me First', 'Meditate', 'Miracle Eye', 'Mirror Move', 'Mirror Shot', 'Mud Bomb', 'Mud Sport', 'Natural Gift',
+			'Needle Arm', 'Nightmare', 'Odor Sleuth', 'Ominous Wind', 'Psycho Boost', 'Psywave', 'Punishment', 'Pursuit', 'Rage',
+			'Razor Wind', 'Refresh', 'Return', 'Rock Climb', 'Rolling Kick', 'Rototiller', 'Secret Power', 'Sharpen', 'Signal Beam',
+			'Silver Wind', 'Sky Drop', 'Sky Uppercut', 'Smelling Salts', 'Snatch', 'Sonic Boom', 'Spider Web', 'Spike Cannon', 'Spotlight',
+			'Steamroller', 'Synchronoise', 'Tail Glow', 'Telekinesis', 'Trump Card', 'Twineedle', 'Wake-Up Slap', 'Water Sport', 'Wring Out',
+		],
+	},
 	minlevel: {
 		effectType: 'ValidatorRule',
 		name: 'Min Level',

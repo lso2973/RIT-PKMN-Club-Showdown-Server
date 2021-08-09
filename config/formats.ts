@@ -41,35 +41,18 @@ export const Formats: FormatList = [
 		],
 	},
 	{
-		name: "[Gen 8] RRC Draft S14",
-		desc: `RIT Pokémon Club's 14th draft season!`,
+		name: "[Gen 8] National Dex RRC Draft S15",
+		desc: `RIT Pokémon Club's 15th draft season!`,
 		threads: [
-			`&bullet; <a href="https://docs.google.com/spreadsheets/d/1q2_ewqPnzX7jmvLL9EccQmy-e8xVqgse9iiWTIsySQo">Titan Draft Document</a>`,
-			`&bullet; <a href="https://docs.google.com/spreadsheets/d/1LDKYaWIrB5qI7uvcNZ9izce9AtLsHdeppJJRdsPgqjg">Talon Draft Document</a>`,
+			`&bullet; <a href="https://docs.google.com/spreadsheets/d/1LSRWBZItgR9nMyl9ho5mCDbYbznE4huSyffPqZZaEfc/">Draft Document</a>`,
 		],
 
 		mod: 'gen8',
-		gameType: 'singles',
-		ruleset: ['Obtainable', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod',
-			'Sleep Clause Mod', 'Evasion Moves Clause', 'Dynamax Clause', 'Adjust Level = 50'],
+		gameType: 'doubles',
+		ruleset: ['Standard NatDex', 'Removed Moves Clause', 'Species Clause', 'Adjust Level = 50'],
 		banlist: [
-			'Dialga', 'Dracovish', 'Eternatus', 'Genesect', 'Giratina', 'Groudon', 'Ho-Oh', 'Calyrex-Ice', 'Kyogre', 'Kyurem-Black',
-			'Kyurem-White', 'Lugia', 'Lunala', 'Magearna', 'Marshadow', 'Mewtwo', 'Naganadel', 'Necrozma-Dusk-Mane', 'Necrozma-Dawn-Wings',
-			'Palkia', 'Pheromosa', 'Rayquaza', 'Reshiram', 'Calyrex-Shadow', 'Solgaleo', 'Spectrier', 'Tapu Lele', 'Tornadus-Therian',
-			'Urshifu', 'Xerneas', 'Yveltal', 'Zacian', 'Zamazenta', 'Zekrom', 'Blaziken + Speed Boost', 'Landorus + Sheer Force',
-			'Cinderace + Libero', 'Moody',
+			'Battle Bond', 'Moody', 'Power Construct', 'Minimize', 'Double Team', 'Dark Void',
 		],
-		unbanlist: [
-			'Urshifu-Rapid-Strike',
-		],
-		onValidateSet(set) {
-			const item = this.dex.items.get(set.item);
-			if (item?.megaStone) {
-				return [`Mega evolution is not allowed.`];
-			} else if (item?.zMove) {
-				return [`Z-moves are not allowed.`];
-			}
-		},
 	},
 	{
 		name: "[Gen 8] Super Tiger Bros (Beta)",
@@ -467,6 +450,37 @@ export const Formats: FormatList = [
 		banlist: [
 			'Corsola-Galar', 'Cutiefly', 'Scyther', 'Sneasel', 'Swirlix', 'Tangela', 'Type: Null', 'Vulpix-Alola', 'Drought', 'Swagger',
 		],
+	},
+	{
+		name: "[Gen 8] RRC Draft S14",
+		desc: `RIT Pokémon Club's 14th draft season!`,
+		threads: [
+			`&bullet; <a href="https://docs.google.com/spreadsheets/d/1q2_ewqPnzX7jmvLL9EccQmy-e8xVqgse9iiWTIsySQo">Titan Draft Document</a>`,
+			`&bullet; <a href="https://docs.google.com/spreadsheets/d/1LDKYaWIrB5qI7uvcNZ9izce9AtLsHdeppJJRdsPgqjg">Talon Draft Document</a>`,
+		],
+
+		mod: 'gen8',
+		gameType: 'singles',
+		ruleset: ['Obtainable', 'Team Preview', 'Species Clause', 'Nickname Clause', 'OHKO Clause', 'Endless Battle Clause', 'HP Percentage Mod', 'Cancel Mod',
+			'Sleep Clause Mod', 'Evasion Moves Clause', 'Dynamax Clause', 'Adjust Level = 50'],
+		banlist: [
+			'Dialga', 'Dracovish', 'Eternatus', 'Genesect', 'Giratina', 'Groudon', 'Ho-Oh', 'Calyrex-Ice', 'Kyogre', 'Kyurem-Black',
+			'Kyurem-White', 'Lugia', 'Lunala', 'Magearna', 'Marshadow', 'Mewtwo', 'Naganadel', 'Necrozma-Dusk-Mane', 'Necrozma-Dawn-Wings',
+			'Palkia', 'Pheromosa', 'Rayquaza', 'Reshiram', 'Calyrex-Shadow', 'Solgaleo', 'Spectrier', 'Tapu Lele', 'Tornadus-Therian',
+			'Urshifu', 'Xerneas', 'Yveltal', 'Zacian', 'Zamazenta', 'Zekrom', 'Blaziken + Speed Boost', 'Landorus + Sheer Force',
+			'Cinderace + Libero', 'Moody',
+		],
+		unbanlist: [
+			'Urshifu-Rapid-Strike',
+		],
+		onValidateSet(set) {
+			const item = this.dex.items.get(set.item);
+			if (item?.megaStone) {
+				return [`Mega evolution is not allowed.`];
+			} else if (item?.zMove) {
+				return [`Z-moves are not allowed.`];
+			}
+		},
 	},
 	// Sw/Sh Singles
 	///////////////////////////////////////////////////////////////////
