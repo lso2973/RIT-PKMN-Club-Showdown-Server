@@ -141,8 +141,10 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 	},
 	broil: {
 		noCopy: true,
-		onStart() {
+		onStart(pokemon) {
 			this.add(`c|${getName('broil')}|Hi, @everyone!`);
+			if (pokemon.illusion) return;
+			this.add('-start', pokemon, 'typechange', pokemon.types.join('/'), '[silent]');
 		},
 		onSwitchOut() {
 			this.add(`c|${getName('broil')}|this isn't the last you'll see of me!`);

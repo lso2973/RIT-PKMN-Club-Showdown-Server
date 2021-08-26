@@ -1739,7 +1739,8 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			onSetStatus(status, target, source, effect) {
 				if (!target.isGrounded() || target.isSemiInvulnerable()) return;
 				if (effect && ((effect as Move).status || effect.id === 'yawn')) {
-					this.add('-activate', target, 'move: Ribbon Terrain');
+					this.add('-activate', target, 'move: Ribbon Terrain', '[silent]');
+					this.add('-message', `${target.name} surrounds itself with protective ribbons!`);
 				}
 				return false;
 			},
