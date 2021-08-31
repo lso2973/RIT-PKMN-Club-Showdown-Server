@@ -677,7 +677,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.add('-anim', source, 'Never-Ending Nightmare', source);
 			this.add('-anim', target, 'Never-Ending Nightmare', target);
 		},
-		condition: { // TODO: Make the adding ghost type part less cursed
+		condition: {
 			duration: 5,
 			durationCallback(source, effect) {
 				if (source?.hasItem('terrainextender')) {
@@ -685,11 +685,27 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				}
 				return 5;
 			},
-			onStart(battle, source, effect) {
+			onFieldStart(battle, source, effect, field) {
+				// add code to try to give ghost type to each mon on start
 				if (effect?.effectType === 'Ability') {
 					this.add('-fieldstart', 'move: Spectral Terrain', '[from] ability: ' + effect, '[of] ' + source);
 				} else {
 					this.add('-fieldstart', 'move: Spectral Terrain');
+				}
+				for (const pokemon of this.getAllActive()) {
+					if (pokemon.hasType('Ghost') || !pokemon.isGrounded()) return;
+					if (!pokemon.addType('Ghost')) return;
+					this.add('-start', pokemon, 'typeadd', 'Ghost', '[from] terrain: Spectral Terrain');
+				}
+			},
+			// failsafe if a pokemon that should turn ghost type doesn't turn ghost type
+			onResidualOrder: 5,
+			onResidualSubOrder: 2,
+			onResidual(pokemon) {
+				ifor (const pokemon of this.getAllActive()) {
+					if (pokemon.hasType('Ghost') || !pokemon.isGrounded()) return;
+					if (!pokemon.addType('Ghost')) return;
+					this.add('-start', pokemon, 'typeadd', 'Ghost', '[from] terrain: Spectral Terrain');
 				}
 			},
 			onModifyMovePriority: -5,
@@ -701,28 +717,27 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 					}
 				}
 			},
-			onBeforeMove(source, target, move) {
+			//what is this code supposed to do?
+			/*onBeforeMove(source, target, move) {
 				this.eachEvent('Terrain');
 			},
+			//what is this code supposed to do?
 			onSideResidual(pokemon) {
 				if (pokemon.pokemon[0].hasType('Ghost') || !pokemon.pokemon[0].isGrounded()) return;
 				if (!pokemon.pokemon[0].addType('Ghost')) return;
 				this.add('-start', pokemon, 'typeadd', 'Ghost', '[from] terrain: Spectral Terrain');
-			},
+			},*/
 			onSwitchIn(pokemon) {
 				if (pokemon.hasType('Ghost') || !pokemon.isGrounded()) return;
 				if (!pokemon.addType('Ghost')) return;
 				this.add('-start', pokemon, 'typeadd', 'Ghost', '[from] terrain: Spectral Terrain');
 			},
-			onEnd(field) {
-				let side;
-				let mon;
-				for (side of field.battle.sides) {
-					for (mon of side.pokemon) {
-						if (mon.addedType === 'Ghost') {
-							mon.addedType = '';
-						}
+			onFieldEnd(field) {
+				for (const pokemon of this.getAllActive()) {
+					if (pokemon.addedType === 'Ghost') {
+						pokemon.addedType = '';
 					}
+					this.add('-end', pokemon, 'typeadd', '[silent]');
 				}
 				this.add('-fieldend', 'move: Spectral Terrain');
 			},
