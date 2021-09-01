@@ -247,17 +247,17 @@ export const stbSets: STBSets = {
 		signatureMove: 'The Force',
 		evs: {hp: 4, spa: 252, spe: 252}, ivs: {atk: 0}, nature: 'Timid',
 	},
-	TestMon: {
+	/*TestMon: {
 		species: 'Chansey', ability: 'Run Away', item: 'Choice Specs', gender: '',
 		moves: ['Splash', 'Toxic', 'Tackle'],
 		signatureMove: 'The Force',
-	},
+	},*/
 };
 
 export class RandomStaffBrosTeams extends RandomTeams {
 	randomStaffBrosTeam(options: {inBattle?: boolean} = {}) {
 		const team: PokemonSet[] = [];
-		const debug: string[] = ["TestMon", "RibbonNymph", "ATcheron", "Braxxus5th", "Ignoritus"]; // Set this to a list of SSB sets to override the normal pool for debugging.
+		const debug: string[] = []; // Set this to a list of SSB sets to override the normal pool for debugging.
 		const pool = debug.length ? debug : Object.keys(stbSets);
 		const typePool: {[k: string]: number} = {};
 		let depth = 0;

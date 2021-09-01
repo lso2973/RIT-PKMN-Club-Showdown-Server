@@ -587,7 +587,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 				return false; // skip charge turn
 			}
 		},
-		onStart(battle, source, effect) {
+		onFieldStart(battle, source, effect) {
 			if (effect?.effectType === 'Ability') {
 				if (this.gen <= 5) this.effectData.duration = 0;
 				this.add('-weather', 'Pocket Sandstorm', '[from] ability: ' + effect, '[of] ' + source);
@@ -595,8 +595,8 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 				this.add('-weather', 'Pocket Sandstorm');
 			}
 		},
-		onResidualOrder: 1,
-		onResidual() {
+		onFieldResidualOrder: 1,
+		onFieldResidual() {
 			this.add('-weather', 'Pocket Sandstorm', '[upkeep]', '[silent]');
 			this.add('-message', `  (The pocket sandstorm is raging.)`);
 			if (this.field.isWeather('pocketsandstorm')) this.eachEvent('Weather');
@@ -607,7 +607,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			}
 			this.damage(target.baseMaxhp / 16);
 		},
-		onEnd() {
+		onFieldEnd() {
 			this.add('-weather', 'none', '[silent]');
 			this.add('-message', `  The pocket sandstorm subsided.`);
 		},
