@@ -702,7 +702,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			onResidualOrder: 5,
 			onResidualSubOrder: 2,
 			onResidual(pokemon) {
-				ifor (const pokemon of this.getAllActive()) {
+				for (const pokemon of this.getAllActive()) {
 					if (pokemon.hasType('Ghost') || !pokemon.isGrounded()) return;
 					if (!pokemon.addType('Ghost')) return;
 					this.add('-start', pokemon, 'typeadd', 'Ghost', '[from] terrain: Spectral Terrain');
@@ -1780,7 +1780,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 					return this.chainModify(1.3);
 				}
 			},
-			onStart(battle, source, effect) {
+			onFieldStart(battle, source, effect) {
 				if (effect?.effectType === 'Ability') {
 					this.add('-fieldstart', 'move: Ribbon Terrain', '[from] ability: ' + effect, '[of] ' + source, '[silent]');
 					this.add('-message', "  Ribbons swirl around the battlefield!");
@@ -1789,9 +1789,9 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 					this.add('-message', "  Ribbons swirl around the battlefield!");
 				}
 			},
-			onResidualOrder: 21,
-			onResidualSubOrder: 2,
-			onEnd(side) {
+			onFieldResidualOrder: 21,
+			onFieldResidualSubOrder: 2,
+			onFieldEnd(side) {
 				this.add('-fieldend', 'Ribbon Terrain', '[silent]');
 				this.add('-message', "  The ribbons disappeared from the battlefield.");
 			},
