@@ -524,7 +524,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			}
 			return 5;
 		},
-		onStart(battle, source, effect) {
+		onFieldStart(battle, source, effect) {
 			if (effect?.effectType === 'Ability') {
 				if (this.gen <= 5) this.effectState.duration = 0;
 				this.add('-weather', 'Arctic Gales', '[from] ability: ' + effect, '[of] ' + source);
@@ -539,8 +539,8 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 				return this.chainModify(0.5);
 			}
 		},
-		onResidualOrder: 1,
-		onResidual() {
+		onFieldResidualOrder: 1,
+		onFieldResidual() {
 			this.add('-weather', 'Arctic Gales', '[upkeep]', '[silent]');
 			this.add('-message', "(The Arctic gales are raging.)");
 			if (this.field.isWeather('arcticgales')) this.eachEvent('Weather');
@@ -549,7 +549,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			if (target.hasType('Ice')) return;
 			this.damage(target.baseMaxhp / 16);
 		},
-		onEnd() {
+		onFieldEnd() {
 			this.add('-weather', 'none', '[silent]');
 			this.add('-message', "The Arctic gales subsided.");
 		},
