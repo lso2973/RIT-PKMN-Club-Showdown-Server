@@ -329,11 +329,14 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		},
 		onModifyPriority(priority, pokemon, target, move) {
 			let effect: int;
+            effect = 0;
 			effect = this.random(5);
 			if (effect == 4) {
+                pokemon.addVolatile('endure');
 				pokemon.addVolatile('jacksjankjunk');
 				return -5;
 			}
+            return 0;
 		},
 		onHit(target, source) {
 			this.add('-anim', source, 'Taunt', target);
@@ -370,18 +373,18 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			duration: 1,
 			noCopy: true,
 			onStart(target, source, move) {
-				this.effectData.slot = null;
-				this.effectData.damage = 0;
+				this.effectState.slot = null;
+				this.effectState.damage = 0;
 			},
 			onRedirectTargetPriority: -1,
 			onRedirectTarget(target, source, source2) {
-				if (source !== this.effectData.target || !this.effectData.slot) return;
-				return this.getAtSlot(this.effectData.slot);
+				if (source !== this.effectState.target || !this.effectState.slot) return;
+				return this.getAtSlot(this.effectState.slot);
 			},
 			onDamagingHit(damage, target, source, move) {
-				if (!source.isAlly(target) && this.getCategory(move) === 'Physical') {
-					this.effectData.slot = source.getSlot();
-					this.effectData.damage = 2 * damage;
+				if (!source.isAlly(target)) {
+					this.effectState.slot = source.getSlot();
+					this.effectState.damage = 2 * damage;
 				}
 			},
 		},
