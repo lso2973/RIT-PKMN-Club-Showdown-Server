@@ -82,13 +82,13 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		onStart(pokemon) {
 			if (!pokemon.abilityState.wahoo || pokemon.abilityState.wahoo === 0) {
 				this.add(`c|${getName('Azrules')}|Let’s a go`);
-			}else if (pokemon.abilityState.wahoo === 1){
-                this.add(`c|${getName('Azrules')}|I'm 1 parallel universe ahead of you`);
-            }else if (pokemon.abilityState.wahoo < 7){
-                this.add(`c|${getName('Azrules')}|I'm ` + pokemon.abilityState.wahoo + ` parallel universes ahead of you`);
-            }else{
-                this.add(`c|${getName('Azrules')}|Your speed is only temporary. Mine builds for eternity`);
-            }
+			} else if (pokemon.abilityState.wahoo === 1) {
+				this.add(`c|${getName('Azrules')}|I'm 1 parallel universe ahead of you`);
+			} else if (pokemon.abilityState.wahoo < 7) {
+				this.add(`c|${getName('Azrules')}|I'm ` + pokemon.abilityState.wahoo + ` parallel universes ahead of you`);
+			} else {
+				this.add(`c|${getName('Azrules')}|Your speed is only temporary. Mine builds for eternity`);
+			}
 		},
 		onSwitchOut() {
 			this.add(`c|${getName('Azrules')}|Wahoo`);
@@ -177,15 +177,15 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('crimsonKangaroo')}|Looks like this star's gone out...`);
 		},
 	},
-    davidts:{
-        noCopy: true,
+	davidts: {
+		noCopy: true,
 		onStart() {
 			this.add(`c|${getName('davidts')}|It's playtime, cuties!`);
 		},
-        onFaint() {
+		onFaint() {
 			this.add(`c|${getName('davidts')}|In the arms of the angel...`);
 		},
-    },
+	},
 	enpassant: {
 		noCopy: true,
 		onStart() {
@@ -353,12 +353,12 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		onFaint() {
 			this.add(`c|${getName('RibbonNymph')}|Well. This is underfortunate.`);
 		},
-        innateName: "Pixilate",
+		innateName: "Pixilate",
 		shortDesc: "This Pokemon's Normal-type moves become Fairy type and have 1.2x power.",
 		// Pixilinnate
 		onModifyTypePriority: -1,
 		onModifyType(move, pokemon) {
-            if(pokemon.illusion) return;
+			if (pokemon.illusion) return;
 			const noModifyType = [
 				'judgment', 'multiattack', 'naturalgift', 'revelationdance', 'technoblast', 'terrainpulse', 'weatherball',
 			];
@@ -369,7 +369,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 		onBasePowerPriority: 23,
 		onBasePower(basePower, pokemon, target, move) {
-            if(pokemon.illusion) return;
+			if (pokemon.illusion) return;
 			if (move.pixilateBoosted) return this.chainModify([4915, 4096]);
 		},
 	},
@@ -501,7 +501,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			this.add(`c|${getName('VolticHalberd')}|You’re a real live-wire, huh?`);
 		},
 	},
-    werewolf72: {
+	werewolf72: {
 		noCopy: true,
 		onStart() {
 			this.add(`c|${getName('Werewolf72')}|Hello there!`);
@@ -717,9 +717,9 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 			pokemon.hp = newHP - (pokemon.maxhp - pokemon.hp);
 			pokemon.maxhp = newHP;
 			this.add('-heal', pokemon, pokemon.getHealth, '[silent]');
-            if(pokemon.side.removeSideCondition('Buster Aura')){
-                this.add('-sideend', pokemon.side, 'Buster Aura', '[from] condition: Buster Aura', '[of] ' + pokemon);
-            }
+			if (pokemon.side.removeSideCondition('Buster Aura')) {
+				this.add('-sideend', pokemon.side, 'Buster Aura', '[from] condition: Buster Aura', '[of] ' + pokemon);
+			}
 		},
 	},
 };

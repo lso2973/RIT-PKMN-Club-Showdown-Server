@@ -138,30 +138,30 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	speeeeeeeee: {
 		desc: "When this Pokémon switches in, its speed is raised by +n stages where n is the number of wahoo stacks (max 6). If this Pokémon has more than 6 wahoo stacks, this Pokémon’s moves also gain an additional +(n-6) priority. Additionally, this Pokémon uses its speed stat as its special attack stat. Finally, this pokemon confuses each pokemon on the field when it switches in and at the start of every turn.",
 		shortDesc: "+1 spe/priority per wahoo stack, uses spe instead of spa, confusion for all at the start of the turn",
-        onStart(source){
-            if (!source.abilityState.wahoo){
-                source.abilityState.wahoo = 0;
-            }else if (source.abilityState.wahoo > 0){
-                this.boost({spe: source.abilityState.wahoo});
-            }
-            for(const mon of this.getAllActive()){
-                mon.addVolatile('confusion');
-            } 
-        },
-        onModifySpa(spa, pokemon){
-            return pokemon.getStat('spe', false, false);
-        },
-        onModifyPriority(priority, pokemon, target, move){
-            if(pokemon.abilityState.wahoo && pokemon.abilityState.wahoo > 6){
-                return priority + pokemon.abilityState.wahoo - 6;
-            }
-        },
-        onBeforeTurn(pokemon){
-            for(const mon of this.getAllActive()){
-                mon.addVolatile('confusion');
-            }                
-        },
-        name: 'speeeeeeeee',
+		onStart(source) {
+			if (!source.abilityState.wahoo) {
+				source.abilityState.wahoo = 0;
+			} else if (source.abilityState.wahoo > 0) {
+				this.boost({spe: source.abilityState.wahoo});
+			}
+			for (const mon of this.getAllActive()) {
+				mon.addVolatile('confusion');
+			}
+		},
+		onModifySpA(spa, pokemon) {
+			return pokemon.getStat('spe', false, false);
+		},
+		onModifyPriority(priority, pokemon, target, move) {
+			if (pokemon.abilityState.wahoo && pokemon.abilityState.wahoo > 6) {
+				return priority + pokemon.abilityState.wahoo - 6;
+			}
+		},
+		onBeforeTurn(pokemon) {
+			for (const mon of this.getAllActive()) {
+				mon.addVolatile('confusion');
+			}
+		},
+		name: 'speeeeeeeee',
 		isNonstandard: "Custom",
 		gen: 8,
 	},
@@ -190,18 +190,18 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		shortDesc: "Moves go twice but locked and 80% accuracy",
 		name: "Of The Many",
 		onPrepareHit(source, target, move) {
-            if (source.abilityState.firstStrike) return;
+			if (source.abilityState.firstStrike) return;
 			if (move.category === 'Status' || move.selfdestruct || move.multihit) return;
 			if (['endeavor', 'fling', 'iceball', 'rollout'].includes(move.id)) return;
 			if (!move.flags['charge'] && !move.spreadHit && !move.isZ && !move.isMax) {
 				source.abilityState.firstStrike = true;
-                const fsMove = this.dex.getActiveMove(move.id);
-                this.add('-ability', source, 'Of The Many');
-                this.actions.useMove(fsMove, source, target);
-                source.abilityState.firstStrike = undefined;
+				const fsMove = this.dex.getActiveMove(move.id);
+				this.add('-ability', source, 'Of The Many');
+				this.actions.useMove(fsMove, source, target);
+				source.abilityState.firstStrike = undefined;
 			}
 		},
-        onBeforeMove(pokemon, target, move) {
+		onBeforeMove(pokemon, target, move) {
 			if (move.isZOrMaxPowered || move.id === 'struggle') return;
 			if (pokemon.abilityState.choiceLock && pokemon.abilityState.choiceLock !== move.id) {
 				// Fails unless ability is being ignored (these events will not run), no PP lost.
@@ -216,19 +216,19 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			if (pokemon.abilityState.choiceLock || move.isZOrMaxPowered || move.id === 'struggle') return;
 			pokemon.abilityState.choiceLock = move.id;
 		},
-        onSourceModifySecondaries(secondaries, target, source, move) {
+		onSourceModifySecondaries(secondaries, target, source, move) {
 			if (move.multihitType === 'ofthemany' && move.id === 'secretpower' && move.hit < 2) {
 				// hack to prevent accidentally suppressing King's Rock/Razor Fang
 				return secondaries.filter(effect => effect.volatileStatus === 'flinch');
 			}
 		},
-        onSourceModifyAccuracyPriority: -1,
+		onSourceModifyAccuracyPriority: -1,
 		onSourceModifyAccuracy(accuracy, target, source, move) {
 			if (typeof accuracy === 'number') {
 				return this.chainModify([3277, 4096]);
 			}
 		},
-        onDisableMove(pokemon) {
+		onDisableMove(pokemon) {
 			if (!pokemon.abilityState.choiceLock) return;
 			if (pokemon.volatiles['dynamax']) return;
 			for (const moveSlot of pokemon.moveSlots) {
@@ -237,7 +237,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 				}
 			}
 		},
-        onEnd(pokemon) {
+		onEnd(pokemon) {
 			pokemon.abilityState.choiceLock = "";
 		},
 		isNonstandard: "Custom",
@@ -343,17 +343,17 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		isNonstandard: "Custom",
 		gen: 8,
 	},
-    // davidts
-    goblinpower: {
-        desc: "Upon entry into battle, inflict a random non-volatile status on the opponent (poison, paralysis, burn). Gives all status moves a move priority of +1.",
+	// davidts
+	goblinpower: {
+		desc: "Upon entry into battle, inflict a random non-volatile status on the opponent (poison, paralysis, burn). Gives all status moves a move priority of +1.",
 		shortDesc: "Random Status + Prankster",
-        onModifyPriority(priority, pokemon, target, move) {
+		onModifyPriority(priority, pokemon, target, move) {
 			if (move?.category === 'Status') {
 				move.pranksterBoosted = true;
 				return priority + 1;
 			}
 		},
-        onStart(pokemon) {
+		onStart(pokemon) {
 			let activated = false;
 			for (const target of pokemon.adjacentFoes()) {
 				if (!activated) {
@@ -364,20 +364,20 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 					this.add('-immune', target);
 				} else {
 					const r = this.random(3);
-                    if (r === 0) {
-                        target.setStatus('brn', pokemon);
-                    } else if (r === 1) {
-                        target.setStatus('par', pokemon);
-                    } else {
-                        target.setStatus('psn', pokemon);
-                    }
+					if (r === 0) {
+						target.setStatus('brn', pokemon);
+					} else if (r === 1) {
+						target.setStatus('par', pokemon);
+					} else {
+						target.setStatus('psn', pokemon);
+					}
 				}
 			}
 		},
 		name: "Goblin Power",
-        isNonstandard: "Custom",
+		isNonstandard: "Custom",
 		gen: 8,
-    },
+	},
 	// En Passant
 	tacticalstance: {
 		desc: "This Pokémon’s Defense and Sp. Defense are increased by 30% before it moves, and Attack and Sp. Attack are increased by 30% for the rest of the turn while and after it uses a move.",
@@ -904,28 +904,28 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		gen: 8,
 		rating: 4,
 	},
-    // Werewolf72
-    thehighground: {
-        desc: "This pokemon copies any positive stat changes of the opponent on entry.",
+	// Werewolf72
+	thehighground: {
+		desc: "This pokemon copies any positive stat changes of the opponent on entry.",
 		shortDesc: "You can't win Anakin",
 		name: "The High Ground",
-		onStart(pokemon){
-            const target = this.sample(pokemon.adjacentFoes());
-            if (!target) return;
-            this.add('-ability', pokemon, 'The High Ground', 'boost');
-            let boosts: SparseBoostsTable;
-            boosts = {};
-            for (const boost in target.boosts) {
-                if (target.boosts[boost] > 0) {
-                    boosts[boost] = target.boosts[boost];
-                }
-            }
-            this.boost(boosts);
-        },
+		onStart(pokemon) {
+			const target = this.sample(pokemon.adjacentFoes());
+			if (!target) return;
+			this.add('-ability', pokemon, 'The High Ground', 'boost');
+			let boosts: SparseBoostsTable;
+			boosts = {};
+			for (const boost in target.boosts) {
+				if (target.boosts[boost] > 0) {
+					boosts[boost] = target.boosts[boost];
+				}
+			}
+			this.boost(boosts);
+		},
 		isNonstandard: "Custom",
 		gen: 8,
 		rating: 4,
-    },
+	},
 	// Modified Shadow Tag for gonna getcha
 	shadowtag: {
 		inherit: true,

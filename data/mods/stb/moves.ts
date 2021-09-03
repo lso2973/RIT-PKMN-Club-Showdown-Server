@@ -210,13 +210,13 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		priority: 5,
 		flags: {},
 		selfSwitch: true,
-		onHit(target, source, move){
-            if (source.abilityState.wahoo){
-                source.abilityState.wahoo += 1;
-            }else{
-                source.abilityState.wahoo = 1;
-            }
-        },
+		onHit(target, source, move) {
+			if (source.abilityState.wahoo) {
+				source.abilityState.wahoo += 1;
+			} else {
+				source.abilityState.wahoo = 1;
+			}
+		},
 		secondary: null,
 		isNonstandard: "Custom",
 		target: "self",
@@ -301,7 +301,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		pp: 15,
 		priority: 0,
 		flags: {contact: 1, mirror: 1, protect: 1},
-        onEffectiveness(typeMod, target, type) {
+		onEffectiveness(typeMod, target, type) {
 			if (type === 'Water' || type === 'Steel') return 0;
 		},
 		secondary: {
@@ -329,18 +329,18 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		},
 		onModifyPriority(priority, pokemon, target, move) {
 			let effect: int;
-            effect = 0;
+			effect = 0;
 			effect = this.random(5);
-			if (effect == 4) {
-                pokemon.addVolatile('endure');
+			if (effect === 4) {
+				pokemon.addVolatile('endure');
 				pokemon.addVolatile('jacksjankjunk');
 				return -5;
 			}
-            return 0;
+			return 0;
 		},
 		onHit(target, source) {
 			this.add('-anim', source, 'Taunt', target);
-			this.heal(this.modify(source.maxhp, 0.30), source, target)
+			this.heal(this.modify(source.maxhp, 0.30), source, target);
 			if (source.volatiles['jacksjankjunk']) {
 				return true;
 			}/* else {
@@ -348,11 +348,11 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			}*/
 			const rand = this.random(4);
 			switch (rand) {
-			case 0://status
+			case 0:// status
 				this.actions.useMove("Thunder Wave", source);
 				this.actions.useMove("Confuse Ray", source);
 				break;
-			case 1://quickdraw
+			case 1:// quickdraw
 				const oldAbility = source.setAbility('quickdraw');
 				if (oldAbility) {
 					this.add('-ability', source, 'Quick Draw', '[from] move: Jack\'s Jank Junk');
@@ -360,11 +360,11 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				}
 				return false;
 				break;
-			case 2://pebbles
+			case 2:// pebbles
 				this.actions.useMove("Stealth Rock", source);
 				this.actions.useMove("Rock Polish", source);
 				break;
-			case 3://debuff
+			case 3:// debuff
 				this.actions.useMove("Topsy Turvy", source);
 				this.actions.useMove("Taunt", source);
 			}
@@ -490,17 +490,17 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		name: "Star Eater",
 		gen: 8,
 		flags: {protect: 1, mirror: 1, heal: 1},
-        onDamage(damage, target, pokemon, move) {
-            const callerMoveId = move.sourceEffect || move.id;
+		onDamage(damage, target, pokemon, move) {
+			const callerMoveId = move.sourceEffect || move.id;
 			const moveSlot = callerMoveId === 'instruct' ? pokemon.getMoveData(move.id) : pokemon.getMoveData(callerMoveId);
-            if (!moveSlot) return;
-            if(moveSlot.pp === 0){
-                this.add('-message', `${pokemon.name} is going nova!`);
-                this.add('-anim', source, 'Explosion', target);
-                const damage = pokemon.hp;
-                pokemon.faint();
-                return damage;
-            }
+			if (!moveSlot) return;
+			if (moveSlot.pp === 0) {
+				this.add('-message', `${pokemon.name} is going nova!`);
+				this.add('-anim', source, 'Explosion', target);
+				const new_damage = pokemon.hp;
+				pokemon.faint();
+				return new_damage;
+			}
 		},
 		onHit(target, source) {
 			const stat = (target.getStat('atk', false, true) + target.getStat('spa', false, true)) / 2;
@@ -517,22 +517,22 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		},
 		secondary: null,
 		pp: 3,
-        noPPBoosts: true,
+		noPPBoosts: true,
 		priority: 0,
 		isNonstandard: "Custom",
 		target: "normal",
 		type: "Steel",
 	},
-    // davidts
-    rubyscurse:{
-        accuracy: 100,
+	// davidts
+	rubyscurse: {
+		accuracy: 100,
 		basePower: 80,
-        category: "Special",
-        desc: "This move inflicts physical damage or special damage, depending on which is more effective. For physical damage, the user’s Defense is used for damage calculation instead of Attack, and for special damage, the user’s Sp.Def is used for damage calculation instead of Sp.Atk. This attack also has a 10% chance to inflict a random status effect on the opponent.",
-        shortdesc: "Body Press + SSA-esque category switch",
-        flags: {protect: 1, mirror: 1},
-        name: "Ruby's Curse",
-        onModifyMove(move, pokemon, target) {
+		category: "Special",
+		desc: "This move inflicts physical damage or special damage, depending on which is more effective. For physical damage, the user’s Defense is used for damage calculation instead of Attack, and for special damage, the user’s Sp.Def is used for damage calculation instead of Sp.Atk. This attack also has a 10% chance to inflict a random status effect on the opponent.",
+		shortdesc: "Body Press + SSA-esque category switch",
+		flags: {protect: 1, mirror: 1},
+		name: "Ruby's Curse",
+		onModifyMove(move, pokemon, target) {
 			if (!target) return;
 			const atk = pokemon.getStat('def', false, true);
 			const spa = pokemon.getStat('spd', false, true);
@@ -544,14 +544,14 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				move.category = 'Physical';
 			}
 		},
-        pp: 10,
+		pp: 10,
 		priority: 0,
 		gen: 8,
-        useSourceDefensiveAsOffensive: true,
-        secondary: null,
+		useSourceDefensiveAsOffensive: true,
+		secondary: null,
 		target: "normal",
 		type: "Dark",
-    },
+	},
 	// En Passant
 	capture: {
 		accuracy: true,
@@ -705,10 +705,10 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			onResidualOrder: 5,
 			onResidualSubOrder: 2,
 			onResidual(pokemon) {
-				for (const pokemon of this.getAllActive()) {
-					if (pokemon.hasType('Ghost') || !pokemon.isGrounded()) return;
-					if (!pokemon.addType('Ghost')) return;
-					this.add('-start', pokemon, 'typeadd', 'Ghost', '[from] terrain: Spectral Terrain');
+				for (const active_pokemon of this.getAllActive()) {
+					if (active_pokemon.hasType('Ghost') || !active_pokemon.isGrounded()) return;
+					if (!active_pokemon.addType('Ghost')) return;
+					this.add('-start', active_pokemon, 'typeadd', 'Ghost', '[from] terrain: Spectral Terrain');
 				}
 			},
 			onModifyMovePriority: -5,
@@ -720,8 +720,8 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 					}
 				}
 			},
-			//what is this code supposed to do?
-			/*onBeforeMove(source, target, move) {
+			// what is this code supposed to do?
+			/* onBeforeMove(source, target, move) {
 				this.eachEvent('Terrain');
 			},
 			//what is this code supposed to do?
@@ -1143,7 +1143,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		onPrepareHit(target, source) {
 			this.add('-anim', source, 'Vine Whip', target);
 			this.add('-anim', source, 'Sparkly Swirl', target);
-            if (target.hasType('Dragon')) return;
+			if (target.hasType('Dragon')) return;
 			if (!target.addType('Dragon')) return;
 			this.add('-start', target, 'typeadd', 'Dragon', '[from] move: Quick Whip');
 		},
@@ -1430,7 +1430,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		},
 		boosts: {
 			atk: 1,
-            def: 1,
+			def: 1,
 			spe: 1,
 		},
 		secondary: null,
@@ -1465,7 +1465,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		type: "Electric",
 		contestType: "Beautiful", // just copied this from psyshock but contest type really doesn't matter so *shrug*
 	},
-    // Werewolf72
+	// Werewolf72
 	theforce: {
 		accuracy: true,
 		basePower: 80,
@@ -1655,7 +1655,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				move.basePower *= 2;
 				break;
 			case 'sandstorm':
-			case 'pocketsandstorm':	
+			case 'pocketsandstorm':
 				move.basePower *= 2;
 				break;
 			case 'hail':

@@ -95,12 +95,12 @@ export const stbSets: STBSets = {
 		signatureMove: 'Star Eater',
 		evs: {hp: 252, atk: 4, spe: 252}, nature: 'Jolly',
 	},
-    davidts:{
-        species: 'Sableye', ability: 'Prankster', item: 'Sablenite‎', gender: 'M',
-        moves: ['Taunt', 'Cosmic Power', 'Foul Play'],
-        signatureMove: "Ruby's Curse",
-        evs: {hp: 4, def: 252, spd: 252}, ivs: {atk: 0}, nature: 'Impish',  shiny: true,
-    },
+	davidts: {
+		species: 'Sableye', ability: 'Prankster', item: 'Sablenite‎', gender: 'M',
+		moves: ['Taunt', 'Cosmic Power', 'Foul Play'],
+		signatureMove: "Ruby's Curse",
+		evs: {hp: 4, def: 252, spd: 252}, ivs: {atk: 0}, nature: 'Impish', shiny: true,
+	},
 	'En Passant': {
 		species: 'Duraludon', ability: 'Tactical Stance', item: 'Assault Vest', gender: 'M',
 		moves: [['Dragon Pulse', 'Flash Cannon'], ['Iron Head', 'Dragon Hammer'], ['Earthquake', 'Fire Punch'], ['Earth Power', 'Flamethrower'], ['Steel Beam', 'Draco Meteor']],
@@ -215,7 +215,7 @@ export const stbSets: STBSets = {
 		signatureMove: 'Bone Appetit',
 		evs: {hp: 252, def: 4, spd: 252}, nature: 'Impish',
 	},
-    /* Not a member of club anymore, RIP
+	/* Not a member of club anymore, RIP
 	ThinkingSceptile: {
 		species: 'Magnezone', ability: 'Calcing...', item: 'Choice Specs', gender: 'M',
 		moves: ['Thunderbolt', 'Flash Cannon', 'Ice Beam'],
@@ -241,13 +241,13 @@ export const stbSets: STBSets = {
 		signatureMove: 'Halburst',
 		evs: {hp: 4, spa: 252, spe: 252}, ivs: {atk: 0}, nature: 'Timid',
 	},
-    Werewolf72: {
+	Werewolf72: {
 		species: 'Lucario', ability: 'The High Ground', item: 'Expert Belt', gender: 'M',
 		moves: ['Shadow Ball', 'Ice Beam', 'Thunderbolt'],
 		signatureMove: 'The Force',
 		evs: {hp: 4, spa: 252, spe: 252}, ivs: {atk: 0}, nature: 'Timid',
 	},
-	/*TestMon: {
+	/* TestMon: {
 		species: 'Chansey', ability: 'Run Away', item: 'Choice Specs', gender: '',
 		moves: ['Splash', 'Toxic', 'Tackle'],
 		signatureMove: 'The Force',
@@ -317,7 +317,7 @@ export class RandomStaffBrosTeams extends RandomTeams {
 			set.moves.push(stbSet.signatureMove);
 
 			// Any set specific tweaks occur here.
-			if (set.name === 'Braxxus5th' && this.random(2) == 1) {
+			if (set.name === 'Braxxus5th' && this.random(2) === 1) {
 				set.moves[0] = 'Meteor Beam';
 				set.moves[1] = 'Earth Power';
 				set.moves[2] = 'Dark Pulse';

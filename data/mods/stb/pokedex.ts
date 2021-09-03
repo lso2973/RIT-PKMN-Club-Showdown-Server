@@ -11,11 +11,11 @@ export const Pokedex: {[k: string]: ModdedSpeciesData} = {
 		inherit: true,
 		types: ["Normal", "Ghost"],
 	},
-    // goblin power for davidts
-    sableyemega:{
-        inherit: true,
-        abilities: {0: "Goblin Power"},
-    },
+	// goblin power for davidts
+	sableyemega: {
+		inherit: true,
+		abilities: {0: "Goblin Power"},
+	},
 	// stat changes for Peekz1025
 	sceptile: {
 		inherit: true,
