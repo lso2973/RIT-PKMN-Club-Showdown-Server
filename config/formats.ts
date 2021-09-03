@@ -55,7 +55,7 @@ export const Formats: FormatList = [
 		],
 	},
 	{
-		name: "[Gen 8] Super Tiger Bros (Beta)",
+		name: "[Gen 8] Super Tiger Bros (RC1)",
 		desc: "The club's unique take on Super Staff Bros. Developed by Brian (Banded Bonks) and Jolyne (TacocaT_2595).",
 		threads: [
 			`&bullet; <a href="https://docs.google.com/document/d/16Pqc6xW09PqmdP6lAKJwaGSrjDLUH4Po2x-6jSuS4jk/edit?usp=sharing">Roster</a>`,

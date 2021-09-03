@@ -518,8 +518,8 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	// njjoltiks
 	fromtheashes: {
-		desc: "If this Pokémon were to faint, fully heal it and then remove this ability permanently.",
-		shortDesc: "Fully heal once after fainting then lose ability",
+		desc: "If this Pokémon were to faint, fully heal it and disable this effect.",
+		shortDesc: "Fully heal once after fainting",
 		name: "From the Ashes",
 		onDamagePriority: -100,
 		onBeforeMove(source, target, move) {

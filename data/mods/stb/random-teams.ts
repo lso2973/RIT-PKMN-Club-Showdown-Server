@@ -215,7 +215,7 @@ export const stbSets: STBSets = {
 		signatureMove: 'Bone Appetit',
 		evs: {hp: 252, def: 4, spd: 252}, nature: 'Impish',
 	},
-    /*
+    /* Not a member of club anymore, RIP
 	ThinkingSceptile: {
 		species: 'Magnezone', ability: 'Calcing...', item: 'Choice Specs', gender: 'M',
 		moves: ['Thunderbolt', 'Flash Cannon', 'Ice Beam'],
