@@ -328,7 +328,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			this.attrLastMove('[still]');
 		},
 		onModifyPriority(priority, pokemon, target, move) {
-			let effect: int;
+			let effect: number;
 			effect = 0;
 			effect = this.random(5);
 			if (effect === 4) {
@@ -359,7 +359,6 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 					return;
 				}
 				return false;
-				break;
 			case 2:// pebbles
 				this.actions.useMove("Stealth Rock", source);
 				this.actions.useMove("Rock Polish", source);
@@ -496,7 +495,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 			if (!moveSlot) return;
 			if (moveSlot.pp === 0) {
 				this.add('-message', `${pokemon.name} is going nova!`);
-				this.add('-anim', source, 'Explosion', target);
+				this.add('-anim', pokemon, 'Explosion', target);
 				const new_damage = pokemon.hp;
 				pokemon.faint();
 				return new_damage;
@@ -529,7 +528,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		basePower: 80,
 		category: "Special",
 		desc: "This move inflicts physical damage or special damage, depending on which is more effective. For physical damage, the user’s Defense is used for damage calculation instead of Attack, and for special damage, the user’s Sp.Def is used for damage calculation instead of Sp.Atk. This attack also has a 10% chance to inflict a random status effect on the opponent.",
-		shortdesc: "Body Press + SSA-esque category switch",
+		shortDesc: "Body Press + SSA-esque category switch",
 		flags: {protect: 1, mirror: 1},
 		name: "Ruby's Curse",
 		onModifyMove(move, pokemon, target) {
@@ -688,7 +687,7 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 				}
 				return 5;
 			},
-			onFieldStart(battle, source, effect, field) {
+			onFieldStart(field, source, effect) {
 				// add code to try to give ghost type to each mon on start
 				if (effect?.effectType === 'Ability') {
 					this.add('-fieldstart', 'move: Spectral Terrain', '[from] ability: ' + effect, '[of] ' + source);

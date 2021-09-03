@@ -915,7 +915,8 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			this.add('-ability', pokemon, 'The High Ground', 'boost');
 			let boosts: SparseBoostsTable;
 			boosts = {};
-			for (const boost in target.boosts) {
+            let boost: BoostID;
+			for (boost in target.boosts) {
 				if (target.boosts[boost] > 0) {
 					boosts[boost] = target.boosts[boost];
 				}

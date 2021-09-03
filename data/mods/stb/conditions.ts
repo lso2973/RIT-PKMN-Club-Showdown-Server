@@ -575,7 +575,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 		onModifyAccuracy(accuracy, target, source, move) {
 			if (move && move.type === 'Rock') {
-				return true;
+				return 1000;
 			}
 			return accuracy;
 		},
@@ -589,7 +589,7 @@ export const Conditions: {[k: string]: ModdedConditionData & {innateName?: strin
 		},
 		onFieldStart(battle, source, effect) {
 			if (effect?.effectType === 'Ability') {
-				if (this.gen <= 5) this.effectData.duration = 0;
+				if (this.gen <= 5) this.effectState.duration = 0;
 				this.add('-weather', 'Pocket Sandstorm', '[from] ability: ' + effect, '[of] ' + source);
 			} else {
 				this.add('-weather', 'Pocket Sandstorm');
