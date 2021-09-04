@@ -1293,6 +1293,9 @@ export const Rulesets: {[k: string]: FormatData} = {
 				if (set.species === "Spectrier" && typeValue[typeKey.indexOf("Ghost")] < entryCount - 1) {
 					return [`Spectrier is not a valid wild card.`];
 				}
+				if (set.species === "Regieleki" && typeValue[typeKey.indexOf("Electric")] < entryCount - 1) {
+					return [`Regieleki is not a valid wild card.`];
+				}
 			}
 		},
 	},

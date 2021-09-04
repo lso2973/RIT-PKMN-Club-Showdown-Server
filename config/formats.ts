@@ -25,19 +25,25 @@ export const Formats: FormatList = [
 		section: "RIT-specific Formats",
 	},
 	{
-		name: "[Gen 8] Gym Challenge",
-		desc: `Use this format to challenge our 8 Gym Leaders!`,
+		name: "[Gen 8] Gym Leader Tournament 21-22",
+		desc: `Use this format to challenge our 8 gym leaders!`,
 		threads: [
-			`&bullet; <a href="https://docs.google.com/document/d/1YL3yVvcwKgasvqtC2nTAkPRqg1MmERuKfyw4Hx_abmk/edit">Gym Challenge Rules</a>`,
+			`&bullet; <a href="https://docs.google.com/document/d/1r3SW874AdfP00_-lRAysTRa_4SQZJhn1Ejwc4cA_zsw/edit?usp=sharing">Gym Leader Tournament Rules</a>`,
 		],
 
 		mod: 'gen8',
-		ruleset: ['Standard', 'Dynamax Clause', 'Adjust Level = 50'],
+		ruleset: ['Gym Leader Clause', 'Standard', 'Dynamax Clause', 'Adjust Level = 50'],
 		banlist: [
-			'Uber', 'Moody', 'Swagger', 'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag',
+			'Mewtwo', 'Lugia', 'Ho-Oh', 'Blaziken + Speed Boost', 'Kyogre', 'Groudon', 'Rayquaza', 'Dialga', 'Palkia',
+			'Giratina', 'Gothita + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothitelle + Shadow Tag', 'Reshiram',
+			'Zekrom', 'Landorus', 'Kyurem-Black', 'Kyurem-White', 'Genesect', 'Xerneas', 'Yveltal', 'Zygarde',
+			'Tapu Lele', 'Solgaleo', 'Lunala', 'Pheromosa', 'Kartana', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane',
+			'Magearna', 'Marshadow', 'Naganadel', 'Cinderace + Libero', 'Zacian', 'Zamazenta', 'Eternatus', 'Calyrex-Ice',
+			'Calyrex-Shadow',
+			'Damp Rock', 'Smooth Rock', 'Terrain Extender', 'Moody', 'Power Construct', 'Baton Pass', 'Swagger',
 		],
 		unbanlist: [
-			'Darmanitan-Galar',
+			'Landorus-Therian', 'Zygarde-10%',
 		],
 	},
 	{
