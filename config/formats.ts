@@ -25,25 +25,48 @@ export const Formats: FormatList = [
 		section: "RIT-specific Formats",
 	},
 	{
-		name: "[Gen 8] Gym Leader Tournament 21-22",
+		name: "[Gen 8] Gym Challenge - Singles",
 		desc: `Use this format to challenge our 8 gym leaders!`,
 		threads: [
-			`&bullet; <a href="https://docs.google.com/document/d/1r3SW874AdfP00_-lRAysTRa_4SQZJhn1Ejwc4cA_zsw/edit?usp=sharing">Gym Leader Tournament Rules</a>`,
+			`&bullet; <a href="https://docs.google.com/document/d/1ICe6qQbrPugYj_Xc6MEqvDj5_Wy-yER-cw42Sqrlj2Q/edit">Gym Challenge Rules</a>`,
 		],
 
 		mod: 'gen8',
-		ruleset: ['Gym Leader Clause', 'Standard', 'Dynamax Clause', 'Adjust Level = 50'],
+		ruleset: ['Standard', 'Dynamax Clause', 'Adjust Level = 50'],
 		banlist: [
-			'Mewtwo', 'Lugia', 'Ho-Oh', 'Blaziken + Speed Boost', 'Kyogre', 'Groudon', 'Rayquaza', 'Dialga', 'Palkia',
-			'Giratina', 'Gothita + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothitelle + Shadow Tag', 'Reshiram',
-			'Zekrom', 'Landorus', 'Kyurem-Black', 'Kyurem-White', 'Genesect', 'Xerneas', 'Yveltal', 'Zygarde',
-			'Tapu Lele', 'Solgaleo', 'Lunala', 'Pheromosa', 'Kartana', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane',
-			'Magearna', 'Marshadow', 'Naganadel', 'Cinderace + Libero', 'Zacian', 'Zamazenta', 'Eternatus', 'Calyrex-Ice',
-			'Calyrex-Shadow',
-			'Damp Rock', 'Smooth Rock', 'Terrain Extender', 'Moody', 'Power Construct', 'Baton Pass', 'Swagger',
+			'Mewtwo', 'Lugia', 'Ho-Oh', 'Blaziken + Speed Boost', 'Kyogre', 'Groudon', 'Rayquaza', 'Dialga',
+			'Palkia', 'Giratina', 'Gothita + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothitelle + Shadow Tag',
+			'Reshiram', 'Zekrom', 'Landorus', 'Kyurem-Black', 'Kyurem-White', 'Genesect', 'Xerneas', 'Yveltal',
+			'Zygarde', 'Tapu Lele', 'Solgaleo', 'Lunala', 'Pheromosa', 'Kartana', 'Necrozma-Dawn-Wings',
+			'Necrozma-Dusk-Mane', 'Magearna', 'Marshadow', 'Naganadel', 'Cinderace + Libero', 'Zacian',
+			'Zamazenta', 'Eternatus', 'Calyrex-Ice', 'Calyrex-Shadow',
+			'Swagger', 'Power Construct',
 		],
 		unbanlist: [
 			'Landorus-Therian', 'Zygarde-10%',
+		],
+	},
+	{
+		name: "[Gen 8] Gym Challenge - Doubles",
+		desc: `Use this format to challenge our 8 gym leaders!`,
+		threads: [
+			`&bullet; <a href="https://docs.google.com/document/d/1ICe6qQbrPugYj_Xc6MEqvDj5_Wy-yER-cw42Sqrlj2Q/edit">Gym Challenge Rules</a>`,
+		],
+
+		mod: 'gen8',
+		gameType: 'doubles',
+		ruleset: ['Standard Doubles', 'Dynamax Clause', 'Adjust Level = 50'],
+		banlist: [
+			'Mewtwo', 'Lugia', 'Ho-Oh', 'Kyogre', 'Groudon', 'Rayquaza', 'Dialga',
+			'Palkia', 'Giratina', 'Gothita + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothitelle + Shadow Tag',
+			'Reshiram', 'Zekrom', 'Landorus', 'Kyurem-White', 'Xerneas', 'Yveltal',
+			'Zygarde', 'Solgaleo', 'Lunala', 'Kartana', 'Necrozma-Dawn-Wings',
+			'Necrozma-Dusk-Mane', 'Magearna', 'Marshadow', 'Melmetal', 'Naganadel', 'Cinderace + Libero',
+			'Zacian', 'Zamazenta', 'Eternatus', 'Urshifu', 'Calyrex-Ice', 'Calyrex-Shadow',
+			'Swagger', 'Power Construct',
+		],
+		unbanlist: [
+			'Landorus-Therian', 'Urshifu-Rapid-Strike', 'Zygarde-10%',
 		],
 	},
 	{
@@ -487,6 +510,28 @@ export const Formats: FormatList = [
 				return [`Z-moves are not allowed.`];
 			}
 		},
+	},
+	{
+		name: "[Gen 8] Gym Leader Tournament 21-22",
+		desc: `Use this format to challenge our 8 gym leaders!`,
+		threads: [
+			`&bullet; <a href="https://docs.google.com/document/d/1r3SW874AdfP00_-lRAysTRa_4SQZJhn1Ejwc4cA_zsw/edit?usp=sharing">Gym Leader Tournament Rules</a>`,
+		],
+
+		mod: 'gen8',
+		ruleset: ['Gym Leader Clause', 'Standard', 'Dynamax Clause', 'Adjust Level = 50'],
+		banlist: [
+			'Mewtwo', 'Lugia', 'Ho-Oh', 'Blaziken + Speed Boost', 'Kyogre', 'Groudon', 'Rayquaza', 'Dialga', 'Palkia',
+			'Giratina', 'Gothita + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothitelle + Shadow Tag', 'Reshiram',
+			'Zekrom', 'Landorus', 'Kyurem-Black', 'Kyurem-White', 'Genesect', 'Xerneas', 'Yveltal', 'Zygarde',
+			'Tapu Lele', 'Solgaleo', 'Lunala', 'Pheromosa', 'Kartana', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane',
+			'Magearna', 'Marshadow', 'Naganadel', 'Cinderace + Libero', 'Zacian', 'Zamazenta', 'Eternatus', 'Calyrex-Ice',
+			'Calyrex-Shadow',
+			'Damp Rock', 'Smooth Rock', 'Terrain Extender', 'Moody', 'Power Construct', 'Baton Pass', 'Swagger',
+		],
+		unbanlist: [
+			'Landorus-Therian', 'Zygarde-10%',
+		],
 	},
 	// Sw/Sh Singles
 	///////////////////////////////////////////////////////////////////
