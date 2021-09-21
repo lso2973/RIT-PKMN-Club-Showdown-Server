@@ -44,7 +44,6 @@ export const Formats: FormatList = [
 		],
 		unbanlist: [
 			'Landorus-Therian', 'Zygarde-10%',
-		],
 	},
 	{
 		name: "[Gen 8] Gym Challenge - Doubles",
