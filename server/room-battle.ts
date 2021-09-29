@@ -738,6 +738,7 @@ export class RoomBattle extends RoomGames.RoomGame {
 			user.popup(`Failed to leave battle - you're not a player.`);
 			return false;
 		}
+		Chat.runHandlers('BattleLeave', user, this.room);
 
 		this.updatePlayer(player, null);
 		this.room.auth.set(user.id, '+');
@@ -752,7 +753,7 @@ export class RoomBattle extends RoomGames.RoomGame {
 				if (!this.room) return; // room deleted in the middle of simulation
 				this.receive(next.split('\n'));
 			}
-		} catch (err) {
+		} catch (err: any) {
 			// Disconnected processes are already crashlogged when they happen;
 			// also logging every battle room would overwhelm the crashlogger
 			if (err.message.includes('Process disconnected')) {
@@ -1133,7 +1134,9 @@ export class RoomBattle extends RoomGames.RoomGame {
 
 	static battleForcedSetting(user: User, key: 'modchat' | 'privacy') {
 		if (Config.forcedpublicprefixes) {
-			Config.forcedprefixes = {privacy: Config.forcedpublicprefixes};
+			if (!Config.forcedprefixes) Config.forcedprefixes = {};
+			if (!Config.forcedprefixes.privacy) Config.forcedprefixes.privacy = [];
+			Config.forcedprefixes.privacy.push(...Config.forcedpublicprefixes);
 			delete Config.forcedpublicprefixes;
 		}
 		if (!Config.forcedprefixes?.[key]) return null;
@@ -1355,7 +1358,6 @@ export const PM = new ProcessManager.StreamProcessManager(module, () => new Room
 if (!PM.isParentProcess) {
 	// This is a child process!
 	global.Config = require('./config-loader').Config;
-	global.Chat = require('./chat').Chat;
 	global.Dex = require('../sim/dex').Dex;
 	global.Monitor = {
 		crashlog(error: Error, source = 'A simulator process', details: AnyObject | null = null) {
@@ -1377,7 +1379,7 @@ if (!PM.isParentProcess) {
 		global.__version.head = ('' + head).trim();
 		const origin = ('' + merge).trim();
 		if (origin !== global.__version.head) global.__version.origin = origin;
-	} catch (e) {}
+	} catch {}
 
 	if (Config.crashguard) {
 		// graceful crash - allow current battles to finish before restarting

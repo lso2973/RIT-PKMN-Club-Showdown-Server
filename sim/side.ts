@@ -651,9 +651,8 @@ export class Side {
 			return this.emitChoiceError(`Can't switch: You sent more choices than unfainted Pokémon`);
 		}
 		const pokemon = this.active[index];
-		const autoChoose = !slotText;
 		let slot;
-		if (autoChoose) {
+		if (!slotText) {
 			if (this.requestState !== 'switch') {
 				return this.emitChoiceError(`Can't switch: You need to select a Pokémon to switch in`);
 			}
