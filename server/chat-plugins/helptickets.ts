@@ -555,12 +555,12 @@ export class HelpTicket extends Rooms.RoomGame {
 	}
 	static getTextButton(ticket: TicketState & {text: [string, string]}) {
 		let buf = '';
-		const titleBuf = [...ticket.text[0].split('\n'), ...ticket.text[1].split('\n')].slice(0, 3);
+		const titleBuf = [...ticket.text[0].split('\n').map(Utils.escapeHTML), ...ticket.text[1].split('<br />')].slice(0, 3);
 		const noteBuf = Object.entries(ticket.notes || {})
 			.map(([userid, note]) => Utils.html`${note} (by ${userid})`)
 			.join('&#10;');
 		const notes = ticket.notes ? `&#10;Staff notes:&#10;${noteBuf}` : '';
-		const title = `title="${titleBuf.map(Utils.escapeHTML).join('&#10;')}${notes}"`;
+		const title = `title="${titleBuf.join('&#10;')}${notes}"`;
 		const language = Users.get(ticket.userid)?.language || '';
 		const languageDisplay = language && language !== 'english' ? ` <small>(${language})</small>` : '';
 		buf += `<a class="button${ticket.claimed ? `` : ` notifying`}" ${title} href="/view-help-text-${ticket.userid}">`;
@@ -967,7 +967,6 @@ export const textTickets: {[k: string]: TextTicketInfo} = {
 		},
 	},
 	inapname: {
-		listOnly: true,
 		title: "What's the inappropriate username?",
 		contextMessage: "If the username is offensive in a non-English language, or if it's not obvious, please be sure to explain below.",
 		checker(input) {
@@ -1685,9 +1684,8 @@ export const pages: Chat.PageTable = {
 			const [text, context] = ticket.text;
 			buf += `<p><strong>Report text:</strong></p><hr />`;
 			buf += Chat.formatText(text);
-			if (ticket.text[1]) {
-				buf += `<br /><hr /><strong>Context given: </strong><br />`;
-				buf += Chat.formatText(context);
+			if (context) {
+				buf += `<br /><hr /><strong>Context given: </strong><br />${context}`;
 			}
 			buf += `</div>`;
 
@@ -1768,9 +1766,10 @@ export const pages: Chat.PageTable = {
 				const [text, context] = ticket.text;
 				buf += `<p><strong>Report text:</strong></p><hr />`;
 				buf += Chat.formatText(text);
-				if (ticket.text[1]) {
+				if (context) {
 					buf += `<br /><hr /><strong>Context given: </strong><br />`;
-					buf += Chat.formatText(context);
+					// gotta account for the cases where we didnt escape html in context on submit
+					buf += context.includes('<br />') ? context : Chat.formatText(context);
 				}
 				buf += `</div>`;
 				buf += Utils.html`<strong>Resolved: by ${ticket.resolved.by}</strong><br />`;
@@ -2083,6 +2082,8 @@ export const commands: Chat.ChatCommands = {
 					this.parse(`/join view-${pageId}`);
 					return this.popupReply(`Please tell us what is happening.`);
 				}
+				text = text.replace(/\n/ig, ' ');
+				contextString = contextString.split('\n').map(t => Chat.formatText(t)).join('<br />');
 				if (text.length > 8192) {
 					return this.popupReply(`Your report is too long. Please use fewer words.`);
 				}
@@ -2097,7 +2098,7 @@ export const commands: Chat.ChatCommands = {
 				await HelpTicket.modlog({
 					action: 'TEXTTICKET OPEN',
 					loggedBy: user.id,
-					note: `(${ticket.type}) ${text}${contextString ? `, context: ${contextString}` : ''}`,
+					note: `(${ticket.type}) ${text.replace(/<br \/>/ig, ' | ')}${contextString ? `, context: ${contextString}` : ''}`,
 				});
 				writeTickets();
 				notifyStaff();
@@ -2562,6 +2563,55 @@ export const commands: Chat.ChatCommands = {
 			`Requires: % @ &`,
 		],
 
+		async private(target, room, user) {
+			this.checkCan('bypassall');
+			if (!target) return this.parse(`/help helpticket`);
+			const [username, date] = target.split(',');
+			const userid = toID(username);
+			if (!userid) return this.parse(`/help helpticket`);
+			if (!/[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(date)) {
+				return this.errorReply(`Invalid date (must be YYYY-MM-DD format).`);
+			}
+			const logPath = FS(`logs/chat/help-${userid}/${date.slice(0, -3)}/${date}.txt`);
+			if (!(await logPath.exists())) {
+				return this.errorReply(`There are no logs for tickets from '${userid}' on the date '${date}'.`);
+			}
+			if (!(await FS(`logs/private/${userid}`).exists())) {
+				await FS(`logs/private/${userid}`).mkdirp();
+			}
+			await logPath.copyFile(`logs/private/${userid}/${date}.txt`);
+			await logPath.write(''); // empty out the logfile
+			this.globalModlog(`HELPTICKET PRIVATELOGS`, null, `${userid} (${date})`);
+			this.privateGlobalModAction(`${user.name} set the ticket logs for '${userid}' on '${date}' to be private.`);
+		},
+		privatehelp: [
+			`/helpticket private [user], [date] - Makes the ticket logs for a user on a date private to upperstaff. Requires: &`,
+		],
+		async public(target, room, user) {
+			this.checkCan('bypassall');
+			if (!target) return this.parse(`/help helpticket`);
+			const [username, date] = target.split(',');
+			const userid = toID(username);
+			if (!userid) return this.parse(`/help helpticket`);
+			if (!/[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(date)) {
+				return this.errorReply(`Invalid date (must be YYYY-MM-DD format).`);
+			}
+			const logPath = FS(`logs/private/${userid}/${date}.txt`);
+			if (!(await logPath.exists())) {
+				return this.errorReply(`There are no logs for tickets from '${userid}' on the date '${date}'.`);
+			}
+			const monthPath = FS(`logs/chat/help-${userid}/${date.slice(0, -3)}`);
+			if (!(await monthPath.exists())) {
+				await monthPath.mkdirp();
+			}
+			await logPath.copyFile(`logs/chat/help-${userid}/${date.slice(0, -3)}/${date}.txt`);
+			await logPath.unlinkIfExists();
+			this.globalModlog(`HELPTICKET PUBLICLOGS`, null, `${userid} (${date})`);
+			this.privateGlobalModAction(`${user.name} set the ticket logs for '${userid}' on '${date}' to be public.`);
+		},
+		publichelp: [
+			`/helpticket public [user], [date] - Makes the ticket logs for the [user] on the [date] public to staff. Requires: &`,
+		],
 	},
 	helptickethelp: [
 		`/helpticket create - Creates a new ticket, requesting help from global staff.`,
@@ -2575,6 +2625,8 @@ export const commands: Chat.ChatCommands = {
 		`/helpticket logs [userid][, month] - View logs of the [userid]'s text tickets. Requires: % @ &`,
 		`/helpticket note [ticket userid], [note] - Adds a note to the [ticket], to be displayed in the hover text. `,
 		`Requires: % @ &`,
+		`/helpticket private [user], [date] - Makes the ticket logs for a user on a date private to upperstaff. Requires: &`,
+		`/helpticket public [user], [date] - Makes the ticket logs for the [user] on the [date] public to staff. Requires: &`,
 	],
 };
 
@@ -2621,6 +2673,8 @@ export const handlers: Chat.Handlers = {
 
 process.nextTick(() => {
 	Chat.multiLinePattern.register(
-		'/ht resolve ', '/helpticket resolve ', '/requesthelp resolve ', '/helprequest resolve ',
+		'/ht resolve ', '/helpticket resolve ',
+		'/requesthelp resolve ', '/helprequest resolve ',
+		'/ht submit ', '/helpticket submit ',
 	);
 });

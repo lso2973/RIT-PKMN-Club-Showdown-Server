@@ -2024,6 +2024,7 @@ export const Chat = new class {
 		let curCommands: AnnotatedChatCommands = Chat.commands;
 		let commandHandler;
 		let fullCmd = cmd;
+		let prevCmdName = '';
 
 		do {
 			if (cmd in curCommands) {
@@ -2041,13 +2042,17 @@ export const Chat = new class {
 				[cmd, target] = Utils.splitFirst(target, ' ');
 				cmd = cmd.toLowerCase();
 
+				prevCmdName = fullCmd;
 				fullCmd += ' ' + cmd;
 				curCommands = commandHandler as AnnotatedChatCommands;
 			}
 		} while (commandHandler && typeof commandHandler === 'object');
 
-		if (!commandHandler && curCommands.default) {
-			commandHandler = curCommands.default;
+		if (!commandHandler && (curCommands.default || curCommands[''])) {
+			commandHandler = curCommands.default || curCommands[''];
+			fullCmd = prevCmdName;
+			target = `${cmd}${target ? ` ${target}` : ''}`;
+			cmd = fullCmd.split(' ').shift()!;
 			if (typeof commandHandler === 'string') {
 				commandHandler = curCommands[commandHandler];
 			}
