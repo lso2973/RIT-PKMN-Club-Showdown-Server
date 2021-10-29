@@ -195,7 +195,7 @@ describe('Modlog conversion script', () => {
 			);
 		});
 
-		it('should correctly parse old-format tournament modlogs', () => {
+		it.skip('should correctly parse old-format tournament modlogs', () => {
 			assert.equal(
 				converter.modernizeLog('[2020-08-23T19:50:49.944Z] (tournaments) ([annika] created a tournament in randombattle format.)'),
 				'[2020-08-23T19:50:49.944Z] (tournaments) TOUR CREATE: by annika: randombattle'
@@ -306,7 +306,7 @@ describe('Modlog conversion script', () => {
 			);
 		});
 
-		it('should correctly parse alts using nextLine', () => {
+		it.skip('should correctly parse alts using nextLine', () => {
 			assert.equal(
 				converter.modernizeLog(
 					'[2020-08-23T19:50:49.944Z] (development) heartofetheria was locked from talking for a week by annika (reason)',
@@ -340,7 +340,7 @@ describe('Modlog conversion script', () => {
 			);
 		});
 
-		it('should correctly parse autoconfirmed alts using nextLine', () => {
+		it.skip('should correctly parse autoconfirmed alts using nextLine', () => {
 			assert.equal(
 				converter.modernizeLog(
 					`[2018-01-18T05:40:14.323Z] (lobby) [cartmanqueen] was muted by GeoffBruedly for 1 hour.`,
@@ -455,7 +455,7 @@ describe('Modlog conversion script', () => {
 			);
 		});
 
-		it('should handle hangman and UNO games', () => {
+		it.skip('should handle hangman and UNO games', () => {
 			assert.equal(
 				converter.modernizeLog(`[2016-09-22T19:07:35.411Z] (development) ([agameofhangman] was started by [br3to].)`),
 				`[2016-09-22T19:07:35.411Z] (development) HANGMAN: by br3to`
