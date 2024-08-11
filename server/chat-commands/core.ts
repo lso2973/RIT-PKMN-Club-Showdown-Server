@@ -16,331 +16,7 @@
 /* eslint no-else-return: "error" */
 import {Utils} from '../../lib';
 import type {UserSettings} from '../users';
-import type {GlobalPermission} from '../user-groups';
-
-const avatarTable = new Set([
-	'aaron',
-	'acetrainercouple-gen3', 'acetrainercouple',
-	'acetrainerf-gen1', 'acetrainerf-gen1rb', 'acetrainerf-gen2', 'acetrainerf-gen3', 'acetrainerf-gen3rs', 'acetrainerf-gen4dp', 'acetrainerf-gen4', 'acetrainerf',
-	'acetrainer-gen1', 'acetrainer-gen1rb', 'acetrainer-gen2', 'acetrainer-gen3jp', 'acetrainer-gen3', 'acetrainer-gen3rs', 'acetrainer-gen4dp', 'acetrainer-gen4', 'acetrainer',
-	'acetrainersnowf',
-	'acetrainersnow',
-	'agatha-gen1', 'agatha-gen1rb', 'agatha-gen3',
-	'alder',
-	'anabel-gen3',
-	'archer',
-	'archie-gen3',
-	'argenta',
-	'ariana',
-	'aromalady-gen3', 'aromalady-gen3rs', 'aromalady',
-	'artist-gen4', 'artist',
-	'ash-alola', 'ash-hoenn', 'ash-kalos', 'ash-unova', 'ash-capbackward', 'ash-johto', 'ash-sinnoh', 'ash',
-	'backersf',
-	'backers',
-	'backpackerf',
-	'backpacker',
-	'baker',
-	'barry',
-	'battlegirl-gen3', 'battlegirl-gen4', 'battlegirl',
-	'beauty-gen1', 'beauty-gen1rb', 'beauty-gen2jp', 'beauty-gen2', 'beauty-gen3', 'beauty-gen3rs', 'beauty-gen4dp', 'beauty-gen5bw2', 'beauty',
-	'bellelba',
-	'bellepa',
-	'benga',
-	'bertha',
-	'bianca-pwt', 'bianca',
-	'biker-gen1', 'biker-gen1rb', 'biker-gen2', 'biker-gen3', 'biker-gen4', 'biker',
-	'bill-gen3',
-	'birch-gen3',
-	'birdkeeper-gen1', 'birdkeeper-gen1rb', 'birdkeeper-gen2', 'birdkeeper-gen3', 'birdkeeper-gen3rs', 'birdkeeper-gen4dp', 'birdkeeper',
-	'blackbelt-gen1', 'blackbelt-gen1rb', 'blackbelt-gen2', 'blackbelt-gen3', 'blackbelt-gen3rs', 'blackbelt-gen4dp', 'blackbelt-gen4', 'blackbelt',
-	'blaine-gen1', 'blaine-gen1rb', 'blaine-gen2', 'blaine-gen3', 'blaine',
-	'blue-gen1champion', 'blue-gen1', 'blue-gen1rbchampion', 'blue-gen1rb', 'blue-gen1rbtwo', 'blue-gen1two', 'blue-gen2', 'blue-gen3champion', 'blue-gen3', 'blue-gen3two', 'blue',
-	'boarder-gen2', 'boarder',
-	'brandon-gen3',
-	'brawly-gen3', 'brawly',
-	'brendan-gen3', 'brendan-gen3rs',
-	'brock-gen1', 'brock-gen1rb', 'brock-gen2', 'brock-gen3', 'brock',
-	'bruno-gen1', 'bruno-gen1rb', 'bruno-gen2', 'bruno-gen3', 'bruno',
-	'brycenman',
-	'brycen',
-	'buck',
-	'bugcatcher-gen1', 'bugcatcher-gen1rb', 'bugcatcher-gen2', 'bugcatcher-gen3', 'bugcatcher-gen3rs', 'bugcatcher-gen4dp', 'bugcatcher',
-	'bugmaniac-gen3',
-	'bugsy-gen2', 'bugsy',
-	'burgh',
-	'burglar-gen1', 'burglar-gen1rb', 'burglar-gen2', 'burglar-gen3', 'burglar',
-	'byron',
-	'caitlin',
-	'cameraman',
-	'camper-gen2', 'camper-gen3', 'camper-gen3rs', 'camper',
-	'candice',
-	'channeler-gen1', 'channeler-gen1rb', 'channeler-gen3',
-	'cheren-gen5bw2', 'cheren',
-	'cheryl',
-	'chili',
-	'chuck-gen2', 'chuck',
-	'cilan',
-	'clair-gen2', 'clair',
-	'clay',
-	'clemont',
-	'clerkf',
-	'clerk-boss', 'clerk',
-	'clown',
-	'collector-gen3', 'collector',
-	'colress',
-	'courtney-gen3',
-	'cowgirl',
-	'crasherwake',
-	'cress',
-	'crushgirl-gen3',
-	'crushkin-gen3',
-	'cueball-gen1', 'cueball-gen1rb', 'cueball-gen3',
-	'cyclistf-gen4', 'cyclistf',
-	'cyclist-gen4', 'cyclist',
-	'cynthia-gen4', 'cynthia',
-	'cyrus',
-	'dahlia',
-	'daisy-gen3',
-	'dancer',
-	'darach',
-	'dawn-gen4pt', 'dawn',
-	'depotagent',
-	'doctor',
-	'doubleteam',
-	'dragontamer-gen3', 'dragontamer',
-	'drake-gen3',
-	'drayden',
-	'elesa-gen5bw2', 'elesa',
-	'emmet',
-	'engineer-gen1', 'engineer-gen1rb', 'engineer-gen3',
-	'erika-gen1', 'erika-gen1rb', 'erika-gen2', 'erika-gen3', 'erika',
-	'ethan-gen2c', 'ethan-gen2', 'ethan-pokeathlon', 'ethan',
-	'eusine-gen2', 'eusine',
-	'expertf-gen3',
-	'expert-gen3',
-	'falkner-gen2',
-	'falkner',
-	'fantina',
-	'firebreather-gen2',
-	'firebreather',
-	'fisherman-gen1', 'fisherman-gen1rb', 'fisherman-gen2jp', 'fisherman-gen3', 'fisherman-gen3rs', 'fisherman-gen4', 'fisherman',
-	'flannery-gen3', 'flannery',
-	'flint',
-	'galacticgruntf',
-	'galacticgrunt',
-	'gambler-gen1', 'gambler-gen1rb', 'gambler',
-	'gamer-gen3',
-	'gardenia',
-	'gentleman-gen1', 'gentleman-gen1rb', 'gentleman-gen2', 'gentleman-gen3', 'gentleman-gen3rs', 'gentleman-gen4dp', 'gentleman-gen4', 'gentleman',
-	'ghetsis-gen5bw', 'ghetsis',
-	'giovanni-gen1', 'giovanni-gen1rb', 'giovanni-gen3', 'giovanni',
-	'glacia-gen3',
-	'greta-gen3',
-	'grimsley',
-	'guitarist-gen2', 'guitarist-gen3', 'guitarist-gen4', 'guitarist',
-	'harlequin',
-	'hexmaniac-gen3jp', 'hexmaniac-gen3',
-	'hiker-gen1', 'hiker-gen1rb', 'hiker-gen2', 'hiker-gen3', 'hiker-gen3rs', 'hiker-gen4', 'hiker',
-	'hilbert-wonderlauncher', 'hilbert',
-	'hilda-wonderlauncher', 'hilda',
-	'hooligans',
-	'hoopster',
-	'hugh',
-	'idol',
-	'infielder',
-	'ingo',
-	'interviewers-gen3',
-	'interviewers',
-	'iris-gen5bw2', 'iris',
-	'janine-gen2', 'janine',
-	'janitor',
-	'jasmine-gen2', 'jasmine',
-	'jessiejames-gen1',
-	'jogger',
-	'jrtrainerf-gen1', 'jrtrainerf-gen1rb',
-	'jrtrainer-gen1', 'jrtrainer-gen1rb',
-	'juan-gen3',
-	'juan',
-	'juggler-gen1', 'juggler-gen1rb', 'juggler-gen2', 'juggler-gen3', 'juggler',
-	'jupiter',
-	'karen-gen2', 'karen',
-	'kimonogirl-gen2', 'kimonogirl',
-	'kindler-gen3',
-	'koga-gen1', 'koga-gen2', 'koga-gen1rb', 'koga-gen3', 'koga',
-	'kris-gen2',
-	'lady-gen3', 'lady-gen3rs', 'lady-gen4', 'lady',
-	'lance-gen1', 'lance-gen1rb', 'lance-gen2', 'lance-gen3', 'lance',
-	'lass-gen1', 'lass-gen1rb', 'lass-gen2', 'lass-gen3', 'lass-gen3rs', 'lass-gen4dp', 'lass-gen4', 'lass',
-	'leaf-gen3',
-	'lenora',
-	'linebacker',
-	'li',
-	'liza',
-	'lorelei-gen1', 'lorelei-gen1rb', 'lorelei-gen3',
-	'ltsurge-gen1', 'ltsurge-gen1rb', 'ltsurge-gen2', 'ltsurge-gen3', 'ltsurge',
-	'lucas-gen4pt', 'lucas',
-	'lucian',
-	'lucy-gen3',
-	'lyra-pokeathlon', 'lyra',
-	'madame-gen4dp', 'madame-gen4', 'madame',
-	'maid-gen4', 'maid',
-	'marley',
-	'marlon',
-	'marshal',
-	'mars',
-	'matt-gen3',
-	'maxie-gen3',
-	'may-gen3', 'may-gen3rs',
-	'maylene',
-	'medium-gen2jp', 'medium',
-	'mira',
-	'misty-gen1', 'misty-gen2', 'misty-gen1rb', 'misty-gen3', 'misty',
-	'morty-gen2', 'morty',
-	'mrfuji-gen3',
-	'musician',
-	'nate-wonderlauncher', 'nate',
-	'ninjaboy-gen3', 'ninjaboy',
-	'noland-gen3',
-	'norman-gen3', 'norman',
-	'n',
-	'nurse',
-	'nurseryaide',
-	'oak-gen1', 'oak-gen1rb', 'oak-gen2', 'oak-gen3',
-	'officer-gen2',
-	'oldcouple-gen3',
-	'painter-gen3',
-	'palmer',
-	'parasollady-gen3', 'parasollady-gen4', 'parasollady',
-	'petrel',
-	'phoebe-gen3',
-	'picnicker-gen2', 'picnicker-gen3', 'picnicker-gen3rs', 'picnicker',
-	'pilot',
-	'plasmagruntf-gen5bw', 'plasmagruntf',
-	'plasmagrunt-gen5bw', 'plasmagrunt',
-	'pokefanf-gen2', 'pokefanf-gen3', 'pokefanf-gen4', 'pokefanf',
-	'pokefan-gen2', 'pokefan-gen3', 'pokefan-gen4', 'pokefan',
-	'pokekid',
-	'pokemaniac-gen1', 'pokemaniac-gen1rb', 'pokemaniac-gen2', 'pokemaniac-gen3', 'pokemaniac-gen3rs', 'pokemaniac',
-	'pokemonbreederf-gen3', 'pokemonbreederf-gen3frlg', 'pokemonbreederf-gen4', 'pokemonbreederf',
-	'pokemonbreeder-gen3', 'pokemonbreeder-gen4', 'pokemonbreeder',
-	'pokemonrangerf-gen3', 'pokemonrangerf-gen3rs', 'pokemonrangerf-gen4', 'pokemonrangerf',
-	'pokemonranger-gen3', 'pokemonranger-gen3rs', 'pokemonranger-gen4', 'pokemonranger',
-	'policeman-gen4', 'policeman',
-	'preschoolerf',
-	'preschooler',
-	'proton',
-	'pryce-gen2', 'pryce',
-	'psychicf-gen3', 'psychicf-gen3rs', 'psychicf-gen4', 'psychicfjp-gen3', 'psychicf',
-	'psychic-gen1', 'psychic-gen1rb', 'psychic-gen2', 'psychic-gen3', 'psychic-gen3rs', 'psychic-gen4', 'psychic',
-	'rancher',
-	'red-gen1main', 'red-gen1', 'red-gen1rb', 'red-gen1title', 'red-gen2', 'red-gen3', 'red',
-	'reporter',
-	'richboy-gen3', 'richboy-gen4', 'richboy',
-	'riley',
-	'roark',
-	'rocker-gen1', 'rocker-gen1rb', 'rocker-gen3',
-	'rocket-gen1', 'rocket-gen1rb',
-	'rocketgruntf-gen2', 'rocketgruntf',
-	'rocketgrunt-gen2', 'rocketgrunt',
-	'rocketexecutivef-gen2',
-	'rocketexecutive-gen2',
-	'rood',
-	'rosa-wonderlauncher', 'rosa',
-	'roughneck-gen4', 'roughneck',
-	'roxanne-gen3', 'roxanne',
-	'roxie',
-	'ruinmaniac-gen3', 'ruinmaniac-gen3rs', 'ruinmaniac',
-	'sabrina-gen1', 'sabrina-gen1rb', 'sabrina-gen2', 'sabrina-gen3', 'sabrina',
-	'sage-gen2', 'sage-gen2jp', 'sage',
-	'sailor-gen1', 'sailor-gen1rb', 'sailor-gen2', 'sailor-gen3jp', 'sailor-gen3', 'sailor-gen3rs', 'sailor',
-	'saturn',
-	'schoolboy-gen2',
-	'schoolkidf-gen3', 'schoolkidf-gen4', 'schoolkidf',
-	'schoolkid-gen3', 'schoolkid-gen4dp', 'schoolkid-gen4', 'schoolkid',
-	'scientistf',
-	'scientist-gen1', 'scientist-gen1rb', 'scientist-gen2', 'scientist-gen3', 'scientist-gen4dp', 'scientist-gen4', 'scientist',
-	'shadowtriad',
-	'shauntal',
-	'shelly-gen3',
-	'sidney-gen3',
-	'silver-gen2kanto', 'silver-gen2', 'silver',
-	'sisandbro-gen3', 'sisandbro-gen3rs', 'sisandbro',
-	'skierf-gen4dp', 'skierf',
-	'skier-gen2', 'skier',
-	'skyla',
-	'smasher',
-	'spenser-gen3',
-	'srandjr-gen3',
-	'steven-gen3', 'steven',
-	'striker',
-	'supernerd-gen1', 'supernerd-gen1rb', 'supernerd-gen2', 'supernerd-gen3', 'supernerd',
-	'swimmerf-gen2', 'swimmerf-gen3', 'swimmerf-gen3rs', 'swimmerf-gen4dp', 'swimmerf-gen4', 'swimmerfjp-gen2', 'swimmerf',
-	'swimmer-gen1', 'swimmer-gen1rb', 'swimmer-gen4dp', 'swimmer-gen4jp', 'swimmer-gen4', 'swimmerm-gen2', 'swimmerm-gen3', 'swimmerm-gen3rs', 'swimmer',
-	'tabitha-gen3',
-	'tamer-gen1', 'tamer-gen1rb', 'tamer-gen3',
-	'tateandliza-gen3',
-	'tate',
-	'teacher-gen2', 'teacher',
-	'teamaquabeta-gen3',
-	'teamaquagruntf-gen3',
-	'teamaquagruntm-gen3',
-	'teammagmagruntf-gen3',
-	'teammagmagruntm-gen3',
-	'teamrocketgruntf-gen3',
-	'teamrocketgruntm-gen3',
-	'teamrocket',
-	'thorton',
-	'triathletebikerf-gen3',
-	'triathletebikerm-gen3',
-	'triathleterunnerf-gen3',
-	'triathleterunnerm-gen3',
-	'triathleteswimmerf-gen3',
-	'triathleteswimmerm-gen3',
-	'tuberf-gen3', 'tuberf-gen3rs', 'tuberf',
-	'tuber-gen3', 'tuber',
-	'tucker-gen3',
-	'twins-gen2', 'twins-gen3', 'twins-gen3rs', 'twins-gen4dp', 'twins-gen4', 'twins',
-	'unknownf',
-	'unknown',
-	'veteranf',
-	'veteran-gen4', 'veteran',
-	'volkner',
-	'waiter-gen4dp', 'waiter-gen4', 'waiter',
-	'waitress-gen4', 'waitress',
-	'wallace-gen3', 'wallace-gen3rs', 'wallace',
-	'wally-gen3',
-	'wattson-gen3', 'wattson',
-	'whitney-gen2', 'whitney',
-	'will-gen2', 'will',
-	'winona-gen3', 'winona',
-	'worker-gen4',
-	'workerice',
-	'worker',
-	'yellow',
-	'youngcouple-gen3', 'youngcouple-gen3rs', 'youngcouple-gen4dp', 'youngcouple',
-	'youngster-gen1', 'youngster-gen1rb', 'youngster-gen2', 'youngster-gen3', 'youngster-gen3rs', 'youngster-gen4', 'youngster-gen4dp', 'youngster',
-	'zinzolin',
-]);
-
-const avatarTableBeliot419 = new Set([
-	'acerola', 'aetheremployee', 'aetheremployeef', 'aetherfoundation', 'aetherfoundationf', 'anabel',
-	'beauty-gen7', 'blue-gen7', 'burnet', 'colress-gen7', 'dexio', 'elio', 'faba', 'gladion-stance',
-	'gladion', 'grimsley-gen7', 'hapu', 'hau-stance', 'hau', 'hiker-gen7', 'ilima', 'kahili', 'kiawe',
-	'kukui-stand', 'kukui', 'lana', 'lass-gen7', 'lillie-z', 'lillie', 'lusamine-nihilego', 'lusamine',
-	'mallow', 'mina', 'molayne', 'nanu', 'officeworker', 'olivia', 'plumeria', 'pokemonbreeder-gen7',
-	'pokemonbreederf-gen7', 'preschoolers', 'red-gen7', 'risingstar', 'risingstarf', 'ryuki',
-	'samsonoak', 'selene', 'sightseer', 'sina', 'sophocles', 'teacher-gen7', 'theroyal', 'wally',
-	'wicke', 'youngathlete', 'youngathletef', 'youngster-gen7',
-]);
-
-const avatarTableGnomowladny = new Set([
-	'az', 'brawly-gen6', 'bryony', 'drasna', 'evelyn', 'furisodegirl-black', 'furisodegirl-pink', 'guzma',
-	'hala', 'korrina', 'malva', 'nita', 'olympia', 'ramos', 'shelly', 'sidney', 'siebold', 'tierno',
-	'valerie', 'viola', 'wallace-gen6', 'wikstrom', 'winona-gen6', 'wulfric', 'xerosic', 'youngn', 'zinnia',
-]);
-
-for (const avatar of avatarTableBeliot419) avatarTable.add(avatar);
-for (const avatar of avatarTableGnomowladny) avatarTable.add(avatar);
+import type {GlobalPermission, RoomPermission} from '../user-groups';
 
 export const crqHandlers: {[k: string]: Chat.CRQHandler} = {
 	userdetails(target, user, trustable) {
@@ -391,10 +67,10 @@ export const crqHandlers: {[k: string]: Chat.CRQHandler} = {
 			avatar: targetUser.avatar,
 			group: group,
 			customgroup: sectionleader ? "Section Leader" : undefined,
-			autoconfirmed: !!targetUser.autoconfirmed,
-			status: targetUser.getStatus(),
+			autoconfirmed: targetUser.autoconfirmed ? true : undefined,
+			status: targetUser.getStatus() || undefined,
 			rooms: roomList,
-			friended: user.friends?.has(targetUser.id),
+			friended: user.friends?.has(targetUser.id) || undefined,
 		};
 	},
 	roomlist(target, user, trustable) {
@@ -450,10 +126,54 @@ export const crqHandlers: {[k: string]: Chat.CRQHandler} = {
 		for (const userid in targetRoom.users) {
 			const curUser = targetRoom.users[userid];
 			if (!curUser.named) continue;
-			const userinfo = curUser.getIdentity(targetRoom.roomid);
+			const userinfo = curUser.getIdentity(targetRoom);
 			roominfo.users.push(userinfo);
 		}
 		return roominfo;
+	},
+	fullformat(target, user, trustable) {
+		if (!trustable) return false;
+
+		if (target.length > 225) {
+			return null;
+		}
+		const targetRoom = Rooms.get(target);
+		if (!targetRoom?.battle?.playerTable[user.id]) {
+			return null;
+		}
+
+		return targetRoom.battle.format;
+	},
+	cmdsearch(target, user, trustable) {
+		// in no world should ths be a thing. our longest command name is 37 chars
+		if (target.length > 40) return null;
+		const cmdPrefix = target.charAt(0);
+		if (!['/', '!'].includes(cmdPrefix)) return null;
+		target = toID(target.slice(1));
+
+		const results = [];
+		for (const command of Chat.allCommands()) {
+			if (cmdPrefix === '!' && !command.broadcastable) continue;
+			const req = command.requiredPermission as GlobalPermission;
+			if (!!req &&
+				!(command.hasRoomPermissions ? !!this.room && user.can(req as RoomPermission, null, this.room) : user.can(req))
+			) {
+				continue;
+			}
+			const cmds = [
+				command.fullCmd,
+				...command.aliases.map(x => command.fullCmd.replace(command.cmd, `${x}`)),
+			];
+			for (const cmd of cmds) {
+				if (toID(cmd).startsWith(target)) {
+					results.push(cmdPrefix + cmd);
+					break;
+				}
+			}
+			// limit number of results to prevent spam
+			if (results.length >= 20) break;
+		}
+		return results;
 	},
 };
 
@@ -474,7 +194,7 @@ export const commands: Chat.ChatCommands = {
 		for (const id in room.users) {
 			const curUser = Users.get(room.users[id]);
 			if (!curUser?.named) continue;
-			userList.push(Utils.escapeHTML(curUser.getIdentity(room.roomid)));
+			userList.push(Utils.escapeHTML(curUser.getIdentity(room)));
 		}
 
 		let output = `There ${Chat.plural(userList, "are", "is")} <strong style="color:#24678d">${Chat.count(userList, "</strong> users")} in this room:<br />`;
@@ -492,7 +212,7 @@ export const commands: Chat.ChatCommands = {
 		target = this.checkChat(`/${this.cmd} ${target || ''}`);
 
 		if (this.message.startsWith(`/ME`)) {
-			const uppercaseIdentity = user.getIdentity(room?.roomid).toUpperCase();
+			const uppercaseIdentity = user.getIdentity(room).toUpperCase();
 			if (this.pmTarget) {
 				const msg = `|pm|${uppercaseIdentity}|${this.pmTarget.getIdentity()}|${target}`;
 				user.send(msg);
@@ -540,63 +260,6 @@ export const commands: Chat.ChatCommands = {
 		`/battle! [format] - Starts a battle in the given [format].`,
 		`If none is given, defaults to current generation random battle.`,
 	],
-
-	avatar(target, room, user) {
-		if (!target) return this.parse(`${this.cmdToken}avatars`);
-		const parts = target.split(',');
-		let avatar = parts[0].toLowerCase().replace(/[^a-z0-9-]+/g, '');
-		let avatarIsValid = true;
-		if (!avatarTable.has(avatar)) {
-			const avatarNum = parseInt(avatar);
-			if (!avatarNum || avatarNum > 294 || avatarNum < 1) {
-				avatarIsValid = false;
-			} else {
-				avatar = '' + avatarNum;
-			}
-		}
-
-		const avatarsAuto = Config.customavatars || {};
-		const avatarsManual = Config.allowedavatars || {};
-		function customAvatarIsValid(userid: ID) {
-			if (avatarsAuto[userid] === avatar) {
-				return true;
-			}
-			if (avatarsAuto[userid] === '#' + avatar) {
-				avatar = '#' + avatar;
-				return true;
-			}
-			if (Object.hasOwnProperty.call(avatarsManual, '#' + avatar)) {
-				avatar = '#' + avatar;
-			}
-			if (Object.hasOwnProperty.call(avatarsManual, avatar)) {
-				if (avatarsManual[avatar].includes(userid)) {
-					return true;
-				}
-			}
-			return false;
-		}
-		avatarIsValid = avatarIsValid || [user.id, ...user.previousIDs].some(customAvatarIsValid);
-
-		if (!avatarIsValid) {
-			if (parts[1]) return false;
-			if (avatar.startsWith('#')) {
-				this.errorReply(this.tr`Access denied for custom avatar - make sure you're on the right account?`);
-			} else {
-				this.errorReply(this.tr`Invalid avatar.`);
-			}
-			return false;
-		}
-
-		user.avatar = avatar;
-		const avatarUrl = avatar.startsWith('#') ? `trainers-custom/${avatar.slice(1)}.png` : `trainers/${avatar}.png`;
-		if (!parts[1]) {
-			this.sendReply(`${this.tr`Avatar changed to:`}\n|raw|<img src="//${Config.routes.client}/sprites/${avatarUrl}" alt="${avatar}" width="80" height="80" class="pixelated" />`);
-			if (avatarTableBeliot419.has(avatar)) {
-				this.sendReply(`|raw|(${this.tr`Artist: `}<a href="https://www.deviantart.com/beliot419">Beliot419</a>)`);
-			}
-		}
-	},
-	avatarhelp: [`/avatar [avatar name or number] - Change your trainer sprite.`],
 
 	signout: 'logout',
 	logout(target, room, user) {
@@ -653,6 +316,16 @@ export const commands: Chat.ChatCommands = {
 			this.pmTarget = null;
 			this.room = null;
 		} else if (!targetUser) {
+			if (Chat.PrivateMessages.offlineIsEnabled) {
+				if (user.lastCommand === 'pm') {
+					// don't delete lastCommand so they can just keep sending pms
+					return this.parse(`/offlinemsg ${targetUsername},${message}`);
+				}
+				user.lastCommand = 'pm';
+				return this.errorReply(
+					this.tr`User ${targetUsername} is offline. Send the message again to confirm. If you are using /msg, use /offlinemsg instead.`
+				);
+			}
 			let error = this.tr`User ${targetUsername} not found. Did you misspell their name?`;
 			error = `|pm|${this.user.getIdentity()}| ${targetUsername}|/error ${error}`;
 			connection.send(error);
@@ -663,12 +336,69 @@ export const commands: Chat.ChatCommands = {
 		}
 
 		if (targetUser && !targetUser.connected) {
-			return this.errorReply(this.tr`User ${targetUsername} is offline.`);
+			if (Chat.PrivateMessages.offlineIsEnabled) {
+				if (user.lastCommand === 'pm') {
+					// don't delete lastCommand so they can just keep sending pms
+					return this.parse(`/offlinemsg ${targetUser.getLastId()},${message}`);
+				}
+				user.lastCommand = 'pm';
+				return this.errorReply(
+					this.tr`User ${targetUsername} is offline. Send the message again to confirm. If you are using /msg, use /offlinemsg instead.`
+				);
+			}
+			return this.errorReply(`${targetUsername} is offline.`);
 		}
 
 		return this.parse(message);
 	},
 	msghelp: [`/msg OR /whisper OR /w [username], [message] - Send a private message.`],
+
+	offlinepm: 'offlinemsg',
+	opm: 'offlinemsg',
+	offlinewhisper: 'offlinemsg',
+	ofw: 'offlinemsg',
+	async offlinemsg(target, room, user) {
+		target = target.trim();
+		if (!target) return this.parse('/help offlinemsg');
+		if (!Chat.PrivateMessages.offlineIsEnabled) {
+			return this.errorReply(`Offline private messages have been disabled.`);
+		}
+		let [username, message] = Utils.splitFirst(target, ',').map(i => i.trim());
+		const userid = toID(username);
+		Chat.PrivateMessages.checkCanPM(user, userid);
+		if (!userid || !message) {
+			return this.parse('/help offlinemsg');
+		}
+		if (Chat.parseCommand(message)) {
+			return this.errorReply(`You cannot send commands in offline PMs.`);
+		}
+		if (userid === user.id) {
+			return this.errorReply(`You cannot send offline PMs to yourself.`);
+		} else if (userid.startsWith('guest')) {
+			return this.errorReply('You cannot send offline PMs to guests.');
+		}
+		if (Users.get(userid)?.connected) {
+			this.sendReply(`That user is online, so a normal PM is being sent.`);
+			return this.parse(`/pm ${userid}, ${message}`);
+		}
+		if (userid.length > 18) {
+			throw new Chat.ErrorMessage(`Invalid userid. Must be <=18 characters in length.`);
+		}
+		message = this.checkChat(message);
+		if (!message) return;
+		await Chat.PrivateMessages.sendOffline(userid, user, message, this);
+	},
+	offlinemsghelp: [
+		`/offlinemsg [username], [message] - Sends a message to the offline [username], to be received when they log in.`,
+	],
+
+	receivedpms: 'offlinepms',
+	offlinepms() {
+		return this.parse(`/j view-receivedpms`);
+	},
+	offlinepmshelp: [
+		`/offlinepms - View your recently received offline PMs.`,
+	],
 
 	inv: 'invite',
 	invite(target, room, user) {
@@ -713,47 +443,69 @@ export const commands: Chat.ChatCommands = {
 	blockpm: 'blockpms',
 	ignorepms: 'blockpms',
 	ignorepm: 'blockpms',
-	blockpms(target, room, user) {
+	blockofflinepms: 'blockpms',
+	async blockpms(target, room, user, connection, cmd) {
 		target = target.toLowerCase().trim();
 		if (target === 'ac') target = 'autoconfirmed';
 
-		if (user.settings.blockPMs === (target || true)) {
-			return this.errorReply(this.tr`You are already blocking private messages! To unblock, use /unblockpms`);
+		const isOffline = cmd.includes('offline');
+		const msg = isOffline ? `offline ` : ``;
+		if (!isOffline && user.settings.blockPMs === (target || true)) {
+			return this.errorReply(this.tr`You are already blocking ${msg}private messages! To unblock, use /unblockpms`);
 		}
 		if (Users.Auth.isAuthLevel(target)) {
-			user.settings.blockPMs = target;
-			this.sendReply(this.tr`You are now blocking private messages, except from staff and ${target}.`);
+			if (!isOffline) user.settings.blockPMs = target;
+			this.sendReply(this.tr`You are now blocking ${msg}private messages, except from staff and ${target}.`);
 		} else if (target === 'autoconfirmed' || target === 'trusted' || target === 'unlocked') {
-			user.settings.blockPMs = target;
+			if (!isOffline) user.settings.blockPMs = target;
 			target = this.tr(target);
-			this.sendReply(this.tr `You are now blocking private messages, except from staff and ${target} users.`);
+			this.sendReply(this.tr `You are now blocking ${msg}private messages, except from staff and ${target} users.`);
 		} else if (target === 'friends') {
-			user.settings.blockPMs = target;
-			this.sendReply(this.tr`You are now blocking private messages, except from staff and friends.`);
+			if (!isOffline) user.settings.blockPMs = target;
+			this.sendReply(this.tr`You are now blocking ${msg}private messages, except from staff and friends.`);
 		} else {
-			user.settings.blockPMs = true;
-			this.sendReply(this.tr`You are now blocking private messages, except from staff.`);
+			if (!isOffline) user.settings.blockPMs = true;
+			this.sendReply(this.tr`You are now blocking ${msg}private messages, except from staff.`);
+		}
+		if (isOffline) {
+			let saveValue: string | null = target;
+			if (!saveValue) saveValue = 'none';
+			// todo: can we do this? atm. no.
+			if (['unlocked', 'autoconfirmed'].includes(saveValue)) {
+				saveValue = null;
+			}
+			await Chat.PrivateMessages.setViewOnly(user, saveValue);
 		}
 		user.update();
 		return true;
 	},
 	blockpmshelp: [
 		`/blockpms - Blocks private messages except from staff. Unblock them with /unblockpms.`,
-		`/blockpms [unlocked/ac/trusted/+] - Blocks private messages except from staff and the specified group.`,
+		`/blockpms [unlocked/ac/trusted/+/friends] - Blocks private messages except from staff and the specified group.`,
 	],
 
 	unblockpm: 'unblockpms',
 	unignorepms: 'unblockpms',
 	unignorepm: 'unblockpms',
-	unblockpms(target, room, user) {
-		if (!user.settings.blockPMs) {
-			return this.errorReply(this.tr`You are not blocking private messages! To block, use /blockpms`);
+	unblockofflinepms: 'unblockpms',
+	async unblockpms(target, room, user, connection, cmd) {
+		const isOffline = cmd.includes('offline');
+		const msg = isOffline ? 'offline ' : '';
+		if (isOffline ? !(await Chat.PrivateMessages.getSettings(user.id)) : !user.settings.blockPMs) {
+			return this.errorReply(this.tr`You are not blocking ${msg}private messages! To block, use /blockpms`);
 		}
-		user.settings.blockPMs = false;
+		if (isOffline) {
+			await Chat.PrivateMessages.deleteSettings(user.id);
+		} else {
+			user.settings.blockPMs = false;
+		}
 		user.update();
-		return this.sendReply(this.tr`You are no longer blocking private messages.`);
+		return this.sendReply(this.tr`You are no longer blocking ${msg}private messages.`);
 	},
-	unblockpmshelp: [`/unblockpms - Unblocks private messages. Block them with /blockpms.`],
+	unblockpmshelp: [
+		`/unblockpms - Unblocks private messages. Block them with /blockpms.`,
+		`/unblockofflinepms - Unblocks offline private messages. Block them with /blockofflinepms.`,
+	],
 
 	unblockinvites: 'blockinvites',
 	blockinvites(target, room, user, connection, cmd) {
@@ -794,7 +546,7 @@ export const commands: Chat.ChatCommands = {
 		}
 		if (!target) return this.parse('/help status');
 
-		const maxLength = 52;
+		const maxLength = 70;
 		if (target.length > maxLength) {
 			return this.errorReply(this.tr`Your status is too long; it must be under ${maxLength} characters.`);
 		}
@@ -941,8 +693,15 @@ export const commands: Chat.ChatCommands = {
 		}
 		user.language = languageID;
 		user.update();
-		const language = Chat.languages.get(languageID);
-		return this.sendReply(this.tr`Pokémon Showdown will now be displayed in ${language} (except in language rooms).`);
+		const languageName = Chat.languages.get(languageID);
+		const langRoom = Rooms.search(languageName || "");
+		let language = languageName;
+		if (langRoom) {
+			language = `<a href="/${langRoom.roomid}">${languageName}</a>`;
+		}
+		return this.sendReply(
+			`|html|` + this.tr`Pokémon Showdown will now be displayed in ${language} (except in language rooms).`
+		);
 	},
 	languagehelp: [
 		`/language - View your current language setting.`,
@@ -1030,7 +789,7 @@ export const commands: Chat.ChatCommands = {
 			return;
 		}
 		this.checkCan('exportinputlog', null, room);
-		if (user.can('forcewin')) {
+		if (user.can('forcewin') || Dex.formats.get(battle.format).team) {
 			if (!battle.inputLog) return this.errorReply(this.tr`No input log found.`);
 			this.addModAction(room.tr`${user.name} has extracted the battle input log.`);
 			const inputLog = battle.inputLog.map(Utils.escapeHTML).join(`<br />`);
@@ -1040,8 +799,8 @@ export const commands: Chat.ChatCommands = {
 			);
 		} else if (!battle.allowExtraction[user.id]) {
 			battle.allowExtraction[user.id] = new Set();
-			for (const player of battle.players) {
-				const playerUser = player.getUser();
+			for (const id in battle.playerTable) {
+				const playerUser = Users.get(id);
 				if (!playerUser) continue;
 				if (playerUser.id === user.id) {
 					battle.allowExtraction[user.id].add(user.id);
@@ -1056,8 +815,8 @@ export const commands: Chat.ChatCommands = {
 		} else {
 			// Re-request to make the buttons appear again for users who have not allowed extraction
 			let logExported = true;
-			for (const player of battle.players) {
-				const playerUser = player.getUser();
+			for (const id in battle.playerTable) {
+				const playerUser = Users.get(id);
 				if (!playerUser || battle.allowExtraction[user.id].has(playerUser.id)) continue;
 				logExported = false;
 				playerUser.sendTo(
@@ -1082,22 +841,10 @@ export const commands: Chat.ChatCommands = {
 		}
 
 		const formatid = target.slice(formatIndex + 12, nextQuoteIndex);
-		const battleRoom = Rooms.createBattle({format: formatid, inputLog: target});
+		const battleRoom = Rooms.createBattle({format: formatid, players: [], inputLog: target});
 		if (!battleRoom) return; // createBattle will inform the user if creating the battle failed
 
-		const nameIndex1 = target.indexOf(`"name":"`);
-		const nameNextQuoteIndex1 = target.indexOf(`"`, nameIndex1 + 8);
-		const nameIndex2 = target.indexOf(`"name":"`, nameNextQuoteIndex1 + 1);
-		const nameNextQuoteIndex2 = target.indexOf(`"`, nameIndex2 + 8);
-		if (nameIndex1 >= 0 && nameNextQuoteIndex1 >= 0 && nameIndex2 >= 0 && nameNextQuoteIndex2 >= 0) {
-			const battle = battleRoom.battle!;
-			battle.p1.name = target.slice(nameIndex1 + 8, nameNextQuoteIndex1);
-			battle.p2.name = target.slice(nameIndex2 + 8, nameNextQuoteIndex2);
-		}
 		battleRoom.auth.set(user.id, Users.HOST_SYMBOL);
-		for (const player of battleRoom.battle!.players) {
-			player.hasTeam = true;
-		}
 		this.parse(`/join ${battleRoom.roomid}`);
 		setTimeout(() => {
 			// timer to make sure this goes under the battle
@@ -1151,6 +898,68 @@ export const commands: Chat.ChatCommands = {
 		`!showteam hidestats - show the team you're using in the current battle, without displaying any stat-related information.`,
 		`!showset [number] - shows the set of the pokemon corresponding to that number (in original Team Preview order, not necessarily current order)`,
 	],
+
+	confirmready(target, room, user) {
+		const game = this.requireGame(Rooms.BestOfGame);
+		game.confirmReady(user);
+	},
+
+	acceptopenteamsheets(target, room, user, connection, cmd) {
+		room = this.requireRoom();
+		const battle = room.battle;
+		if (!battle) return this.errorReply(this.tr`Must be in a battle room.`);
+		const player = battle.playerTable[user.id];
+		if (!player) {
+			return this.errorReply(this.tr`Must be a player to agree to open team sheets.`);
+		}
+		const format = Dex.formats.get(battle.options.format);
+		if (!Dex.formats.getRuleTable(format).has('openteamsheets')) {
+			return this.errorReply(this.tr`This format does not allow requesting open team sheets. You can both manually agree to it by using !showteam hidestats.`);
+		}
+		if (battle.turn > 0) {
+			return this.errorReply(this.tr`You cannot agree to open team sheets after Team Preview. Each player can still show their own sheet by using this command: !showteam hidestats`);
+		}
+		if (battle.players.some(curPlayer => curPlayer.wantsOpenTeamSheets === false)) {
+			return this.errorReply(this.tr`An opponent has already rejected open team sheets.`);
+		}
+		if (player.wantsOpenTeamSheets !== null) {
+			return this.errorReply(this.tr`You have already made your decision about agreeing to open team sheets.`);
+		}
+		player.wantsOpenTeamSheets = true;
+		player.sendRoom(Utils.html`|uhtmlchange|otsrequest|`);
+
+		this.add(this.tr`${user.name} has agreed to open team sheets.`);
+		if (battle.players.every(curPlayer => curPlayer.wantsOpenTeamSheets)) {
+			void battle.stream.write('>show-openteamsheets');
+		}
+	},
+	acceptopenteamsheetshelp: [`/acceptopenteamsheets - Agrees to an open team sheet opportunity during Team Preview, where all information on a team except stats is shared with the opponent. Requires: \u2606`],
+
+	rejectopenteamsheets(target, room, user) {
+		room = this.requireRoom();
+		const battle = room.battle;
+		if (!battle) return this.errorReply(this.tr`Must be in a battle room.`);
+		const player = battle.playerTable[user.id];
+		if (!player) {
+			return this.errorReply(this.tr`Must be a player to reject open team sheets.`);
+		}
+		const format = Dex.formats.get(battle.options.format);
+		if (!Dex.formats.getRuleTable(format).has('openteamsheets')) {
+			return this.errorReply(this.tr`This format does not allow requesting open team sheets.`);
+		}
+		if (battle.turn > 0) {
+			return this.errorReply(this.tr`You cannot reject open team sheets after Team Preview.`);
+		}
+		if (player.wantsOpenTeamSheets !== null) {
+			return this.errorReply(this.tr`You have already made your decision about agreeing to open team sheets.`);
+		}
+		player.wantsOpenTeamSheets = false;
+		for (const otherPlayer of battle.players) {
+			otherPlayer.sendRoom(Utils.html`|uhtmlchange|otsrequest|`);
+		}
+		return this.add(this.tr`${user.name} rejected open team sheets.`);
+	},
+	rejectopenteamsheetshelp: [`/rejectopenteamsheetshelp - Rejects an open team sheet opportunity during Team Preview, where all information on a team except stats is shared with the opponent. Requires: \u2606`],
 
 	acceptdraw: 'offertie',
 	accepttie: 'offertie',
@@ -1578,21 +1387,24 @@ export const commands: Chat.ChatCommands = {
 	forcewin(target, room, user) {
 		room = this.requireRoom();
 		this.checkCan('forcewin');
-		if (!room.battle) {
+		if (
+			!room.battle &&
+			!(room.game && typeof (room.game as any).tie === 'function' && typeof (room.game as any).win === 'function')
+		) {
 			this.errorReply("/forcewin - This is not a battle room.");
 			return false;
 		}
 
-		room.battle.endType = 'forced';
+		if (room.battle) room.battle.endType = 'forced';
 		if (!target) {
-			room.battle.tie();
+			(room.game as any).tie();
 			this.modlog('FORCETIE');
 			return false;
 		}
 		const targetUser = Users.getExact(target);
 		if (!targetUser) return this.errorReply(this.tr`User '${target}' not found.`);
 
-		room.battle.win(targetUser);
+		(room.game as any).win(targetUser);
 		this.modlog('FORCEWIN', targetUser.id);
 	},
 	forcewinhelp: [
@@ -1618,6 +1430,7 @@ export const commands: Chat.ChatCommands = {
 				);
 				return false;
 			}
+			Chat.runHandlers('onLadderSearch', user, connection, ladder.formatid as ID);
 			return ladder.searchBattle(user, connection);
 		}
 		return Ladders.cancelSearches(user);
@@ -1775,13 +1588,11 @@ export const commands: Chat.ChatCommands = {
 		}
 		if (!target) return this.errorReply(this.tr`Provide a valid format.`);
 		const originalFormat = Dex.formats.get(target);
-		// Note: The default here of [Gen 8] Anything Goes isn't normally hit; since the web client will send a default format
-		const format = originalFormat.effectType === 'Format' ? originalFormat : Dex.formats.get(
-			'[Gen 8] Anything Goes'
-		);
-		if (format.effectType !== this.tr`Format`) return this.popupReply(this.tr`Please provide a valid format.`);
+		// Note: The default here of Anything Goes isn't normally hit; since the web client will send a default format
+		const format = originalFormat.effectType === 'Format' ? originalFormat : Dex.formats.get('Anything Goes');
+		if (format.effectType !== 'Format') return this.popupReply(this.tr`Please provide a valid format.`);
 
-		return TeamValidatorAsync.get(format.id).validateTeam(user.battleSettings.team).then(result => {
+		return TeamValidatorAsync.get(format.id).validateTeam(user.battleSettings.team, {user: user.id}).then(result => {
 			const matchMessage = (originalFormat === format ? "" : this.tr`The format '${originalFormat.name}' was not found.`);
 			if (result.startsWith('1')) {
 				connection.popup(`${(matchMessage ? matchMessage + "\n\n" : "")}${this.tr`Your team is valid for ${format.name}.`}`);
@@ -1859,7 +1670,7 @@ export const commands: Chat.ChatCommands = {
 		if (!target) {
 			const broadcastMsg = this.tr`(replace / with ! to broadcast. Broadcasting requires: + % @ # &)`;
 
-			this.sendReply(`${this.tr`COMMANDS`}: /msg, /reply, /logout, /challenge, /search, /rating, /whois, /user, /report, /join, /leave, /userauth, /roomauth`);
+			this.sendReply(`${this.tr`COMMANDS`}: /report, /msg, /reply, /logout, /challenge, /search, /rating, /whois, /user, /join, /leave, /userauth, /roomauth`);
 			this.sendReply(`${this.tr`BATTLE ROOM COMMANDS`}: /savereplay, /hideroom, /inviteonly, /invite, /timer, /forfeit`);
 			this.sendReply(`${this.tr`OPTION COMMANDS`}: /nick, /avatar, /ignore, /status, /away, /busy, /back, /timestamps, /highlight, /showjoins, /hidejoins, /blockchallenges, /blockpms`);
 			this.sendReply(`${this.tr`INFORMATIONAL/RESOURCE COMMANDS`}: /groups, /faq, /rules, /intro, /formatshelp, /othermetas, /analysis, /punishments, /calc, /git, /cap, /roomhelp, /roomfaq ${broadcastMsg}`);
@@ -1874,81 +1685,85 @@ export const commands: Chat.ChatCommands = {
 			return;
 		}
 
-		const cmds = target.split(' ');
+		const getHelp = (namespace: Chat.AnnotatedChatCommands, cmds: string[]): boolean => {
+			const [cmd, ...subCmds] = cmds;
 
-		let namespace = Chat.commands;
-
-		let currentBestHelp: {help: string[] | Chat.AnnotatedChatHandler, for: string[]} | null = null;
-
-		for (const [i, cmd] of cmds.entries()) {
-			let nextNamespace = namespace[cmd];
-			if (typeof nextNamespace === 'string') {
-				const help = namespace[`${nextNamespace}help`];
-				if (Array.isArray(help) || typeof help === 'function') {
-					currentBestHelp = {
-						help, for: cmds.slice(0, i + 1),
-					};
+			if (subCmds.length) {
+				// more specific help first
+				const subNamespace = namespace[cmd];
+				if (typeof subNamespace === 'object' && !Array.isArray(subNamespace)) {
+					if (getHelp(subNamespace, subCmds)) {
+						return true;
+					}
 				}
-				nextNamespace = namespace[nextNamespace];
 			}
-			if (typeof nextNamespace === 'string') {
-				throw new Error(`Recursive alias in "${target}"`);
+
+			let help = namespace[`${cmd}help`];
+			if (typeof help === 'string') {
+				help = namespace[help];
 			}
-			if (Array.isArray(nextNamespace)) {
-				const command = cmds.slice(0, i + 1).join(' ');
-				this.sendReply(this.tr`'/${command}' is a help command.`);
-				return this.parse(`/${target}`);
+			if (!help && typeof namespace[cmd] === 'string') {
+				help = namespace[`${namespace[cmd]}help`];
 			}
-			if (!nextNamespace) {
+			if (!help && namespace !== Chat.commands && namespace['help']) {
+				help = namespace['help'];
+			}
+
+			const curHandler = namespace[cmd] as Chat.AnnotatedChatHandler;
+			const requiredPerm = curHandler?.requiredPermission || 'lock';
+			if (curHandler?.isPrivate && !user.can(requiredPerm as GlobalPermission)) {
+				throw new Chat.ErrorMessage(this.tr`The command '/${target}' does not exist.`);
+			}
+
+			if (typeof help === 'function') {
+				// If the help command is a function, parse it instead
+				this.run(help);
+				return true;
+			}
+			if (Array.isArray(help)) {
+				this.sendReply(help.map(line => this.tr(line)).join('\n'));
+				return true;
+			}
+
+			if (!curHandler) {
 				for (const g in Config.groups) {
 					const groupid = Config.groups[g].id;
-					if (new RegExp(`(global)?(un|de)?${groupid}`).test(target)) {
+					if (new RegExp(`(global)?(un|de)?${groupid}`).test(cmd)) {
 						return this.parse(`/help promote`);
 					}
-					if (new RegExp(`room(un|de)?${groupid}`).test(target)) {
+					if (new RegExp(`room(un|de)?${groupid}`).test(cmd)) {
 						return this.parse(`/help roompromote`);
 					}
 				}
-				return this.errorReply(this.tr`The command '/${target}' does not exist.`);
+				throw new Chat.ErrorMessage(this.tr`The command '/${target}' does not exist.`);
 			}
 
-			const help = namespace[`${cmd}help`];
-			if (Array.isArray(help) || typeof help === 'function') {
-				currentBestHelp = {
-					help, for: cmds.slice(0, i + 1),
-				};
+			if (cmd.endsWith('help')) {
+				this.sendReply(this.tr`'/${target}' is a help command.`);
+				return true;
 			}
 
-			if (typeof nextNamespace === 'function') break;
-			namespace = nextNamespace;
-		}
+			return false;
+		};
 
-		if (!currentBestHelp) {
-			return this.errorReply(this.tr`Could not find help for '/${target}'. Try /help for general help.`);
-		}
-
-		const closestHelp = currentBestHelp.for.join(' ');
-		if (currentBestHelp.for.length < cmds.length) {
-			this.errorReply(this.tr`Could not find help for '/${target}' - displaying help for '/${closestHelp}' instead`);
-		}
-
-		const curHandler = Chat.parseCommand(`/${closestHelp}`)?.handler;
-		const requiredPerm = curHandler?.requiredPermission || 'lock';
-		if (curHandler?.isPrivate && !user.can(requiredPerm as GlobalPermission)) {
-			return this.errorReply(this.tr`The command '/${target}' does not exist.`);
-		}
-
-		if (typeof currentBestHelp.help === 'function') {
-			// If the help command is a function, parse it instead
-			this.run(currentBestHelp.help);
-		} else if (Array.isArray(currentBestHelp.help)) {
-			this.sendReply(currentBestHelp.help.map(line => this.tr(line)).join('\n'));
+		if (!getHelp(Chat.commands, target.split(' '))) {
+			throw new Chat.ErrorMessage(this.tr`Could not find help for '/${target}'. Try /help for general help.`);
 		}
 	},
 	helphelp: [
 		`/help OR /h OR /? - Gives you help.`,
 		`/help [command] - Gives you help for a specific command.`,
 	],
+};
+
+export const pages: Chat.PageTable = {
+	receivedpms(query, user) {
+		this.title = '[Received PMs]';
+		if (!Chat.PrivateMessages.offlineIsEnabled) {
+			return this.errorReply(`Offline PMs are presently disabled.`);
+		}
+		return Chat.PrivateMessages.renderReceived(user);
+	},
 };
 
 process.nextTick(() => {
@@ -1959,3 +1774,8 @@ process.nextTick(() => {
 		'/importinputlog '
 	);
 });
+
+export const loginfilter: Chat.LoginFilter = user => {
+	if (!Chat.PrivateMessages.checkCanUse(user, {isLogin: true, forceBool: true})) return;
+	void Chat.PrivateMessages.sendReceived(user);
+};

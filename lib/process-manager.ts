@@ -13,11 +13,10 @@ import * as child_process from 'child_process';
 import * as cluster from 'cluster';
 import * as path from 'path';
 import * as Streams from './streams';
+import {FS} from './fs';
 
 type ChildProcess = child_process.ChildProcess;
 type Worker = cluster.Worker;
-
-const ROOT_DIR = path.resolve(__dirname, '..');
 
 export const processManagers: ProcessManager[] = [];
 
@@ -112,7 +111,7 @@ export class QueryProcessWrapper<T, U> implements ProcessWrapper {
 	file: string;
 
 	constructor(file: string, messageCallback?: (message: string) => any) {
-		this.process = child_process.fork(file, [], {cwd: ROOT_DIR, execArgv: ['-r', 'ts-node/register']});
+		this.process = child_process.fork(file, [], {cwd: FS.ROOT_PATH});
 		this.taskId = 0;
 		this.file = file;
 		this.pendingTasks = new Map();
@@ -231,7 +230,7 @@ export class StreamProcessWrapper implements ProcessWrapper {
 	messageCallback?: (message: string) => any;
 
 	constructor(file: string, messageCallback?: (message: string) => any) {
-		this.process = child_process.fork(file, [], {cwd: ROOT_DIR, execArgv: ['-r', 'ts-node/register']});
+		this.process = child_process.fork(file, [], {cwd: FS.ROOT_PATH});
 		this.messageCallback = messageCallback;
 
 		this.process.on('message', (message: string) => {
@@ -370,7 +369,7 @@ export class RawProcessWrapper implements ProcessWrapper, StreamWorker {
 			this.process = cluster.fork(env);
 			this.workerid = this.process.id;
 		} else {
-			this.process = child_process.fork(file, [], {cwd: ROOT_DIR, env, execArgv: ['-r', 'ts-node/register']}) as any;
+			this.process = child_process.fork(file, [], {cwd: FS.ROOT_PATH, env}) as any;
 		}
 
 		this.process.on('message', (message: string) => {
@@ -404,7 +403,7 @@ export class RawProcessWrapper implements ProcessWrapper, StreamWorker {
 			// already destroyed
 			return;
 		}
-		this.stream.destroy();
+		void this.stream.destroy();
 		this.process.disconnect();
 		return;
 	}
@@ -419,7 +418,6 @@ export abstract class ProcessManager<T extends ProcessWrapper = ProcessWrapper> 
 	processes: T[] = [];
 	releasingProcesses: T[] = [];
 	crashedProcesses: T[] = [];
-	readonly module: NodeJS.Module;
 	readonly filename: string;
 	readonly basename: string;
 	readonly isParentProcess: boolean;
@@ -427,7 +425,6 @@ export abstract class ProcessManager<T extends ProcessWrapper = ProcessWrapper> 
 	crashRespawnCount = 0;
 
 	constructor(module: NodeJS.Module) {
-		this.module = module;
 		this.filename = module.filename;
 		this.basename = path.basename(module.filename);
 		this.isParentProcess = (process.mainModule !== module || !process.send);
@@ -557,8 +554,9 @@ export class QueryProcessManager<T = string, U = string> extends ProcessManager<
 		const timeout = setTimeout(() => {
 			const debugInfo = process.debug || "No debug information found.";
 			process.destroy();
+			this.spawnOne();
 			throw new Error(
-				`A query originating in ${this.basename} took too long to complete; the process has been killed.\n${debugInfo}`
+				`A query originating in ${this.basename} took too long to complete; the process has been respawned.\n${debugInfo}`
 			);
 		}, this.timeout);
 
@@ -721,8 +719,7 @@ export class RawProcessManager extends ProcessManager<RawProcessWrapper> {
 			cluster.setupMaster({
 				exec: this.filename,
 				// @ts-ignore TODO: update type definition
-				cwd: ROOT_DIR,
-				execArgv: ['-r', 'ts-node/register'],
+				cwd: FS.ROOT_PATH,
 			});
 		}
 

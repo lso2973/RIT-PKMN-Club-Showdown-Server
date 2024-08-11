@@ -1,4 +1,4 @@
-export const Conditions: {[k: string]: ModdedConditionData} = {
+export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDataTable = {
 	brn: {
 		name: 'brn',
 		effectType: 'Status',
@@ -35,6 +35,10 @@ export const Conditions: {[k: string]: ModdedConditionData} = {
 			}
 			// 1-6 turns
 			this.effectState.time = this.random(2, 8);
+
+			if (target.removeVolatile('nightmare')) {
+				this.add('-end', target, 'Nightmare', '[silent]');
+			}
 		},
 		onBeforeMovePriority: 10,
 		onBeforeMove(pokemon, target, move) {

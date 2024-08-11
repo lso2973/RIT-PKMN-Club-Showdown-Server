@@ -134,6 +134,7 @@ export class Nature extends BasicEffect implements Readonly<BasicEffect & Nature
 	readonly minus?: StatIDExceptHP;
 	constructor(data: AnyObject) {
 		super(data);
+		// eslint-disable-next-line @typescript-eslint/no-this-alias
 		data = this;
 
 		this.fullname = `nature: ${this.name}`;
@@ -143,6 +144,17 @@ export class Nature extends BasicEffect implements Readonly<BasicEffect & Nature
 		this.minus = data.minus || undefined;
 	}
 }
+
+export interface NatureData {
+	name: string;
+	plus?: StatIDExceptHP;
+	minus?: StatIDExceptHP;
+}
+
+export type ModdedNatureData = NatureData | Partial<Omit<NatureData, 'name'>> & {inherit: true};
+
+export interface NatureDataTable {[natureid: IDEntry]: NatureData}
+
 
 export class DexNatures {
 	readonly dex: ModdedDex;
@@ -177,7 +189,7 @@ export class DexNatures {
 			nature = new Nature({name: id, exists: false});
 		}
 
-		if (nature.exists) this.natureCache.set(id, nature);
+		if (nature.exists) this.natureCache.set(id, this.dex.deepFreeze(nature));
 		return nature;
 	}
 
@@ -187,10 +199,21 @@ export class DexNatures {
 		for (const id in this.dex.data.Natures) {
 			natures.push(this.getByID(id as ID));
 		}
-		this.allCache = natures;
+		this.allCache = Object.freeze(natures);
 		return this.allCache;
 	}
 }
+
+export interface TypeData {
+	damageTaken: {[attackingTypeNameOrEffectid: string]: number};
+	HPdvs?: SparseStatsTable;
+	HPivs?: SparseStatsTable;
+	isNonstandard?: Nonstandard | null;
+}
+
+export type ModdedTypeData = TypeData | Partial<Omit<TypeData, 'name'>> & {inherit: true};
+export interface TypeDataTable {[typeid: IDEntry]: TypeData}
+export interface ModdedTypeDataTable {[typeid: IDEntry]: ModdedTypeData}
 
 type TypeInfoEffectType = 'Type' | 'EffectType';
 
@@ -277,7 +300,7 @@ export class DexTypes {
 			type = new TypeInfo({name: typeName, id, exists: false, effectType: 'EffectType'});
 		}
 
-		if (type.exists) this.typeCache.set(id, type);
+		if (type.exists) this.typeCache.set(id, this.dex.deepFreeze(type));
 		return type;
 	}
 
@@ -301,13 +324,13 @@ export class DexTypes {
 		for (const id in this.dex.data.TypeChart) {
 			types.push(this.getByID(id as ID));
 		}
-		this.allCache = types;
+		this.allCache = Object.freeze(types);
 		return this.allCache;
 	}
 }
 
 const idsCache: readonly StatID[] = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
-const reverseCache: {readonly [k: string]: StatID} = {
+const reverseCache: {readonly [k: IDEntry]: StatID} = {
 	__proto: null as any,
 	"hitpoints": 'hp',
 	"attack": 'atk',

@@ -6,8 +6,8 @@
 'use strict';
 
 const assert = require('assert').strict;
-const IPTools = require('../../server/ip-tools').IPTools;
-const Utils = require('../../lib/utils').Utils;
+const IPTools = require('../../dist/server/ip-tools').IPTools;
+const Utils = require('../../dist/lib/utils').Utils;
 
 describe("IP tools", () => {
 	it('should resolve 127.0.0.1 to localhost', async () => {
@@ -15,7 +15,7 @@ describe("IP tools", () => {
 		assert.equal(lookup.host, 'localhost');
 	});
 
-	it.skip('should resolve unknown IPs correctly', async () => {
+	it('should resolve unknown IPs correctly', async () => {
 		const lookup = await IPTools.lookup('255.255.255.255');
 		assert.equal(lookup.host, '255.255?/unknown');
 		assert.equal(lookup.hostType, 'unknown');

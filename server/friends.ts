@@ -12,7 +12,7 @@ import * as path from 'path';
 export const MAX_FRIENDS = 100;
 /** Max friend requests. */
 export const MAX_REQUESTS = 6;
-export const DEFAULT_FILE = `${__dirname}/../databases/friends.db`;
+export const DEFAULT_FILE = FS('databases/friends.db').path;
 const REQUEST_EXPIRY_TIME = 30 * 24 * 60 * 60 * 1000;
 const PM_TIMEOUT = 30 * 60 * 1000;
 
@@ -51,22 +51,17 @@ export class FailureMessage extends Error {
 }
 
 export function sendPM(message: string, to: string, from = '&') {
-	const senderID = toID(to);
-	const receiverID = toID(from);
+	const senderID = toID(from);
+	const receiverID = toID(to);
 	const sendingUser = Users.get(senderID);
 	const receivingUser = Users.get(receiverID);
 	const fromIdentity = sendingUser ? sendingUser.getIdentity() : ` ${senderID}`;
 	const toIdentity = receivingUser ? receivingUser.getIdentity() : ` ${receiverID}`;
 
 	if (from === '&') {
-		return sendingUser?.send(`|pm|&|${toIdentity}|${message}`);
+		return receivingUser?.send(`|pm|&|${toIdentity}|${message}`);
 	}
-	if (sendingUser) {
-		sendingUser.send(`|pm|${fromIdentity}|${toIdentity}|${message}`);
-	}
-	if (receivingUser) {
-		receivingUser.send(`|pm|${fromIdentity}|${toIdentity}|${message}`);
-	}
+	receivingUser?.send(`|pm|${fromIdentity}|${toIdentity}|${message}`);
 }
 
 function canPM(sender: User, receiver: User | null) {
@@ -98,7 +93,9 @@ export class FriendsDatabase {
 		} else {
 			let val;
 			try {
-				val = database.prepare(`SELECT val FROM database_settings WHERE name = 'version'`).get().val;
+				val = (database
+					.prepare(`SELECT val FROM database_settings WHERE name = 'version'`)
+					.get() as AnyObject).val;
 			} catch {}
 			const actualVersion = FS(`databases/migrations/friends`).readdirIfExistsSync().length;
 			if (val === undefined) {
@@ -128,7 +125,7 @@ export class FriendsDatabase {
 		}
 
 		statements.expire.run();
-		return database;
+		return {database, statements};
 	}
 	async getFriends(userid: ID): Promise<Friend[]> {
 		return (await this.all('get', [userid, MAX_FRIENDS])) || [];
@@ -146,28 +143,31 @@ export class FriendsDatabase {
 		for (const request of sentResults) {
 			sent.add(request.receiver);
 		}
-		const receivedResults = await this.all('getReceived', [user.id]);
+		const receivedResults = await this.all('getReceived', [user.id]) || [];
+		if (!receivedResults) {
+			return {received, sent};
+		}
 		for (const request of receivedResults) {
 			received.add(request.sender);
 		}
 		return {sent, received};
 	}
-	all(statement: string, data: any[] | AnyObject) {
+	all(statement: string, data: any[] | AnyObject): Promise<any[] | null> {
 		return this.query({type: 'all', data, statement});
 	}
-	transaction(statement: string, data: any[] | AnyObject) {
+	transaction(statement: string, data: any[] | AnyObject): Promise<{result: any} | null> {
 		return this.query({data, statement, type: 'transaction'});
 	}
-	run(statement: string, data: any[] | AnyObject) {
+	run(statement: string, data: any[] | AnyObject): Promise<{changes: number, lastInsertRowid: number}> {
 		return this.query({statement, data, type: 'run'});
 	}
-	get(statement: string, data: any[] | AnyObject) {
+	get(statement: string, data: any[] | AnyObject): Promise<AnyObject | null> {
 		return this.query({statement, data, type: 'get'});
 	}
 	private async query(input: DatabaseRequest) {
 		const process = PM.acquire();
 		if (!process || !Config.usesqlite) {
-			return {result: null};
+			return null;
 		}
 		const result = await process.query(input);
 		if (result.error) {
@@ -199,9 +199,9 @@ export class FriendsDatabase {
 
 		const result = await this.transaction('send', [user.id, receiverID]);
 		if (receiver) {
-			sendPM(`/raw <span class="username">${user.name}</span> sent you a friend request!`, receiver.id);
-			sendPM(buf, receiver.id);
-			sendPM(disclaimer, receiver.id);
+			sendPM(`/raw <span class="username">${user.name}</span> sent you a friend request!`, receiver.id, user.id);
+			sendPM(buf, receiver.id, user.id);
+			sendPM(disclaimer, receiver.id, user.id);
 		}
 		sendPM(
 			`/nonotify You sent a friend request to ${receiver?.connected ? receiver.name : receiverID}!`,
@@ -251,6 +251,11 @@ export class FriendsDatabase {
 		const num = setting ? 1 : 0;
 		// name, send_login_data, last_login, public_list
 		return this.run('toggleList', [userid, num, num]);
+	}
+	async findFriendship(user1: string, user2: string): Promise<boolean> {
+		user1 = toID(user1);
+		user2 = toID(user2);
+		return !!(await this.get('findFriendship', {user1, user2}))?.length;
 	}
 }
 
@@ -311,9 +316,11 @@ const TRANSACTIONS: {[k: string]: (input: any[]) => DatabaseResult} = {
 	send: requests => {
 		for (const request of requests) {
 			const [senderID, receiverID] = request;
-			const hasSentRequest = statements.findRequest.get({user1: senderID, user2: receiverID})['num'];
-			const friends = statements.countFriends.get(senderID, senderID)['num'];
-			const totalRequests = statements.countRequests.get(senderID, senderID)['num'];
+			const hasSentRequest = (
+				statements.findRequest.get({user1: senderID, user2: receiverID}) as AnyObject
+			)['num'];
+			const friends = (statements.countFriends.get(senderID, senderID) as AnyObject)['num'];
+			const totalRequests = (statements.countRequests.get(senderID, senderID) as AnyObject)['num'];
 			if (friends >= MAX_FRIENDS) {
 				throw new FailureMessage(`You are at the maximum number of friends.`);
 			}
@@ -326,7 +333,7 @@ const TRANSACTIONS: {[k: string]: (input: any[]) => DatabaseResult} = {
 			}
 			if (totalRequests >= MAX_REQUESTS) {
 				throw new FailureMessage(
-					`You already have ${MAX_REQUESTS} outgoing friend requests. Use "/friends view sent" to see your outgoing requests.`
+					`You already have ${MAX_REQUESTS} pending friend requests. Use "/friends view sent" to see your outgoing requests and "/friends view receive" to see your incoming requests.`
 				);
 			}
 			statements.insertRequest.run(senderID, receiverID, Date.now());
@@ -364,6 +371,24 @@ const TRANSACTIONS: {[k: string]: (input: any[]) => DatabaseResult} = {
 	},
 };
 
+/**
+ * API STUFF - For use in other database child processes that may want to interface with the friends list.
+ * todo: should these be under a namespace?
+ */
+
+/** Find if a friendship exists between two users.*/
+export function findFriendship(users: [string, string]) {
+	setup();
+	return !!statements.findFriendship.get({user1: users[0], user2: users[1]});
+}
+
+// internal for child process api - ensures statements are only set up
+const setup = () => {
+	if (!process.send) throw new Error("You should not be using this function in the main process");
+	if (!Object.keys(statements).length) FriendsDatabase.setupDatabase();
+};
+
+/** Process manager for main process use. */
 export const PM = new ProcessManager.QueryProcessManager<DatabaseRequest, DatabaseResult>(module, query => {
 	const {type, statement, data} = query;
 	const start = Date.now();
@@ -403,27 +428,30 @@ export const PM = new ProcessManager.QueryProcessManager<DatabaseRequest, Databa
 	}
 });
 
-if (!PM.isParentProcess) {
+if (require.main === module) {
 	global.Config = (require as any)('./config-loader').Config;
 	if (Config.usesqlite) {
 		FriendsDatabase.setupDatabase();
 	}
-	global.Monitor = {
-		crashlog(error: Error, source = 'A friends database process', details: AnyObject | null = null) {
-			const repr = JSON.stringify([error.name, error.message, source, details]);
-			process.send!(`THROW\n@!!@${repr}\n${error.stack}`);
-		},
-		slow(message: string) {
-			process.send!(`CALLBACK\nSLOW\n${message}`);
-		},
-	};
-	process.on('uncaughtException', err => {
-		if (Config.crashguard) {
-			Monitor.crashlog(err, 'A friends child process');
-		}
-	});
-	// eslint-disable-next-line no-eval
-	Repl.start(`friends-${process.pid}`, cmd => eval(cmd));
-} else {
+	// since we require this in child processes
+	if (process.mainModule === module) {
+		global.Monitor = {
+			crashlog(error: Error, source = 'A friends database process', details: AnyObject | null = null) {
+				const repr = JSON.stringify([error.name, error.message, source, details]);
+				process.send!(`THROW\n@!!@${repr}\n${error.stack}`);
+			},
+			slow(message: string) {
+				process.send!(`CALLBACK\nSLOW\n${message}`);
+			},
+		};
+		process.on('uncaughtException', err => {
+			if (Config.crashguard) {
+				Monitor.crashlog(err, 'A friends child process');
+			}
+		});
+		// eslint-disable-next-line no-eval
+		Repl.start(`friends-${process.pid}`, cmd => eval(cmd));
+	}
+} else if (!process.send) {
 	PM.spawn(Config.friendsprocesses || 1);
 }

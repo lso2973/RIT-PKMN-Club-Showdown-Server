@@ -1,4 +1,4 @@
-export const Conditions: {[k: string]: ModdedConditionData} = {
+export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDataTable = {
 	frz: {
 		name: 'frz',
 		effectType: 'Status',
@@ -32,7 +32,7 @@ export const Conditions: {[k: string]: ModdedConditionData} = {
 		},
 		onResidual(target) {
 			const move = target.lastMove as Move;
-			if (!move.self || (move.self !== true && move.self.volatileStatus !== 'lockedmove')) {
+			if (!move.self || move.self.volatileStatus !== 'lockedmove') {
 				// don't lock, and bypass confusion for calming
 				delete target.volatiles['lockedmove'];
 			} else if (target.ability === 'owntempo') {

@@ -1,4 +1,4 @@
-export const Pokedex: {[k: string]: ModdedSpeciesData} = {
+export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable = {
 	bulbasaur: {
 		inherit: true,
 		maleOnlyHidden: true,
@@ -421,6 +421,30 @@ export const Pokedex: {[k: string]: ModdedSpeciesData} = {
 	stoutland: {
 		inherit: true,
 		baseStats: {hp: 85, atk: 100, def: 90, spa: 45, spd: 90, spe: 80},
+	},
+	pansage: {
+		inherit: true,
+		maleOnlyHidden: true,
+	},
+	simisage: {
+		inherit: true,
+		maleOnlyHidden: true,
+	},
+	pansear: {
+		inherit: true,
+		maleOnlyHidden: true,
+	},
+	simisear: {
+		inherit: true,
+		maleOnlyHidden: true,
+	},
+	panpour: {
+		inherit: true,
+		maleOnlyHidden: true,
+	},
+	simipour: {
+		inherit: true,
+		maleOnlyHidden: true,
 	},
 	unfezant: {
 		inherit: true,

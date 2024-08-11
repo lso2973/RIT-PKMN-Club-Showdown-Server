@@ -82,6 +82,20 @@ describe('Neutralizing Gas', function () {
 		assert.fullHP(battle.p1.active[0]);
 	});
 
+	it(`should negate Primal weather Abilities`, function () {
+		battle = common.createBattle([[
+			{species: 'Groudon', item: 'redorb', moves: ['sleeptalk']},
+		], [
+			{species: 'Wynaut', moves: ['sleeptalk']},
+			{species: 'Weezing', ability: 'neutralizinggas', moves: ['sleeptalk']},
+		]]);
+
+		battle.makeChoices('auto', 'switch 2');
+		assert.false(battle.field.isWeather('desolateland'), `Desolate Land should be negated, turning off the weather`);
+		battle.makeChoices('auto', 'switch 2');
+		assert(battle.field.isWeather('desolateland'), `Desolate Land should be active again`);
+	});
+
 	it('should not activate Imposter if Neutralizing Gas leaves the field', function () {
 		battle = common.createBattle();
 		battle.setPlayer('p1', {team: [
@@ -169,7 +183,7 @@ describe('Neutralizing Gas', function () {
 		assert.equal(regigigas.getStat('spe'), slowStartSpeed);
 	});
 
-	it.skip(`should not cause Gluttony to instantly eat Berries when Neutralizing Gas leaves the field`, function () {
+	it(`should not cause Gluttony to instantly eat Berries when Neutralizing Gas leaves the field`, function () {
 		battle = common.createBattle([[
 			{species: "Wynaut", ability: 'gluttony', item: 'aguavberry', evs: {hp: 4}, moves: ['bellydrum']},
 		], [
@@ -187,7 +201,7 @@ describe('Neutralizing Gas', function () {
 
 		// Gluttony now has the opportunity to activate the Aguav Berry again on taking damage
 		battle.makeChoices();
-		assert.equal(wynaut.hp, Math.floor(wynaut.maxhp / 2) - 1 + Math.floor(wynaut.maxhp * 0.33));
+		assert.equal(wynaut.hp, Math.floor(wynaut.maxhp / 2) - 1 + Math.floor(wynaut.maxhp / 3));
 	});
 
 	it(`should not trigger twice if negated then replaced`, function () {
@@ -258,6 +272,63 @@ describe('Neutralizing Gas', function () {
 		assert.species(eiscue, 'Eiscue-Noice');
 		battle.makeChoices('auto', 'switch 2');
 		assert.species(eiscue, 'Eiscue-Noice');
+	});
+
+	it(`should not work if it was obtained via Transform`, function () {
+		battle = common.createBattle([[
+			{species: 'Ditto', moves: ['transform']},
+		], [
+			{species: 'Weezing', ability: 'neutralizinggas', moves: ['sleeptalk']},
+			{species: 'Zacian', ability: 'intrepidsword', moves: ['sleeptalk']},
+		]]);
+
+		battle.makeChoices();
+		battle.makeChoices('auto', 'switch 2');
+		assert.statStage(battle.p2.active[0], 'atk', 1);
+	});
+
+	it(`should not reactivate abilities that were protected by Ability Shield`, function () {
+		battle = common.createBattle([[
+			{species: 'Porygon', ability: 'download', item: 'abilityshield', moves: ['sleeptalk']},
+		], [
+			{species: 'Weezing', ability: 'neutralizinggas', moves: ['sleeptalk']},
+			{species: 'Wynaut', moves: ['sleeptalk']},
+		]]);
+
+		battle.makeChoices('move sleeptalk', 'auto');
+		battle.makeChoices('auto', 'switch 2');
+		const porygon = battle.p1.active[0];
+		assert.statStage(porygon, 'spa', 1);
+	});
+
+	it(`should not reactivate instances of Embody Aspect that had previously activated`, function () {
+		battle = common.createBattle({gameType: 'freeforall'}, [[
+			{species: 'Ogerpon-Hearthflame', ability: 'moldbreaker', item: 'hearthflamemask', moves: ['bellydrum']},
+		], [
+			{species: 'Ogerpon-Wellspring', ability: 'waterabsorb', item: 'wellspringmask', moves: ['sleeptalk']},
+		], [
+			{species: 'Ogerpon-Cornerstone', ability: 'sturdy', item: 'cornerstonemask', moves: ['sleeptalk']},
+		], [
+			{species: 'Cosmog', moves: ['splash', 'teleport']},
+			{species: 'Weezing', ability: 'neutralizinggas', moves: ['memento']},
+		]]);
+
+		// only wellspring teras this turn
+		battle.makeChoices('auto', 'move sleeptalk terastallize', 'auto', 'auto');
+		// only hearthflame teras this turn; embody aspect cannot boost its attack any further
+		battle.makeChoices('move bellydrum terastallize', 'auto', 'auto', 'move teleport');
+		// note that cornerstone has not tera'd yet
+		battle.makeChoices('', '', '', 'switch 2');
+		const hearthflame = battle.p1.active[0];
+		const wellspring = battle.p2.active[0];
+		const cornerstone = battle.p3.active[0];
+		assert.statStage(hearthflame, 'atk', 6);
+		assert.statStage(wellspring, 'spd', 1);
+		assert.statStage(cornerstone, 'def', 0);
+		battle.makeChoices('auto', 'auto', 'move sleeptalk terastallize', 'move memento 1');
+		assert.statStage(hearthflame, 'atk', 4, `Ogerpon-Hearthflame-Tera's Embody Aspect should not have been reactivated`);
+		assert.statStage(wellspring, 'spd', 1, `Ogerpon-Wellspring-Tera's Embody Aspect should not have activated twice`);
+		assert.statStage(cornerstone, 'def', 1, `Ogerpon-Cornerstone-Tera's Embody Aspect should have been activated by Neutalizing Gas ending`);
 	});
 
 	describe(`Ability reactivation order`, function () {

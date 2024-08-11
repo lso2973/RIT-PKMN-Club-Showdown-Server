@@ -13,7 +13,7 @@ import {RoomSection, RoomSections} from './room-settings';
 
 /* eslint no-else-return: "error" */
 
-const MAX_REASON_LENGTH = 300;
+const MAX_REASON_LENGTH = 600;
 const MUTE_LENGTH = 7 * 60 * 1000;
 const HOURMUTE_LENGTH = 60 * 60 * 1000;
 const DAY = 24 * 60 * 60 * 1000;
@@ -64,7 +64,7 @@ export function runPromote(
 	const nextGroup = Config.groups[symbol];
 
 	if (currentSymbol === symbol) {
-		throw new Chat.ErrorMessage(`User '${username}' is already a ${nextGroup.name || 'regular user'} in this room.`);
+		throw new Chat.ErrorMessage(`User '${username}' is already a ${nextGroup?.name || symbol || 'regular user'} in this room.`);
 	}
 	if (!promoter.can('makeroom')) {
 		if (currentGroup.id && !promoter.can(`room${currentGroup.id || 'voice'}` as 'roomvoice', null, room)) {
@@ -126,9 +126,13 @@ export function runCrisisDemote(userid: ID) {
 	return from;
 }
 
-Punishments.addPunishmentType('YEARLOCK', "Locked for a year", (user, punishment) => {
-	user.locked = user.id;
-	Chat.punishmentfilter(user, punishment);
+Punishments.addPunishmentType({
+	type: 'YEARLOCK',
+	desc: "Locked for a year",
+	onActivate: (user, punishment) => {
+		user.locked = user.id;
+		Chat.punishmentfilter(user, punishment);
+	},
 });
 
 export const commands: Chat.ChatCommands = {
@@ -232,7 +236,7 @@ export const commands: Chat.ChatCommands = {
 
 			if (this.pmTarget && targetUser) {
 				const text = `${targetUser.name} was invited (and promoted to Room ${nextGroupName}) by ${user.name}.`;
-				room.add(`|c|${user.getIdentity(room.roomid)}|/log ${text}`).update();
+				room.add(`|c|${user.getIdentity(room)}|/log ${text}`).update();
 				this.modlog('INVITE', targetUser, null, {noip: 1, noalts: 1});
 			} else if (
 				nextSymbol in Config.groups && oldSymbol in Config.groups &&
@@ -372,6 +376,7 @@ export const commands: Chat.ChatCommands = {
 		} else if (curRoom.settings.isPrivate === 'hidden' || curRoom.settings.isPrivate === 'voice') {
 			buffer.push(`${curRoom.title} is a hidden room, so global auth with no relevant roomauth will have authority in this room.`);
 		}
+		buffer.push(`Names in **bold** are online.`);
 		if (targetRoom !== room) buffer.unshift(`${targetRoom.title} room auth:`);
 		connection.popup(`${buffer.join("\n\n")}${userLookup}`);
 	},
@@ -462,7 +467,7 @@ export const commands: Chat.ChatCommands = {
 	],
 
 	async autojoin(target, room, user, connection) {
-		const targets = target.split(',');
+		const targets = target.split(',').filter(Boolean);
 		if (targets.length > 16 || connection.inRooms.size > 1) {
 			return connection.popup("To prevent DoS attacks, you can only use /autojoin for 16 or fewer rooms, when you haven't joined any rooms yet. Please use /join for each room separately.");
 		}
@@ -537,7 +542,10 @@ export const commands: Chat.ChatCommands = {
 			return this.errorReply("Warning is unavailable in group chats.");
 		}
 		// If used in pms, staff, help tickets or battles, log the warn to the global modlog.
-		const globalWarn = !room || room.roomid === 'staff' || room.roomid.startsWith('help-') || (room.battle && !room.parent);
+		const globalWarn = (
+			!room || ['staff', 'adminlog'].includes(room.roomid) ||
+			room.roomid.startsWith('help-') || (room.battle && (!room.parent || room.parent.type !== 'chat'))
+		);
 
 		const {targetUser, inputUsername, targetUsername, rest: reason} = this.splitUser(target);
 		const targetID = toID(targetUsername);
@@ -545,7 +553,7 @@ export const commands: Chat.ChatCommands = {
 
 		const saveReplay = globalWarn && room?.battle;
 		if (!targetUser?.connected) {
-			if (!targetUser || !globalWarn) return this.errorReply(`User '${targetUsername}' not found.`);
+			if (!globalWarn) return this.errorReply(`User '${targetUsername}' not found.`);
 			if (room) {
 				this.checkCan('warn', null, room);
 			} else {
@@ -553,10 +561,10 @@ export const commands: Chat.ChatCommands = {
 			}
 
 			this.addGlobalModAction(
-				`${targetUser.name} was warned by ${user.name} while offline.${publicReason ? ` (${publicReason})` : ``}`
+				`${targetID} was warned by ${user.name} while offline.${publicReason ? ` (${publicReason})` : ``}`
 			);
-			this.globalModlog('WARN OFFLINE', targetUser, privateReason);
-			Punishments.offlineWarns.set(targetID, reason);
+			this.globalModlog('WARN OFFLINE', targetUser || targetID, privateReason);
+			Punishments.offlineWarns.set(targetID, publicReason);
 			if (saveReplay) this.parse('/savereplay forpunishment');
 			return;
 		}
@@ -601,6 +609,7 @@ export const commands: Chat.ChatCommands = {
 
 		// Automatically upload replays as evidence/reference to the punishment
 		if (saveReplay) this.parse('/savereplay forpunishment');
+		return true;
 	},
 	warnhelp: [
 		`/warn OR /k [username], [reason] - Warns a user showing them the site rules and [reason] in an overlay.`,
@@ -685,14 +694,20 @@ export const commands: Chat.ChatCommands = {
 		}
 		this.addModAction(`${targetUser.name} was muted by ${user.name} for ${Chat.toDurationString(muteDuration)}.${(publicReason ? ` (${publicReason})` : ``)}`);
 		this.modlog(`${cmd.includes('h') ? 'HOUR' : ''}MUTE`, targetUser, privateReason);
+		this.update(); // force an update so the (hide lines from x user) message is on the mod action above
+
+		const ids = [targetUser.getLastId()];
+		if (ids[0] !== toID(inputUsername)) {
+			ids.push(toID(inputUsername));
+		}
+		room.hideText(ids);
+
 		if (targetUser.autoconfirmed && targetUser.autoconfirmed !== targetUser.id) {
 			const displayMessage = `${targetUser.name}'s ac account: ${targetUser.autoconfirmed}`;
 			this.privateModAction(displayMessage);
 		}
-		const userid = targetUser.getLastId();
-		this.add(`|hidelines|unlink|${userid}`);
-		if (userid !== toID(inputUsername)) this.add(`|hidelines|unlink|${toID(inputUsername)}`);
 
+		Chat.runHandlers('onPunishUser', 'MUTE', user, room);
 		room.mute(targetUser, muteDuration);
 	},
 	mutehelp: [`/mute OR /m [username], [reason] - Mutes a user with reason for 7 minutes. Requires: % @ # &`],
@@ -732,6 +747,7 @@ export const commands: Chat.ChatCommands = {
 	wrb: 'ban',
 	forceroomban: 'ban',
 	forceweekban: 'ban',
+	weekroomban: 'ban',
 	forcerb: 'ban',
 	roomban: 'ban',
 	b: 'ban',
@@ -739,7 +755,7 @@ export const commands: Chat.ChatCommands = {
 		room = this.requireRoom();
 		if (!target) return this.parse('/help ban');
 		this.checkChat();
-		const week = ['wrb', 'wb', 'forceweekban', 'weekban'].includes(cmd);
+		const week = ['wrb', 'wb'].includes(cmd) || cmd.includes('week');
 
 		const {targetUser, inputUsername, targetUsername, rest: reason} = this.splitUser(target);
 		const {publicReason, privateReason} = this.parseSpoiler(reason);
@@ -783,11 +799,12 @@ export const commands: Chat.ChatCommands = {
 			);
 		}
 
-		this.addModAction(`${name} was banned ${week ? ' for a week' : ''} from ${room.title} by ${user.name}.${publicReason ? ` (${publicReason})` : ``}`);
+		this.addModAction(`${name} was banned${week ? ' for a week' : ''} from ${room.title} by ${user.name}.${publicReason ? ` (${publicReason})` : ``}`);
 
 		const time = week ? Date.now() + 7 * 24 * 60 * 60 * 1000 : null;
 		const affected = Punishments.roomBan(room, targetUser, time, null, privateReason);
 
+		for (const u of affected) Chat.runHandlers('onPunishUser', 'ROOMBAN', u, room);
 		if (!room.settings.isPrivate && room.persist) {
 			const acAccount = (targetUser.autoconfirmed !== userid && targetUser.autoconfirmed);
 			let displayMessage = '';
@@ -859,7 +876,7 @@ export const commands: Chat.ChatCommands = {
 
 		if (!targetUser && !Punishments.search(userid).length && !force) {
 			return this.errorReply(
-				`User '${targetUsername}' not found. Use \`\`/forcelock\`\` if you need to to lock them anyway.`
+				`User '${targetUsername}' not found. Use \`\`/force${month ? 'month' : (week ? 'week' : '')}lock\`\` if you need to to lock them anyway.`
 			);
 		}
 		if (reason.length > MAX_REASON_LENGTH) {
@@ -888,7 +905,7 @@ export const commands: Chat.ChatCommands = {
 				Monitor.log(`[CrisisMonitor] ${name} was locked by ${user.name} and demoted from ${from.join(", ")}.`);
 				this.globalModlog("CRISISDEMOTE", targetUser, ` from ${from.join(", ")}`);
 			} else {
-				return this.sendReply(`${name} is a trusted user. If you are sure you would like to lock them use /forcelock.`);
+				return this.sendReply(`${name} is a trusted user. If you are sure you would like to lock them use /force${month ? 'month' : (week ? 'week' : '')}lock.`);
 			}
 		} else if (force && targetUser) {
 			return this.errorReply(`Use /lock; ${name} is not a trusted user and is online.`);
@@ -902,12 +919,13 @@ export const commands: Chat.ChatCommands = {
 		let affected = [];
 
 		if (targetUser) {
-			const ignoreAlts = Punishments.sharedIps.has(targetUser.latestIp);
+			const ignoreAlts = Punishments.isSharedIp(targetUser.latestIp);
 			affected = await Punishments.lock(targetUser, duration, null, ignoreAlts, publicReason);
 		} else {
 			affected = await Punishments.lock(userid, duration, null, false, publicReason);
 		}
 
+		for (const u of affected) Chat.runHandlers('onPunishUser', 'LOCK', u, room);
 		this.globalModlog(
 			(force ? `FORCE` : ``) + (week ? "WEEKLOCK" : (month ? "MONTHLOCK" : "LOCK")), targetUser || userid, privateReason
 		);
@@ -991,9 +1009,12 @@ export const commands: Chat.ChatCommands = {
 		this.checkCan('lock');
 
 		const userid = toID(target);
-		const punishment = Punishments.userids.getByType(userid, 'LOCK');
+		if (userid.startsWith('guest')) {
+			return this.errorReply(`You cannot unlock the guest userid - provide their original username instead.`);
+		}
+		const punishment = Punishments.userids.getByType(userid, 'LOCK') || Punishments.userids.getByType(userid, 'NAMELOCK');
 		if (!punishment) return this.errorReply("This name isn't locked.");
-		if (punishment.id === userid) {
+		if (punishment.id === userid || Users.get(userid)?.previousIDs.includes(punishment.id as ID)) {
 			return this.errorReply(`"${userid}" was specifically locked by a staff member (check the global modlog). Use /unlock if you really want to unlock this name.`);
 		}
 		Punishments.userids.delete(userid);
@@ -1109,6 +1130,7 @@ export const commands: Chat.ChatCommands = {
 		this.addGlobalModAction(`${name} was globally banned by ${user.name}.${(publicReason ? ` (${publicReason})` : ``)}`);
 
 		const affected = await Punishments.ban(userid, null, null, false, publicReason);
+		for (const u of affected) Chat.runHandlers('onPunishUser', 'BAN', u, room);
 		const acAccount = (targetUser && targetUser.autoconfirmed !== userid && targetUser.autoconfirmed);
 		let displayMessage = '';
 		if (affected.length > 1) {
@@ -1187,8 +1209,60 @@ export const commands: Chat.ChatCommands = {
 	},
 	deroomvoiceallhelp: [`/deroomvoiceall - Devoice all roomvoiced users. Requires: # &`],
 
+	// this is a separate command for two reasons
+	// a - yearticketban is preferred over /ht yearban
+	// b - it would be messy to switch
+	//   from both Punishments.punishRange and #punish in /ht ban
+	//   since this takes ips / userids
+	async yearticketban(target, room, user) {
+		this.checkCan('rangeban');
+		target = target.trim();
+		let reason = '';
+		[target, reason] = this.splitOne(target);
+		let isIP = false;
+		let descriptor = '';
+		if (IPTools.ipRangeRegex.test(target)) {
+			isIP = true;
+			if (IPTools.ipRegex.test(target)) {
+				descriptor = 'the IP ';
+			} else {
+				descriptor = 'the IP range ';
+			}
+		} else {
+			target = toID(target);
+		}
+		if (!target) return this.parse(`/help yearticketban`);
+		const expireTime = Date.now() + 365 * 24 * 60 * 60 * 1000;
+		if (isIP) {
+			Punishments.punishRange(target, reason, expireTime, 'TICKETBAN');
+		} else {
+			await Punishments.punish(target as ID, {
+				type: 'TICKETBAN',
+				id: target as ID,
+				expireTime,
+				reason,
+				rest: [],
+			}, true);
+		}
+		this.addGlobalModAction(
+			`${user.name} banned ${descriptor}${target} from opening tickets for a year` +
+			`${reason ? ` (${reason})` : ""}`
+		);
+		this.globalModlog(
+			'YEARTICKETBAN',
+			isIP ? null : target,
+			reason,
+			isIP ? target : undefined
+		);
+	},
+	yearticketbanhelp: [
+		`/yearticketban [IP/userid] - Ban an IP or a userid from opening tickets for a year. `,
+		`Accepts wildcards to ban ranges. Requires: &`,
+	],
+
 	rangeban: 'banip',
-	banip(target, room, user) {
+	yearbanip: 'banip',
+	banip(target, room, user, connection, cmd) {
 		const [ip, reason] = this.splitOne(target);
 		if (!ip || !/^[0-9.]+(?:\.\*)?$/.test(ip)) return this.parse('/help banip');
 		if (!reason) return this.errorReply("/banip requires a ban reason");
@@ -1196,21 +1270,31 @@ export const commands: Chat.ChatCommands = {
 		this.checkCan('rangeban');
 		const ipDesc = `IP ${(ip.endsWith('*') ? `range ` : ``)}${ip}`;
 
+		const year = cmd.startsWith('year');
+		const time = year ? Date.now() + 365 * 24 * 60 * 60 * 1000 : null;
+
 		const curPunishment = Punishments.ipSearch(ip, 'BAN');
-		if (curPunishment?.type === 'BAN') {
+		if (curPunishment?.type === 'BAN' && !time) {
 			return this.errorReply(`The ${ipDesc} is already temporarily banned.`);
 		}
-		Punishments.banRange(ip, reason);
+		Punishments.punishRange(ip, reason, time, 'BAN');
 
+		const duration = year ? 'year' : 'hour';
 		if (!this.room || this.room.roomid !== 'staff') {
-			this.sendReply(`You hour-banned the ${ipDesc}.`);
+			this.sendReply(`You ${duration}-banned the ${ipDesc}.`);
 		}
 		this.room = Rooms.get('staff') || null;
-		this.addModAction(`${user.name} hour-banned the ${ipDesc}: ${reason}`);
-		this.globalModlog(`RANGEBAN`, null, `${ip.endsWith('*') ? ip : `[${ip}]`}: ${reason}`);
+		this.addGlobalModAction(
+			`${user.name} ${duration}-banned the ${ipDesc}: ${reason}`
+		);
+		this.globalModlog(
+			`${year ? "YEAR" : ""}RANGEBAN`,
+			null,
+			`${ip.endsWith('*') ? ip : `[${ip}]`}: ${reason}`
+		);
 	},
 	baniphelp: [
-		`/banip [ip] - Globally bans this IP or IP range for an hour. Accepts wildcards to ban ranges.`,
+		`/banip [ip] OR /yearbanip [ip] - Globally bans this IP or IP range for an hour. Accepts wildcards to ban ranges.`,
 		`Existing users on the IP will not be banned. Requires: &`,
 	],
 
@@ -1285,12 +1369,13 @@ export const commands: Chat.ChatCommands = {
 		const type = cmd.includes('name') ? 'NAMELOCK' : 'LOCK';
 		Punishments.punishRange(ip, reason, time, type);
 
-		if (year) {
-			this.addGlobalModAction(`${user.name} year-${type.toLowerCase()}ed the ${ipDesc}: ${reason}`);
-		} else {
-			this.addGlobalModAction(`${user.name} hour-${type.toLowerCase()}ed the ${ipDesc}: ${reason}`);
-		}
-		this.globalModlog(`${year ? 'YEAR' : 'RANGE'}${type}`, null, `${ip.endsWith('*') ? ip : `[${ip}]`}: ${reason}`);
+		this.addGlobalModAction(`${user.name} ${year ? 'year' : 'hour'}-${type.toLowerCase()}ed the ${ipDesc}: ${reason}`);
+		this.globalModlog(
+			`${year ? 'YEAR' : 'RANGE'}${type}`,
+			null,
+			`${ip.endsWith('*') ? ip : `[${ip}]`}: ${reason}`,
+			ip.endsWith('*') ? `${ip.slice(0, -2)}` : ip
+		);
 	},
 	lockiphelp: [
 		`/lockip [ip] - Globally locks this IP or IP range for an hour. Accepts wildcards to ban ranges.`,
@@ -1314,14 +1399,32 @@ export const commands: Chat.ChatCommands = {
 		}
 		this.checkCan('receiveauthmessages', null, room);
 		target = target.replace(/\n/g, "; ");
-		const targetUserid = toID(/\[([^\]]+)\]/.exec(target)?.[1]) || null;
+		let targeted = /\[([^\]]+)\]/.exec(target)?.[1] || null;
+		if (!targeted) {
+			// allow `name, note` and `name - note` syntax
+			targeted = target.split(/[,-]/)[0]?.trim() || "";
+			if (!targeted || !(
+				Users.get(targeted) || Punishments.search(target).length || IPTools.ipRegex.test(targeted)
+			) || toID(targeted) === toID(target)) {
+				targeted = null;
+			}
+		}
+		let targetUserid, targetIP;
+
+		if (targeted) {
+			if (IPTools.ipRegex.test(targeted)) {
+				targetIP = targeted;
+			} else {
+				targetUserid = toID(targeted);
+			}
+		}
 		if (
 			['staff', 'upperstaff'].includes(room.roomid) ||
 			(Rooms.Modlog.getSharedID(room.roomid) && user.can('modlog'))
 		) {
-			this.globalModlog('NOTE', targetUserid, target);
+			this.globalModlog('NOTE', targetUserid || null, target, targetIP);
 		} else {
-			this.modlog('NOTE', targetUserid, target);
+			this.modlog('NOTE', targetUserid || null, target);
 		}
 
 		this.privateModAction(`${user.name} notes: ${target}`);
@@ -1385,13 +1488,13 @@ export const commands: Chat.ChatCommands = {
 			Users.globalAuth.set(targetUser ? targetUser.id : userid, nextGroup);
 		}
 		if (Users.Auth.getGroup(nextGroup).rank < Users.Auth.getGroup(currentGroup).rank) {
-			this.privateGlobalModAction(`${name} was demoted to ${groupName} by ${user.name}.`);
+			this.privateGlobalModAction(`${name} was demoted to Global ${groupName} by ${user.name}.`);
 			this.globalModlog(`GLOBAL ${groupName.toUpperCase()}`, userid, `(demote)`);
-			if (targetUser) targetUser.popup(`You were demoted to ${groupName} by ${user.name}.`);
+			if (targetUser) targetUser.popup(`You were demoted to Global ${groupName} by ${user.name}.`);
 		} else {
-			this.addGlobalModAction(`${name} was promoted to ${groupName} by ${user.name}.`);
+			this.addGlobalModAction(`${name} was promoted to Global ${groupName} by ${user.name}.`);
 			this.globalModlog(`GLOBAL ${groupName.toUpperCase()}`, userid);
-			if (targetUser) targetUser.popup(`You were promoted to ${groupName} by ${user.name}.`);
+			if (targetUser) targetUser.popup(`You were promoted to Global ${groupName} by ${user.name}.`);
 		}
 
 		if (targetUser) {
@@ -1486,9 +1589,11 @@ export const commands: Chat.ChatCommands = {
 			Users.globalAuth.setSection(userid, section);
 			this.addGlobalModAction(`${name} was appointed Section Leader of ${RoomSections.sectionNames[section]} by ${user.name}.`);
 			this.globalModlog(`SECTION LEADER`, userid, section);
-			if (targetUser && !Users.globalAuth.atLeast(targetUser, Users.SECTIONLEADER_SYMBOL)) {
+			if (targetUser) {
 				// do not use global /forcepromote
-				this.parse(`/globalsectionleader ${userid}`);
+				if (!Users.globalAuth.atLeast(targetUser, Users.SECTIONLEADER_SYMBOL)) {
+					this.parse(`/globalsectionleader ${userid}`);
+				}
 			} else {
 				this.sendReply(`User ${userid} is offline and unrecognized, and so can't be globally promoted.`);
 			}
@@ -1544,7 +1649,7 @@ export const commands: Chat.ChatCommands = {
 		}
 		Users.globalAuth.set(name as ID, nextGroup);
 
-		this.addGlobalModAction(`${name} was promoted to ${(Config.groups[nextGroup].name || "regular user")} by ${user.name}.`);
+		this.addGlobalModAction(`${name} was promoted to Global ${(Config.groups[nextGroup].name || "regular user")} by ${user.name}.`);
 		this.globalModlog(`GLOBAL${(Config.groups[nextGroup].name || "regular").toUpperCase()}`, toID(name));
 	},
 
@@ -1586,7 +1691,7 @@ export const commands: Chat.ChatCommands = {
 	htmldeclare(target, room, user) {
 		if (!target) return this.parse('/help htmldeclare');
 		room = this.requireRoom();
-		this.checkCan('gdeclare');
+		this.checkCan('declare', null, room);
 		this.checkChat();
 		this.checkHTML(target);
 
@@ -1599,7 +1704,7 @@ export const commands: Chat.ChatCommands = {
 		this.add(`|raw|<div class="broadcast-blue"><b>${target}</b></div>`);
 		this.modlog(`HTMLDECLARE`, null, target);
 	},
-	htmldeclarehelp: [`/htmldeclare [message] - Anonymously announces a message using safe HTML. Requires: &`],
+	htmldeclarehelp: [`/htmldeclare [message] - Anonymously announces a message using safe HTML. Requires: # * &`],
 
 	gdeclare: 'globaldeclare',
 	globaldeclare(target, room, user) {
@@ -1725,6 +1830,13 @@ export const commands: Chat.ChatCommands = {
 			}
 			return this.errorReply(`User '${inputUsername}' not found. (use /offlineforcerename to rename anyway.)`);
 		}
+		if (Punishments.namefilterwhitelist.has(targetID)) {
+			this.errorReply(`That name is blocked from being forcerenamed.`);
+			if (user.can('bypassall')) {
+				this.errorReply(`Use /noforcerename remove to remove it from the list if you wish to rename it.`);
+			}
+			return false;
+		}
 		this.checkCan('forcerename', targetID);
 		const {publicReason, privateReason} = this.parseSpoiler(reason);
 
@@ -1759,14 +1871,42 @@ export const commands: Chat.ChatCommands = {
 		);
 
 		targetUser?.resetName(true);
-		if (Punishments.namefilterwhitelist.has(targetID)) {
-			Punishments.unwhitelistName(targetID);
-		}
 		return true;
 	},
 	forcerenamehelp: [
 		`/forcerename OR /fr [username], [reason] - Forcibly change a user's name and shows them the [reason]. Requires: % @ &`,
 		`/allowname [username] - Unmarks a forcerenamed username, stopping staff from being notified when it is used. Requires % @ &`,
+	],
+
+	nfr: 'noforcerename',
+	noforcerename: {
+		add(target, room, user) {
+			const [targetUsername, rest] = Utils.splitFirst(target, ',').map(f => f.trim());
+			const targetId = toID(targetUsername);
+			if (!targetId) return this.parse('/help noforcerename');
+			this.checkCan('bypassall');
+			if (!Punishments.whitelistName(targetId, user.name)) {
+				return this.errorReply(`${targetUsername} is already on the noforcerename list.`);
+			}
+			this.addGlobalModAction(`${user.name} added the name ${targetId} to the no forcerename list.${rest ? ` (${rest})` : ''}`);
+			this.globalModlog('NOFORCERENAME', targetId, rest);
+		},
+		remove(target, room, user) {
+			const {targetUsername, rest} = this.splitUser(target);
+			const targetId = toID(targetUsername);
+			if (!targetId) return this.parse('/help noforcerename');
+			this.checkCan('bypassall');
+			if (!Punishments.namefilterwhitelist.has(targetId)) {
+				return this.errorReply(`${targetUsername} is not on the noforcerename list.`);
+			}
+			Punishments.unwhitelistName(targetId);
+			this.addGlobalModAction(`${user.name} removed ${targetId} from the no forcerename list.${rest ? ` (${rest})` : ''}`);
+			this.globalModlog('UNNOFORCERENAME', targetId, rest);
+		},
+	},
+	noforcerenamehelp: [
+		`/noforcerename add OR /nfr add [username] - Adds [username] to the list of users who can't be forcerenamed by staff.`,
+		`/noforcerename remove OR /nfr remove [username] - Removes [username] from the list of users who can't be forcerenamed by staff.`,
 	],
 
 	forceclearstatus(target, room, user) {
@@ -1786,26 +1926,37 @@ export const commands: Chat.ChatCommands = {
 	forcenamelock: 'namelock',
 	weeknamelock: 'namelock',
 	wnl: 'namelock',
+	fwnl: 'namelock',
 	forceweeknamelock: 'namelock',
 	async namelock(target, room, user, connection, cmd) {
 		if (!target) return this.parse('/help namelock');
 		const week = cmd.includes('w');
-		const force = cmd.includes('force');
+		const force = cmd.includes('f');
 
 		const {targetUser, inputUsername, targetUsername, rest: reason} = this.splitUser(target);
 		const userid = toID(targetUsername);
 
 		if (!targetUser && !force) {
 			return this.errorReply(
-				`User '${targetUsername}' not found. Use \`\`/forcenamelock\`\` if you need to namelock them anyway.`
+				`User '${targetUsername}' not found. Use \`\`/force${week ? 'week' : ''}namelock\`\` if you need to namelock them anyway.`
 			);
 		}
 		if (targetUser && targetUser.id !== toID(inputUsername) && !force) {
-			return this.errorReply(`${inputUsername} has already changed their name to ${targetUser.name}. To namelock anyway, use /forcenamelock.`);
+			return this.errorReply(`${inputUsername} has already changed their name to ${targetUser.name}. To namelock anyway, use /force${week ? 'week' : ''}namelock.`);
 		}
 		this.checkCan('forcerename', userid);
 		if (targetUser?.namelocked && !week) {
 			return this.errorReply(`User '${targetUser.name}' is already namelocked.`);
+		}
+		if (!force && !week) {
+			const existingPunishments = Punishments.search(userid);
+			for (const [,, punishment] of existingPunishments) {
+				if (punishment.type === 'LOCK' && (punishment.expireTime - Date.now()) > (2 * DAY)) {
+					this.errorReply(`User '${userid}' is already normally locked for more than 2 days.`);
+					this.errorReply(`Use /weeknamelock to namelock them instead, so you don't decrease the existing punishment.`);
+					return this.errorReply(`If you really need to override this, use /forcenamelock.`);
+				}
+			}
 		}
 		const {privateReason, publicReason} = this.parseSpoiler(reason);
 		const reasonText = publicReason ? ` (${publicReason})` : `.`;
@@ -1822,6 +1973,7 @@ export const commands: Chat.ChatCommands = {
 		}
 		const duration = week ? 7 * 24 * 60 * 60 * 1000 : 48 * 60 * 60 * 1000;
 		await Punishments.namelock(userid, Date.now() + duration, null, false, publicReason);
+		if (targetUser) Chat.runHandlers('onPunishUser', 'NAMELOCK', targetUser, room);
 		// Automatically upload replays as evidence/reference to the punishment
 		if (room?.battle) this.parse('/savereplay forpunishment');
 		Monitor.forceRenames.set(userid, false);
@@ -1948,6 +2100,9 @@ export const commands: Chat.ChatCommands = {
 	bl: 'blacklist',
 	forceblacklist: 'blacklist',
 	forcebl: 'blacklist',
+	permanentblacklist: 'blacklist',
+	permablacklist: 'blacklist',
+	permabl: 'blacklist',
 	blacklist(target, room, user, connection, cmd) {
 		room = this.requireRoom();
 		if (!target) return this.parse('/help blacklist');
@@ -1997,10 +2152,18 @@ export const commands: Chat.ChatCommands = {
 			);
 		}
 
-		this.privateModAction(`${name} was blacklisted from ${room.title} by ${user.name}.${reason ? ` (${reason})` : ''}`);
 
-		const affected = Punishments.roomBlacklist(room, targetUser, null, null, reason);
+		const expireTime = cmd.includes('perma') ? Date.now() + (10 * 365 * 24 * 60 * 60 * 1000) : null;
+		const action = expireTime ? 'PERMABLACKLIST' : 'BLACKLIST';
 
+		this.privateModAction(
+			`${name} was blacklisted from ${room.title} by ${user.name}${expireTime ? ' for ten years' : ''}.` +
+			`${reason ? ` (${reason})` : ''}`
+		);
+
+		const affected = Punishments.roomBlacklist(room, targetUser, expireTime, null, reason);
+
+		for (const u of affected) Chat.runHandlers('onPunishUser', 'BLACKLIST', u, room);
 		if (!room.settings.isPrivate && room.persist) {
 			const acAccount = (targetUser.autoconfirmed !== userid && targetUser.autoconfirmed);
 			let displayMessage = '';
@@ -2014,15 +2177,16 @@ export const commands: Chat.ChatCommands = {
 		}
 
 		if (!room.settings.isPrivate && room.persist) {
-			this.globalModlog("BLACKLIST", targetUser, reason);
+			this.globalModlog(action, targetUser, reason);
 		} else {
 			// Room modlog only
-			this.modlog("BLACKLIST", targetUser, reason);
+			this.modlog(action, targetUser, reason);
 		}
 		return true;
 	},
 	blacklisthelp: [
 		`/blacklist [username], [reason] - Blacklists the user from the room you are in for a year. Requires: # &`,
+		`/permablacklist OR /permabl - blacklist a user for 10 years. Requires: # &`,
 		`/unblacklist [username] - Unblacklists the user from the room you are in. Requires: # &`,
 		`/showblacklist OR /showbl - show a list of blacklisted users in the room. Requires: % @ # &`,
 		`/expiringblacklists OR /expiringbls - show a list of blacklisted users from the room whose blacklists are expiring in 3 months or less. Requires: % @ # &`,
@@ -2058,17 +2222,16 @@ export const commands: Chat.ChatCommands = {
 		if (Punishments.isBattleBanned(targetUser)) {
 			return this.errorReply(`User '${targetUser.name}' is already banned from battling.`);
 		}
-		const reasonText = reason ? ` (${reason})` : `.`;
-		this.privateGlobalModAction(`${targetUser.name} was banned from starting new battles by ${user.name}${reasonText}`);
+		this.privateGlobalModAction(`${targetUser.name} was banned from starting new battles by ${user.name} (${reason})`);
 
 		if (targetUser.trusted) {
 			Monitor.log(`[CrisisMonitor] Trusted user ${targetUser.name} was banned from battling by ${user.name}, and should probably be demoted.`);
 		}
 
-		this.globalModlog("BATTLEBAN", targetUser, reasonText);
+		this.globalModlog("BATTLEBAN", targetUser, reason);
 		Ladders.cancelSearches(targetUser);
 		await Punishments.battleban(targetUser, null, null, reason);
-		targetUser.popup(`|modal|${user.name} has prevented you from starting new battles for 2 days${reasonText}`);
+		targetUser.popup(`|modal|${user.name} has prevented you from starting new battles for 2 days (${reason})`);
 
 		// Automatically upload replays as evidence/reference to the punishment
 		if (room.battle) this.parse('/savereplay forpunishment');
@@ -2182,6 +2345,7 @@ export const commands: Chat.ChatCommands = {
 	ungroupchatbanhelp: [`/ungroupchatban [user] - Allows a groupchatbanned user to use groupchats again. Requires: % @ &`],
 
 	nameblacklist: 'blacklistname',
+	permablacklistname: 'blacklistname',
 	blacklistname(target, room, user) {
 		room = this.requireRoom();
 		if (!target) return this.parse('/help blacklistname');
@@ -2205,6 +2369,8 @@ export const commands: Chat.ChatCommands = {
 		if (duplicates.length) {
 			return this.errorReply(`[${duplicates.join(', ')}] ${Chat.plural(duplicates, "are", "is")} already blacklisted.`);
 		}
+		const expireTime = this.cmd.includes('perma') ? Date.now() + (10 * 365 * 24 * 60 * 60 * 1000) : null;
+		const action = expireTime ? 'PERMANAMEBLACKLIST' : 'NAMEBLACKLIST';
 
 		for (const userid of targets) {
 			if (!userid) return this.errorReply(`User '${userid}' is not a valid userid.`);
@@ -2212,24 +2378,26 @@ export const commands: Chat.ChatCommands = {
 				return this.errorReply(`/blacklistname - Access denied: ${userid} is of equal or higher authority than you.`);
 			}
 
-			Punishments.roomBlacklist(room, userid, null, null, reason);
+			Punishments.roomBlacklist(room, userid, expireTime, null, reason);
 
 			const trusted = Users.isTrusted(userid);
 			if (trusted && room.settings.isPrivate !== true) {
 				Monitor.log(`[CrisisMonitor] Trusted user ${userid}${(trusted !== userid ? ` (${trusted})` : ``)} was nameblacklisted from ${room.roomid} by ${user.name}, and should probably be demoted.`);
 			}
 			if (!room.settings.isPrivate && room.persist) {
-				this.globalModlog("NAMEBLACKLIST", userid, reason);
+				this.globalModlog(action, userid, reason);
 			}
 		}
 
 		this.privateModAction(
-			`${targets.join(', ')}${Chat.plural(targets, " were", " was")} nameblacklisted from ${room.title} by ${user.name}.`
+			`${targets.join(', ')}${Chat.plural(targets, " were", " was")} nameblacklisted from ${room.title} by ${user.name}` +
+			`${expireTime ? ' for ten years' : ''}.`
 		);
 		return true;
 	},
 	blacklistnamehelp: [
 		`/blacklistname OR /nameblacklist [name1, name2, etc.] | reason - Blacklists all name(s) from the room you are in for a year. Requires: # &`,
+		`/permablacklistname [name1, name2, etc.] | reason - Blacklists all name(s) from the room you are in for 10 years. Requires: # &`,
 	],
 
 	unab: 'unblacklist',

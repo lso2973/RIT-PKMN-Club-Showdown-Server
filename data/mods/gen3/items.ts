@@ -1,4 +1,4 @@
-export const Items: {[k: string]: ModdedItemData} = {
+export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	aguavberry: {
 		inherit: true,
 		onUpdate() {},
@@ -28,7 +28,7 @@ export const Items: {[k: string]: ModdedItemData} = {
 		onResidualSubOrder: 4,
 		onResidual(pokemon) {
 			if (pokemon.hp <= pokemon.maxhp / 2) {
-				if (this.runEvent('TryHeal', pokemon) && pokemon.useItem()) {
+				if (this.runEvent('TryHeal', pokemon, null, this.effect, 20) && pokemon.useItem()) {
 					this.heal(20);
 				}
 			}
@@ -83,6 +83,10 @@ export const Items: {[k: string]: ModdedItemData} = {
 		gen: 3,
 		isNonstandard: "Unobtainable",
 	},
+	fastball: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
 	figyberry: {
 		inherit: true,
 		onUpdate() {},
@@ -114,6 +118,10 @@ export const Items: {[k: string]: ModdedItemData} = {
 				return this.chainModify(1.1);
 			}
 		},
+	},
+	heavyball: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
 	},
 	iapapaberry: {
 		inherit: true,
@@ -160,6 +168,10 @@ export const Items: {[k: string]: ModdedItemData} = {
 			return accuracy * 0.95;
 		},
 	},
+	levelball: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
 	liechiberry: {
 		inherit: true,
 		onUpdate() {},
@@ -179,6 +191,14 @@ export const Items: {[k: string]: ModdedItemData} = {
 			}
 		},
 		onBasePower() {},
+	},
+	loveball: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	lureball: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
 	},
 	magnet: {
 		inherit: true,
@@ -220,6 +240,10 @@ export const Items: {[k: string]: ModdedItemData} = {
 				return this.chainModify(1.1);
 			}
 		},
+	},
+	moonball: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
 	},
 	mysticwater: {
 		inherit: true,
@@ -362,6 +386,10 @@ export const Items: {[k: string]: ModdedItemData} = {
 				return this.chainModify(1.1);
 			}
 		},
+	},
+	sportball: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
 	},
 	starfberry: {
 		inherit: true,

@@ -86,6 +86,7 @@ export const commands: Chat.ChatCommands = {
 		if (!useHTML) {
 			text = text.replace(/^>/, '&gt;');
 		} else {
+			text = text.replace(/\n/ig, '<br />');
 			text = this.checkHTML(text);
 		}
 
@@ -110,9 +111,9 @@ export const commands: Chat.ChatCommands = {
 		if (!(roomFaqs[room.roomid] && roomFaqs[room.roomid][topic])) return this.errorReply("Invalid topic.");
 		if (
 			room.settings.repeats?.length &&
-			room.settings.repeats.filter(x => x.faq && x.id === (getAlias(room!.roomid, topic) || topic)).length
+			room.settings.repeats.filter(x => x.faq && x.id === topic).length
 		) {
-			this.parse(`/msgroom ${room.roomid},/removerepeat ${getAlias(room.roomid, topic) || topic}`);
+			this.parse(`/msgroom ${room.roomid},/removerepeat ${topic}`);
 		}
 		delete roomFaqs[room.roomid][topic];
 		Object.keys(roomFaqs[room.roomid]).filter(
@@ -135,6 +136,10 @@ export const commands: Chat.ChatCommands = {
 
 		if (!(alias && topic)) return this.parse('/help roomfaq');
 		if (alias.length > 25) return this.errorReply("FAQ topics should not exceed 25 characters.");
+		if (alias === topic) return this.errorReply("You cannot make the alias have the same name as the topic.");
+		if (roomFaqs[room.roomid][alias] && !roomFaqs[room.roomid][alias].alias) {
+			return this.errorReply("You cannot overwrite an existing topic with an alias; please delete the topic first.");
+		}
 
 		if (!(roomFaqs[room.roomid] && topic in roomFaqs[room.roomid])) {
 			return this.errorReply(`The topic ${topic} was not found in this room's faq list.`);
@@ -166,9 +171,10 @@ export const commands: Chat.ChatCommands = {
 		if (!this.runBroadcast()) return;
 		const rfaq = roomFaqs[room.roomid][topic];
 		this.sendReplyBox(visualizeFaq(rfaq));
-		if (!this.broadcasting && user.can('ban', null, room, 'rfaq')) {
+		if (!this.broadcasting && user.can('ban', null, room, 'addfaq')) {
 			const code = Utils.escapeHTML(rfaq.source).replace(/\n/g, '<br />');
-			this.sendReplyBox(`<details><summary>Source</summary><code style="white-space: pre-wrap; display: table; tab-size: 3">/add${rfaq.html ? 'html' : ''}faq ${topic}, ${code}</code></details>`);
+			const command = rfaq.html ? 'addhtmlfaq' : 'addfaq';
+			this.sendReplyBox(`<details><summary>Source</summary><code style="white-space: pre-wrap; display: table; tab-size: 3">/${command} ${topic}, ${code}</code></details>`);
 		}
 	},
 	roomfaqhelp: [
@@ -209,8 +215,9 @@ export const pages: Chat.PageTable = {
 			}
 			if (user.can('ban', null, room, 'addfaq')) {
 				const src = Utils.escapeHTML(topic.source).replace(/\n/g, `<br />`);
+				const command = topic.html ? 'addhtmlfaq' : 'addfaq';
 				buf += `<hr /><details><summary>Raw text</summary>`;
-				buf += `<code style="white-space: pre-wrap; display: table; tab-size: 3;">/addfaq ${key}, ${src}</code></details>`;
+				buf += `<code style="white-space: pre-wrap; display: table; tab-size: 3;">/${command} ${key}, ${src}</code></details>`;
 				buf += `<hr /><button class="button" name="send" value="/msgroom ${room.roomid},/removefaq ${key}">Delete FAQ</button>`;
 			}
 			buf += `</div>`;

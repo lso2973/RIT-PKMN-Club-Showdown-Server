@@ -3,7 +3,7 @@ import {toID, BasicEffect} from './dex-data';
 import {EventMethods} from './dex-conditions';
 import {Tags} from '../data/tags';
 
-const DEFAULT_MOD = 'gen8';
+const DEFAULT_MOD = 'gen9';
 
 export interface FormatData extends Partial<Format>, EventMethods {
 	name: string;
@@ -11,12 +11,26 @@ export interface FormatData extends Partial<Format>, EventMethods {
 
 export type FormatList = (FormatData | {section: string, column?: number})[];
 export type ModdedFormatData = FormatData | Omit<FormatData, 'name'> & {inherit: true};
+export interface FormatDataTable {[id: IDEntry]: FormatData}
+export interface ModdedFormatDataTable {[id: IDEntry]: ModdedFormatData}
 
 type FormatEffectType = 'Format' | 'Ruleset' | 'Rule' | 'ValidatorRule';
 
 /** rule, source, limit, bans */
 export type ComplexBan = [string, string, number, string[]];
 export type ComplexTeamBan = ComplexBan;
+
+export interface GameTimerSettings {
+	dcTimer: boolean;
+	dcTimerBank: boolean;
+	starting: number;
+	grace: number;
+	addPerTurn: number;
+	maxPerTurn: number;
+	maxFirstTurn: number;
+	timeoutAutoChoose: boolean;
+	accelerate: boolean;
+}
 
 /**
  * A RuleTable keeps track of the rules that a format has. The key can be:
@@ -69,13 +83,13 @@ export class RuleTable extends Map<string, string> {
 		if (this.has(`+basepokemon:${toID(species.baseSpecies)}`)) return false;
 		if (this.has(`-basepokemon:${toID(species.baseSpecies)}`)) return true;
 		for (const tagid in Tags) {
-			const tag = Tags[tagid];
+			const tag = Tags[tagid as ID];
 			if (this.has(`-pokemontag:${tagid}`)) {
 				if ((tag.speciesFilter || tag.genericFilter)!(species)) return true;
 			}
 		}
 		for (const tagid in Tags) {
-			const tag = Tags[tagid];
+			const tag = Tags[tagid as ID];
 			if (this.has(`+pokemontag:${tagid}`)) {
 				if ((tag.speciesFilter || tag.genericFilter)!(species)) return false;
 			}
@@ -94,13 +108,13 @@ export class RuleTable extends Map<string, string> {
 		if (this.has(`+basepokemon:${toID(species.baseSpecies)}`)) return false;
 		if (this.has(`*basepokemon:${toID(species.baseSpecies)}`)) return true;
 		for (const tagid in Tags) {
-			const tag = Tags[tagid];
+			const tag = Tags[tagid as ID];
 			if (this.has(`*pokemontag:${tagid}`)) {
 				if ((tag.speciesFilter || tag.genericFilter)!(species)) return true;
 			}
 		}
 		for (const tagid in Tags) {
-			const tag = Tags[tagid];
+			const tag = Tags[tagid as ID];
 			if (this.has(`+pokemontag:${tagid}`)) {
 				if ((tag.speciesFilter || tag.genericFilter)!(species)) return false;
 			}
@@ -212,7 +226,8 @@ export class RuleTable extends Map<string, string> {
 		this.defaultLevel = Number(this.valueRules.get('defaultlevel')) || 0;
 		this.adjustLevel = Number(this.valueRules.get('adjustlevel')) || null;
 		this.adjustLevelDown = Number(this.valueRules.get('adjustleveldown')) || null;
-		this.evLimit = Number(this.valueRules.get('evlimit')) || null;
+		this.evLimit = Number(this.valueRules.get('evlimit'));
+		if (isNaN(this.evLimit)) this.evLimit = null;
 
 		if (this.valueRules.get('pickedteamsize') === 'Auto') {
 			this.pickedTeamSize = (
@@ -317,6 +332,10 @@ export class RuleTable extends Map<string, string> {
 			throw new Error(`maxForcedLevel is now a rule: "Adjust Level Down = NUMBER"`);
 		}
 	}
+
+	hasComplexBans() {
+		return (this.complexBans?.length > 0) || (this.complexTeamBans?.length > 0);
+	}
 }
 
 export class Format extends BasicEffect implements Readonly<BasicEffect> {
@@ -337,6 +356,8 @@ export class Format extends BasicEffect implements Readonly<BasicEffect> {
 	readonly rated: boolean | string;
 	/** Game type. */
 	readonly gameType: GameType;
+	/** Number of players, based on game type, for convenience */
+	readonly playerCount: 2 | 4;
 	/** List of rule names. */
 	readonly ruleset: string[];
 	/**
@@ -373,9 +394,9 @@ export class Format extends BasicEffect implements Readonly<BasicEffect> {
 	declare readonly queue?: ModdedBattleQueue;
 	declare readonly field?: ModdedField;
 	declare readonly actions?: ModdedBattleActions;
-	declare readonly cannotMega?: string[];
 	declare readonly challengeShow?: boolean;
 	declare readonly searchShow?: boolean;
+	declare readonly bestOfDefault?: boolean;
 	declare readonly threads?: string[];
 	declare readonly timer?: Partial<GameTimerSettings>;
 	declare readonly tournamentShow?: boolean;
@@ -384,6 +405,7 @@ export class Format extends BasicEffect implements Readonly<BasicEffect> {
 	) => string | null;
 	declare readonly getEvoFamily?: (this: Format, speciesid: string) => ID;
 	declare readonly getSharedPower?: (this: Format, pokemon: Pokemon) => Set<string>;
+	declare readonly getSharedItems?: (this: Format, pokemon: Pokemon) => Set<string>;
 	declare readonly onChangeSet?: (
 		this: TeamValidator, set: PokemonSet, format: Format, setHas?: AnyObject, teamHas?: AnyObject
 	) => string[] | void;
@@ -409,9 +431,10 @@ export class Format extends BasicEffect implements Readonly<BasicEffect> {
 
 	constructor(data: AnyObject) {
 		super(data);
+		// eslint-disable-next-line @typescript-eslint/no-this-alias
 		data = this;
 
-		this.mod = Utils.getString(data.mod) || 'gen8';
+		this.mod = Utils.getString(data.mod) || 'gen9';
 		this.effectType = Utils.getString(data.effectType) as FormatEffectType || 'Format';
 		this.debug = !!data.debug;
 		this.rated = (typeof data.rated === 'string' ? data.rated : data.rated !== false);
@@ -425,6 +448,7 @@ export class Format extends BasicEffect implements Readonly<BasicEffect> {
 		this.ruleTable = null;
 		this.onBegin = data.onBegin || undefined;
 		this.noLog = !!data.noLog;
+		this.playerCount = (this.gameType === 'multi' || this.gameType === 'freeforall' ? 4 : 2);
 	}
 }
 
@@ -537,7 +561,8 @@ export class DexFormats {
 			if (format.challengeShow === undefined) format.challengeShow = true;
 			if (format.searchShow === undefined) format.searchShow = true;
 			if (format.tournamentShow === undefined) format.tournamentShow = true;
-			if (format.mod === undefined) format.mod = 'gen8';
+			if (format.bestOfDefault === undefined) format.bestOfDefault = false;
+			if (format.mod === undefined) format.mod = 'gen9';
 			if (!this.dex.dexes[format.mod]) throw new Error(`Format "${format.name}" requires nonexistent mod: '${format.mod}'`);
 
 			const ruleset = new Format(format);
@@ -623,6 +648,9 @@ export class DexFormats {
 
 	getRuleTable(format: Format, depth = 1, repeals?: Map<string, number>): RuleTable {
 		if (format.ruleTable && !repeals) return format.ruleTable;
+		if (format.name.length > 50) {
+			throw new Error(`Format "${format.name}" has a name longer than 50 characters`);
+		}
 		if (depth === 1) {
 			const dex = this.dex.mod(format.mod);
 			if (dex !== this.dex) {
@@ -809,6 +837,16 @@ export class DexFormats {
 
 		ruleTable.resolveNumbers(format, this.dex);
 
+		const canMegaEvo = this.dex.gen <= 7 || ruleTable.has('+pokemontag:past');
+		if (ruleTable.has('obtainableformes') && canMegaEvo &&
+			ruleTable.isBannedSpecies(this.dex.species.get('rayquazamega')) &&
+			!ruleTable.isBannedSpecies(this.dex.species.get('rayquaza'))
+		) {
+			// Banning Rayquaza-Mega implicitly adds Mega Rayquaza Clause
+			// note that already having it explicitly in the ruleset is ok
+			ruleTable.set('megarayquazaclause', '');
+		}
+
 		for (const rule of ruleTable.keys()) {
 			if ("+*-!".includes(rule.charAt(0))) continue;
 			const subFormat = this.dex.formats.get(rule);
@@ -828,7 +866,6 @@ export class DexFormats {
 		case '-':
 		case '*':
 		case '+':
-			if (format?.team) throw new Error(`We don't currently support bans in generated teams`);
 			if (rule.slice(1).includes('>') || rule.slice(1).includes('+')) {
 				let buf = rule.slice(1);
 				const gtIndex = buf.lastIndexOf('>');
@@ -912,7 +949,7 @@ export class DexFormats {
 			if (table.hasOwnProperty(id)) {
 				if (matchType === 'pokemon') {
 					const species: Species = table[id] as Species;
-					if (species.otherFormes && ruleid !== species.id + toID(species.baseForme)) {
+					if ((species.otherFormes || species.cosmeticFormes) && ruleid !== species.id + toID(species.baseForme)) {
 						matches.push('basepokemon:' + id);
 						continue;
 					}

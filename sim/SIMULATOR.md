@@ -1,7 +1,7 @@
 Battle simulator
 ================
 
-Pokémon Showdown's simulator API is implemented as a `ReadWriteStream`. You write player choices to it, and you read protocol messages from it.
+Pokémon Showdown's simulator API is implemented as an `ObjectReadWriteStream` (as in [STREAMS.md](../lib/STREAMS.md)). You write player choices (strings) to it, and you read protocol messages (also strings) from it.
 
 `npm install pokemon-showdown`
 
@@ -22,7 +22,7 @@ stream.write(`>player p2 {"name":"Bob"}`);
 
 The stream can also be accessed from other programming languages using standard IO.
 
-In this case, you would clone the repository, and then run:
+In this case, you would clone the repository, and then run, for instance:
 
 ```bash
 echo '>start {"formatid":"gen7randombattle"}
@@ -30,6 +30,10 @@ echo '>start {"formatid":"gen7randombattle"}
 >player p2 {"name":"Bob"}
 ' | ./pokemon-showdown simulate-battle
 ```
+
+For the equivalent in your language, read your language's documentation on how to interact with a subprocess's standard IO.
+
+Doing this with standard IO requires a separate subprocess for each battle. Remember to add `\n` after each message you write to standard IO.
 
 
 Writing to the simulator
@@ -49,7 +53,7 @@ In a standard battle, what you write to the simulator looks something like this:
 >p2 move 2
 ```
 
-(In a data stream, messages should be delimited by `\n`; in an object stream, `\n` will be implicitly added after every message.)
+(In a text [standard IO] stream, messages should end with `\n`; in an object stream, `\n` will be implicitly added after every message.)
 
 Notice that every line starts with `>`. Lines not starting with `>` are comments, so that input logs can be mixed with output logs and/or normal text easily.
 
@@ -95,9 +99,9 @@ Sets player information:
 
 - `avatar` is a string for the player avatar (defaults to "")
 
-- `team` is a team (either in JSON or a string in [packed format][./TEAMS.md])
+- `team` is a team (either in JSON or a string in [packed format][teams])
 
-`team` will not be validated! [Use the team validator first][./TEAMS.md]. In random formats, `team` can be left out or set to `null` to have the team generator generate a random team for you.
+`team` will not be validated! [Use the team validator first][teams]. In random formats, `team` can be left out or set to `null` to have the team generator generate a random team for you.
 
 ```
 >p1 CHOICE
@@ -108,13 +112,14 @@ Sets player information:
 
 Makes a choice for a player. [Possible choices are documented in `SIM-PROTOCOL.md`][possible-choices].
 
+  [teams]: ./TEAMS.md
   [possible-choices]: ./SIM-PROTOCOL.md#possible-choices
 
 
 Reading from the simulator
 --------------------------
 
-The simulator will send back messages. In a data stream, they're delimited by `\n\n`. In an object stream, they will just be sent as separate strings.
+The simulator will send back messages. In a text (standard IO) stream, they're delimited by `\n\n`. In an object stream, they will just be sent as separate strings.
 
 Messages start with a message type followed by `\n`. A message will never have two `\n` in a row, so that `\n\n` unambiguously separates messages.
 

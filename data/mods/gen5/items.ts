@@ -1,4 +1,4 @@
-export const Items: {[k: string]: ModdedItemData} = {
+export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	aguavberry: {
 		inherit: true,
 		naturalGift: {
@@ -298,10 +298,6 @@ export const Items: {[k: string]: ModdedItemData} = {
 			basePower: 70,
 			type: "Dragon",
 		},
-	},
-	normalgem: {
-		inherit: true,
-		isNonstandard: null,
 	},
 	occaberry: {
 		inherit: true,

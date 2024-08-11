@@ -2,12 +2,16 @@
 
 /**
  * The server port - the port to run Pokemon Showdown under
+ *
+ * @type {number}
  */
 exports.port = 8000;
 
 /**
  * The server address - the address at which Pokemon Showdown should be hosting
  *   This should be kept set to 0.0.0.0 unless you know what you're doing.
+ *
+ * @type {string}
  */
 exports.bindaddress = '0.0.0.0';
 
@@ -96,10 +100,12 @@ exports.proxyip = false;
  *
  * Write heapdumps if that processs run out of memory.
  *
- * If you wish to enable this, you will need to install node-oom-heapdump,
- * as it is sometimes not installed by default:
+ * If you wish to enable this, you will need to install node-oom-heapdump:
  *
- *     $ npm install node-oom-heapdump
+ *     $ npm install --no-save node-oom-heapdump
+ *
+ * We don't install it by default because it's super flaky and frequently
+ * crashes the installation process.
  *
  * You might also want to signal processes to put them in debug mode, for
  * access to on-demand heapdumps.
@@ -127,6 +133,8 @@ exports.debugdexsearchprocesses = true;
  * Pokemon of the Day - put a pokemon's name here to make it Pokemon of the Day
  *   The PotD will always be in the #2 slot (not #1 so it won't be a lead)
  *   in every Random Battle team.
+ *
+ * @type {ID}
  */
 exports.potd = '';
 
@@ -237,6 +245,7 @@ exports.reportjoinsperiod = 0;
  * report battles - shows messages like "OU battle started" in the lobby
  *   This feature can lag larger servers - turn this off if your server is
  *   getting more than 160 or so users.
+ *  @type {boolean | string[] | string}
  */
 exports.reportbattles = true;
 
@@ -254,6 +263,30 @@ exports.reportbattlejoins = true;
  *   Set this to 0 to turn the monitor off.
  */
 exports.monitorminpunishments = 3;
+
+/**
+ * Turns off all time-based throttles - rename, challenges, laddering, etc.
+ */
+exports.nothrottle = false;
+
+/**
+ * Removes all ip-based alt checking.
+ */
+exports.noipchecks = false;
+
+/**
+ * controls the behavior of the /battlesearch command
+ *
+ * valid values are:
+ *   - true: disables battlesearch entirely
+ *   - false: enables the node.js /battlesearch
+ * 	   (uses either node fs or ripgrep for searching)
+ *   - 'psbattletools': defaults to the psbattletools /battlesearch (normally available as /alternatebattlesearch)
+ * 	   (uses psbattletools, which must be installed, for searching)
+ *
+ * @type {boolean | 'psbattletools'}
+ */
+exports.nobattlesearch = false;
 
 /**
  * allow punishmentmonitor to lock users with multiple roombans.
@@ -306,6 +339,8 @@ exports.laddermodchat = false;
  * forced timer - force the timer on for all battles
  *   Players will be unable to turn it off.
  *   This setting can also be turned on with the command /forcetimer.
+ *
+ * @type {boolean}
  */
 exports.forcetimer = false;
 
@@ -340,7 +375,7 @@ exports.backdoor = true;
  * the `console` permission in order to use the dev console.
  * Setting this to an empty array ([]) will disable the dev console.
  */
-exports.consoleips = ['127.0.0.1', 'broil'];
+exports.consoleips = ['127.0.0.1'];
 
 /**
  * Whether to watch the config file for changes. If this is enabled,
@@ -385,23 +420,20 @@ exports.inactiveuserthreshold = 1000 * 60 * 60;
  * autolockdown - whether or not to automatically kill the server when it is
  * in lockdown mode and the final battle finishes.  This is potentially useful
  * to prevent forgetting to restart after a lockdown where battles are finished.
+ *
+ * @type {boolean}
  */
 exports.autolockdown = true;
 
 /**
- * Custom avatars.
- * This allows you to specify custom avatar images for users on your server.
- * Place custom avatar files under the /config/avatars/ directory.
- * Users must be specified as userids -- that is, you must make the name all
- * lowercase and remove non-alphanumeric characters.
+ * noguestsecurity - purely for development servers: allows logging in without
+ * a signed token: simply send `/trn [USERNAME]`. This allows using PS without
+ * a login server.
  *
- * Your server *must* be registered in order for your custom avatars to be
- * displayed in the client.
- * @type {{[userid: string]: string}}
+ * Logging in this way will make you considered an unregistered user and grant
+ * no authority. You cannot log into a trusted (g+/r%) user account this way.
  */
-exports.customavatars = {
-	// 'userid': 'customavatar.png'
-};
+exports.noguestsecurity = false;
 
 /**
  * tourroom - specify a room to receive tournament announcements (defaults to
@@ -445,7 +477,7 @@ exports.disablehotpatchall = false;
  * Battles involving user IDs which begin with one of the prefixes configured here
  * will be unaffected by various battle privacy commands such as /modjoin, /hideroom
  * or /ionext.
- * @type {string[]}
+ * @type {string[] | undefined}
  */
 exports.forcedpublicprefixes = [];
 
@@ -455,6 +487,11 @@ exports.forcedpublicprefixes = [];
  */
 exports.startuphook = function () {};
 
+/**
+ * lastfmkey - the API key to let users use the last.fm commands from The Studio's
+ * chat plugin.
+ */
+exports.lastfmkey = '';
 
 /**
  * chatlogreader - the search method used for searching chatlogs.
@@ -535,6 +572,7 @@ exports.grouplist = [
 		roomdriver: true,
 		forcewin: true,
 		declare: true,
+		addhtml: true,
 		rangeban: true,
 		makeroom: true,
 		editroom: true,
@@ -544,6 +582,7 @@ exports.grouplist = [
 		gdeclare: true,
 		gamemanagement: true,
 		exportinputlog: true,
+		tournaments: true,
 	},
 	{
 		symbol: '#',
@@ -556,27 +595,12 @@ exports.grouplist = [
 		roombot: true,
 		roommod: true,
 		roomdriver: true,
+		roomprizewinner: true,
 		editroom: true,
 		declare: true,
 		addhtml: true,
 		gamemanagement: true,
-	},
-	{
-		symbol: '*',
-		id: "bot",
-		name: "Bot",
-		inherit: '%',
-		jurisdiction: 'u',
-		globalGroupInPersonalRoom: '*',
-
-		addhtml: true,
-		declare: true,
-		bypassafktimer: true,
-
-		ip: false,
-		globalban: false,
-		lock: false,
-		alts: false,
+		tournaments: true,
 	},
 	{
 		symbol: '\u2605',
@@ -587,8 +611,10 @@ exports.grouplist = [
 		roomonly: true,
 
 		declare: true,
-		modchat: true,
+		modchat: 'a',
 		gamemanagement: true,
+		forcewin: true,
+		tournaments: true,
 		joinbattle: true,
 	},
 	{
@@ -606,7 +632,6 @@ exports.grouplist = [
 		forcerename: true,
 		ip: true,
 		alts: '@u',
-		tournaments: true,
 		game: true,
 	},
 	{
@@ -633,6 +658,37 @@ exports.grouplist = [
 		joinbattle: true,
 		minigame: true,
 		modchat: true,
+		hiderank: true,
+	},
+	{
+		symbol: '\u00a7',
+		id: "sectionleader",
+		name: "Section Leader",
+		inherit: '+',
+		jurisdiction: 'u',
+	},
+	{
+		// Bots are ranked below Driver/Mod so that Global Bots can be kept out
+		// of modjoin % rooms (namely, Staff).
+		// (They were previously above Driver/Mod so they can have game management
+		// permissions drivers don't, but these permissions can be manually given.)
+		symbol: '*',
+		id: "bot",
+		name: "Bot",
+		inherit: '%',
+		jurisdiction: 'u',
+
+		addhtml: true,
+		tournaments: true,
+		declare: true,
+		bypassafktimer: true,
+		gamemanagement: true,
+
+		ip: false,
+		globalban: false,
+		lock: false,
+		forcerename: false,
+		alts: false,
 	},
 	{
 		symbol: '\u2606',
@@ -645,7 +701,6 @@ exports.grouplist = [
 		modchat: true,
 		editprivacy: true,
 		gamemanagement: true,
-		tournaments: true,
 		joinbattle: true,
 		nooverride: true,
 	},
@@ -662,6 +717,12 @@ exports.grouplist = [
 		showmedia: true,
 		exportinputlog: true,
 		importinputlog: true,
+	},
+	{
+		symbol: '^',
+		id: "prizewinner",
+		name: "Prize Winner",
+		roomonly: true,
 	},
 	{
 		symbol: 'whitelist',

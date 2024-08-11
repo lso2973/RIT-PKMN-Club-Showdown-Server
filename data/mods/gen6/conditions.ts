@@ -1,4 +1,4 @@
-export const Conditions: {[k: string]: ModdedConditionData} = {
+export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDataTable = {
 	brn: {
 		inherit: true,
 		onResidual(pokemon) {
@@ -8,9 +8,12 @@ export const Conditions: {[k: string]: ModdedConditionData} = {
 	par: {
 		inherit: true,
 		onModifySpe(spe, pokemon) {
+			// Paralysis occurs after all other Speed modifiers, so evaluate all modifiers up to this point first
+			spe = this.finalModify(spe);
 			if (!pokemon.hasAbility('quickfeet')) {
-				return this.chainModify(0.25);
+				spe = Math.floor(spe * 25 / 100);
 			}
+			return spe;
 		},
 	},
 	confusion: {

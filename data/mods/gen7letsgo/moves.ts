@@ -1,4 +1,4 @@
-export const Moves: {[k: string]: ModdedMoveData} = {
+export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	absorb: {
 		inherit: true,
 		basePower: 40,
@@ -39,10 +39,10 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 	},
 	metronome: {
 		inherit: true,
+		desc: "A random move that was introduced in gen 1 is selected for use, other than Counter, Mimic, Mirror Move, Struggle, or Transform.",
+		shortDesc: "Picks a random move from gen 1.",
 		onHit(target, source, effect) {
-			const moves = this.dex.moves.all().filter(
-				move => !move.realMove && move.gen === 1 && !effect.noMetronome!.includes(move.name)
-			);
+			const moves = this.dex.moves.all().filter(move => move.gen === 1 && move.flags['metronome']);
 			let randomMove = '';
 			if (moves.length) {
 				moves.sort((a, b) => a.num - b.num);
@@ -82,7 +82,9 @@ export const Moves: {[k: string]: ModdedMoveData} = {
 		shortDesc: "User switches out.",
 		priority: -6,
 		selfSwitch: true,
-		onTry: true,
+		onTry(source) {
+			return !!this.canSwitch(source.side);
+		},
 	},
 	zippyzap: {
 		inherit: true,

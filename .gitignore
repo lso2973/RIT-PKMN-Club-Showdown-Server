@@ -1,5 +1,6 @@
+/config/*
 !/config/formats.ts
-/logs/*
+/logs/**/*
 /test/modlogs
 /test/replays/*.html
 /node_modules
@@ -10,7 +11,6 @@
 npm-debug.log
 .eslintcache
 .eslintcache-no-types
-package-lock.json
 /tools/set-import/sets
 databases/*.db*
 *.o
@@ -21,6 +21,10 @@ tools/set-import/importer.js
 tools/modlog/converter.js
 *.tsbuildinfo
 **/sourceMaps
+
+!test/**/*.js
+tools/modlog/**/*.js
+tools/set-import/*.js
 
 # visual studio live share
 .vs
@@ -65,6 +69,5 @@ local_settings.py
 .svn
 
 pip-log.txt
-config/chat-plugins/mafia-logs.json
-config/chatrooms.json
-config/chat-plugins/mafia-logs.json
+# redis dumps
+*.rdb

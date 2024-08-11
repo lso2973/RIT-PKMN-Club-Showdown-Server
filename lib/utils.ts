@@ -64,6 +64,22 @@ export function stripHTML(htmlContent: string) {
 }
 
 /**
+ * Maps numbers to their ordinal string.
+ */
+export function formatOrder(place: number) {
+	// anything between 10 and 20 should always end with -th
+	let remainder = place % 100;
+	if (remainder >= 10 && remainder <= 20) return place + 'th';
+
+	// follow standard rules with -st, -nd, -rd, and -th
+	remainder = place % 10;
+	if (remainder === 1) return place + 'st';
+	if (remainder === 2) return place + 'nd';
+	if (remainder === 3) return place + 'rd';
+	return place + 'th';
+}
+
+/**
  * Visualizes eval output in a slightly more readable form
  */
 export function visualize(value: any, depth = 0): string {
@@ -290,16 +306,22 @@ export function clearRequireCache(options: {exclude?: string[]} = {}) {
 	excludes.push('/node_modules/');
 
 	for (const path in require.cache) {
-		let skip = false;
-		for (const exclude of excludes) {
-			if (path.includes(exclude)) {
-				skip = true;
-				break;
-			}
-		}
-
-		if (!skip) delete require.cache[path];
+		if (excludes.some(p => path.includes(p))) continue;
+		const mod = require.cache[path]; // have to ref to appease ts
+		if (!mod) continue;
+		uncacheModuleTree(mod, excludes);
+		delete require.cache[path];
 	}
+}
+
+export function uncacheModuleTree(mod: NodeJS.Module, excludes: string[]) {
+	if (!mod.children?.length || excludes.some(p => mod.filename.includes(p))) return;
+	for (const [i, child] of mod.children.entries()) {
+		if (excludes.some(p => child.filename.includes(p))) continue;
+		mod.children?.splice(i, 1);
+		uncacheModuleTree(child, excludes);
+	}
+	delete (mod as any).children;
 }
 
 export function deepClone(obj: any): any {
@@ -310,6 +332,20 @@ export function deepClone(obj: any): any {
 		clone[key] = deepClone(obj[key]);
 	}
 	return clone;
+}
+
+export function deepFreeze<T>(obj: T): T {
+	if (obj === null || typeof obj !== 'object') return obj;
+	// support objects with reference loops
+	if (Object.isFrozen(obj)) return obj;
+
+	Object.freeze(obj);
+	if (Array.isArray(obj)) {
+		for (const elem of obj) deepFreeze(elem);
+	} else {
+		for (const elem of Object.values(obj)) deepFreeze(elem);
+	}
+	return obj;
 }
 
 export function levenshtein(s: string, t: string, l: number): number {
@@ -378,12 +414,15 @@ export function formatSQLArray(arr: unknown[], args?: unknown[]) {
 }
 
 export class Multiset<T> extends Map<T, number> {
+	get(key: T) {
+		return super.get(key) ?? 0;
+	}
 	add(key: T) {
-		this.set(key, (this.get(key) ?? 0) + 1);
+		this.set(key, this.get(key) + 1);
 		return this;
 	}
 	remove(key: T) {
-		const newValue = (this.get(key) ?? 0) - 1;
+		const newValue = this.get(key) - 1;
 		if (newValue <= 0) return this.delete(key);
 		this.set(key, newValue);
 		return true;

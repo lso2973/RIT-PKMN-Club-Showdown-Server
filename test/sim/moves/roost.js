@@ -2,7 +2,7 @@
 
 const assert = require('./../../assert');
 const common = require('./../../common');
-const Sim = require('./../../../sim');
+const Sim = require('./../../../dist/sim');
 
 let battle;
 
@@ -73,10 +73,27 @@ describe('Roost', function () {
 	it('should treat a pure Flying pokémon as Normal type', function () {
 		battle = common.createBattle();
 		battle.setPlayer('p1', {team: [{species: "Tornadus", item: 'focussash', ability: 'prankster', moves: ['roost']}]});
-		battle.setPlayer('p2', {team: [{species: "Gastly", item: 'laggingtail', ability: 'levitate', moves: ['astonish']}]});
+		battle.setPlayer('p2', {team: [{species: "Gastly", item: 'laggingtail', ability: 'levitate', moves: ['astonish', 'trickortreat']}]});
 		battle.makeChoices('move roost', 'move astonish');
 		battle.makeChoices('move roost', 'move astonish');
 		assert.equal(battle.p1.active[0].hp, battle.p1.active[0].maxhp); // Immune to Astonish
+
+		// Ensure that it also replaces the Flying type with Normal even when there is an added type
+		battle.makeChoices('move roost', 'move trickortreat');
+		battle.makeChoices('move roost', 'move astonish');
+		battle.makeChoices('move roost', 'move astonish');
+		assert.equal(battle.p1.active[0].hp, battle.p1.active[0].maxhp); // Immune to Astonish
+	});
+
+	it('should not remove Flying type during Terastallization', function () {
+		battle = common.createBattle([[
+			{species: "Dudunsparce", ability: "runaway", moves: ['sleeptalk', 'roost'], teraType: "Flying"},
+		], [
+			{species: "Chansey", ability: "naturalcure", moves: ['earthquake']},
+		]]);
+		battle.makeChoices();
+		battle.makeChoices('move roost terastallize', 'auto');
+		assert.fullHP(battle.p1.active[0]);
 	});
 });
 

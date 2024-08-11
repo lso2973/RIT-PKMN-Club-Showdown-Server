@@ -69,16 +69,18 @@ export const Scripts: ModdedBattleScriptsData = {
 			// Mod 2 (Damage is floored after all multipliers are in)
 			baseDamage = Math.floor(this.battle.runEvent('ModifyDamagePhase2', pokemon, target, move, baseDamage));
 
-			// this is not a modifier
-			baseDamage = this.battle.randomizer(baseDamage);
-
 			// STAB
-			if (move.forceSTAB || type !== '???' && pokemon.hasType(type)) {
-				// The "???" type never gets STAB
-				// Not even if you Roost in Gen 4 and somehow manage to use
-				// Struggle in the same turn.
-				// (On second thought, it might be easier to get a MissingNo.)
-				baseDamage = this.battle.modify(baseDamage, move.stab || 1.5);
+			// The "???" type never gets STAB
+			// Not even if you Roost in Gen 4 and somehow manage to use
+			// Struggle in the same turn.
+			// (On second thought, it might be easier to get a MissingNo.)
+			if (type !== '???') {
+				let stab: number | [number, number] = 1;
+				if (move.forceSTAB || pokemon.hasType(type)) {
+					stab = 1.5;
+				}
+				stab = this.battle.runEvent('ModifySTAB', pokemon, target, move, stab);
+				baseDamage = this.battle.modify(baseDamage, stab);
 			}
 			// types
 			let typeMod = target.runEffectiveness(move);
@@ -103,6 +105,9 @@ export const Scripts: ModdedBattleScriptsData = {
 
 			// Final modifier.
 			baseDamage = this.battle.runEvent('ModifyDamage', pokemon, target, move, baseDamage);
+
+			// this is not a modifier
+			baseDamage = this.battle.randomizer(baseDamage);
 
 			if (!Math.floor(baseDamage)) {
 				return 1;
@@ -228,7 +233,7 @@ export const Scripts: ModdedBattleScriptsData = {
 						lacksTarget = !target.isAdjacent(pokemon);
 					}
 				}
-				if (lacksTarget && !move.isFutureMove) {
+				if (lacksTarget && !move.flags['futuremove']) {
 					this.battle.attrLastMove('[notarget]');
 					this.battle.add('-notarget', pokemon);
 					return false;
@@ -451,7 +456,7 @@ export const Scripts: ModdedBattleScriptsData = {
 			}
 
 			if (move.recoil && move.totalDamage) {
-				this.battle.damage(this.calcRecoilDamage(move.totalDamage, move), pokemon, target, 'recoil');
+				this.battle.damage(this.calcRecoilDamage(move.totalDamage, move, pokemon), pokemon, target, 'recoil');
 			}
 
 			if (target && pokemon !== target) target.gotAttacked(move, damage, pokemon);

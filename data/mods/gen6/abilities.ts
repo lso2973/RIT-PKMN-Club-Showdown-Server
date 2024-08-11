@@ -1,8 +1,8 @@
-export const Abilities: {[k: string]: ModdedAbilityData} = {
+export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
 	aerilate: {
 		inherit: true,
 		onBasePower(basePower, pokemon, target, move) {
-			if (move.aerilateBoosted) return this.chainModify([5325, 4096]);
+			if (move.typeChangerBoosted === this.effect) return this.chainModify([5325, 4096]);
 		},
 		rating: 4.5,
 	},
@@ -54,6 +54,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 				move.type = 'Normal';
 			}
 		},
+		onBasePower() {},
 		rating: -1,
 	},
 	parentalbond: {
@@ -64,14 +65,14 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	pixilate: {
 		inherit: true,
 		onBasePower(basePower, pokemon, target, move) {
-			if (move.pixilateBoosted) return this.chainModify([5325, 4096]);
+			if (move.typeChangerBoosted === this.effect) return this.chainModify([5325, 4096]);
 		},
 		rating: 4.5,
 	},
 	refrigerate: {
 		inherit: true,
 		onBasePower(basePower, pokemon, target, move) {
-			if (move.refrigerateBoosted) return this.chainModify([5325, 4096]);
+			if (move.typeChangerBoosted === this.effect) return this.chainModify([5325, 4096]);
 		},
 		rating: 4.5,
 	},
@@ -121,6 +122,6 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	},
 	zenmode: {
 		inherit: true,
-		isPermanent: false,
+		flags: {failroleplay: 1, noentrain: 1, notrace: 1},
 	},
 };

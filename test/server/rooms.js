@@ -21,8 +21,8 @@ describe('Rooms features', function () {
 	describe('BasicRoom', function () {
 		describe('getGame', function () {
 			it('should return the game only when the gameids match', function () {
-				const Hangman = require('../../server/chat-plugins/hangman').Hangman;
-				const UNO = require('../../server/chat-plugins/uno').UNO;
+				const Hangman = require('../../dist/server/chat-plugins/hangman').Hangman;
+				const UNO = require('../../dist/server/chat-plugins/uno').UNO;
 				const room = Rooms.createChatRoom('r/relationshipadvice');
 				const game = new Hangman(room, makeUser(), 'There\'s a lot of red flags here');
 				room.game = game;
@@ -58,8 +58,10 @@ describe('Rooms features', function () {
 			for (const option of options) {
 				room = Rooms.createBattle({
 					format: 'customgame',
-					p1: {user: p1, team: packedTeam},
-					p2: {user: p2, team: packedTeam},
+					players: [
+						{user: p1, team: packedTeam},
+						{user: p2, team: packedTeam},
+					],
 					...option,
 				});
 				assert(room.battle.p1 && room.battle.p2); // Automatically joined
@@ -73,8 +75,10 @@ describe('Rooms features', function () {
 			const p2 = makeUser();
 			room = Rooms.createBattle({
 				format: 'customgame',
-				p1: {user: p1, team: packedTeam},
-				p2: {user: p2, team: packedTeam},
+				players: [
+					{user: p1, team: packedTeam},
+					{user: p2, team: packedTeam},
+				],
 				rated: false,
 				auth: {},
 				tour: {
@@ -95,14 +99,10 @@ describe('Rooms features', function () {
 			administrator.tempGroup = '~';
 			room = Rooms.createBattle({
 				format: 'customgame',
-				p1: {
-					user: p1,
-					team: packedTeam,
-				},
-				p2: {
-					user: p2,
-					team: packedTeam,
-				},
+				players: [
+					{user: p1, team: packedTeam},
+					{user: p2, team: packedTeam},
+				],
 				rated: false,
 				auth: {},
 				tour: {
