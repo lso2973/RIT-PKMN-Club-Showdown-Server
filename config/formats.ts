@@ -19,6 +19,61 @@ The column value will be ignored for repeat sections.
 
 export const Formats: import('../sim/dex-formats').FormatList = [
 
+	// RIT-Specific formats
+	// This includes Super Tiger Bros. for now, a modification of the
+	// Super Staff Bros. mod from stock Pokemon Showdown.
+	// In the future, more formats may be added.
+	///////////////////////////////////////////////////////////////////
+
+	{
+		section: "RIT-Specific Formats"
+	},
+		// Implement Super Tiger Bros
+	{
+		name: "[Gen 9] Super Tiger Bros",
+		desc: "The club's unique take on Super Staff Bros. Developed by Brian (Banded Bonks), Jolyne (TacocaT_2595), Joe (broil) and Lily (ya-da-ne).",
+		threads: [
+			`&bullet; <a href="https://docs.google.com/document/d/16Pqc6xW09PqmdP6lAKJwaGSrjDLUH4Po2x-6jSuS4jk/edit?usp=sharing">Roster</a>`,
+		],
+
+		mod: 'stb',
+		team: 'randomStaffBros',
+		// add Terastal clause to prevent use of the Terastallization gimmick
+		ruleset: ['Dynamax Clause', 'Terastal Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
+		onBegin() {
+			this.add(`raw|<div class='broadcast-green'><b>Wondering what all these custom moves, abilities, and items do?<br />Check out the <a href="https://docs.google.com/document/d/16Pqc6xW09PqmdP6lAKJwaGSrjDLUH4Po2x-6jSuS4jk/edit?usp=sharing" target="_blank">Super Tiger Bros Guide</a>!</b></div>`);
+			this.add('message', 'A big thanks to Brian (Banded Bonks), Jolyne (TacocaT_2595), Joe (broil) and Lily (ya-da-ne) for developing this format!');
+			this.add('message', '');
+			// try testing new messages
+			/*this.add('message', [
+				'THE BATTLE FOR SURVIVAL BEGINS!', 'WHO WILL SURVIVE?', 'GET READY TO KEEP UP!', 'GET READY!', 'DARE TO BELIEVE YOU CAN SURVIVE!', 'THERE CAN BE ONLY ONE WINNER!', 'GET READY FOR THE FIGHT OF YOUR LIFE!', 'WHO WILL PREVAIL?', 'ONLY ONE TEAM WILL BE LEFT STANDING!', 'BATTLE WITHOUT LIMITS!',
+			][this.random(10)]);
+			*/
+			this.add('message', ['WELCOME TO THE THUNDERDOOOOOOOOOOOOOOOOOOME', 'STEEL THYSELVES FOR GLORIOUS COMBAT', 'READY! TO FIGHT'][this.random(3)]);
+			this.add('message', 'GO!');
+		},
+		onSwitchInPriority: 100,
+		onSwitchIn(pokemon) {
+			let name: string = this.toID(pokemon.illusion ? pokemon.illusion.name : pokemon.name);
+			if (this.dex.species.get(name).exists || this.dex.moves.get(name).exists || this.dex.abilities.get(name).exists) {
+				// Certain pokemon have volatiles named after their id
+				// To prevent overwriting those, and to prevent accidentaly leaking
+				// that a pokemon is on a team through the onStart even triggering
+				// at the start of a match, users with pokemon names will need their
+				// statuses to end in "user".
+				name = name + 'user';
+			}
+			// Add the mon's status effect to it as a volatile.
+			const status = this.dex.conditions.get(name);
+			if (status?.exists) {
+				pokemon.addVolatile(name, pokemon);
+			}
+		},
+	},	
+		// implement RIT Gym Challenge and RRC Draft formats eventually...
+
+	/////////////////////END RIT-SPECIFIC FORMATS//////////////////////
+
 	// S/V Singles
 	///////////////////////////////////////////////////////////////////
 
