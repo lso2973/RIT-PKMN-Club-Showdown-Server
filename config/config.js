@@ -13,7 +13,7 @@ exports.port = 8000;
  *
  * @type {string}
  */
-exports.bindaddress = '0.0.0.0';
+exports.bindaddress = '129.21.124.53';
 
 /**
  * workers - the number of networking child processes to spawn
@@ -61,7 +61,15 @@ exports.wsdeflate = {
  *  something.
  * @type {{port: number, options: {key: string, cert: string}} | null}
  */
-exports.ssl = null;
+// key and cert generated through use of the following shell script:
+// https://github.com/antelle/generate-ip-cert/tree/master
+exports.ssl = {
+	port: 443,
+	options: {
+		key: './config/ssl/key.pem',
+		cert: './config/ssl/cert.pem',
+	},
+};
 
 /*
 // example:
