@@ -3031,7 +3031,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 				}
 
 				// Walking Wake must be on mono-Water or mono-Dragon
-				if (set.species === "Archaludon" && typeValue[typeKey.indexOf("Water")] < entryCount - 1 &&
+				if (set.species === "Walking Wake" && typeValue[typeKey.indexOf("Water")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Dragon")] < entryCount - 1) {
 					return [`Walking Wake is not a valid wild card.`];
 				}
