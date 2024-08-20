@@ -71,7 +71,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		},
 	},
 	*/
-	
+
 	// implement RIT Gym Challenge and RRC Draft formats
 
 	// Gym Leader Tournament ('24-'25)
@@ -79,7 +79,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 9] Gym Leader Tournament '24-'25",
 		desc: "Use this format to practice for RIT's official Gym Leader Tournament!",
 		threads: [
-			`&bullet; <a href=https://docs.google.com/document/d/1LTlDQpHVVxvaxjFz2_ZxAS7tQg_MwBF_EBxjfNaLTiI/edit?pli=1>Gym Challenge Rules</a>`
+			`&bullet; <a href=https://docs.google.com/document/d/1LTlDQpHVVxvaxjFz2_ZxAS7tQg_MwBF_EBxjfNaLTiI/edit?pli=1>Gym Challenge Rules</a>`,
 		],
 		mod: 'gen9',
 		ruleset: ['Gym Leader Clause', 'Standard'],
@@ -89,12 +89,12 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			// a Dark-type and banned as a Wildcard, which means that it is legal but only for
 			// teams using mono-Dark. Wildcard bans are covered by Gym Leader Clause in the ruleset.)
 			// Urshifu-Base refers to Urshifu-Single-Strike.
-			'Arceus', 'Baxcalibur', 'Calyrex-Ice', 'Calyrex-Shadow', 'Chien-Pao', 'Chi-Yu', 'Deoxys-Base', 'Deoxys-Attack', 
+			'Arceus', 'Baxcalibur', 'Calyrex-Ice', 'Calyrex-Shadow', 'Chien-Pao', 'Chi-Yu', 'Deoxys-Base', 'Deoxys-Attack',
 			'Dialga', 'Dialga-Origin', 'Eternatus', 'Flutter-Mane', 'Giratina', 'Giratina-Origin', 'Gliscor', 'Groudon',
 			'Ho-Oh', 'Iron-Bundle', 'Kingambit', 'Koraidon', 'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Lugia', 'Lunala',
 			'Magearna', 'Mewtwo', 'Miraidon', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Palafin', 'Palkia', 'Palkia-Origin',
 			'Rayquaza', 'Reshiram', 'Shaymin-Sky', 'Solgaleo', 'Urshifu-Base', 'Zacian', 'Zacian-Crowned', 'Zamazenta',
-			'Zamazenta-Crowned', 'Zekrom', 
+			'Zamazenta-Crowned', 'Zekrom',
 			// Moves banned
 			'Baton Pass', 'Dire Claw', 'Last Respects', 'Rage Fist', 'Shed Tail', 'Swagger',
 			// Items banned
@@ -109,9 +109,9 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	// Gym Challenge (Doubles) '24-'25
 
 
-	/////////////////////END RIT-SPECIFIC FORMATS//////////////////////
+	// ///////////////////END RIT-SPECIFIC FORMATS//////////////////////
 
-	// S/V Singles 
+	// S/V Singles
 	///////////////////////////////////////////////////////////////////
 
 	{
