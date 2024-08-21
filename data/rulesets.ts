@@ -2867,19 +2867,28 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 
 	// Custom clause for Gym Leader Tournament to enforce both Wildcard bans
 	// and to enforce the strict Wildcard limit of 1 per team.
+	// This clause is flexible such that, if a person wishes to run a standard
+	// monotype team, the 6th Pokemon will be considered to be the team's wildcard by 
+	// default. It will still maintain the Wildcard banlist's stipulation of wildcards
+	// not being allowed to Terastallize, however.
 	gymleaderclause: {
 		effectType: 'ValidatorRule',
 		name: 'Gym Leader Clause',
-		desc: "All Pok\u00e9mon except one must share a type.",
-		onBegin() {
-			this.add('rule', 'Gym Leader Clause: All Pok\u00e9mon except one must share a type.');
-		},
+		desc: "All Pok\u00e9mon except one must share a type. Only your Wildcard may Terastallize.",
 		onValidateTeam(team) {
+			// Initialize two arrays:
+			// One for keeping track of what types appear
+			// on this team, and...
 			const typeKey: string[] = [];
+			// ...another for keeping track of how many times
+			// a given type is represented on the team.
 			const typeValue: number[] = [];
 			let entryCount = 0;
+			// For all of the sets on this team:
 			for (const [, set] of team.entries()) {
 				entryCount++;
+				// Get the species and record its type, if
+				// it is valid.
 				const species = this.dex.species.get(set.species);
 				if (!species.types) return [`Invalid Pok\u00e9mon ${set.name || set.species}`];
 				for (const type of species.types) {
@@ -2892,17 +2901,74 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 				}
 			}
 
+			// Determine the team's type.
 			let max = 0;
+			let currentIndex = 0;
+			let typeIndex = 0;
 			for (const count of typeValue) {
 				if (count > max) {
 					max = count;
+					typeIndex = currentIndex;
 				}
+				currentIndex++;
 			}
 
 			// Reject if more than one Pokemon does not share a type with
 			// the rest of the team to enforce one wildcard
 			if (max < entryCount - 1) {
-				return [`All but one of your Pok\u00e9mon must share a type.`];
+				return [`All but one of your Pok\u00e9mon must share a type. Only your Wildcard may Terastallize.`];
+			}
+
+			// What type is this team, as a String?
+			let teamType = typeKey[typeIndex];
+
+			// Check to see if the Wildcard is in the
+			// 6th slot of the given team.
+			// A Wildcard is a Pokemon that does not
+			// share its type with the rest of the team.
+			for (const [setIndex, set] of team.entries()) {
+				// What Specie is this set?
+				const currentSpecies = this.dex.species.get(set.species);
+
+				// Get the current Pokemon's two types.
+				// If a Pokemon has one type, then
+				// typeTwo will be undefined.
+				const typeOne = currentSpecies.types[0];
+				const typeTwo = currentSpecies.types[1];
+
+				/*
+				// debug statement to see how singly-typed pokemon
+				// have their "second" type defined 
+				return [`Pokemon ${setIndex}: ${currentSpecies} (${typeOne}/${typeTwo})`];
+				*/
+
+				// Does the first type match?
+				if (typeOne === teamType) {
+					continue;
+				} else {
+					// If it doesn't, check to see if the
+					// second type exists.
+					if (typeTwo != undefined) {
+						// If it does exist, does the
+						// second type match?
+						if (typeTwo === teamType) {
+							continue;
+						// If it doesn't, and the Wildcard
+						// is not in the 6th slot, this team
+						// is invalid.
+						} else {
+							if (setIndex != 5) {
+								return [`Your Wildcard (${currentSpecies}) must be in the 6th slot of the team.`];
+							}
+						}
+					// If it does not have a second type,
+					// reject if not in the 6th slot.
+					} else {
+						if (setIndex != 5) {
+							return [`Your Wildcard (${currentSpecies}) must be in the 6th slot of the team.`];
+						}
+					}
+				}
 			}
 
 			// Wildcard bans are as such for the 2024-2025 academic year:
@@ -2918,124 +2984,151 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 				// Archaludon must be on mono-Steel or mono-Dragon
 				if (set.species === "Archaludon" && typeValue[typeKey.indexOf("Steel")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Dragon")] < entryCount - 1) {
-					return [`Archaludon is not a valid wild card.`];
+					return [`Archaludon is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Darkrai must be on mono-Dark
 				if (set.species === "Darkrai" && typeValue[typeKey.indexOf("Dark")] < entryCount - 1) {
-					return [`Darkrai is not a valid wild card.`];
+					return [`Darkrai is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Dragapult must be on mono-Ghost or mono-Dragon
 				if (set.species === "Dragapult" && typeValue[typeKey.indexOf("Ghost")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Dragon")] < entryCount - 1) {
-					return [`Dragapult is not a valid wild card.`];
+					return [`Dragapult is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Enamorus-Incarnate must be on mono-Fairy or mono-Flying
 				if (set.species === "Enamorus" && typeValue[typeKey.indexOf("Fairy")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Flying")] < entryCount - 1) {
-					return [`Enamorus-Incarnate is not a valid wild card.`];
+					return [`Enamorus-Incarnate is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Gholdengo must be on mono-Steel or mono-Ghost
 				if (set.species === "Archaludon" && typeValue[typeKey.indexOf("Steel")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Ghost")] < entryCount - 1) {
-					return [`Gholdengo is not a valid wild card.`];
+					return [`Gholdengo is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Great Tusk must be on mono-Ground or mono-Fighting
 				if (set.species === "Great Tusk" && typeValue[typeKey.indexOf("Ground")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Fighting")] < entryCount - 1) {
-					return [`Great Tusk is not a valid wild card.`];
+					return [`Great Tusk is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Gouging Fire must be on mono-Fire or mono-Dragon
 				if (set.species === "Gouging Fire" && typeValue[typeKey.indexOf("Fire")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Dragon")] < entryCount - 1) {
-					return [`Gouging Fire is not a valid wild card.`];
+					return [`Gouging Fire is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Iron Valiant must be on mono-Fairy or mono-Fighting
 				if (set.species === "Iron Valiant" && typeValue[typeKey.indexOf("Fairy")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Fighting")] < entryCount - 1) {
-					return [`Iron Valiant is not a valid wild card.`];
+					return [`Iron Valiant is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Kyurem must be on mono-Ice or mono-Dragon
 				if (set.species === "Kyurem" && typeValue[typeKey.indexOf("Ice")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Dragon")] < entryCount - 1) {
-					return [`Kyurem is not a valid wild card.`];
+					return [`Kyurem is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Ogerpon-Hearthflame must be on mono-Grass or mono-Fire
 				if (set.species === "Ogerpon-Hearthflame" && typeValue[typeKey.indexOf("Grass")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Fire")] < entryCount - 1) {
-					return [`Ogerpon-Hearthflame is not a valid wild card.`];
+					return [`Ogerpon-Hearthflame is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Ogerpon-Wellspring must be on mono-Grass or mono-Water
 				if (set.species === "Ogerpon-Wellspring" && typeValue[typeKey.indexOf("Grass")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Water")] < entryCount - 1) {
-					return [`Ogerpon-Wellspring is not a valid wild card.`];
+					return [`Ogerpon-Wellspring is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Regieleki must be on mono-Electric
 				if (set.species === "Regieleki" && typeValue[typeKey.indexOf("Electric")] < entryCount - 1) {
-					return [`Regieleki is not a valid wild card.`];
+					return [`Regieleki is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Roaring Moon must be on mono-Dark or mono-Dragon
 				if (set.species === "Roaring Moon" && typeValue[typeKey.indexOf("Dark")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Dragon")] < entryCount - 1) {
-					return [`Roaring Moon is not a valid wild card.`];
+					return [`Roaring Moon is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Serperior must be on mono-Grass
 				if (set.species === "Serperior" && typeValue[typeKey.indexOf("Grass")] < entryCount - 1) {
-					return [`Serperior is not a valid wild card.`];
+					return [`Serperior is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Sneasler must be on mono-Poison or mono-Fighting
 				if (set.species === "Sneasler" && typeValue[typeKey.indexOf("Poison")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Fighting")] < entryCount - 1) {
-					return [`Sneasler is not a valid wild card.`];
+					return [`Sneasler is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Spectrier must be on mono-Ghost
 				if (set.species === "Spectrier" && typeValue[typeKey.indexOf("Ghost")] < entryCount - 1) {
-					return [`Spectrier is not a valid wild card.`];
+					return [`Spectrier is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Terapagos must be on mono-Normal
 				if (set.species === "Terapagos" && typeValue[typeKey.indexOf("Normal")] < entryCount - 1) {
-					return [`Terapagos is not a valid wild card.`];
+					return [`Terapagos is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Ursaluna-Bloodmoon must be on mono-Normal or mono-Ground
 				if (set.species === "Ursaluna-Bloodmoon" && typeValue[typeKey.indexOf("Normal")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Ground")] < entryCount - 1) {
-					return [`Ursaluna-Bloodmoon is not a valid wild card.`];
+					return [`Ursaluna-Bloodmoon is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Urshifu-Rapid-Strike must be on mono-Fighting or mono-Water
 				if (set.species === "Urshifu-Rapid-Strike" && typeValue[typeKey.indexOf("Fighting")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Water")] < entryCount - 1) {
-					return [`Urshifu-Rapid-Strike is not a valid wild card.`];
+					return [`Urshifu-Rapid-Strike is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Volcarona must be on mono-Fire or mono-Bug
 				if (set.species === "Volcarona" && typeValue[typeKey.indexOf("Fire")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Bug")] < entryCount - 1) {
-					return [`Volcarona is not a valid wild card.`];
+					return [`Volcarona is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 
 				// Walking Wake must be on mono-Water or mono-Dragon
 				if (set.species === "Walking Wake" && typeValue[typeKey.indexOf("Water")] < entryCount - 1 &&
 					typeValue[typeKey.indexOf("Dragon")] < entryCount - 1) {
-					return [`Walking Wake is not a valid wild card.`];
+					return [`Walking Wake is not a valid Wildcard on a team of the following type: ${teamType}.`];
 				}
 			}
+		},
+
+		// Allow only Wildcards to Terastallize in-battle.
+		onBegin() {
+			let pokemonCounter = 0;
+			let wildcardBanlist = ["Archaludon", "Darkrai", "Dragapult", "Enamorus", "Gholdengo", "Great Tusk", 
+								   "Gouging Fire", "Iron Valiant", "Kyurem", "Ogerpon-Hearthflame", "Ogerpon-Wellspring", 
+								   "Regieleki", "Roaring Moon", "Serperior", "Sneasler", "Spectrier", "Terapagos", 
+								   "Ursaluna-Bloodmoon", "Urshifu-Rapid-Strike", "Volcarona", "Walking Wake"];
+			for (const pokemon of this.getAllPokemon()) {
+				pokemon.canTerastallize = null;
+				// Pokemon 6 and 12 should be allowed to Terastallize,
+				// as the Wildcard will be on the 6th slot of both teams.
+				if (pokemonCounter === 5 || pokemonCounter === 11) {
+					pokemon.canTerastallize = this.actions.canTerastallize(pokemon);
+				}
+				// If a Pokemon is Wildcard banned, make sure it cannot Terastallize
+				// even if it is in the 6th slot of the team -- for example putting
+				// Archaludon as the 6th member of a mono-Dragon team
+				const currentSpecies = pokemon.species;
+				const currentSpeciesName = currentSpecies.name;
+				if (wildcardBanlist.includes(currentSpeciesName)) {
+					pokemon.canTerastallize = null;
+				}
+				pokemonCounter++;
+			}
+			this.add('rule', 'Gym Leader Clause: All Pok\u00e9mon except one must share a type. Only your Wildcard may Terastallize.');
 		},
 	},
 };
