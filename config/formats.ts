@@ -31,8 +31,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 	// stub Super Tiger Bros before code is ported over
 
-	/*
-		// Implement Super Tiger Bros
+	// Implement Super Tiger Bros
 	{
 		name: "[Gen 9] Super Tiger Bros",
 		desc: "The club's unique take on Super Staff Bros. Developed by Brian (Banded Bonks), Jolyne (TacocaT_2595), Joe (broil) and Lily (ya-da-ne).",
@@ -43,7 +42,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		mod: 'stb',
 		team: 'randomStaffBros',
 		// add Terastal clause to prevent use of the Terastallization gimmick
-		ruleset: ['Dynamax Clause', 'Terastal Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
+		ruleset: ['Terastal Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
 		onBegin() {
 			this.add(`raw|<div class='broadcast-green'><b>Wondering what all these custom moves, abilities, and items do?<br />Check out the <a href="https://docs.google.com/document/d/16Pqc6xW09PqmdP6lAKJwaGSrjDLUH4Po2x-6jSuS4jk/edit?usp=sharing" target="_blank">Super Tiger Bros Guide</a>!</b></div>`);
 			this.add('message', 'A big thanks to Brian (Banded Bonks), Jolyne (TacocaT_2595), Joe (broil) and Lily (ya-da-ne) for developing this format!');
@@ -70,7 +69,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			}
 		},
 	},
-	*/
+
 
 	// Gym Leader Tournament ('24-'25)
 	{
@@ -119,7 +118,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 8] Gym Leader Tournament Spring '22-'23",
 		desc: "A blast from the past -- Gen 8's final Gym Leader Tournament format!",
 		threads: [
-			`&bullet; <a ref=https://docs.google.com/document/d/1CLEeXXp72VyoOB1lezeyjn8IlUy9k3yyphn7BKSH0CY/edit>Gen 8 Gym Challenge Rules ('22-'23)</a>`
+			`&bullet; <a ref=https://docs.google.com/document/d/1CLEeXXp72VyoOB1lezeyjn8IlUy9k3yyphn7BKSH0CY/edit>Gen 8 Gym Challenge Rules ('22-'23)</a>`,
 		],
 		mod: 'gen8',
 		ruleset: ['Gym Leader Clause (Gen 8)', 'Standard', 'Dynamax Clause', 'Adjust Level = 50'],
@@ -137,7 +136,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			// Abilities + Complexes
 			'Blaziken + Speed Boost', 'Cinderace + Libero', 'Darmanitan-Galar + Gorilla Tactics',
 			'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag',
-			'Zygarde-10% + Power Construct'
+			'Zygarde-10% + Power Construct',
 		],
 		// Make Zygarde-10% and Landorus-Therian legal
 		unbanlist: ['Zygarde-10%', 'Landorus-Therian'],
