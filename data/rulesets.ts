@@ -2985,7 +2985,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 				// to be used on a team as a Wildcard.
 				if (wildcardBanlist.includes(set.species) &&
 					!(currentSpecies.types[0] === teamType || currentSpecies.types[1] === teamType)) {
-					return [`${set.species} is not a valid Wildcard on a team of the following type: ${teamType}.`];
+					return [`${set.species} is Wildcard banned and cannot be on a team of the following type: ${teamType}.`];
 				}
 			}
 		},
