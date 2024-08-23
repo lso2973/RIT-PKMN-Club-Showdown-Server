@@ -40,7 +40,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		],
 
 		mod: 'stb',
-		team: 'randomStaffBros',
+		team: 'randomTigerBros',
 		// add Terastal clause to prevent use of the Terastallization gimmick
 		ruleset: ['Terastal Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
 		onBegin() {
