@@ -72,17 +72,15 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	},
 	*/
 
-	// implement RIT Gym Challenge and RRC Draft formats
-
 	// Gym Leader Tournament ('24-'25)
 	{
 		name: "[Gen 9] Gym Leader Tournament '24-'25",
 		desc: "Use this format to practice for RIT's official Gym Leader Tournament!",
 		threads: [
-			`&bullet; <a href=https://docs.google.com/document/d/1LTlDQpHVVxvaxjFz2_ZxAS7tQg_MwBF_EBxjfNaLTiI/edit?pli=1>Gym Challenge Rules</a>`,
+			`&bullet; <a href=https://docs.google.com/document/d/1LTlDQpHVVxvaxjFz2_ZxAS7tQg_MwBF_EBxjfNaLTiI/edit?pli=1>Gym Challenge Rules ('24-'25)</a>`,
 		],
 		mod: 'gen9',
-		ruleset: ['Gym Leader Clause', 'Standard'],
+		ruleset: ['Gym Leader Clause (Gen 9)', 'Standard'],
 		banlist: [
 			// Pokemon banned out-right (certain Pokemon are allowed, but restricted such that
 			// they must be used on only teams which contain their type. For example, Darkrai is
@@ -108,6 +106,43 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 	// Gym Challenge (Doubles) '24-'25
 
+	// RRC Season 22: Low Tier Singles
+
+	// Legacy RIT Formats (mainly older Gym Tournament formats)
+	{
+		section: "Legacy RIT Formants",
+	},
+
+	// Gym Leader Tournament ('22-'23)
+
+	{
+		name: "[Gen 8] Gym Leader Tournament Spring '22-'23",
+		desc: "A blast from the past -- Gen 8's final Gym Leader Tournament format!",
+		threads: [
+			`&bullet; <a ref=https://docs.google.com/document/d/1CLEeXXp72VyoOB1lezeyjn8IlUy9k3yyphn7BKSH0CY/edit>Gen 8 Gym Challenge Rules ('22-'23)</a>`
+		],
+		mod: 'gen8',
+		ruleset: ['Gym Leader Clause (Gen 8)', 'Standard', 'Dynamax Clause', 'Adjust Level = 50'],
+		banlist: [
+			// Pokemon
+			'Calyrex-Ice', 'Calyrex-Shadow', 'Dialga', 'Eternatus', 'Genesect', 'Giratina', 'Giratina-Origin',
+			'Groudon', 'Ho-Oh', 'Kartana', 'Kyogre', 'Kyurem', 'Kyurem-White', 'Kyurem-Black', 'Landorus-Incarnate',
+			'Lugia', 'Lunala', 'Magearna', 'Marshadow', 'Mewtwo', 'Naganadel', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane',
+			'Palkia', 'Pheromosa', 'Rayquaza', 'Reshiram', 'Solgaleo', 'Spectrier', 'Urshifu-Base', 'Urshifu-Rapid-Strike',
+			'Xerneas', 'Zacian', 'Zacian-Crowned', 'Zamazenta', 'Zamazenta-Crowned', 'Zekrom', 'Zygarde-50%',
+			// Moves
+			'Swagger', 'Baton Pass',
+			// Items
+			'Damp Rock', 'Smooth Rock', 'King\'s Rock', 'Razor Fang', 'Terrain Extender',
+			// Abilities + Complexes
+			'Blaziken + Speed Boost', 'Cinderace + Libero', 'Darmanitan-Galar + Gorilla Tactics',
+			'Gothitelle + Shadow Tag', 'Gothorita + Shadow Tag', 'Gothita + Shadow Tag',
+			'Zygarde-10% + Power Construct'
+		],
+		// Make Zygarde-10% and Landorus-Therian legal
+		unbanlist: ['Zygarde-10%', 'Landorus-Therian'],
+	},
+
 
 	// ///////////////////END RIT-SPECIFIC FORMATS//////////////////////
 
@@ -116,6 +151,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 	{
 		section: "S/V Singles",
+		column: 2,
 	},
 	{
 		name: "[Gen 9] Random Battle",
@@ -497,7 +533,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 	{
 		section: "Draft",
-		column: 1,
+		column: 2,
 	},
 	{
 		name: "[Gen 9] Draft",
@@ -584,7 +620,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 	{
 		section: "OM of the Month",
-		column: 2,
+		column: 3,
 	},
 	{
 		name: "[Gen 9] Pokemoves",
@@ -784,7 +820,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 	{
 		section: "Other Metagames",
-		column: 2,
+		column: 3,
 	},
 	{
 		name: "[Gen 9] Almost Any Ability",
@@ -1188,7 +1224,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 
 	{
 		section: "Challengeable OMs",
-		column: 2,
+		column: 3,
 	},
 	{
 		name: "[Gen 9] 350 Cup",

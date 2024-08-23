@@ -2871,9 +2871,9 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 	// monotype team, the 6th Pokemon will be considered to be the team's Wildcard by
 	// default. It will still maintain the Wildcard banlist's stipulation of Wildcards
 	// not being allowed to Terastallize, however.
-	gymleaderclause: {
+	gymleaderclausegen9: {
 		effectType: 'ValidatorRule',
-		name: 'Gym Leader Clause',
+		name: 'Gym Leader Clause (Gen 9)',
 		desc: "All Pok\u00e9mon except one must share a type. Only your Wildcard may Terastallize.",
 		onValidateTeam(team) {
 			// Initialize two arrays:
@@ -3017,4 +3017,73 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			this.add('rule', 'Gym Leader Clause: All Pok\u00e9mon except one must share a type. Only your Wildcard may Terastallize.');
 		},
 	},
+
+	// Gym Leader Clause for Gen 8.
+	gymleaderclausegen8: {
+		effectType: 'ValidatorRule',
+		name: 'Gym Leader Clause (Gen 8)',
+		desc: "All Pok\u00e9mon except one must share a type.",
+		onValidateTeam(team) {
+			// Initialize an array for what types are
+			// present on this team, and the count
+			// of these types.
+			const typeKey: string[] = [];
+			const typeValue: number[] = [];
+			let entryCount = 0;
+			// For all of the sets on this team:
+			for (const [, set] of team.entries()) {
+				entryCount++;
+				// Get the species and records its type,
+				// if it is valid.
+				const species = this.dex.species.get(set.species);
+				if (!species.types) return [`Invalid Pok\u00e9mon ${set.name || set.species}`];
+				for (const type of species.types) {
+					if (typeKey.includes(type)) {
+						typeValue[typeKey.indexOf(type)] += 1;
+					} else {
+						typeKey.push(type);
+						typeValue.push(1);
+					}
+				}
+			}
+
+			// Determine the team's type.
+			let max = 0;
+			let currentIndex = 0;
+			let typeIndex = 0;
+			for (const count of typeValue) {
+				if (count > max) {
+					max = count;
+					typeIndex = currentIndex;
+				}
+				currentIndex++;
+			}
+
+			// Reject if more than one Pokemon does not share a type with
+			// the rest of the team, to enforce one Wildcard.
+			if (max < entryCount - 1) {
+				return [`All but one of you Pok\u00e9mon must share a type.`];
+			}
+
+			// What type is this team?
+			const teamType = typeKey[typeIndex];
+
+			// Since Terastallization does not exist and Dynamax is banned,
+			// we don't need the Wildcard in any spot. We just need to check
+			// if any given Pokemon is being used as a Wildcard and is Wildcard
+			// banned.
+			const wildcardBanlist = ["Dracovish", "Melmetal", "Regieleki", "Tapu Lele"];
+			for (const [, set] of team.entries()) {
+				// Get current species
+				const currentSpecies = this.dex.species.get(set.species);
+				// Wildcard ban check
+				if (wildcardBanlist.includes(set.species) &&
+					!(currentSpecies.types[0] === teamType || currentSpecies.types[1] === teamType)) {
+						return [`${set.species} is Wildcard banned and cannot be on a team of the following type: ${teamType}.`];
+				}
+			}
+
+
+		}
+	}
 };
