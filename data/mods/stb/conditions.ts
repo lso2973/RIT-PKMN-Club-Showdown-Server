@@ -89,7 +89,7 @@ export const Conditions: {[id: IDEntry]: ModdedConditionData & {innateName?: str
 			this.add(`c:|${getName('8biteki')}|bad rng bg`);
 		},
 	},
-	'ya-da-ne': {
+	yadane: {
 		noCopy: true,
 		onStart() {
 			this.add(`c:|${getName('ya-da-ne')}|yo waddup`);
@@ -125,6 +125,7 @@ export const Conditions: {[id: IDEntry]: ModdedConditionData & {innateName?: str
 		onResidual(pokemon) {
 			this.effectState.stage--;
 			this.damage(this.clampIntRange(pokemon.baseMaxhp / 16, 1));
+			this.add('message', `Turns until ${pokemon.name} faints from Rabies: ${this.effectState.stage}.`);
 			if (this.effectState.stage <= 0) {
 				pokemon.faint();
 			}

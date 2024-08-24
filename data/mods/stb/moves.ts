@@ -84,11 +84,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 15,
 		priority: 0,
 		flags: {protect: 1},
-		isNonstandard: "Custom",
 		target: 'randomNormal',
 		type: "Ghost",
-		zMove: {effect: 'curse'},
-		contestType: "Tough",
 	},
 
 	// davidts
@@ -155,7 +152,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 		target: "normal",
 		type: "Poison",
-		isNonstandard: "Custom",
 		gen: 9,
 	},
 
@@ -179,7 +175,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			this.add('-anim', source, 'Leaf Blade', target);
 		},
 		secondary: null,
-		isNonstandard: "Custom",
 		target: "normal",
 		type: "Grass",
 	},

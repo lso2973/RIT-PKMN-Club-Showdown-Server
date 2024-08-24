@@ -68,12 +68,18 @@ export const stbSets: STBSets = {
 	},
 
 	// NEW STB SETS
-	'8biteki': {
-		species: 'Necrozma-Dawn-Wings', ability: 'Heir of Light', item: 'Leftovers', gender: 'F',
-		moves: ['Take Heart', ['Ice Beam', 'Freeze Dry'], 'Recover'],
-		signatureMove: 'Tackle',
-		evs: {hp: 252, def: 252, spa: 4}, nature: 'Bold', shiny: true, skip: 'ya-da-ne',
-	},
+
+	// This set has a 50% chance to be replaced
+	// with the following set if chosen:
+	// 8biteki (Necrozma-Dawn-Wings) (F) @ Leftovers
+	// [Ice/Psychic]
+	// Ability: Heir of Light
+	// Shiny: Yes
+	// Nature: Bold
+	// - Ice Beam/Freeze Dry
+	// - Take Heart
+	// - Recover
+	// - Signature Move (TBD)
 	'ya-da-ne': {
 		species: 'Tapu Lele', ability: 'Heir of Light', item: 'Choice Specs', gender: 'F',
 		moves: [['Ice Beam', 'Freeze Dry'], 'Heat Wave', 'Volt Switch'],
@@ -174,7 +180,9 @@ export class RandomTigerBrosTeams extends RandomTeams {
 				// Necrozma-Dawn-Wings. Both are Ice/Psychic.
 				set.species = "Necrozma-Dawn-Wings";
 				set.name = "8biteki";
-				if (this.random(2) === 0) {
+				// Maintain 50% chance to run either
+				// Ice Beam or Freeze Dry
+				if (this.random(4) % 2 === 0) {
 					set.moves[0] = "Ice Beam";
 				} else {
 					set.moves[0] = "Freeze Dry";

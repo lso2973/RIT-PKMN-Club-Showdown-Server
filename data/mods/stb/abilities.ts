@@ -23,9 +23,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				}
 			}
 		},
-		isNonstandard: "Custom",
 		gen: 9,
-		rating: 4,
+		// rating: 4,
 	},
 
 	// davidts (Goblin Power)
@@ -65,7 +64,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				}
 			}
 		},
-		isNonstandard: "Custom",
 		gen: 9,
 	},
 
@@ -79,7 +77,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				source.trySetStatus('rabies', target);
 			}
 		},
-		isNonstandard: "Custom",
 		gen: 9,
 	},
 
@@ -97,9 +94,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.boost({atk: 1});
 			}
 		},
-		isNonstandard: "Custom",
 		gen: 9,
-		rating: 4.5,
 	},
 
 
@@ -113,20 +108,21 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onStart(pokemon) {
 			if (this.field.setTerrain('psychicterrain')) {
 				this.add('-activate', pokemon, 'Heir of Light', '[source]');
+				this.add('message', `${pokemon.name} began to glow!`);
 			}
 			if (this.field.setWeather('sunnyday')) {
 				this.add('-activate', pokemon, "Heir of Light", '[source]');
+				this.add('message', `Blinding light emitted from ${pokemon.name} surrounds the area!`);
 			} else if (this.field.isWeather(['sunnyday', 'desolateland'])) {
 				this.add('-activate', pokemon, 'ability: Heir of Light');
+				this.add('message', `${pokemon.name} became faster-than-light!`);
 			}
 		},
 		onModifySpe(spe, pokemon) {
 			if (this.field.isWeather(['sunnyday', 'desolateland'])) {
-				this.debug("Heir of Light boost");
 				return this.chainModify(2);
 			}
 		},
-		isNonstandard: "Custom",
 		gen: 9,
 	},
 
