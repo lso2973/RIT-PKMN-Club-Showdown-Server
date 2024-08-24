@@ -50,9 +50,13 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		accuracy: 100,
 		basePower: 0,
 		category: "Status",
-		desc: "Gives the target the curse effect which causes the target to lose 1/4 of its maximum HP, rounded down, at the end of each turn while it is active. If the target uses Baton Pass, the replacement will continue to be affected. Fails if there is no target or if the target is already affected.",
 		shortDesc: "Afflicts the target with curse",
+		desc: "Gives the target the curse effect which causes the target to lose 1/4 of its maximum HP, rounded down, at the end of each turn while it is active. If the target uses Baton Pass, the replacement will continue to be affected. Fails if there is no target or if the target is already affected.",
 		name: "Pharaoh's Curse",
+		gen: 9,
+		pp: 15,
+		priority: 0,
+		flags: {protect: 1},
 		onTryMove() {
 			this.attrLastMove('[still]');
 		},
@@ -67,7 +71,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				return false;
 			}
 		},
-		gen: 9,
 		volatileStatus: 'pharaohscurse',
 		condition: {
 			onStart(pokemon, source) {
@@ -81,9 +84,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				// this.add('-message', `${pokemon.name} is afflicted by the Pharaoh's Curse!`);
 			},
 		},
-		pp: 15,
-		priority: 0,
-		flags: {protect: 1},
+		secondary: null,
 		target: 'randomNormal',
 		type: "Ghost",
 	},
@@ -93,10 +94,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		accuracy: 100,
 		basePower: 80,
 		category: "Special",
-		desc: "This move inflicts physical damage or special damage, depending on which is more effective. For physical damage, the user’s Defense is used for damage calculation instead of Attack, and for special damage, the user’s Sp.Def is used for damage calculation instead of Sp.Atk. This attack also has a 10% chance to inflict a random status effect on the opponent.",
 		shortDesc: "Body Press + SSA-esque category switch",
-		flags: {protect: 1, mirror: 1},
+		desc: "This move inflicts physical damage or special damage, depending on which is more effective. For physical damage, the user’s Defense is used for damage calculation instead of Attack, and for special damage, the user’s Sp.Def is used for damage calculation instead of Sp.Atk. This attack also has a 10% chance to inflict a random status effect on the opponent.",
 		name: "Ruby's Curse",
+		gen: 9,
+		pp: 10,
+		priority: 0,
+		flags: {protect: 1, mirror: 1},
+		// use Defense for Offensive stat
+		overrideOffensiveStat: 'def',		
+		// TODO: Add animation?
 		onModifyMove(move, pokemon, target) {
 			if (!target) return;
 			const atk = pokemon.getStat('def', false, true);
@@ -109,11 +116,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				move.category = 'Physical';
 			}
 		},
-		pp: 10,
-		priority: 0,
-		gen: 9,
-		// useSourceDefensiveAsOffensive: true,
-		// ^ stub that out temporarily for now.
 		secondary: null,
 		target: "normal",
 		type: "Dark",
@@ -123,9 +125,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		accuracy: 100,
 		basePower: 120,
 		category: "Special",
-		desc: "A powerfully toxic move that has an 80/20 chance to either Poison or Burn the opponent, respectively.",
 		shortDesc: "80% chance to poison, otherwise burn",
+		desc: "A powerfully toxic move that has an 80/20 chance to either Poison or Burn the opponent, respectively.",
 		name: "Internet Troll",
+		gen: 9,
 		pp: 5,
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
@@ -152,7 +155,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 		target: "normal",
 		type: "Poison",
-		gen: 9,
 	},
 
 	// Peekz1025
@@ -160,9 +162,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		accuracy: 100,
 		basePower: 90,
 		category: "Physical",
-		name: "Verdant Blade",
-		desc: "This move is always a critical hit unless the target is under the effect of Lucky Chant or has the Battle Armor or Shell Armor Abilities.",
 		shortDesc: "Always crits*",
+		desc: "This move is always a critical hit unless the target is under the effect of Lucky Chant or has the Battle Armor or Shell Armor Abilities.",
+		name: "Verdant Blade",
 		gen: 9,
 		pp: 5,
 		priority: 0,

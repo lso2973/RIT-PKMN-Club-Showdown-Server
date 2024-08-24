@@ -69,23 +69,20 @@ export const stbSets: STBSets = {
 
 	// NEW STB SETS
 
-	// This set has a 50% chance to be replaced
-	// with the following set if chosen:
-	// 8biteki (Necrozma-Dawn-Wings) (F) @ Leftovers
-	// [Ice/Psychic]
-	// Ability: Heir of Light
-	// Shiny: Yes
-	// Nature: Bold
-	// - Ice Beam/Freeze Dry
-	// - Take Heart
-	// - Recover
-	// - Signature Move (TBD)
+	// 8biteki/ya-da-ne
 	'ya-da-ne': {
-		species: 'Tapu Lele', ability: 'Heir of Light', item: 'Choice Specs', gender: 'F',
+		species: 'Tapu Lele', ability: "Heir of Light", item: 'Choice Specs', gender: 'F',
 		moves: [['Ice Beam', 'Freeze Dry'], 'Heat Wave', 'Volt Switch'],
 		signatureMove: 'Tackle',
 		evs: {spa: 252, spd: 4, spe: 252}, nature: 'Modest', shiny: true,
 	},
+	// Only used for /stb
+	'8biteki': {
+		species: 'Necrozma-Dawn-Wings', ability: "Heir of Light", item: "Leftovers", gender: 'F',
+		moves: [['Ice Beam', 'Freeze Dry'], 'Take Heart', 'Recover'],
+		signatureMove: 'Tackle',
+		evs: {hp: 252, def: 252, spa: 4}, nature: 'Bold', shiny: true, skip: 'ya-da-ne',
+	}
 
 };
 

@@ -103,7 +103,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	// 8biteki/ya-da-ne (Heir of Light)
 	heiroflight: {
 		shortDesc: "Psychic Surge + Drought + Chlorophyll",
-		desc: "On switch-in, this Pokémon sets Psychic Terrain and Harsh Sunlight for 8 turns. Additionally, this Pokémon's Speed doubles in Harsh Sunlight.",
+		desc: "On switch-in, this Pokémon sets Psychic Terrain and Harsh Sunlight for 5 turns. Additionally, this Pokémon's Speed doubles in Harsh Sunlight.",
 		name: "Heir of Light",
 		onStart(pokemon) {
 			if (this.field.setTerrain('psychicterrain')) {
