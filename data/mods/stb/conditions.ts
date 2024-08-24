@@ -28,51 +28,49 @@ export const Conditions: {[id: IDEntry]: ModdedConditionData & {innateName?: str
 	broil: {
 		noCopy: true,
 		onStart(pokemon) {
-			this.add(`c|${getName('broil')}|Hi, @everyone!`);
-			if (pokemon.illusion) return;
-			this.add('-start', pokemon, 'typechange', pokemon.types.join('/'), '[silent]');
+			this.add(`c:|${getName('broil')}|Hi, @everyone!`);
 		},
 		onSwitchOut() {
-			this.add(`c|${getName('broil')}|this isn't the last you'll see of me!`);
+			this.add(`c:|${getName('broil')}|this isn't the last you'll see of me!`);
 		},
 		onFaint() {
-			this.add(`c|${getName('broil')}|cya o/`);
+			this.add(`c:|${getName('broil')}|cya o/`);
 		},
 	},
 
 	davidts: {
 		noCopy: true,
 		onStart() {
-			this.add(`c|${getName('davidts')}|It's playtime, cuties!`);
+			this.add(`c:|${getName('davidts')}|It's playtime, cuties!`);
 		},
 		onFaint() {
-			this.add(`c|${getName('davidts')}|In the arms of the angel...`);
+			this.add(`c:|${getName('davidts')}|In the arms of the angel...`);
 		},
 	},
 
 	gigigecko26: {
 		noCopy: true,
 		onStart() {
-			this.add(`c|${getName('gigigecko26')}|get out of my dump!`);
+			this.add(`c:|${getName('gigigecko26')}|get out of my dump!`);
 		},
 		onSwitchOut() {
-			this.add(`c|${getName('gigigecko26')}|good more trash for me`);
+			this.add(`c:|${getName('gigigecko26')}|good more trash for me`);
 		},
 		onFaint() {
-			this.add(`c|${getName('gigigecko26')}|I'll be back and in greater numbers!`);
+			this.add(`c:|${getName('gigigecko26')}|I'll be back and in greater numbers!`);
 		},
 	},
 
 	peekz1025: {
 		noCopy: true,
 		onStart() {
-			this.add(`c|${getName('Peekz1025')}|Prepare to feel the wrath of RIT’s first Grass Gym Leader!`);
+			this.add(`c:|${getName('Peekz1025')}|Prepare to feel the wrath of RIT’s first Grass Gym Leader!`);
 		},
 		onSwitchOut() {
-			this.add(`c|${getName('Peekz1025')}|Time for another teammate to take the stage`);
+			this.add(`c:|${getName('Peekz1025')}|Time for another teammate to take the stage`);
 		},
 		onFaint() {
-			this.add(`c|${getName('Peekz1025')}|IT’S A CRIT!`);
+			this.add(`c:|${getName('Peekz1025')}|IT’S A CRIT!`);
 		},
 	},
 
@@ -82,25 +80,25 @@ export const Conditions: {[id: IDEntry]: ModdedConditionData & {innateName?: str
 	'8biteki': {
 		noCopy: true,
 		onStart() {
-			this.add(`c|${getName('8biteki')}|yo waddup`);
+			this.add(`c:|${getName('8biteki')}|yo waddup`);
 		},
 		onSwitchOut() {
-			this.add(`c|${getName('8biteki')}|oh brb`);
+			this.add(`c:|${getName('8biteki')}|oh brb`);
 		},
 		onFaint() {
-			this.add(`c|${getName('8biteki')}|bad rng bg`);
+			this.add(`c:|${getName('8biteki')}|bad rng bg`);
 		},
 	},
 	'ya-da-ne': {
 		noCopy: true,
 		onStart() {
-			this.add(`c|${getName('ya-da-ne')}|yo waddup`);
+			this.add(`c:|${getName('ya-da-ne')}|yo waddup`);
 		},
 		onSwitchOut() {
-			this.add(`c|${getName('ya-da-ne')}|oh brb`);
+			this.add(`c:|${getName('ya-da-ne')}|oh brb`);
 		},
 		onFaint() {
-			this.add(`c|${getName('ya-da-ne')}|bad rng bg`);
+			this.add(`c:|${getName('ya-da-ne')}|bad rng bg`);
 		},
 	},
 	// These two are the same person

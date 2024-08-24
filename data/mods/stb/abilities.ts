@@ -93,7 +93,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		onAfterMoveSecondarySelf(target, source, move) {
 			if (source.getMoveHitData(move).crit) {
-				this.add(`c|${getName('Peekz1025')}|IT'S A CRIT!`);
+				this.add(`c:|${getName('Peekz1025')}|IT'S A CRIT!`);
 				this.boost({atk: 1});
 			}
 		},

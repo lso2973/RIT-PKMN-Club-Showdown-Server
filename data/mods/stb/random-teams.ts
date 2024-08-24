@@ -169,8 +169,16 @@ export class RandomTigerBrosTeams extends RandomTeams {
 			// Any set specific tweaks occur here.
 			if (set.name === "ya-da-ne" && this.random(2) === 1) {
 				// 50/50 to be ya-da-ne or 8biteki
+				// ya-da-ne is a Choice Specs Tapu Lele,
+				// whereas 8biteki is a Setup Sweeper
+				// Necrozma-Dawn-Wings. Both are Ice/Psychic.
 				set.species = "Necrozma-Dawn-Wings";
 				set.name = "8biteki";
+				if (this.random(2) === 0) {
+					set.moves[0] = "Ice Beam";
+				} else {
+					set.moves[0] = "Freeze Dry";
+				}
 				set.moves[1] = "Take Heart";
 				set.moves[2] = "Recover";
 				set.nature = "Bold";
