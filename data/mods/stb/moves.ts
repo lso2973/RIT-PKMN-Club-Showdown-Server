@@ -102,7 +102,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		priority: 0,
 		flags: {protect: 1, mirror: 1},
 		// use Defense for Offensive stat
-		overrideOffensiveStat: 'def',		
+		overrideOffensiveStat: 'def',
 		// TODO: Add animation?
 		onModifyMove(move, pokemon, target) {
 			if (!target) return;

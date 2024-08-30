@@ -2995,8 +2995,8 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			let pokemonCounter = 0;
 			const wildcardBanlist = ["Archaludon", "Darkrai", "Dragapult", "Enamorus", "Gholdengo", "Great Tusk",
 								   "Gouging Fire", "Iron Valiant", "Kyurem", "Ogerpon-Hearthflame", "Ogerpon-Wellspring",
-								   "Regieleki", "Roaring Moon", "Serperior", "Sneasler", "Spectrier", "Terapagos",
-								   "Ursaluna-Bloodmoon", "Urshifu-Rapid-Strike", "Volcarona", "Walking Wake"];
+								   "Raging Bolt", "Regieleki", "Roaring Moon", "Serperior", "Sneasler", "Spectrier",
+								   "Terapagos", "Ursaluna-Bloodmoon", "Urshifu-Rapid-Strike", "Volcarona", "Walking Wake"];
 			for (const pokemon of this.getAllPokemon()) {
 				pokemon.canTerastallize = null;
 				// Pokemon 6 and 12 should be allowed to Terastallize,

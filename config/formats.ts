@@ -70,7 +70,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			if ((pokemon.illusion || pokemon).getTypes(true, true).join('/') !==
 				this.dex.forGen(9).species.get((pokemon.illusion || pokemon).species.name).types.join('/') &&
 				!pokemon.terastallized) {
-					this.add('-start', pokemon, 'typechange', (pokemon.illusion || pokemon).getTypes(true).join('/'), '[silent]');
+				this.add('-start', pokemon, 'typechange', (pokemon.illusion || pokemon).getTypes(true).join('/'), '[silent]');
 			}
 		},
 	},

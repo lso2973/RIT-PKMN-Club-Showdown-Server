@@ -82,7 +82,7 @@ export const stbSets: STBSets = {
 		moves: [['Ice Beam', 'Freeze Dry'], 'Take Heart', 'Recover'],
 		signatureMove: 'Tackle',
 		evs: {hp: 252, def: 252, spa: 4}, nature: 'Bold', shiny: true, skip: 'ya-da-ne',
-	}
+	},
 
 };
 
