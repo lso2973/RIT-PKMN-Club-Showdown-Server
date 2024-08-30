@@ -1165,7 +1165,7 @@ export const FormatsData: import('../sim/dex-species').SpeciesFormatsDataTable =
 	zapdosgalar: {
 		tier: "RU",
 		doublesTier: "(DUU)",
-		natDexTier: "UU",
+		natDexTier: "UUBL",
 	},
 	moltres: {
 		tier: "OU",
@@ -1850,7 +1850,7 @@ export const FormatsData: import('../sim/dex-species').SpeciesFormatsDataTable =
 		natDexTier: "UU",
 	},
 	gallade: {
-		tier: "NU",
+		tier: "NUBL",
 		doublesTier: "(DUU)",
 		natDexTier: "RU",
 	},
