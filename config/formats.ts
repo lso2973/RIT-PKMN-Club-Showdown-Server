@@ -100,7 +100,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			// Moves banned
 			'Baton Pass', 'Dire Claw', 'Last Respects', 'Rage Fist', 'Shed Tail', 'Swagger',
 			// Items banned
-			'Booster Energy', 'Damp Rock', 'Heat Rock',
+			'Booster Energy', 'Damp Rock', 'Heat Rock', 'King\'s Rock', 'Razor Fang',
 			// Abilities banned + Complex ban for Landorus-Incarnate
 			'Arena Trap', 'Moody', 'Shadow Tag', 'Speed Boost', 'Landorus + Sheer Force',
 		],
