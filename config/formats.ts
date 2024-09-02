@@ -36,7 +36,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 9] Super Tiger Bros",
 		desc: "The club's unique take on Super Staff Bros. Developed by Brian (Banded Bonks), Jolyne (TacocaT_2595), Joe (broil) and Lily (ya-da-ne).",
 		threads: [
-			`&bullet; <a href="https://docs.google.com/document/d/1OdSHftX9gVIgcZY1Aq7ZCfVZu-iaALCtRy69gJzm0Ps/edit?usp=sharing">Roster</a>`,
+			`&bullet; <a href="https://docs.google.com/document/d/1OdSHftX9gVIgcZY1Aq7ZCfVZu-iaALCtRy69gJzm0Ps/edit">Roster</a>`,
 		],
 
 		mod: 'stb',
@@ -44,9 +44,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		// add Terastal clause to prevent use of the Terastallization gimmick
 		ruleset: ['Terastal Clause', 'HP Percentage Mod', 'Cancel Mod', 'Sleep Clause Mod'],
 		onBegin() {
-			this.add(`raw|<div class='broadcast-green'><b>Wondering what all these custom moves, abilities, and items do?<br />Check out the <a href="https://docs.google.com/document/d/16Pqc6xW09PqmdP6lAKJwaGSrjDLUH4Po2x-6jSuS4jk/edit?usp=sharing" target="_blank">Super Tiger Bros Guide</a>!</b></div>`);
-			this.add('message', 'A big thanks to Brian (Banded Bonks), Jolyne (TacocaT_2595), Joe (broil) and Lily (ya-da-ne) for developing this format!');
-			this.add('message', '');
+			this.add(`raw|<div class='broadcast-green'><b>Wondering what all these custom moves, abilities, and items do?<br />Check out the <a href="https://docs.google.com/document/d/1OdSHftX9gVIgcZY1Aq7ZCfVZu-iaALCtRy69gJzm0Ps/edit" target="_blank">Super Tiger Bros Guide</a>!<br />You can also use /dt [move/ability name] to learn about moves or abilities in-battle!</b></div>`);
+			this.add(`raw|<div class='broadcast-blue'><b>A big thanks to Brian (Banded Bonks), Jolyne (TacocaT_2595), Joe (broil), and Lily (ya-da-ne) for developing this format!`);
 			this.add('message', [
 				'THE BATTLE FOR SURVIVAL BEGINS!', 'WHO WILL SURVIVE?', 'GET READY TO KEEP UP!', 'GET READY!', 'DARE TO BELIEVE YOU CAN SURVIVE!', 'THERE CAN BE ONLY ONE WINNER!', 'GET READY FOR THE FIGHT OF YOUR LIFE!', 'WHO WILL PREVAIL?', 'ONLY ONE TEAM WILL BE LEFT STANDING!', 'BATTLE WITHOUT LIMITS!',
 			][this.random(10)]);
@@ -72,7 +71,6 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 				!pokemon.terastallized) {
 				this.add('-start', pokemon, 'typechange', (pokemon.illusion || pokemon).getTypes(true).join('/'), '[silent]');
 			}
-
 		},
 	},
 

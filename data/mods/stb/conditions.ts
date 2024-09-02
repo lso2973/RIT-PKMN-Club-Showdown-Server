@@ -117,16 +117,24 @@ export const Conditions: {[id: IDEntry]: ModdedConditionData & {innateName?: str
 				this.add('-status', target, 'rabies');
 			}
 			this.add('-start', target, 'rabies');
+			// add message stating that a pokemon was afflicted
+			// with rabies from the rabies ability
+			this.add('message', `${target.name} was afflicted with Rabies!`);
 		},
-		onSwitchIn() {
+		onSwitchIn(pokemon) {
 			this.effectState.stage = 4;
+			// add message to show rabies is still in effect
+			this.add('message', `${pokemon.name}'s Rabies lingers!`);
 		},
 		onResidualOrder: 9,
 		onResidual(pokemon) {
 			this.effectState.stage--;
 			this.damage(this.clampIntRange(pokemon.baseMaxhp / 16, 1));
+			// de-mystify duration of rabies
 			this.add('message', `Turns until ${pokemon.name} faints from Rabies: ${this.effectState.stage}.`);
 			if (this.effectState.stage <= 0) {
+				// add message to explain why the pokemon fainted
+				this.add('message', `${pokemon.name}'s Rabies became fatal!`);
 				pokemon.faint();
 			}
 		},

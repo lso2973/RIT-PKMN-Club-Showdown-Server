@@ -30,17 +30,19 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	// davidts (Goblin Power)
 	goblinpower: {
 		shortDesc: "Random Status + Prankster",
-		desc: "Upon entry into battle, inflict a random non-volatile status on the opponent (poison paralysis, burn). Gives all status moves a priority of +1.",
+		desc: "Upon entry into battle, inflict a random non-volatile status on the opponent (poison, paralysis, or burn). Gives all status moves a priority of +1.",
 		name: "Goblin Power",
 		onModifyPriority(priority, pokemon, target, move) {
 			if (move?.category === 'Status') {
 				move.pranksterBoosted = true;
+				this.add('message', `The priority of ${pokemon.name}'s ${move.name} was increased by Goblin Power!`);
 				return priority + 1;
 			}
 		},
 		onStart(pokemon) {
 			let activated = false;
 			for (const target of pokemon.adjacentFoes()) {
+				let statusName = "Poison";
 				if (!activated) {
 					this.add('-ability', pokemon, 'Goblin Power');
 					activated = true;
@@ -52,15 +54,19 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					switch (r) {
 					case 0: {
 						target.setStatus('brn', pokemon);
+						statusName = "Burn";
 						break;
 					} case 1: {
 						target.setStatus('par', pokemon);
+						statusName = "Paralysis";
 						break;
 					} default: {
 						target.setStatus('psn', pokemon);
+						statusName = "Poison";
 						break;
 					}
 					}
+					this.add('message', `${pokemon.name}'s Goblin Power inflicted the enemy with ${statusName}!`);
 				}
 			}
 		},
@@ -87,11 +93,15 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Forest's Wrath",
 		onStart(pokemon) {
 			pokemon.addVolatile('focusenergy');
+			// explain the crit boost
+			this.add('message', `${pokemon.name} inherited the wrath of the forest!`);
 		},
 		onAfterMoveSecondarySelf(target, source, move) {
 			if (source.getMoveHitData(move).crit) {
 				this.add(`c:|${getName('Peekz1025')}|IT'S A CRIT!`);
 				this.boost({atk: 1});
+				// explain the attack boost
+				this.add('message', `${source.name}'s Attack rose by landing a Critical Hit!`);
 			}
 		},
 		gen: 9,
@@ -111,7 +121,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.add('message', `${pokemon.name} began to glow!`);
 			}
 			if (this.field.setWeather('sunnyday')) {
-				this.add('-activate', pokemon, "Heir of Light", '[source]');
+				// this.add('-activate', pokemon, "Heir of Light", '[source]');
 				this.add('message', `Blinding light emitted from ${pokemon.name} surrounds the area!`);
 			} else if (this.field.isWeather(['sunnyday', 'desolateland'])) {
 				this.add('-activate', pokemon, 'ability: Heir of Light');
@@ -119,7 +129,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 		onModifySpe(spe, pokemon) {
-			if (this.field.isWeather(['sunnyday', 'desolateland'])) {
+			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
 				return this.chainModify(2);
 			}
 		},

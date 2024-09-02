@@ -50,7 +50,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		accuracy: 100,
 		basePower: 0,
 		category: "Status",
-		shortDesc: "Afflicts the target with curse",
+		shortDesc: "Afflicts the target with curse.",
 		desc: "Gives the target the curse effect which causes the target to lose 1/4 of its maximum HP, rounded down, at the end of each turn while it is active. If the target uses Baton Pass, the replacement will continue to be affected. Fails if there is no target or if the target is already affected.",
 		name: "Pharaoh's Curse",
 		gen: 9,
@@ -94,7 +94,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		accuracy: 100,
 		basePower: 80,
 		category: "Special",
-		shortDesc: "Body Press + SSA-esque category switch",
+		shortDesc: "Body Press + SSA-esque category switch.",
 		desc: "This move inflicts physical damage or special damage, depending on which is more effective. For physical damage, the user’s Defense is used for damage calculation instead of Attack, and for special damage, the user’s Sp.Def is used for damage calculation instead of Sp.Atk. This attack also has a 10% chance to inflict a random status effect on the opponent.",
 		name: "Ruby's Curse",
 		gen: 9,
@@ -125,7 +125,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		accuracy: 100,
 		basePower: 120,
 		category: "Special",
-		shortDesc: "80% chance to poison, otherwise burn",
+		shortDesc: "80% chance to poison, burns otherwise.",
 		desc: "A powerfully toxic move that has an 80/20 chance to either Poison or Burn the opponent, respectively.",
 		name: "Internet Troll",
 		gen: 9,
@@ -162,8 +162,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		accuracy: 100,
 		basePower: 90,
 		category: "Physical",
-		shortDesc: "Always crits*",
-		desc: "This move is always a critical hit unless the target is under the effect of Lucky Chant or has the Battle Armor or Shell Armor Abilities.",
+		shortDesc: "Always crits, unless target cannot be crit.",
+		desc: "This move is always a critical hit, unless the target is under the effect of Lucky Chant or has the Battle Armor or Shell Armor Abilities.",
 		name: "Verdant Blade",
 		gen: 9,
 		pp: 5,
@@ -201,7 +201,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			this.attrLastMove('[still]');
 		},
 		onPrepareHit(target, source) {
-			this.add('-anim', source, 'Hidden Power', target);
+			this.add('-anim', source, 'Hypnosis', source);
+			this.add('-anim', source, 'Stored Power', target);
 			this.add('-anim', source, 'Luster Purge', target);
 		},
 		self: {
@@ -210,5 +211,5 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		secondary: null,
 		target: "allAdjacentFoes",
 		type: "Psychic",
-	}
+	},
 };
