@@ -103,6 +103,22 @@ export const Conditions: {[id: IDEntry]: ModdedConditionData & {innateName?: str
 	},
 	// These two are the same person
 
+	// Banded Bonks
+	bandedbonks: {
+		noCopy: true,
+		onStart() {
+			this.add(`c:|${getName('Banded Bonks')}|Good Morning`);
+		},
+		onSwitchOut() {
+			this.add(`c:|${getName('Banded Bonks')}|smh my head have to change moves`);
+		},
+		onFaint() {
+			this.add(`c:|${getName('Banded Bonks')}| `);
+			// add "My time has come." image to chat
+			this.add(`raw|<img src="https://media1.tenor.com/images/bc1b3ab8289d2e60843e9823ee90f412/tenor.gif?itemid=8019684">`);
+		},
+	},
+
 	// CUSTOM EFFECTS
 
 	// Rabies for gigigecko26

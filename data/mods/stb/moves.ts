@@ -212,4 +212,132 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "allAdjacentFoes",
 		type: "Psychic",
 	},
+
+	// Banded Bonks
+	firsterimpression: {
+		accuracy: true,
+		basePower: 100,
+		category: "Physical",
+		shortDesc: "First Impression + Pursuit; no BP/accuracy boost on switch",
+		desc: "This move will fail unless it is the user's first turn on the field. If the target switches out this turn, this move hits the target before it can leave the field. If the opponent faints from this move, the replacement does not become active until the end of the turn. Unlike Pursuit, there is no boost to power on a switching target.",
+		name: "Firster Impression",
+		gen: 9,
+		pp: 1,
+		noPPBoosts: true, // so Firster Impression doesn't get 1.6 PP
+		priority: 9001,
+		flags: {contact: 1, protect: 1, mirror: 1},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onTry(source) {
+			if (source.activeMoveActions > 1) {
+				this.hint("Firster Impression only works on your first turn out.");
+				return false;
+			}
+		},
+		beforeTurnCallback(pokemon) {
+			for (const side of this.sides) {
+				if (side.hasAlly(pokemon)) continue;
+				side.addSideCondition('firsterimpression', pokemon);
+				const data = side.getSideConditionData('firsterimpression');
+				if (!data.sources) {
+					data.sources = [];
+				}
+				data.sources.push(pokemon);
+			}
+		},
+		onTryHit(target, pokemon) {
+			target.side.removeSideCondition('firsterimpression');
+		},
+		condition: {
+			// Make it so that the target is still hit if they try to switch,
+			// but don't apply the Pursuit power/accuracy boosts
+			duration: 1,
+			onBeforeSwitchOut(pokemon) {
+				this.debug('Firster Impression start');
+				let alreadyAdded = false;
+				pokemon.removeVolatile('destinybond');
+				for (const source of this.effectState.sources) {
+					if (!source.isAdjacent(pokemon) || !this.queue.cancelMove(source) || !source.hp) continue;
+					if (!alreadyAdded) {
+						this.add('-activate', pokemon, 'move: Pursuit');
+						alreadyAdded = true;
+						// Check if we should be changing form before using Firster Impresison
+						if (source.canMegaEvo || source.canUltraBurst) {
+							for (const [actionIndex, action] of this.queue.entries()) {
+								if (action.pokemon === source && action.choice === 'megaEvo') {
+									this.actions.runMegaEvo(source);
+									this.queue.list.splice(actionIndex, 1);
+									break;
+								}
+							}
+						}
+						this.actions.runMove('firsterimpression', source, source.getLocOf(pokemon));
+					}
+				}
+			},
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, "Nasty Plot", source);
+			this.add('-anim', source, "Stomping Tantrum", target);
+			this.add('-anim', source, "Behemoth Blade", target);
+		},
+		secondary: null,
+		target: "normal",
+		type: "Bug",
+	},
+
+	// Hustle Room for Banded Bonks's Hustle Surge
+	hustleroom: {
+		inherit: true, // why is this necessary??? maybe so Hustle Surge can use it?
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Hustle Room",
+		shortDesc: "All moves have 80% accuracy.",
+		desc: "For 5 turns, Hustle Room is set. In Hustle Room, all moves have their accuracy set to 80%, regardless of their original accuracy.",
+		gen: 9,
+		pp: 10,
+		priority: 0,
+		pseudoWeather: 'hustleroom',
+		onPrepareHit(target, source) {
+			this.add('-anim', source, "Wonder Room", source);
+		},
+		condition: {
+			duration: 5,
+			onFieldStart(battle, source, effect) {
+				if (effect?.effectType === 'Ability') {
+					this.add('-fieldstart', 'move: Hustle Room', '[from] ability: ' + effect, '[of] ' + source, '[silent]');
+					this.add('-message', "Dimensions became warped! Everyone feels Hustled!");
+					this.hint("In Hustle Room, all moves have 80% accuracy.");
+				} else {
+					this.add('-fieldstart', 'move: Hustle Room', '[silent]');
+					this.add('-message', "Dimensions became warped! Everyone feels Hustled!");
+					this.hint("In Hustle Room, all moves have 80% accuracy.");
+				}
+			},
+			onFieldRestart(target, source) {
+				this.field.removePseudoWeather('hustleroom');
+			},
+			// make all moves have 80% of their original accuracy
+			onAccuracy(accuracy, target, source, move) {
+				// Currently does not affect Poison-types
+				// using Toxic (which gives it perfect accuracy),
+				// and might also not affect other accuracy-bypassing
+				// effects (ex: using Stomp on a target who has used
+				// Minimize beforehand).
+				// But, since no STB sets are Poison-types with Toxic,
+				// this interaction is safe to ignore (for now)
+				return 80;
+			},
+			onFieldResidualOrder: 27,
+			onFieldResidualSubOrder: 1,
+			onFieldEnd() {
+				this.add('-fieldend', 'move: Hustle Room');
+			},
+		},
+		secondary: null,
+		target: "all",
+		type: "Bug",
+	},
 };

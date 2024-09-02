@@ -136,4 +136,15 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		gen: 9,
 	},
 
+	// Banded Bonks
+	hustlesurge: {
+		// Hustle Room implementation in `/stb/moves.ts`
+		shortDesc: "Hustle Room on entry.",
+		desc: "Summons Hustle Room on entry. (Hustle Room causes all moves, without exception, to have 80% of their regular accuracy. Moves that do not miss are considered to have 100% accuracy. All Accuracy state changes are ignored.",
+		name: "Hustle Surge",
+		onStart(source) {
+			this.field.addPseudoWeather('hustleroom');
+		},
+		gen: 9,
+	},
 };

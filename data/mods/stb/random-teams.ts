@@ -84,6 +84,23 @@ export const stbSets: STBSets = {
 		evs: {hp: 252, def: 252, spa: 4}, nature: 'Bold', shiny: true, skip: 'ya-da-ne',
 	},
 
+	// Banded Bonks
+	'Banded Bonks': {
+		species: 'Durant', ability: 'Hustle Surge', item: 'Choice Band', gender: 'M',
+		moves: ['Behemoth Bash', 'Dynamic Punch', ['Supercell Slam', 'Stone Edge', 'Earthquake', 'Wicked Blow', 'Dragon Ascent']],
+		signatureMove: 'Firster Impression',
+		evs: {atk: 252, spd: 4, spe: 252}, nature: 'Jolly',
+	},
+
+	// Test set for debugging purposes
+	// Comment out if not testing anything
+	/*
+	'TestMon': {
+		species: 'Mantine', ability: 'Poison Heal', item: 'Leftovers', gender: 'N',
+		moves: ['Refresh', 'Refresh', 'Refresh'],
+		signatureMove: 'Refresh',
+	},
+	*/
 };
 
 export class RandomTigerBrosTeams extends RandomTeams {
@@ -92,7 +109,7 @@ export class RandomTigerBrosTeams extends RandomTeams {
 
 		const team: PokemonSet[] = [];
 		// V Set this to a list of SSB sets to override the normal pool for debugging.
-		const debug: string[] = ["ya-da-ne", "Peekz1025", "gigigecko26", "davidts", "broil"];
+		const debug: string[] = [];
 		// const ruleTable = this.dex.formats.getRuleTable(this.format);
 		const pool = debug.length ? debug : Object.keys(stbSets);
 		const typePool: {[k: string]: number} = {};

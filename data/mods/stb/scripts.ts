@@ -127,6 +127,8 @@ export function changeSet(context: Battle, pokemon: Pokemon, newSet: STBSet, cha
 export const PSEUDO_WEATHERS = [
 	// Normal pseudo weathers
 	'fairylock', 'gravity', 'iondeluge', 'magicroom', 'mudsport', 'trickroom', 'watersport', 'wonderroom',
+	// STB pseudo weathers
+	'hustleroom',
 ];
 
 /**
@@ -1351,7 +1353,7 @@ export const Scripts: ModdedBattleScriptsData = {
 			}
 
 			// Pursuit Clones support
-			const pursuitClones = ['pursuit', 'trivialpursuit', 'attackofopportunity'];
+			const pursuitClones = ['pursuit', 'trivialpursuit', 'attackofopportunity', 'firsterimpression'];
 			const callerMoveForPressure = sourceEffect && (sourceEffect as ActiveMove).pp ? sourceEffect as ActiveMove : null;
 			if (!sourceEffect || callerMoveForPressure || pursuitClones.includes(sourceEffect.id)) {
 				let extraPP = 0;
