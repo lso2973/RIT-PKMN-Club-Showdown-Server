@@ -184,5 +184,31 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 
 	// NEW STB SETS
 
-// 8biteki / ya-da-ne
+	// 8biteki / ya-da-ne
+	rngmanipulation: {
+		accuracy: true, // bypass accuracy checks
+		basePower: 60,
+		category: "Special",
+		shortDesc: "Always crits. Can't miss. Set Lucky Chant on hit.",
+		desc: "This move will always result in a critical hit, and cannot miss. If this move hits, it applies Lucky Chant on the user for 5 turns.",
+		name: "RNG Manipulation",
+		gen: 9,
+		pp: 10,
+		priority: 0,
+		flags: {mirror: 1, protect: 1},
+		willCrit: true,
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Hidden Power', target);
+			this.add('-anim', source, 'Luster Purge', target);
+		},
+		self: {
+			sideCondition: 'luckychant',
+		},
+		secondary: null,
+		target: "allAdjacentFoes",
+		type: "Psychic",
+	}
 };

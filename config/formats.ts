@@ -36,7 +36,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 9] Super Tiger Bros",
 		desc: "The club's unique take on Super Staff Bros. Developed by Brian (Banded Bonks), Jolyne (TacocaT_2595), Joe (broil) and Lily (ya-da-ne).",
 		threads: [
-			`&bullet; <a href="https://docs.google.com/document/d/16Pqc6xW09PqmdP6lAKJwaGSrjDLUH4Po2x-6jSuS4jk/edit?usp=sharing">Roster</a>`,
+			`&bullet; <a href="https://docs.google.com/document/d/1OdSHftX9gVIgcZY1Aq7ZCfVZu-iaALCtRy69gJzm0Ps/edit?usp=sharing">Roster</a>`,
 		],
 
 		mod: 'stb',
@@ -72,6 +72,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 				!pokemon.terastallized) {
 				this.add('-start', pokemon, 'typechange', (pokemon.illusion || pokemon).getTypes(true).join('/'), '[silent]');
 			}
+
 		},
 	},
 

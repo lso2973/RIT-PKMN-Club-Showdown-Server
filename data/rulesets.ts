@@ -2968,8 +2968,8 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			// Wildcard bans are as such for the 2024-2025 academic year:
 			// Archaludon, Darkrai, Dragapult, Enamorus-Incarnate, Gholdengo,
 			// Great Tusk, Gouging Fire, Iron Valiant, Kyurem, Ogerpon-Hearthflame,
-			// Ogerpon-Wellspring, Regieleki, Roaring Moon, Serperior, Sneasler,
-			// Spectrier, Terapagos, Ursaluna-Bloodmoon, Urshifu-Rapid-Strike,
+			// Ogerpon-Wellspring, Regieleki, Raging Bolt, Roaring Moon, Serperior,
+			// Sneasler, Spectrier, Terapagos, Ursaluna-Bloodmoon, Urshifu-Rapid-Strike,
 			// Volcarona, and Walking Wake. This means that those Pokemon cannot
 			// be used as a Wildcard, ie: on a team of not a matching type. So
 			// nobody can enter the tournament with a Darkrai if they are not

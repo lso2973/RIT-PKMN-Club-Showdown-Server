@@ -73,14 +73,14 @@ export const stbSets: STBSets = {
 	'ya-da-ne': {
 		species: 'Tapu Lele', ability: "Heir of Light", item: 'Choice Specs', gender: 'F',
 		moves: [['Ice Beam', 'Freeze Dry'], 'Heat Wave', 'Volt Switch'],
-		signatureMove: 'Tackle',
+		signatureMove: 'RNG Manipulation',
 		evs: {spa: 252, spd: 4, spe: 252}, nature: 'Modest', shiny: true,
 	},
 	// Only used for /stb
 	'8biteki': {
 		species: 'Necrozma-Dawn-Wings', ability: "Heir of Light", item: "Leftovers", gender: 'F',
 		moves: [['Ice Beam', 'Freeze Dry'], 'Take Heart', 'Recover'],
-		signatureMove: 'Tackle',
+		signatureMove: 'RNG Manipulation',
 		evs: {hp: 252, def: 252, spa: 4}, nature: 'Bold', shiny: true, skip: 'ya-da-ne',
 	},
 
@@ -186,6 +186,7 @@ export class RandomTigerBrosTeams extends RandomTeams {
 				}
 				set.moves[1] = "Take Heart";
 				set.moves[2] = "Recover";
+				// set.moves[3] will always be RNG Manipulation
 				set.nature = "Bold";
 				set.evs = {hp: 252, atk: 0, def: 252, spa: 4, spd: 0, spe: 0};
 				set.item = "Leftovers";
