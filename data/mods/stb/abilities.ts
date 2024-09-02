@@ -101,7 +101,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.add(`c:|${getName('Peekz1025')}|IT'S A CRIT!`);
 				this.boost({atk: 1});
 				// explain the attack boost
-				this.add('message', `${source.name}'s Attack rose by landing a Critical Hit!`);
+				this.add('message', `${target.name}'s Attack rose by landing a Critical Hit!`);
 			}
 		},
 		gen: 9,

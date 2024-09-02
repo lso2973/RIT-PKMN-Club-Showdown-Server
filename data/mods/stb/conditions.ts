@@ -128,9 +128,9 @@ export const Conditions: {[id: IDEntry]: ModdedConditionData & {innateName?: str
 		onStart(target, source, sourceEffect) {
 			this.effectState.stage = 4;
 			if (sourceEffect && sourceEffect.effectType === 'Ability') {
-				this.add('-status', target, 'rabies', '[from] ability: ' + sourceEffect.name, '[of] ' + source);
+				this.add('-status', target, 'Rabies', '[silent]');
 			} else {
-				this.add('-status', target, 'rabies');
+				this.add('-status', target, 'Rabies');
 			}
 			this.add('-start', target, 'rabies');
 			// add message stating that a pokemon was afflicted
