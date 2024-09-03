@@ -39,6 +39,14 @@ export const stbSets: STBSets = {
 	// Please keep sets organized alphabetically based on username!
 
 	// OLD STB SETS
+
+	'Anonymous Pulsar': {
+		species: 'Genesect', ability: 'Analysis', item: 'Life Orb', gender: 'M',
+		moves: ['Thunderbolt', 'Ice Beam', 'Flamethrower'],
+		signatureMove: "Upload",
+		evs: {spa: 252, spd: 4, spe: 252}, ivs: {atk: 0}, nature: 'Timid',
+	},
+
 	broil: {
 		species: 'Furfrou-Pharaoh', ability: 'Magical Coat', item: 'Chesto Berry', gender: 'M',
 		moves: ['Cotton Guard', 'Rest', 'Body Press'],

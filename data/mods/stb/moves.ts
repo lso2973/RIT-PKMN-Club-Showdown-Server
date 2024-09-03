@@ -45,6 +45,118 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 
 	// OLD STB SETS
 
+	// Anonymous Pulsar
+	upload: {
+		accuracy: 100,
+		basePower: 90,
+		category: "Special",
+		name: "Upload",
+		shortDesc: "Reset positive stat boosts + Taunt",
+		desc: "Resets all of the target's positive stat boosts before dealing damage, and applies Taunt.",
+		gen: 9,
+		pp: 10,
+		priority: 0,
+		flags: {protect: 1, mirror: 1},
+		beforeTurnCallback(pokemon) {
+			pokemon.addVolatile('upload');
+		},
+		onTryMove() {
+			this.attrLastMove('[still]');
+		},
+		onPrepareHit(target, source) {
+			this.add('-anim', source, 'Techno Blast', target);
+			this.add('-anim', target, 'Hyper Beam', target);
+		},
+		condition: {
+			duration: 1,
+			noCopy: true,
+			onBeforeMovePriority: 7,
+			onBeforeMove(pokemon, target, move) {
+				let boostName: BoostID;
+				for (boostName in target.boosts) {
+					if (target.boosts[boostName] > 0) {
+						switch (boostName) {
+						case 'atk':
+							this.boost({atk: -1 * target.boosts[boostName]}, target);
+							break;
+						case 'def':
+							this.boost({def: -1 * target.boosts[boostName]}, target);
+							break;
+						case 'spa':
+							this.boost({spa: -1 * target.boosts[boostName]}, target);
+							break;
+						case 'spd':
+							this.boost({spd: -1 * target.boosts[boostName]}, target);
+							break;
+						case 'spe':
+							this.boost({spe: -1 * target.boosts[boostName]}, target);
+							break;
+						case 'accuracy':
+							this.boost({accuracy: -1 * target.boosts[boostName]}, target);
+							break;
+						case 'evasion':
+							this.boost({evasion: -1 * target.boosts[boostName]}, target);
+							break;
+						}
+					}
+				}
+			this.add('message', `${target.name}'s positive stat boosts were reset by ${pokemon.name}'s ${move.name}!`);
+			},
+		},
+		secondary: {
+			chance: 100,
+			volatileStatus: 'taunt',
+		},
+		target: "normal",
+		type: "Steel",
+	},
+
+	// Psych Up clone for Analysis (UNUSED, see ../abilities.ts)
+	analyzing: {
+		inherit: true, // again not sure why this is here -- probably so Analysis can use it...
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		shortDesc: "Copy polar opposite of enemy stat boosts",
+		desc: "Copies the opponent's stat boosts, but in their polar opposite.",
+		name: "Analyzing...",
+		gen: 9,
+		pp: 10,
+		priority: 0,
+			onTryHit(pokemon, target, move) {
+				this.add('message', `${target.name} flipped the polarity of ${pokemon.name}'s stat boosts, and tried to copy them!`);
+				let boostName: BoostID;
+				for (boostName in target.boosts) {
+					// only for "boosts", so don't copy negative stat changes
+					if (target.boosts[boostName] > 0) {
+						switch (boostName) {
+							case 'atk':
+								this.boost({def: target.boosts[boostName]});
+								break;
+							case 'def':
+								this.boost({atk: target.boosts[boostName]});
+								break;
+							case 'spa':
+								this.boost({spd: target.boosts[boostName]});
+								break;
+							case 'spd':
+								this.boost({spa: target.boosts[boostName]});
+								break;
+							// speed has no counterpart
+							case 'accuracy':
+								this.boost({evasion: pokemon.boosts[boostName]});
+								break;
+							case 'evasion':
+								this.boost({accuracy: pokemon.boosts[boostName]});
+								break;
+						}
+					}
+				}
+			},
+		target: "normal",
+		type: "Steel",
+	},
+
 	// broil
 	pharaohscurse: {
 		accuracy: 100,

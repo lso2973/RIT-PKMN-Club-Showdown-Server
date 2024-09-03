@@ -3,6 +3,95 @@
 import {getName} from "./scripts";
 export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
 
+	// Anonymous Pulsar (Analysis)
+	analysis: {
+		shortDesc: "Copy polar opposite enemy stat boosts",
+		desc: "Upon entry, copy the opponent's stat boosts in the polar opposite stat. For example, coming in on a +2 Attack opponent raises the user's Defense by 2 stages.",
+		name: "Analysis",
+		onStart(pokemon) {
+			// Original implementation was going to be a move
+			// called "Analysis..." (still present in the code,
+			// visible in ../moves.ts) that would call this effect.
+			// Because of Hustle Room's existence, it was entirely
+			// possible for this sure-hit move to miss, which both
+			// Anonymous Pulsar and I found quite amusing.
+			// Figured out how to properly implement it, but in order
+			// to stick to what I told Anonymous Pulsar, give this
+			// ability a 20% chance to fail if Hustle Room is active.
+			if (this.field.getPseudoWeather('hustleroom')) {
+				this.add('message', "Hustle Room is active! Analyzing might prove difficult...");
+				// 20% chance for Analysis to fail in Hustle Room
+				let r = this.random(5);
+				if (r === 0) {
+					this.add('message', "The analysis was rushed and was incorrect!");
+					this.hint("In Hustle Room, Analysis only has an 80% chance to work.");
+				} else {
+					let target = pokemon.foes()[0];
+					this.add('message', `${pokemon.name} flipped the polarity of ${target.name}'s stat boosts, and copied them!`);
+					let boostName: BoostID;
+					for (boostName in target.boosts) {
+						// only for "boosts", so don't copy negative stat changes
+						if (target.boosts[boostName] > 0) {
+							switch (boostName) {
+								case 'atk':
+									this.boost({def: target.boosts[boostName]});
+									break;
+								case 'def':
+									this.boost({atk: target.boosts[boostName]});
+									break;
+								case 'spa':
+									this.boost({spd: target.boosts[boostName]});
+									break;
+								case 'spd':
+									this.boost({spa: target.boosts[boostName]});
+									break;
+								// speed has no counterpart
+								case 'accuracy':
+									this.boost({evasion: pokemon.boosts[boostName]});
+									break;
+								case 'evasion':
+									this.boost({accuracy: pokemon.boosts[boostName]});
+									break;
+							}
+						}
+					}
+				}
+			} else {
+				let target = pokemon.foes()[0];
+				this.add('message', `${pokemon.name} flipped the polarity of ${target.name}'s stat boosts, and copied them!`);
+				let boostName: BoostID;
+				for (boostName in target.boosts) {
+					// only for "boosts", so don't copy negative stat changes
+					if (target.boosts[boostName] > 0) {
+						switch (boostName) {
+							case 'atk':
+								this.boost({def: target.boosts[boostName]});
+								break;
+							case 'def':
+								this.boost({atk: target.boosts[boostName]});
+								break;
+							case 'spa':
+								this.boost({spd: target.boosts[boostName]});
+								break;
+							case 'spd':
+								this.boost({spa: target.boosts[boostName]});
+								break;
+							// speed has no counterpart
+							case 'accuracy':
+								this.boost({evasion: pokemon.boosts[boostName]});
+								break;
+							case 'evasion':
+								this.boost({accuracy: pokemon.boosts[boostName]});
+								break;
+						}
+					}
+				}
+			}
+		},
+		flags: {},
+		gen: 9,
+	},
+
 	// broil (Magical Coat)
 	magicalcoat: {
 		shortDesc: "Fur Coat + Harvest",

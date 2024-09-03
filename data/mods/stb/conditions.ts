@@ -25,6 +25,19 @@ export const Conditions: {[id: IDEntry]: ModdedConditionData & {innateName?: str
 
 	// OLD STB SETS
 
+	anonymouspulsar: {
+		noCopy: true,
+		onStart() {
+			this.add(`c:|${getName('Anonymous Pulsar')}|Beginning download...`);
+		},
+		onSwitchOut() {
+			this.add(`c:|${getName('Anonymous Pulsar')}|Download Suspended.`);
+		},
+		onFaint() {
+			this.add(`c:|${getName('Anonymous Pulsar')}|Download Failed.`);
+		},
+	},
+
 	broil: {
 		noCopy: true,
 		onStart(pokemon) {
