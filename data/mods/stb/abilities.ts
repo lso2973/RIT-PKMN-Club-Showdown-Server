@@ -21,49 +21,18 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if (this.field.getPseudoWeather('hustleroom')) {
 				this.add('message', "Hustle Room is active! Analyzing might prove difficult...");
 				// 20% chance for Analysis to fail in Hustle Room
-				let r = this.random(5);
+				const r = this.random(5);
 				if (r === 0) {
 					this.add('message', "The analysis was rushed and was incorrect!");
 					this.hint("In Hustle Room, Analysis only has an 80% chance to work.");
 				} else {
-					let target = pokemon.foes()[0];
+					const target = pokemon.foes()[0];
 					this.add('message', `${pokemon.name} flipped the polarity of ${target.name}'s stat boosts, and copied them!`);
 					let boostName: BoostID;
 					for (boostName in target.boosts) {
 						// only for "boosts", so don't copy negative stat changes
 						if (target.boosts[boostName] > 0) {
 							switch (boostName) {
-								case 'atk':
-									this.boost({def: target.boosts[boostName]});
-									break;
-								case 'def':
-									this.boost({atk: target.boosts[boostName]});
-									break;
-								case 'spa':
-									this.boost({spd: target.boosts[boostName]});
-									break;
-								case 'spd':
-									this.boost({spa: target.boosts[boostName]});
-									break;
-								// speed has no counterpart
-								case 'accuracy':
-									this.boost({evasion: pokemon.boosts[boostName]});
-									break;
-								case 'evasion':
-									this.boost({accuracy: pokemon.boosts[boostName]});
-									break;
-							}
-						}
-					}
-				}
-			} else {
-				let target = pokemon.foes()[0];
-				this.add('message', `${pokemon.name} flipped the polarity of ${target.name}'s stat boosts, and copied them!`);
-				let boostName: BoostID;
-				for (boostName in target.boosts) {
-					// only for "boosts", so don't copy negative stat changes
-					if (target.boosts[boostName] > 0) {
-						switch (boostName) {
 							case 'atk':
 								this.boost({def: target.boosts[boostName]});
 								break;
@@ -76,13 +45,44 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 							case 'spd':
 								this.boost({spa: target.boosts[boostName]});
 								break;
-							// speed has no counterpart
+								// speed has no counterpart
 							case 'accuracy':
 								this.boost({evasion: pokemon.boosts[boostName]});
 								break;
 							case 'evasion':
 								this.boost({accuracy: pokemon.boosts[boostName]});
 								break;
+							}
+						}
+					}
+				}
+			} else {
+				const target = pokemon.foes()[0];
+				this.add('message', `${pokemon.name} flipped the polarity of ${target.name}'s stat boosts, and copied them!`);
+				let boostName: BoostID;
+				for (boostName in target.boosts) {
+					// only for "boosts", so don't copy negative stat changes
+					if (target.boosts[boostName] > 0) {
+						switch (boostName) {
+						case 'atk':
+							this.boost({def: target.boosts[boostName]});
+							break;
+						case 'def':
+							this.boost({atk: target.boosts[boostName]});
+							break;
+						case 'spa':
+							this.boost({spd: target.boosts[boostName]});
+							break;
+						case 'spd':
+							this.boost({spa: target.boosts[boostName]});
+							break;
+							// speed has no counterpart
+						case 'accuracy':
+							this.boost({evasion: pokemon.boosts[boostName]});
+							break;
+						case 'evasion':
+							this.boost({accuracy: pokemon.boosts[boostName]});
+							break;
 						}
 					}
 				}

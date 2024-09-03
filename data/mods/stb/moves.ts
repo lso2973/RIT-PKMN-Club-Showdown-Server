@@ -100,7 +100,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 						}
 					}
 				}
-			this.add('message', `${target.name}'s positive stat boosts were reset by ${pokemon.name}'s ${move.name}!`);
+				this.add('message', `${target.name}'s positive stat boosts were reset by ${pokemon.name}'s ${move.name}!`);
 			},
 		},
 		secondary: {
@@ -123,36 +123,36 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		gen: 9,
 		pp: 10,
 		priority: 0,
-			onTryHit(pokemon, target, move) {
-				this.add('message', `${target.name} flipped the polarity of ${pokemon.name}'s stat boosts, and tried to copy them!`);
-				let boostName: BoostID;
-				for (boostName in target.boosts) {
-					// only for "boosts", so don't copy negative stat changes
-					if (target.boosts[boostName] > 0) {
-						switch (boostName) {
-							case 'atk':
-								this.boost({def: target.boosts[boostName]});
-								break;
-							case 'def':
-								this.boost({atk: target.boosts[boostName]});
-								break;
-							case 'spa':
-								this.boost({spd: target.boosts[boostName]});
-								break;
-							case 'spd':
-								this.boost({spa: target.boosts[boostName]});
-								break;
-							// speed has no counterpart
-							case 'accuracy':
-								this.boost({evasion: pokemon.boosts[boostName]});
-								break;
-							case 'evasion':
-								this.boost({accuracy: pokemon.boosts[boostName]});
-								break;
-						}
+		onTryHit(pokemon, target, move) {
+			this.add('message', `${target.name} flipped the polarity of ${pokemon.name}'s stat boosts, and tried to copy them!`);
+			let boostName: BoostID;
+			for (boostName in target.boosts) {
+				// only for "boosts", so don't copy negative stat changes
+				if (target.boosts[boostName] > 0) {
+					switch (boostName) {
+					case 'atk':
+						this.boost({def: target.boosts[boostName]});
+						break;
+					case 'def':
+						this.boost({atk: target.boosts[boostName]});
+						break;
+					case 'spa':
+						this.boost({spd: target.boosts[boostName]});
+						break;
+					case 'spd':
+						this.boost({spa: target.boosts[boostName]});
+						break;
+						// speed has no counterpart
+					case 'accuracy':
+						this.boost({evasion: pokemon.boosts[boostName]});
+						break;
+					case 'evasion':
+						this.boost({accuracy: pokemon.boosts[boostName]});
+						break;
 					}
 				}
-			},
+			}
+		},
 		target: "normal",
 		type: "Steel",
 	},
