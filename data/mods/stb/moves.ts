@@ -299,7 +299,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	// 8biteki / ya-da-ne
 	rngmanipulation: {
 		accuracy: true, // bypass accuracy checks
-		basePower: 60,
+		basePower: 30,
 		category: "Special",
 		shortDesc: "Always crits. Can't miss. Set Lucky Chant on hit.",
 		desc: "This move will always result in a critical hit, and cannot miss. If this move hits, it applies Lucky Chant on the user for 5 turns.",
@@ -431,7 +431,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			onFieldRestart(target, source) {
 				this.field.removePseudoWeather('hustleroom');
 			},
-			// make all moves have 80% of their original accuracy
+			// make all moves have 80% accuracy, with the exception
+			// of self-targeting moves and field-targeting moves
+			// This means that moves with greater than or less than
+			// 80% accuracy become 80% accurate instead of their
+			// original accuracy.
 			onAccuracy(accuracy, target, source, move) {
 				// Currently does not affect Poison-types
 				// using Toxic (which gives it perfect accuracy),

@@ -54,13 +54,13 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	necrozmadawnwings: {
 		inherit: true,
 		types: ["Ice", "Psychic"],
-		baseStats: {hp: 70, atk: 30, def: 60, spa: 125, spd: 125, spe: 100},
+		baseStats: {hp: 70, atk: 30, def: 55, spa: 125, spd: 125, spe: 95},
 	},
 	// ya-da-ne
 	tapulele: {
 		inherit: true,
 		types: ["Ice", "Psychic"],
-		baseStats: {hp: 70, atk: 30, def: 60, spa: 125, spd: 125, spe: 100},
+		baseStats: {hp: 70, atk: 30, def: 55, spa: 125, spd: 125, spe: 95},
 	},
 	// These two are the same person
 

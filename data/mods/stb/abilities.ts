@@ -23,7 +23,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				// 20% chance for Analysis to fail in Hustle Room
 				const r = this.random(5);
 				if (r === 0) {
-					this.add('message', "The analysis was rushed and was incorrect!");
+					this.add('message', "The analysis was rushed and done incorrectly!");
 					this.hint("In Hustle Room, Analysis only has an 80% chance to work.");
 				} else {
 					const target = pokemon.foes()[0];
@@ -219,7 +219,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		onModifySpe(spe, pokemon) {
 			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
-				return this.chainModify(2);
+				this.debug("Heir of Light speed boost (x1.3)");
+				return this.chainModify([5325, 4096]); // ~1.3x
 			}
 		},
 		gen: 9,
