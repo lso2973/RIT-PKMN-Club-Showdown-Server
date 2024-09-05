@@ -83,7 +83,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			`&bullet; <a href=https://docs.google.com/document/d/1LTlDQpHVVxvaxjFz2_ZxAS7tQg_MwBF_EBxjfNaLTiI/edit?pli=1>Gym Challenge Rules ('24-'25)</a>`,
 		],
 		mod: 'gen9',
-		ruleset: ['Gym Leader Clause (Gen 9)', 'Standard'],
+		ruleset: ['Gym Leader Clause (Gen 9)', 'Standard', 'Adjust Level = 50'],
 		banlist: [
 			// Pokemon banned out-right (certain Pokemon are allowed, but restricted such that
 			// they must be used on only teams which contain their type. For example, Darkrai is
