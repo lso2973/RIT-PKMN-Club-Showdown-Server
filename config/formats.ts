@@ -91,8 +91,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			// teams using mono-Dark. Wildcard bans are covered by Gym Leader Clause in the ruleset.)
 			// Urshifu-Base refers to Urshifu-Single-Strike.
 			'Arceus', 'Baxcalibur', 'Calyrex-Ice', 'Calyrex-Shadow', 'Chien-Pao', 'Chi-Yu', 'Deoxys-Base', 'Deoxys-Attack',
-			'Dialga', 'Dialga-Origin', 'Eternatus', 'Flutter-Mane', 'Giratina', 'Giratina-Origin', 'Gliscor', 'Groudon',
-			'Ho-Oh', 'Iron-Bundle', 'Kingambit', 'Koraidon', 'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Lugia', 'Lunala',
+			'Dialga', 'Dialga-Origin', 'Eternatus', 'Flutter Mane', 'Giratina', 'Giratina-Origin', 'Gliscor', 'Groudon',
+			'Ho-Oh', 'Iron Bundle', 'Kingambit', 'Koraidon', 'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Lugia', 'Lunala',
 			'Magearna', 'Mewtwo', 'Miraidon', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Palafin', 'Palkia', 'Palkia-Origin',
 			'Rayquaza', 'Reshiram', 'Shaymin-Sky', 'Solgaleo', 'Urshifu-Base', 'Zacian', 'Zacian-Crowned', 'Zamazenta',
 			'Zamazenta-Crowned', 'Zekrom',
@@ -106,10 +106,58 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	},
 
 	// Gym Challenge (Singles) '24-'25
+	{
+		name: "[Gen 9] Gym Challenge Singles '24-'25",
+		desc: "Use this format to challenge our Gym Leaders to our custom Sinlges format!",
+		mod: 'gen9',
+		ruleset: ["[Gen 9] Gym Leader Challenge Clause (Singles)", 'Standard'],
+		banlist: [
+			// Gym Challenge Singles banlist for '24-'25
+			// Pokemon
+			'Arceus', 'Baxcalibur', 'Calyrex-Ice', 'Calyrex-Shadow', 'Chien-Pao', 'Chi-Yu', 'Deoxys-Base', 'Deoxys-Attack',
+			'Dialga', 'Dialga-Origin', 'Eternatus', 'Flutter Mane', 'Giratina', 'Giratina-Origin', 'Gliscor', 'Groudon',
+			'Ho-Oh', 'Iron Bundle', 'Koraidon', 'Kyogre', 'Kyurem-Black', 'Kyurem-White', 'Lugia', 'Magearna', 'Mewtwo',
+			'Miraidon', 'Necrozma-Dawn-Wings', 'Necrozma-Dusk-Mane', 'Palafin', 'Palkia', 'Palkia-Origin', 'Rayquaza',
+			'Reshiram', 'Shaymin-Sky', 'Solgaleo', 'Urshifu-Base', 'Zacian', 'Zacian-Crowned', 'Zamazenta', 'Zamazenta-Crowned',
+			'Zekrom',
+			// Moves
+			'Baton Pass', 'Dire Claw', 'Last Respects', 'Shed Tail', 'Swagger',
+			// All Evasion-Boosting items are already
+			// Banned through Evasion Clause
+			// Abilities
+			'Arena Trap', 'Moody', 'Shadow Tag', 'Landorus + Sheer Force',
+		],
+	},
 
 	// Gym Challenge (Doubles) '24-'25
+	{
+		name: "[Gen 9] Gym Challenge Doubles '24-'25",
+		desc: "Use this format to challenge our Gym Leaders to our custom Doubles format!",
+		mod: 'gen9',
+		gameType: 'doubles',
+		// "Standard Doubles" includes "Gravity + Sleep" clause,
+		// banning the use of less than 100% accurate Sleep moves
+		// (Hypnosis, GrassWhistle, etc.) with the move Gravity
+		ruleset: ["[Gen 9] Gym Leader Challenge Clause (Doubles)", "Standard Doubles"],
+		banlist: [
+			// Gym Challenge Doubles banlist for '24-'25
+			// Pokemon
+			'Arceus', 'Calyrex-Ice', 'Calyrex-Shadow', 'Chien-Pao', 'Chi-Yu', 'Deoxys-Base', 'Deoxys-Attack', 'Dialga',
+			'Dialga-Origin', 'Eternatus', 'Giratina', 'Giratina-Base', 'Groudon', 'Ho-Oh', 'Koraidon', 'Kyogre',
+			'Kyurem-Black', 'Kyurem-White', 'Lugia', 'Lunala', 'Magearna', 'Mewtwo', 'Miraidon', 'Necrozma-Dawn-Wings',
+			'Necrozma-Dusk-Mane', 'Palkia', 'Palkia-Origin', 'Rayquaza', 'Reshiram', 'Solgaleo', 'Zacian', 'Zacian-Crowned',
+			'Zamazenta', 'Zamazenta-Crowned', 'Zekrom',
+			// Moves (Minimize, Double Team, and OHKO moves
+			// are banned through "Standard Doubles")
+			'Last Respects', 'Swagger',
+			// Abilities
+			'Moody',
+		],
+	},
 
-	// RRC Season 22: Low Tier Singles
+	// RIL Season 1: Paldea Dex Draft
+
+	// RRC Season 22: Low Tier Singles Draft
 
 	// Legacy RIT Formats (mainly older Gym Tournament formats)
 	{

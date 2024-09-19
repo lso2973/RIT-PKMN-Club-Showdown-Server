@@ -3085,4 +3085,51 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			}
 		},
 	},
+
+	// Gym Challenge Clause for Gen 9 Sinlges ('24-'25).
+	gen9gymleaderchallengeclausesingles: {
+		effectType: "ValidatorRule",
+		name: "[Gen 9] Gym Leader Challenge Clause (Singles)",
+		desc: "Certain Pok\u00e9mon are restricted from Terastallizing.",
+
+		onBegin() {
+			const terastallizationBanlist = ["Annihilape", "Archaludon", "Darkrai", "Deoxys-Speed", "Dragapult",
+											 "Enamorus-Incarnate", "Espathra", "Great Tusk", "Gouging Fire",
+											 "Iron Boulder", "Iron Valiant", "Kingambit", "Kyurem",
+											 "Ogerpon-Hearthflame", "Regieleki", "Roaring Moon", "Serperior",
+											 "Sneasler", "Spectrier", "Terapagos", "Ursaluna-Bloodmoon",
+											 "Urshifu-Rapid-Strike", "Volcarona", "Walking Wake",
+			];
+			for (const pokemon of this.getAllPokemon()) {
+				const currentSpecies = pokemon.species;
+				const currentSpeciesName = currentSpecies.name;
+				if (terastallizationBanlist.includes(currentSpeciesName)) {
+					pokemon.canTerastallize = null;
+				}
+			}
+			this.add('rule', 'Gym Challenge Clause (Singles): Some Pok\u00e9mon may not Terastallize.');
+		},
+	},
+
+	// Gym Challenge Clause for Gen 9 Doubles ('24-'25).
+	gen9gymleaderchallengeclausedoubles: {
+		effectType: "ValidatorRule",
+		name: "[Gen 9] Gym Leader Challenge Clause (Doubles)",
+		desc: "Certain Pok\u00e9mon are restricted from Terastallizing.",
+
+		onBegin() {
+			const terastallizationBanlist = ["Annihilape", "Dragapult", "Flutter Mane", "Iron Boulder", "Iron Bundle",
+											 "Kingambit", "Palafin", "Roaring Moon", "Shaymin-Sky", "Terapagos",
+											 "Urshifu-Base", "Urshifu-Rapid-Strike", "Walking Wake",
+			];
+			for (const pokemon of this.getAllPokemon()) {
+				const currentSpecies = pokemon.species;
+				const currentSpeciesName = currentSpecies.name;
+				if (terastallizationBanlist.includes(currentSpeciesName)) {
+					pokemon.canTerastallize = null;
+				}
+			}
+			this.add('rule', 'Gym Challenge Clause (Doubles): Some Pok\u00e9mon may not Terastallize.');
+		},
+	},
 };
