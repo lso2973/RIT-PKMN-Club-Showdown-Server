@@ -156,8 +156,43 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	},
 
 	// RIL Season 1: Paldea Dex Draft
+	{
+		name: "[Gen 9] RIL Season 1: Paldea Dex Singles",
+		desc: "RIL's very first season -- featuring Paldea Dex!",
+		mod: 'gen9',
+		ruleset: ['Standard NatDex', 'OHKO Clause', 'Evasion Clause', 'Species Clause', 'Sleep Clause Mod'],
+		banlist: [
+			// Pokemon
+			// Honor system, people know their drafts
+			// Moves
+			'Baton Pass', 'Last Respects', 'Swagger', 'Shed Tail',
+			'Revival Blessing',
+			// Abilities
+			'Moody', 'Arena Trap', 'Shadow Tag', 'Landorus + Sheer Force',
+			'Blaziken + Speed Boost', 'Espathra + Speed Boost'
+		],
+	},
 
 	// RRC Season 22: Low Tier Singles Draft
+	{
+		name: "[Gen 9] RRC Season 22: Low Tier Singles",
+		desc: "RRC Season 22's format for Low Tier Singles Draft.",
+		mod: 'gen9',
+		// Rules: Pokemon may be any level, Evasion Clause, Last Respects,
+		//		  Shed Tail, and Hidden Power are banned, OHKO Clause,
+		//		  Terastal Clause, Dynamax Clause, Z-Moves are banned,
+		//		  Endless Battle Clause
+		ruleset: ["Standard", "Terastal Clause"],
+		banlist: [
+			// Pokemon
+			// Rely on honor system until admins give me
+			// a list of everything that's banned
+			// Moves
+			'Last Respects', 'Shed Tail', 'Hidden Power',
+			// Abilities
+			'Moody',
+		],
+	},
 
 	// Legacy RIT Formats (mainly older Gym Tournament formats)
 	{
